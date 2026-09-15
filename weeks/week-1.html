@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=42d09272">
+<link rel="stylesheet" href="../assets/style.css?v=844fe300">
 </head>
 <body>
 <header class="topbar">
@@ -34,7 +34,7 @@
         <a href="../index.html">Syllabus</a>
         <a href="week-1.html" aria-current="page">Week 1</a>
         <a href="#concepts">Lecture</a>
-        <a href="#quiz">Quiz</a>
+        <a href="#s09">Quiz</a>
         <a href="#thisweek">This week</a>
         <a href="../playground.html">Playground</a>
       </nav>
@@ -88,8 +88,8 @@
   <section class="block" id="concepts">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">01 &middot; The lecture</span>
-        <h2>Six sections, same as the slides</h2>
+        <span class="eyebrow">Week 1 &middot; Interactive</span>
+        <h2>The lecture, then the practice</h2>
         <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
         has focus. Code blocks are live: edit them, run them, and break them on purpose.</p>
       </div>
@@ -131,6 +131,24 @@
             data-target="s06">
             <span class="t-num">06</span>
             <span class="t-text"><span class="t-title">Ed, labs and getting help</span><span class="t-meta">2 comics</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s07"
+            aria-controls="panel-s07" aria-selected="false" tabindex="-1"
+            data-target="s07">
+            <span class="t-num">07</span>
+            <span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks &middot; auto-marked</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s08"
+            aria-controls="panel-s08" aria-selected="false" tabindex="-1"
+            data-target="s08">
+            <span class="t-num">08</span>
+            <span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">3 &middot; in class</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s09"
+            aria-controls="panel-s09" aria-selected="false" tabindex="-1"
+            data-target="s09">
+            <span class="t-num">09</span>
+            <span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">20 questions</span></span>
           </button>
         </nav>
 
@@ -585,19 +603,96 @@ print(n + 1)
       </div>
         
         </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-s07"
+          aria-labelledby="tab-s07" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">07</span>Coding exercises</h3>
+
+          <p>Six exercises, marked automatically against test cases &mdash; the same idea as the Ed
+          labs, but nothing here is recorded or submitted. Write your answer, press <strong>Run
+          tests</strong>, and read what comes back. A worked solution sits under each one, but try
+          it first: reading a solution teaches you far less than failing a test does.</p>
+
+          <div class="note warn">
+            <span class="tag">Output must match exactly</span>
+            <p>A capital letter or a missing full stop fails the test, exactly as it would on Ed.
+            Trailing spaces and the final newline are the only things forgiven.</p>
+          </div>
+
+          <div id="exercises-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s08"
+          aria-labelledby="tab-s08" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">08</span>Team activity</h3>
+
+          <p>Three or four people, fifteen minutes, then two minutes to report back. These run in
+          the lecture and in your first lab &mdash; class activities like these count towards the
+          participation side of your mark.</p>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 1 &middot; 10 min &middot; no computers</div>
+            <h4>Write the algorithm for something ordinary</h4>
+            <p>Pick one: making instant noodles, getting from the front gate to this room, or
+            withdrawing money from an ATM. Write it as numbered steps precise enough that someone
+            who has never done it could follow along.</p>
+            <ol>
+              <li>Where did you need a <strong>decision</strong> (&ldquo;if the queue is long&hellip;&rdquo;)?</li>
+              <li>Where did you need <strong>repetition</strong> (&ldquo;keep stirring until&hellip;&rdquo;)?</li>
+              <li>What did you assume the reader already knew? That assumption is the bug.</li>
+            </ol>
+            <p><strong>Report back:</strong> read out one step another group would misread.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 2 &middot; 10 min &middot; one laptop per group</div>
+            <h4>Break it on purpose</h4>
+            <p>Open the Playground with the <em>Hello</em> preset. Take turns making <strong>one</strong>
+            change each and predicting the result <em>before</em> running it:</p>
+            <ul>
+              <li>delete a semicolon</li>
+              <li>change <code>Hello</code> to <code>hello</code> in the class name only</li>
+              <li>delete one <code>}</code></li>
+              <li>change <code>println</code> to <code>printline</code></li>
+            </ul>
+            <p><strong>Report back:</strong> which error message was the most misleading, and what it
+            actually meant.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 3 &middot; 10 min &middot; discussion</div>
+            <h4>The class average bug</h4>
+            <p>Section 3 has a program that prints a class average of <code>75</code> when the real
+            answer is <code>75.33</code>. It compiles, it runs, and nothing warns you.</p>
+            <ol>
+              <li>How would you have <em>caught</em> this? Be specific &mdash; &ldquo;testing&rdquo; is not an answer.</li>
+              <li>Now consider marks of 74, 75 and 76: the program prints 75, which is correct.
+                What does that tell you about choosing test cases?</li>
+              <li>CrowdStrike shipped a bug of exactly this kind to 8.5 million machines. What would
+                you have needed to notice, and when?</li>
+            </ol>
+            <p><strong>Report back:</strong> one test case that would have caught it.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Why we do this out loud</span>
+            <p>Four times this session you will be asked to explain code in person. Groups that talk
+            through code every week find that conversation ordinary; groups that never do find it
+            hard. That is the whole reason these activities exist.</p>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s09"
+          aria-labelledby="tab-s09" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">09</span>Quiz</h3>
+
+          <p>Twenty questions on everything above. Answer them all, then grade. Every question
+          explains its answer, including why the wrong options are wrong. Nothing is recorded or
+          submitted.</p>
+
+          <div id="quiz-root"></div>
+        </section>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="block" id="quiz">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow">02 · Check yourself</span>
-        <h2>Twenty questions on Week 1</h2>
-        <p>Answer them all, then grade. Every question explains its answer — including why the wrong options are wrong. Nothing here is recorded or submitted.</p>
-      </div>
-      <div id="quiz-root"></div>
     </div>
   </section>
 
@@ -696,6 +791,8 @@ print(n + 1)
 <script src="../assets/highlight.js?v=88b90c66"></script>
 <script src="../assets/console-ui.js?v=3afebf99"></script>
 <script src="../assets/w1-data.js?v=84ccca87"></script>
+<script src="../assets/w1-exercises.js?v=b3fdff62"></script>
+<script src="../assets/exercises.js?v=fff7bc25"></script>
 <script src="../assets/course.js?v=5b2f4e11"></script>
 </body>
 </html>

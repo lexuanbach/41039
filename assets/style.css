@@ -510,7 +510,8 @@
   :root[data-theme="dark"] { --green: #5BC97E; --accent-contrast: #0D1420; }
 
 /* ── Concept prose ── */
-.concept { margin-bottom: 2.4rem; max-width: 46rem; }
+.concept { margin-bottom: 1.6rem; max-width: 46rem; }
+.lesson-panel .concept { max-width: none; margin-bottom: 1.5rem; }
 .concept.wide { max-width: none; }
 .concept h3 {
   font-size: 1.18rem; font-weight: 700;
@@ -911,8 +912,8 @@ body.console-open { overflow: hidden; }
 /* ── Lecture layout: section list on the left, content on the right ── */
 .lesson {
   display: grid;
-  grid-template-columns: 17rem minmax(0, 1fr);
-  gap: 2rem;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 1.5rem;
   align-items: start;
 }
 @media (max-width: 900px) {
@@ -925,7 +926,7 @@ body.console-open { overflow: hidden; }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 0.5rem;
+  padding: 0.35rem;
   box-shadow: var(--shadow);
 }
 @media (max-width: 900px) {
@@ -944,7 +945,7 @@ body.console-open { overflow: hidden; }
   width: 100%; text-align: left;
   background: none; border: 0;
   border-radius: 8px;
-  padding: 0.6rem 0.7rem;
+  padding: 0.45rem 0.6rem;
   cursor: pointer;
   font-family: inherit; color: var(--ink-soft);
   border-left: 3px solid transparent;
@@ -977,7 +978,7 @@ body.console-open { overflow: hidden; }
   border: 1px solid var(--line);
   border-radius: 12px;
   box-shadow: var(--shadow);
-  padding: 1.5rem 1.6rem 1.7rem;
+  padding: 1.25rem 1.4rem 1.4rem;
 }
 .lesson-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .lesson-panel > .concept:last-child { margin-bottom: 0; }
@@ -986,9 +987,9 @@ body.console-open { overflow: hidden; }
 .panel-head {
   display: flex; align-items: baseline; gap: 0.7rem;
   font-family: "Archivo", sans-serif;
-  font-size: 1.35rem; font-weight: 700;
-  margin-bottom: 1.2rem;
-  padding-bottom: 0.8rem;
+  font-size: 1.25rem; font-weight: 700;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid var(--line);
 }
 .panel-head .panel-num {
@@ -1006,12 +1007,13 @@ body.console-open { overflow: hidden; }
 .panel-nav .spacer { flex: 1; }
 
 /* ── Figures: comics and photographs ── */
-.fig { margin: 1.2rem 0 1.4rem; text-align: center; }
+.fig { margin: 0.9rem 0 1rem; text-align: center; }
 .fig img {
   max-width: 100%; height: auto;
+  max-height: 19rem; width: auto;
   border-radius: 8px;
   background: #FFFFFF;
-  padding: 0.5rem;
+  padding: 0.4rem;
 }
 .fig.plain img { background: none; padding: 0; }
 .fig figcaption {
@@ -1023,8 +1025,11 @@ body.console-open { overflow: hidden; }
   font-size: 0.72rem; color: var(--ink-soft); opacity: 0.85;
   display: block; margin-top: 0.15rem;
 }
-.fig-narrow img { max-width: 30rem; }
-.fig-wide img { max-width: 46rem; }
+.fig-narrow img { max-width: 24rem; }
+.fig-wide img { max-width: 40rem; }
+/* Comics are line art and need their height to stay readable; photographs are
+   decorative here and get the tighter cap above. */
+.fig.plain img { max-height: 26rem; }
 
 /* A pull-quote style joke box, matching the deck's */
 .joke {
@@ -1041,3 +1046,82 @@ body.console-open { overflow: hidden; }
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.74rem; color: var(--ink-soft);
 }
+
+/* ── Auto-graded exercises ── */
+.ex {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 1.4rem;
+  overflow: hidden;
+}
+.ex-head { padding: 1rem 1.1rem 0.6rem; }
+.ex-title-row { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.3rem; }
+.ex-title-row h4 {
+  font-family: "Archivo", sans-serif; font-size: 1rem; font-weight: 700;
+  margin-right: auto;
+}
+.ex-brief { font-size: 0.9rem; color: var(--ink-soft); margin: 0; }
+.ex-brief code { font-size: 0.85em; }
+.ex .editor-shell { height: 12rem; border-top: 1px solid var(--line); }
+
+.ex-tests:not(:empty) { border-top: 1px solid var(--line); padding: 0.7rem 1.1rem 0.9rem; }
+.ex-test { border-radius: 8px; padding: 0.5rem 0.7rem; margin-bottom: 0.45rem; }
+.ex-test.pass { background: color-mix(in srgb, var(--green) 10%, transparent); }
+.ex-test.fail { background: color-mix(in srgb, var(--red) 9%, transparent); }
+.ex-test-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.badge-res {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+  padding: 0.1rem 0.4rem; border-radius: 4px;
+}
+.ex-test.pass .badge-res { background: var(--green); color: var(--accent-contrast); }
+.ex-test.fail .badge-res { background: var(--red); color: #FFFFFF; }
+.ex-test-name { font-weight: 600; font-size: 0.88rem; }
+.ex-stdin {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem; color: var(--ink-soft); margin-left: auto;
+}
+.ex-diff { margin-top: 0.5rem; }
+.ex-diff-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-soft); margin: 0.35rem 0 0.2rem;
+}
+.ex-pre {
+  margin: 0; padding: 0.5rem 0.7rem; border-radius: 6px;
+  background: var(--code-bg); color: var(--code-text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem; line-height: 1.55;
+  white-space: pre-wrap; overflow-x: auto;
+}
+.ex-pre.err { color: #FF9B9B; }
+.ex-solution { border-top: 1px dashed var(--line); padding: 0.7rem 1.1rem 0.9rem; }
+.ex-solution summary {
+  cursor: pointer; font-size: 0.88rem; font-weight: 600; color: var(--ink-soft);
+}
+.ex-solution summary:hover { color: var(--ink); }
+.ex-solution[open] summary { margin-bottom: 0.5rem; }
+.ex-solnote { font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 0.5rem; }
+
+/* ── Team activity ── */
+.team-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1rem;
+}
+.team-card h4 {
+  font-family: "Archivo", sans-serif; font-size: 1rem; font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.team-meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem; color: var(--teal); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 0.4rem;
+}
+.team-card p, .team-card li { color: var(--ink-soft); font-size: 0.92rem; }
+.team-card ol, .team-card ul { margin: 0.4rem 0 0 1.2rem; }
+.team-card li { margin-bottom: 0.25rem; }

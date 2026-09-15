@@ -50,6 +50,8 @@ UTS-Programming-I-Website/
 │   ├── course.js           # Shared engine: theme toggle, code-theme toggle, MCQ quiz
 │   ├── runtime.js          # Java + Python execution (CheerpJ / Pyodide)
 │   ├── highlight.js        # Java/Python syntax highlighter (no dependency)
+│   ├── exercises.js        # Auto-graded exercise runner
+│   ├── w1-exercises.js     # Week 1 exercise data (window.WEEK_EXERCISES)
 │   ├── console-ui.js       # The console widget rendered on pages
 │   └── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
 ├── serve.py                # Dev server WITH Range support — required, see §5
@@ -202,6 +204,32 @@ declare a `lang`.
 To add a language: add a rule table and a `classify()` branch. Keep the
 comments-and-strings-first ordering.
 
+### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
+
+Renders into `#exercises-root`. Each exercise runs the student's code **once per test case**
+through `P1Runtime` with that case's stdin, and compares stdout with the expected output.
+
+```js
+window.WEEK_EXERCISES = [
+  { id, lang, title, brief, starter, solution, tests: [{ stdin, expect }] }
+];
+```
+
+**Comparison rule:** trailing whitespace on each line and the final newline are ignored;
+everything else must match exactly. That teaches the Ed habit without failing anyone over an
+invisible last newline. A compile error or crash fails the test and shows the real compiler
+output instead of a diff.
+
+> **Never write an `expect` by hand.** Generate every one by running the solution through
+> `P1Runtime` and pasting what comes back. Java and Python disagree about float formatting in
+> ways that are easy to guess wrong — `9 / 3` as a Java `double` prints `Real: 3.0`, not
+> `Real: 3`. All 14 Week 1 expectations were generated this way.
+>
+> To regenerate: make a temporary page that loads `runtime.js` and `wN-exercises.js`, runs
+> every `solution` against every `stdin`, and reports the output; then paste those in. The
+> generator is deliberately not shipped — it is a few lines, and a stale one is worse than
+> none.
+
 ### Week pages (`weeks/week-N.html`)
 
 Each follows the same spine:
@@ -216,6 +244,11 @@ Each follows the same spine:
    previous/next buttons, and deep links: `week-1.html#s05` opens section 5, and a link to
    anything *inside* a panel opens that panel first. Selecting a section rewrites the hash with
    `history.replaceState`, so a section can be linked to and survives a reload.
+
+   The rail holds more than the lecture: after the deck's sections come **Coding exercises**
+   (`#s07`), **Team activity** (`#s08`) and the **Quiz** (`#s09`). Keeping them as tabs rather
+   than separate page sections means one consistent place to navigate, and the quiz no longer
+   sits kilometres below the content it tests.
 
    Panels are hidden with the `hidden` attribute, not `display:none` on a parent, and consoles
    mount at load regardless of visibility — the editor shell has an explicit height, so a
