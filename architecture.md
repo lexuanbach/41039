@@ -53,6 +53,7 @@ UTS-Programming-I-Website/
 │   ├── console-ui.js       # The console widget rendered on pages
 │   └── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
 ├── serve.py                # Dev server WITH Range support — required, see §5
+├── bump.py                 # Stamps ?v=<hash> on asset links — run before committing
 ├── .nojekyll               # GitHub Pages: serve files as-is
 ├── architecture.md         # This file
 └── design.md               # The design system
@@ -288,6 +289,22 @@ Worth re-running after layout changes:
   the correct option, red on the wrong pick, explanations shown, score correct.
 - **The console**, both languages, four cases each: hello, reading stdin, a compile error,
   and a crash. The first run of each language downloads a runtime, so allow time.
+
+### Cache busting — run `bump.py` before you commit
+
+GitHub Pages serves assets with `cache-control: max-age=600` and no versioning. Ship new
+markup together with a changed stylesheet and a returning visitor can get the **new HTML with
+a ten-minute-stale CSS** — which renders the page unstyled, not merely slightly off. This has
+already happened once, on the left-rail layout change.
+
+```bash
+python3 bump.py            # stamps href/src with ?v=<first 8 of the file's sha256>
+python3 bump.py --check    # exits 1 if anything is stale, changes nothing
+```
+
+It is idempotent, so running it when nothing changed is a no-op. **`runtime.js` tolerates the
+query string** when deriving `SITE_ROOT` from its own URL (see §1) — if that regex is ever
+rewritten, keep it tolerant of `?v=`.
 
 ### Verifying a deployment
 
