@@ -11,9 +11,17 @@ conventions where they earned their keep and two deliberate departures (noted be
 - **Form**: static multi-page site. No build framework, no dependency beyond Google Fonts.
   Everything interactive (currently the quiz) is plain client-side JavaScript.
 - **Language**: English throughout. No EN/VI toggle — see design.md §1.
-- **Deployment**: any static host, or open the files directly. Nothing requires a server
-  except the browser's same-origin rules around `file://`, so for local checking run
-  `python3 -m http.server` from the repo root. `.nojekyll` is present for GitHub Pages.
+- **Deployment**: **GitHub Pages at <https://lexuanbach.github.io/41039/>** — repo
+  `lexuanbach/41039`, serving branch `main` from the root. Deploy = `git push`; Pages
+  rebuilds in about 30 seconds. `.nojekyll` makes it serve files as-is.
+
+> **Base path matters for Java.** CheerpJ resolves its `/app/` prefix against the **web
+> server root**, not the page's directory. On Pages the site lives under `/41039/`, so a
+> hard-coded `/app/vendor/ecj.jar` resolves to `lexuanbach.github.io/vendor/ecj.jar` and
+> 404s with *"Could not find or load main class"*. `runtime.js` therefore derives the site
+> root from **its own script URL** (`SITE_ROOT`), which is correct at any base path and any
+> page depth. If the site ever moves to a different path, this keeps working — but if
+> `assets/runtime.js` is ever renamed or inlined, the fallback regex must be updated too.
 
 ### Departures from CO1005
 
@@ -30,6 +38,7 @@ conventions where they earned their keep and two deliberate departures (noted be
 UTS-Programming-I-Website/
 ├── index.html              # Homepage: outline, outcomes, assessment, schedule, materials
 ├── playground.html         # Java + Python console with worked example programs
+├── selftest.html           # Unlisted: verifies both runtimes on a live deployment
 ├── weeks/
 │   └── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
 ├── slides/
@@ -256,6 +265,21 @@ Worth re-running after layout changes:
   the correct option, red on the wrong pick, explanations shown, score correct.
 - **The console**, both languages, four cases each: hello, reading stdin, a compile error,
   and a crash. The first run of each language downloads a runtime, so allow time.
+
+### Verifying a deployment
+
+`selftest.html` (unlisted, `noindex`, not linked from any page) runs six checks against the
+live runtimes and reports pass/fail, writing a summary into `document.title` so it can be
+scraped headlessly:
+
+```bash
+open https://lexuanbach.github.io/41039/selftest.html
+```
+
+**Run it after any deploy that touches `runtime.js`, `vendor/`, or the site's base path.**
+A local check cannot prove the Java console works, for the reason in §1: `/app/` is resolved
+against the hosting origin, so the ECJ jar path is only exercised properly once deployed.
+Python passing locally tells you nothing about whether Java will.
 
 ## 6. Extending
 
