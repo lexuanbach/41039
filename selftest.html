@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Self-test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<main><section class="block" style="padding-top:2rem"><div class="wrap">
+  <div class="sec-head">
+    <span class="eyebrow">Diagnostics</span>
+    <h2>Runtime self-test</h2>
+    <p>Checks that the Java and Python consoles work <em>on this deployment</em>. Not linked
+    from anywhere; it exists so a deploy can be verified. See architecture.md &sect;5.</p>
+  </div>
+  <div class="tbl-scroll"><table class="tbl" id="results">
+    <thead><tr><th>Check</th><th>Result</th><th>Output</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <p class="console-status" id="summary">Running&hellip;</p>
+</div></section></main>
+<script src="assets/runtime.js"></script>
+<script>
+(function () {
+  var CHECKS = [
+    { name: 'Python: print and divide', lang: 'python',
+      src: 'print("ok", 7/2)', expect: 'ok 3.5' },
+    { name: 'Python: input()', lang: 'python',
+      src: 'n = input()\nprint("hi", n)', stdin: 'Bach\n', expect: 'hi Bach' },
+    { name: 'Python: traceback', lang: 'python',
+      src: 'n = "x"\nprint(n + 1)', expectErr: 'TypeError' },
+    { name: 'Java: compile and run', lang: 'java',
+      src: 'public class Hello {\n  public static void main(String[] a) {\n    System.out.println("ok " + (8*7));\n  }\n}',
+      expect: 'ok 56' },
+    { name: 'Java: Scanner reads stdin', lang: 'java',
+      src: 'import java.util.Scanner;\npublic class G {\n  public static void main(String[] a) {\n    Scanner s = new Scanner(System.in);\n    System.out.println("hi " + s.nextLine());\n  }\n}',
+      stdin: 'Bach\n', expect: 'hi Bach' },
+    { name: 'Java: compiler diagnostic', lang: 'java',
+      src: 'public class B {\n  public static void main(String[] a) {\n    System.out.println(nope);\n  }\n}',
+      expectErr: 'ERROR' }
+  ];
+
+  var tbody = document.querySelector('#results tbody');
+  var pass = 0, fail = 0;
+
+  function row(name, ok, text) {
+    var tr = document.createElement('tr');
+    var td1 = document.createElement('td'); td1.textContent = name;
+    var td2 = document.createElement('td');
+    td2.className = ok ? 'ok' : 'bad';
+    td2.textContent = ok ? 'PASS' : 'FAIL';
+    var td3 = document.createElement('td');
+    td3.className = 'mono';
+    td3.textContent = (text || '').slice(0, 160).replace(/\n/g, ' ⏎ ');
+    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3);
+    tbody.appendChild(tr);
+  }
+
+  (async function () {
+    for (var i = 0; i < CHECKS.length; i++) {
+      var c = CHECKS[i], out = '', err = '';
+      try {
+        await P1Runtime.run(c.lang, c.src, c.stdin || '', {
+          onBoot: function () {},
+          onOut: function (s) { out += s; },
+          onErr: function (s) { err += s; }
+        });
+      } catch (e) { err += String(e); }
+      var ok = c.expectErr ? err.indexOf(c.expectErr) !== -1
+                           : out.indexOf(c.expect) !== -1;
+      ok ? pass++ : fail++;
+      row(c.name, ok, ok ? (c.expectErr ? err : out) : ('got: ' + (out || err || '(nothing)')));
+    }
+    var msg = pass + ' passed, ' + fail + ' failed';
+    document.getElementById('summary').innerHTML =
+      '<span class="' + (fail ? 'bad' : 'ok') + '">' + msg + '</span>';
+    document.title = 'SELFTEST ' + (fail ? 'FAIL' : 'OK') + ' ' + msg;
+  })();
+})();
+</script>
+</body>
+</html>
