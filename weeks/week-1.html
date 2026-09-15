@@ -90,24 +90,55 @@
       <div class="sec-head">
         <span class="eyebrow">01 &middot; The lecture</span>
         <h2>Six sections, same as the slides</h2>
-        <p>This follows the Week 1 deck section by section. Click a heading to open it. Code blocks
-        are live — edit them, run them, and break them on purpose.</p>
+        <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
+        has focus. Code blocks are live: edit them, run them, and break them on purpose.</p>
       </div>
 
-      <div class="fold-controls">
-        <button class="btn ghost small" id="expand-all" type="button">Expand all</button>
-        <button class="btn ghost small" id="collapse-all" type="button">Collapse all</button>
-        <span class="count" id="fold-count"></span>
-      </div>
+      <div class="lesson">
+        <nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">
+          <button class="lesson-tab" role="tab" id="tab-s01"
+            aria-controls="panel-s01" aria-selected="true" tabindex="0"
+            data-target="s01">
+            <span class="t-num">01</span>
+            <span class="t-text"><span class="t-title">What programming is</span><span class="t-meta">3 ideas · 2 comics</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s02"
+            aria-controls="panel-s02" aria-selected="false" tabindex="-1"
+            data-target="s02">
+            <span class="t-num">02</span>
+            <span class="t-text"><span class="t-title">Your first Java program</span><span class="t-meta">1 comic · runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s03"
+            aria-controls="panel-s03" aria-selected="false" tabindex="-1"
+            data-target="s03">
+            <span class="t-num">03</span>
+            <span class="t-text"><span class="t-title">Variables, types and values</span><span class="t-meta">1 comic · runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s04"
+            aria-controls="panel-s04" aria-selected="false" tabindex="-1"
+            data-target="s04">
+            <span class="t-num">04</span>
+            <span class="t-text"><span class="t-title">The same ideas in Python</span><span class="t-meta">1 comic · runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s05"
+            aria-controls="panel-s05" aria-selected="false" tabindex="-1"
+            data-target="s05">
+            <span class="t-num">05</span>
+            <span class="t-text"><span class="t-title">When things go wrong</span><span class="t-meta">1 comic · runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s06"
+            aria-controls="panel-s06" aria-selected="false" tabindex="-1"
+            data-target="s06">
+            <span class="t-num">06</span>
+            <span class="t-text"><span class="t-title">Ed, labs and getting help</span><span class="t-meta">2 comics</span></span>
+          </button>
+        </nav>
 
-      <details class="fold" open id="s01">
-        <summary>
-          <span class="fold-num">01</span>
-          <span class="fold-title">What programming is</span>
-          <span class="fold-meta">3 ideas · 2 comics</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <div class="lesson-content">
+        <section class="lesson-panel" role="tabpanel" id="panel-s01"
+          aria-labelledby="tab-s01" tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">01</span>What programming is</h3>
+
 
       <div class="concept">
         <h3><span class="idx">1.1</span>Telling a computer what to do</h3>
@@ -116,11 +147,11 @@
         about <em>what</em> to do rather than exactly <em>how</em>.</p>
         <figure class="fig fig-narrow">
           <img src="../media/eniac.jpg" alt="Two programmers operating the ENIAC computer in 1946" loading="lazy">
-          <figcaption>ENIAC, 1946 — Betty Snyder and Glen Beck. The first programmers were overwhelmingly women.<span class="credit">US Army photo, public domain</span></figcaption>
+          <figcaption>ENIAC, 1946 — Betty Snyder and Glen Beck. The first programmers were overwhelmingly women.<span class="credit"><a href="https://commons.wikimedia.org/wiki/File:Eniac.jpg">US Army photo</a>, public domain</span></figcaption>
         </figure>
         <figure class="fig fig-wide">
           <img src="../media/punched-card.jpg" alt="A FORTRAN punched card" loading="lazy">
-          <figcaption>One FORTRAN statement, on one punched card. Drop the box, lose the program.<span class="credit">Photo: Arnold Reinhold, CC BY-SA 2.5</span></figcaption>
+          <figcaption>One FORTRAN statement, on one punched card. Drop the box, lose the program.<span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:FortranCardPROJ039.agr.jpg">Arnold Reinhold</a>, <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a></span></figcaption>
         </figure>
         <p>The history of programming is the history of <strong>raising the level of
         abstraction</strong>. Every convenience you are about to complain about was once a luxury.</p>
@@ -128,12 +159,12 @@
 
       <div class="concept">
         <h3><span class="idx">1.2</span>&ldquo;Can&rsquo;t AI just do all this now?&rdquo;</h3>
-        <p>A randomised controlled trial by METR (July 2025) gave experienced developers AI tools
+        <p>A <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">randomised controlled trial by METR</a> (July 2025) gave experienced developers AI tools
         on their own projects. They predicted they would be <strong>24% faster</strong>. They were
         <strong>19% slower</strong> — and afterwards still believed they had been 20% faster.</p>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-1838.png" alt="xkcd comic about machine learning" loading="lazy">
-          <figcaption><span class="credit">xkcd 1838, <em>Machine Learning</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/1838/">xkcd 1838, <em>Machine Learning</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <div class="note">
           <span class="tag">The point</span>
@@ -146,7 +177,7 @@
         <h3><span class="idx">1.3</span>The hard part is knowing what is hard</h3>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-1425.png" alt="xkcd comic: Tasks" loading="lazy">
-          <figcaption><span class="credit">xkcd 1425, <em>Tasks</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/1425/">xkcd 1425, <em>Tasks</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <p>Two requests that sound equally reasonable to someone who has never programmed. One is
         an afternoon&rsquo;s work; the other was an open research problem for decades. Building the
@@ -174,17 +205,13 @@
         <p>Everything from Week 6 — classes, methods, lists, files, inheritance — adds
         <strong>no fourth idea</strong>. It is about organising these three as programs grow.</p>
       </div>
-        </div>
-      </details>
+        
+        </section>
 
-      <details class="fold" id="s02">
-        <summary>
-          <span class="fold-num">02</span>
-          <span class="fold-title">Your first Java program</span>
-          <span class="fold-meta">1 comic · runnable</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <section class="lesson-panel" role="tabpanel" id="panel-s02"
+          aria-labelledby="tab-s02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">02</span>Your first Java program</h3>
+
 
       <div class="concept">
         <h3><span class="idx">2.1</span>Hello, Java</h3>
@@ -206,7 +233,7 @@ public class Hello {
         <h3><span class="idx">2.2</span>Java is compiled</h3>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-303.png" alt="xkcd comic: Compiling" loading="lazy">
-          <figcaption><span class="credit">xkcd 303, <em>Compiling</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/303/">xkcd 303, <em>Compiling</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <p>Before your Java runs, a <strong>compiler</strong> reads the whole file and translates
         it. If it cannot, nothing runs at all — which is why Java catches some mistakes
@@ -236,21 +263,17 @@ public class Hello {
           <span class="tag">It is not just you</span>
           <p>Java 25 added a &ldquo;smooth on-ramp&rdquo; so beginners can skip that boilerplate.
           On <code>public static void main(String[] args)</code>, the official OpenJDK proposal
-          (JEP 512) says: <em>&ldquo;mysterious and unhelpful&hellip; not used in small
+          (<a href="https://openjdk.org/jeps/512">JEP 512</a>) says: <em>&ldquo;mysterious and unhelpful&hellip; not used in small
           programs.&rdquo;</em> If it felt like meaningless ritual, that was not you being slow.</p>
         </div>
       </div>
-        </div>
-      </details>
+        
+        </section>
 
-      <details class="fold" id="s03">
-        <summary>
-          <span class="fold-num">03</span>
-          <span class="fold-title">Variables, types and values</span>
-          <span class="fold-meta">1 comic · runnable</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <section class="lesson-panel" role="tabpanel" id="panel-s03"
+          aria-labelledby="tab-s03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">03</span>Variables, types and values</h3>
+
 
       <div class="concept">
         <h3><span class="idx">3.1</span>Declaration, initialisation, assignment</h3>
@@ -285,7 +308,7 @@ public class Variables {
 
       <div class="concept">
         <h3><span class="idx">3.2</span>Every type is a promise about size</h3>
-        <p>In December 2014 Psy&rsquo;s <em>Gangnam Style</em> passed
+        <p>In <a href="https://www.theregister.com/2014/12/03/gangnam_style_breaks_youtube/">December 2014</a> Psy&rsquo;s <em>Gangnam Style</em> passed
         <strong>2,147,483,647</strong> YouTube views. That is exactly 2<sup>31</sup>&minus;1 — the
         largest number a 32-bit <code>int</code> can hold. YouTube moved the counter to 64 bits.</p>
         <div class="tbl-scroll"><table class="tbl">
@@ -330,7 +353,7 @@ public class ClassAverage {
         <h3><span class="idx">3.4</span>Naming things</h3>
         <figure class="fig fig-wide plain">
           <img src="../media/xkcd-1513.png" alt="xkcd comic: Code Quality" loading="lazy">
-          <figcaption><span class="credit">xkcd 1513, <em>Code Quality</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/1513/">xkcd 1513, <em>Code Quality</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <div class="joke">
           <p>&ldquo;There are 2 hard problems in computer science: cache invalidation, naming
@@ -339,17 +362,13 @@ public class ClassAverage {
         </div>
         <p>Name a variable for the person reading it in Week 11. That person is you.</p>
       </div>
-        </div>
-      </details>
+        
+        </section>
 
-      <details class="fold" id="s04">
-        <summary>
-          <span class="fold-num">04</span>
-          <span class="fold-title">The same ideas in Python</span>
-          <span class="fold-meta">1 comic · runnable</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <section class="lesson-panel" role="tabpanel" id="panel-s04"
+          aria-labelledby="tab-s04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">04</span>The same ideas in Python</h3>
+
 
       <div class="concept">
         <h3><span class="idx">4.1</span>Hello, Python</h3>
@@ -368,7 +387,7 @@ print("Hello 41039!")
         </table></div>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-353.png" alt="xkcd comic: Python" loading="lazy">
-          <figcaption><span class="credit">xkcd 353, <em>Python</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/353/">xkcd 353, <em>Python</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <p class="sched-note">A joke about how little Python makes you write — and only half a joke.
         Java&rsquo;s ceremony buys errors caught before the program runs. Neither is better.</p>
@@ -392,23 +411,19 @@ if int(a) < 10:
           is ugly; in Python it is wrong.</p>
         </div>
       </div>
-        </div>
-      </details>
+        
+        </section>
 
-      <details class="fold" id="s05">
-        <summary>
-          <span class="fold-num">05</span>
-          <span class="fold-title">When things go wrong</span>
-          <span class="fold-meta">1 comic · runnable</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <section class="lesson-panel" role="tabpanel" id="panel-s05"
+          aria-labelledby="tab-s05" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">05</span>When things go wrong</h3>
+
 
       <div class="concept">
         <h3><span class="idx">5.1</span>The first actual bug</h3>
         <figure class="fig fig-wide">
           <img src="../media/moth-logbook-crop.jpg" alt="The 1947 logbook page with a moth taped to it" loading="lazy">
-          <figcaption>Harvard Mark II logbook, 9 September 1947. &ldquo;First actual case of bug being found.&rdquo;<span class="credit">Naval Surface Warfare Center, Dahlgren — public domain</span></figcaption>
+          <figcaption>Harvard Mark II logbook, 9 September 1947. &ldquo;First actual case of bug being found.&rdquo;<span class="credit"><a href="https://commons.wikimedia.org/wiki/File:H96566k.jpg">Naval Surface Warfare Center, Dahlgren</a> — public domain</span></figcaption>
         </figure>
         <p>Engineers had been calling faults &ldquo;bugs&rdquo; since Edison — which is exactly why
         the note says <em>first actual</em> case. It is a pun, and it only works because the word
@@ -424,7 +439,7 @@ if int(a) < 10:
         </ul>
         <div class="note danger">
           <span class="tag">8.5 million computers, one array index</span>
-          <p>On 19 July 2024 a CrowdStrike update crashed roughly 8.5 million Windows machines.
+          <p>On 19 July 2024 a <a href="https://www.abc.net.au/news/2024-08-07/drt-crowdstrike-root-cause-analysis/104193866">CrowdStrike update</a> crashed roughly 8.5 million Windows machines.
           The code expected <strong>20</strong> values; the update sent <strong>21</strong>. Reading
           the 21st ran off the end of the array. It compiled, it shipped, and it passed their tests.</p>
         </div>
@@ -487,7 +502,7 @@ print(n + 1)
         <h3><span class="idx">5.5</span>Debugging, honestly</h3>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-1739.png" alt="xkcd comic: Fixing Problems" loading="lazy">
-          <figcaption><span class="credit">xkcd 1739, <em>Fixing Problems</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/1739/">xkcd 1739, <em>Fixing Problems</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <div class="joke">
           <p>&ldquo;Debugging is twice as hard as writing a program in the first place. So if you&rsquo;re
@@ -502,23 +517,19 @@ print(n + 1)
         <p>Write the boring, obvious version first. You will be reading it again at 11pm with
         something broken. Bugs are not a sign you are bad at this.</p>
       </div>
-        </div>
-      </details>
+        
+        </section>
 
-      <details class="fold" id="s06">
-        <summary>
-          <span class="fold-num">06</span>
-          <span class="fold-title">Ed, labs and getting help</span>
-          <span class="fold-meta">2 comics</span>
-          <span class="fold-chev" aria-hidden="true">&#9654;</span>
-        </summary>
-        <div class="fold-body">
+        <section class="lesson-panel" role="tabpanel" id="panel-s06"
+          aria-labelledby="tab-s06" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">06</span>Ed, labs and getting help</h3>
+
 
       <div class="concept">
         <h3><span class="idx">6.1</span>Ed, and why we ask you to post publicly</h3>
         <figure class="fig fig-wide plain">
           <img src="../media/xkcd-979.png" alt="xkcd comic: Wisdom of the Ancients" loading="lazy">
-          <figcaption><span class="credit">xkcd 979, <em>Wisdom of the Ancients</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/979/">xkcd 979, <em>Wisdom of the Ancients</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <ul>
           <li>A <strong>public</strong> thread answers it once, for everybody</li>
@@ -533,11 +544,11 @@ print(n + 1)
         <h3><span class="idx">6.2</span>Two ways to get unstuck</h3>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-627.png" alt="xkcd comic: Tech Support Cheat Sheet" loading="lazy">
-          <figcaption><span class="credit">xkcd 627, <em>Tech Support Cheat Sheet</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+          <figcaption><span class="credit"><a href="https://xkcd.com/627/">xkcd 627, <em>Tech Support Cheat Sheet</em></a> — Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
         <figure class="fig fig-narrow">
           <img src="../media/rubber-duck.jpg" alt="A rubber duck beside a keyboard" loading="lazy">
-          <figcaption>Rubber duck debugging: explain your broken code out loud, line by line, to a duck.<span class="credit">Photo: Tom Morris, CC BY-SA 3.0</span></figcaption>
+          <figcaption>Rubber duck debugging: explain your broken code out loud, line by line, to a duck.<span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:Rubber_duck_assisting_with_debugging.jpg">Tom Morris</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></span></figcaption>
         </figure>
         <p>You usually find the bug mid-sentence: <em>&ldquo;&hellip; this line takes the total
         and&hellip; oh.&rdquo;</em> The comic is a real algorithm — try it for ten minutes before
@@ -562,7 +573,7 @@ print(n + 1)
 
       <div class="concept">
         <h3><span class="idx">6.4</span>Why we care that you can read code</h3>
-        <p>The Stack Overflow Developer Survey 2025: <strong>84%</strong> of developers use AI
+        <p>The <a href="https://survey.stackoverflow.co/2025/ai">Stack Overflow Developer Survey 2025</a>: <strong>84%</strong> of developers use AI
         tools, but only <strong>3.1%</strong> highly trust the output. The biggest frustration, at
         <strong>66%</strong>, is <em>&ldquo;AI solutions that are almost right, but not quite.&rdquo;</em></p>
         <div class="note">
@@ -572,8 +583,10 @@ print(n + 1)
           pasting in code you cannot explain fails twice — as misconduct, and as engineering.</p>
         </div>
       </div>
+        
+        </section>
         </div>
-      </details>
+      </div>
     </div>
   </section>
 
@@ -624,14 +637,47 @@ print(n + 1)
   </section>
 
   <div class="wrap">
-    <div class="note" style="margin-bottom:1.5rem">
-      <span class="tag">Comics and photographs</span>
-      <p>Comics by <strong>Randall Munroe</strong>, <a href="https://xkcd.com/">xkcd.com</a>, used
-      under <strong>CC BY-NC 2.5</strong>. ENIAC (US Army) and the Mark II logbook (Naval Surface
-      Warfare Center, Dahlgren) are public domain. Punched card &copy; <strong>Arnold
-      Reinhold</strong>, CC BY-SA 2.5; rubber duck &copy; <strong>Tom Morris</strong>, CC BY-SA 3.0.
-      Both via Wikimedia Commons.</p>
-    </div>
+    <section class="block" id="sources" style="padding-top:1rem">
+      <div class="sec-head">
+        <span class="eyebrow">Sources</span>
+        <h2>Everything cited on this page</h2>
+        <p>Every claim above links to where it came from. Checking a source yourself is a better
+        habit than trusting any lecture slide, including ours.</p>
+      </div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin-bottom:0.6rem">Articles and reports</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.2</td><td><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">METR — <em>Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity</em></a>, 10 July 2025</td></tr>
+          <tr><td class="mono">2.3</td><td><a href="https://openjdk.org/jeps/512">OpenJDK — <em>JEP 512: Compact Source Files and Instance Main Methods</em></a></td></tr>
+          <tr><td class="mono">3.2</td><td><a href="https://www.theregister.com/2014/12/03/gangnam_style_breaks_youtube/">The Register — <em>Gangnam Style BREAKS YouTube</em></a>, 3 December 2014</td></tr>
+          <tr><td class="mono">4.1</td><td><a href="https://www.tiobe.com/tiobe-index/">TIOBE Programming Community Index</a></td></tr>
+          <tr><td class="mono">5.2</td><td><a href="https://www.abc.net.au/news/2024-08-07/drt-crowdstrike-root-cause-analysis/104193866">ABC News — CrowdStrike root cause analysis</a>, 7 August 2024</td></tr>
+          <tr><td class="mono">5.2</td><td><a href="https://www.sec.gov/newsroom/press-releases/2013-222">US SEC — <em>SEC Charges Knight Capital With Violations of Market Access Rule</em></a>, 16 October 2013</td></tr>
+          <tr><td class="mono">6.4</td><td><a href="https://survey.stackoverflow.co/2025/ai">Stack Overflow Developer Survey 2025 — AI</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Comics</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">
+        All by <strong>Randall Munroe</strong>, <a href="https://xkcd.com/">xkcd.com</a>, used under
+        <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>:
+        <a href="https://xkcd.com/303/">303</a>, <a href="https://xkcd.com/353/">353</a>,
+        <a href="https://xkcd.com/627/">627</a>, <a href="https://xkcd.com/979/">979</a>,
+        <a href="https://xkcd.com/1425/">1425</a>, <a href="https://xkcd.com/1513/">1513</a>,
+        <a href="https://xkcd.com/1739/">1739</a>, <a href="https://xkcd.com/1838/">1838</a>.
+      </p>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Photographs</h3>
+      <ul style="color:var(--ink-soft);font-size:0.92rem;margin-left:1.2rem">
+        <li><a href="https://commons.wikimedia.org/wiki/File:Eniac.jpg">ENIAC, 1946</a> — US Army, public domain</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:FortranCardPROJ039.agr.jpg">FORTRAN punched card</a> — Arnold Reinhold, <a href="https://creativecommons.org/licenses/by-sa/2.5/">CC BY-SA 2.5</a></li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:H96566k.jpg">Mark II logbook, 1947</a> — Naval Surface Warfare Center, Dahlgren, public domain</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Rubber_duck_assisting_with_debugging.jpg">Rubber duck debugging</a> — Tom Morris, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></li>
+      </ul>
+      <p style="color:var(--ink-soft);font-size:0.86rem;margin-top:0.8rem">All photographs via Wikimedia Commons.</p>
+    </section>
     <nav class="pagenav" aria-label="Page navigation">
       <a href="../index.html"><span class="dir">Back</span>Subject outline</a>
       <a href="../slides/week-1-slides.pdf"><span class="dir">Slides</span>Week 1 lecture (PDF)</a>

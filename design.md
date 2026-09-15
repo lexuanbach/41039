@@ -125,11 +125,14 @@ inside a dark or light block without a `:root` default.**
 - **Concept** (`.concept`) — the prose unit on week pages; `h3` carries a mono `.idx`
   number such as `1.4`.
 - **Data table** (`.tbl`) — small uppercase header on a 5% accent tint, mono cells for code.
-- **Fold** (`details.fold`) — a collapsible lecture section on a week page, one per section
-  of the slide deck. Native `<details>`/`<summary>`, so it is keyboard accessible and still
-  works with JavaScript disabled; the chevron rotates via `[open]`. `summary` carries a mono
-  `.fold-num`, an Archivo `.fold-title`, and a `.fold-meta` count that is hidden below 560px.
-  Section 01 ships open, the rest closed.
+- **Lesson layout** (`.lesson`) — a week page's core: a `17rem` rail of sections on the left
+  and one open panel on the right, one pair per section of the slide deck. The rail is
+  `role="tablist"`, each `.lesson-tab` a tab and each `.lesson-panel` its `tabpanel`, so
+  arrow keys, Home and End move between sections. The selected tab is marked by a 3px
+  `--accent` left border plus a 10% tint — never by colour alone. **Below 900px the rail
+  becomes a horizontally scrolling strip above the content**, because a 17rem sidebar and a
+  code editor cannot share a phone screen. Each panel ends with previous/next buttons, so the
+  lecture can be read straight through without returning to the rail.
 - **Figure** (`.fig`) — a comic or photograph with a caption and a `.credit` line. Comics sit
   on a white pad (`.fig` default) because xkcd's PNGs have transparent backgrounds and would
   be invisible in dark mode; `.fig.plain` removes the pad. Width is capped by `.fig-narrow`

@@ -208,12 +208,17 @@ Each follows the same spine:
 1. `<head>` — title, the inline theme bootstrap script, fonts, `../assets/style.css`.
 2. Topbar with `.display-controls`.
 3. `.hero` — week number eyebrow, title, lede, meta chips (including the slides link).
-4. `#concepts` — **one `details.fold` per section of that week's slide deck**, so the page
-   and the lecture have the same shape and the same section numbers. Inside each fold, numbered
-   `.concept` blocks (`<span class="idx">5.3</span>`), figures, notes and consoles.
-   `course.js#initFolds()` wires Expand all / Collapse all, the open counter, and deep links —
-   `week-1.html#s05` opens section 5, and a link to anything inside a closed section opens its
-   parent fold first.
+4. `#concepts` — **one `.lesson-tab` + `.lesson-panel` pair per section of that week's slide
+   deck**, so the page and the lecture have the same shape and the same section numbers. Inside
+   each panel, numbered `.concept` blocks (`<span class="idx">5.3</span>`), figures, notes and
+   consoles. `course.js#initLesson()` wires selection, roving-tabindex keyboard support,
+   previous/next buttons, and deep links: `week-1.html#s05` opens section 5, and a link to
+   anything *inside* a panel opens that panel first. Selecting a section rewrites the hash with
+   `history.replaceState`, so a section can be linked to and survives a reload.
+
+   Panels are hidden with the `hidden` attribute, not `display:none` on a parent, and consoles
+   mount at load regardless of visibility — the editor shell has an explicit height, so a
+   console inside a hidden panel is correctly sized the moment it is shown.
 5. `#quiz` — a `.sec-head` then an empty `<div id="quiz-root">`.
 6. `#thisweek` — what to actually do, tied to the Ed lessons.
 7. `.pagenav`, footer, then `../assets/runtime.js`, `../assets/console-ui.js`,

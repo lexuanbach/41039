@@ -116,7 +116,10 @@ window.P1Console = (function () {
     repaint();
 
     // ── stdin ──
-    host.appendChild(el('div', 'console-sub', 'Input (stdin)'));
+    var stdinLabel = el('div', 'console-sub');
+    stdinLabel.appendChild(el('span', null, 'Input (stdin)'));
+    stdinLabel.appendChild(el('span', 'hint', 'drag the corner to resize'));
+    host.appendChild(stdinLabel);
     var stdin = el('textarea', 'console-stdin');
     stdin.spellcheck = false;
     stdin.setAttribute('aria-label', 'Standard input');
@@ -143,6 +146,10 @@ window.P1Console = (function () {
     host.appendChild(bar);
 
     // ── output ──
+    var outLabel = el('div', 'console-sub');
+    outLabel.appendChild(el('span', null, 'Output'));
+    outLabel.appendChild(el('span', 'hint', 'drag the corner to resize'));
+    host.appendChild(outLabel);
     var out = el('pre', 'console-out');
     out.setAttribute('aria-live', 'polite');
     host.appendChild(out);

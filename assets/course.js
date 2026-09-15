@@ -194,51 +194,108 @@
     });
   }
 
-  // ───────── collapsible lecture sections ─────────
-  function initFolds() {
-    var folds = Array.prototype.slice.call(document.querySelectorAll('details.fold'));
-    if (!folds.length) return;
+  // ───────── lecture sections: list on the left, one panel on the right ─────────
+  function initLesson() {
+    var nav = document.querySelector('.lesson-nav');
+    if (!nav) return;
+    var tabs = Array.prototype.slice.call(nav.querySelectorAll('.lesson-tab'));
+    var panels = tabs.map(function (t) {
+      return document.getElementById('panel-' + t.dataset.target);
+    });
+    if (!tabs.length) return;
 
-    var expandBtn = document.getElementById('expand-all');
-    var collapseBtn = document.getElementById('collapse-all');
-    var count = document.getElementById('fold-count');
-
-    function paint() {
-      var open = folds.filter(function (f) { return f.open; }).length;
-      if (count) count.textContent = open + ' of ' + folds.length + ' open';
+    function select(idx, opts) {
+      opts = opts || {};
+      idx = Math.max(0, Math.min(tabs.length - 1, idx));
+      tabs.forEach(function (t, i) {
+        var on = i === idx;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (panels[i]) panels[i].hidden = !on;
+      });
+      if (opts.focusTab) tabs[idx].focus();
+      // Keep the address bar in step so a section can be linked to and reloaded.
+      if (opts.pushHash !== false) {
+        var id = tabs[idx].dataset.target;
+        if (history.replaceState) history.replaceState(null, '', '#' + id);
+        else location.hash = id;
+      }
+      if (opts.scroll) {
+        var top = document.querySelector('.lesson').getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: top, behavior: 'auto' });
+      }
+      current = idx;
     }
-    folds.forEach(function (f) { f.addEventListener('toggle', paint); });
-    if (expandBtn) expandBtn.addEventListener('click', function () {
-      folds.forEach(function (f) { f.open = true; });
-      paint();
-    });
-    if (collapseBtn) collapseBtn.addEventListener('click', function () {
-      folds.forEach(function (f) { f.open = false; });
-      paint();
+
+    var current = 0;
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(i, { scroll: true }); });
     });
 
-    // Deep links: /week-1.html#s04 opens that section and scrolls to it. Also
-    // handles a link to anything *inside* a closed section.
-    function openFromHash() {
+    // Up/Down (and Left/Right on the narrow strip) move between sections.
+    nav.addEventListener('keydown', function (ev) {
+      var k = ev.key, next = null;
+      if (k === 'ArrowDown' || k === 'ArrowRight') next = current + 1;
+      else if (k === 'ArrowUp' || k === 'ArrowLeft') next = current - 1;
+      else if (k === 'Home') next = 0;
+      else if (k === 'End') next = tabs.length - 1;
+      if (next === null) return;
+      ev.preventDefault();
+      select(next, { focusTab: true });
+    });
+
+    // Previous / next buttons at the foot of each panel.
+    panels.forEach(function (panel, i) {
+      if (!panel) return;
+      var bar = document.createElement('div');
+      bar.className = 'panel-nav';
+      if (i > 0) {
+        var prev = document.createElement('button');
+        prev.type = 'button';
+        prev.className = 'btn ghost small';
+        prev.textContent = '\u2190 ' + tabs[i - 1].querySelector('.t-title').textContent;
+        prev.addEventListener('click', function () { select(i - 1, { scroll: true }); });
+        bar.appendChild(prev);
+      }
+      bar.appendChild(Object.assign(document.createElement('span'), { className: 'spacer' }));
+      if (i < tabs.length - 1) {
+        var nxt = document.createElement('button');
+        nxt.type = 'button';
+        nxt.className = 'btn ghost small';
+        nxt.textContent = tabs[i + 1].querySelector('.t-title').textContent + ' \u2192';
+        nxt.addEventListener('click', function () { select(i + 1, { scroll: true }); });
+        bar.appendChild(nxt);
+      }
+      panel.appendChild(bar);
+    });
+
+    function fromHash(scroll) {
       var id = location.hash.slice(1);
-      if (!id) return;
-      var target = document.getElementById(id);
-      if (!target) return;
-      var fold = target.closest ? target.closest('details.fold') : null;
-      if (fold) fold.open = true;
-      else if (target.tagName === 'DETAILS') target.open = true;
-      paint();
-      target.scrollIntoView({ block: 'start' });
+      if (!id) return false;
+      for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].dataset.target === id) { select(i, { scroll: scroll }); return true; }
+      }
+      // a link to something *inside* a panel: open that panel first
+      var node = document.getElementById(id);
+      if (!node) return false;
+      var panel = node.closest ? node.closest('.lesson-panel') : null;
+      if (!panel) return false;
+      var j = panels.indexOf(panel);
+      if (j === -1) return false;
+      select(j, { pushHash: false });
+      node.scrollIntoView({ block: 'start' });
+      return true;
     }
-    window.addEventListener('hashchange', openFromHash);
-    openFromHash();
-    paint();
+
+    window.addEventListener('hashchange', function () { fromHash(true); });
+    if (!fromHash(false)) select(0, { pushHash: false });
   }
 
   function boot() {
     initTheme();
     initCodeTheme();
-    initFolds();
+    initLesson();
     initQuiz(window.WEEK_DATA);
   }
 
