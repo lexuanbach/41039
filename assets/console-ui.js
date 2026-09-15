@@ -37,6 +37,7 @@ window.P1Console = (function () {
       var s = ta.selectionStart, e = ta.selectionEnd;
       ta.value = ta.value.slice(0, s) + '    ' + ta.value.slice(e);
       ta.selectionStart = ta.selectionEnd = s + 4;
+      ta.dispatchEvent(new Event('input'));
     });
   }
 
@@ -69,6 +70,12 @@ window.P1Console = (function () {
       var badge = el('span', 'lang ' + current, LANG_LABEL[current]);
       head.appendChild(badge);
     }
+
+    var expandBtn = el('button', 'btn ghost small expand-btn', 'Expand');
+    expandBtn.type = 'button';
+    expandBtn.setAttribute('aria-expanded', 'false');
+    expandBtn.title = 'Make the editor full screen (Esc to close)';
+    head.appendChild(expandBtn);
     host.appendChild(head);
 
     // ── presets ──
@@ -78,13 +85,35 @@ window.P1Console = (function () {
       host.appendChild(presetRow);
     }
 
-    // ── editor ──
-    var editor = el('textarea', 'console-editor');
+    // ── editor: transparent textarea over a highlighted <pre> ──
+    var shell = el('div', 'editor-shell');
+    var layer = el('pre', 'hl-layer');
+    layer.setAttribute('aria-hidden', 'true');
+    var editor = el('textarea', 'code-edit');
     editor.spellcheck = false;
+    editor.autocapitalize = 'off';
+    editor.autocomplete = 'off';
+    editor.setAttribute('autocorrect', 'off');
     editor.setAttribute('aria-label', 'Code editor');
     editor.value = initial[current];
     enableTab(editor);
-    host.appendChild(editor);
+    shell.appendChild(layer);
+    shell.appendChild(editor);
+    host.appendChild(shell);
+
+    function repaint() {
+      P1Highlight.apply(layer, editor.value, current);
+      syncScroll();
+    }
+    function syncScroll() {
+      layer.scrollTop = editor.scrollTop;
+      layer.scrollLeft = editor.scrollLeft;
+    }
+    editor.addEventListener('input', repaint);
+    editor.addEventListener('scroll', syncScroll);
+    // Tab insertion and preset loading change .value without firing 'input'.
+    editor.addEventListener('keyup', syncScroll);
+    repaint();
 
     // ── stdin ──
     host.appendChild(el('div', 'console-sub', 'Input (stdin)'));
@@ -124,6 +153,7 @@ window.P1Console = (function () {
       sources[current] = editor.value;
       current = l;
       editor.value = sources[l] !== undefined ? sources[l] : (initial[l] || '');
+      repaint();
       if (tabs) Array.prototype.forEach.call(tabs.children, function (b) {
         b.setAttribute('aria-pressed', String(b.textContent === LANG_LABEL[l]));
       });
@@ -144,6 +174,7 @@ window.P1Console = (function () {
           stdin.value = p.stdin || '';
           out.textContent = '';
           status.textContent = '';
+          repaint();
         });
         presetRow.appendChild(b);
       });
@@ -190,6 +221,23 @@ window.P1Console = (function () {
       stdin.value = opts.stdin || '';
       out.textContent = '';
       status.textContent = '';
+      repaint();
+    });
+
+    // ── expand / collapse ──
+    function setExpanded(on) {
+      host.classList.toggle('expanded', on);
+      document.body.classList.toggle('console-open', on);
+      expandBtn.textContent = on ? 'Close' : 'Expand';
+      expandBtn.setAttribute('aria-expanded', String(on));
+      syncScroll();
+      if (on) editor.focus();
+    }
+    expandBtn.addEventListener('click', function () {
+      setExpanded(!host.classList.contains('expanded'));
+    });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && host.classList.contains('expanded')) setExpanded(false);
     });
 
     return { run: function () { runBtn.click(); } };

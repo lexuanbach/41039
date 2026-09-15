@@ -125,12 +125,32 @@ inside a dark or light block without a `:root` default.**
 - **Concept** (`.concept`) — the prose unit on week pages; `h3` carries a mono `.idx`
   number such as `1.4`.
 - **Data table** (`.tbl`) — small uppercase header on a 5% accent tint, mono cells for code.
+- **Fold** (`details.fold`) — a collapsible lecture section on a week page, one per section
+  of the slide deck. Native `<details>`/`<summary>`, so it is keyboard accessible and still
+  works with JavaScript disabled; the chevron rotates via `[open]`. `summary` carries a mono
+  `.fold-num`, an Archivo `.fold-title`, and a `.fold-meta` count that is hidden below 560px.
+  Section 01 ships open, the rest closed.
+- **Figure** (`.fig`) — a comic or photograph with a caption and a `.credit` line. Comics sit
+  on a white pad (`.fig` default) because xkcd's PNGs have transparent backgrounds and would
+  be invisible in dark mode; `.fig.plain` removes the pad. Width is capped by `.fig-narrow`
+  (30rem) or `.fig-wide` (46rem) so a wide strip and a tall comic both read well.
+- **Joke** (`.joke`) — amber pull-quote box with a mono `.attrib` line, matching the deck's.
 - **Console** (`.console`) — the runnable code widget. Head with a title plus either a
   language badge or `.lang-tabs`; an optional `.preset-row` of example programs; a dark
   `.console-editor` textarea; a labelled `.console-stdin`; an amber `.console-boot` strip
   shown only while a runtime downloads; a `.console-bar` with Run, Reset and status; and a
   `.console-out` pane where errors are wrapped in `.err`. The editor and output share the
   `--code-*` tokens, so the code-theme button restyles them too.
+  · **Editing** happens in an `.editor-shell`: a transparent `<textarea class="code-edit">`
+  sits exactly on top of a highlighted `<pre class="hl-layer">`. Both must keep **identical**
+  font, size, line-height, letter-spacing, padding and `white-space`, or the caret drifts away
+  from the text under it. Verified pixel-exact (scrollWidth delta 0); no letter-spacing fudge
+  is needed, so do not add one.
+  · The shell carries `resize: vertical` because an absolutely positioned textarea cannot
+  be resized natively, and **Expand** (`.expand-btn`) toggles `.console.expanded`, a fixed
+  full-viewport overlay closed with Esc.
+- **Token palette** (`--code-hl-*`) — editor colours follow the **code theme**, not the site's
+  light/dark, exactly like `--code-*`. Three sets: midnight, paper, contrast.
 - **Quiz** (`.quiz-q`, `.opt`) — question cards; options are buttons with mono A–D keys.
   After grading: correct answer outlined in `--green`, a wrong pick outlined in `--red`,
   and the explanation `.why` appears with a teal left border. The `.quiz-bar` is sticky

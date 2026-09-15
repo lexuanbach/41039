@@ -692,6 +692,43 @@ footer.site .brand { font-family: "IBM Plex Mono", monospace; font-size: 0.85rem
 footer.site .brand b { color: var(--accent); }
 footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
 
+
+  /* Editor token palette. Like --code-*, these follow the CODE theme button,
+     not the site's light/dark setting. */
+  :root {
+    --code-hl-kw:   #C792EA;
+    --code-hl-type: #82AAFF;
+    --code-hl-fn:   #FFCB6B;
+    --code-hl-str:  #C3E88D;
+    --code-hl-chr:  #F78C6C;
+    --code-hl-num:  #F78C6C;
+    --code-hl-ann:  #FF9E64;
+    --code-hl-op:   #89DDFF;
+    --code-hl-cm:   #7E8CA8;
+  }
+  :root[data-code-theme="paper"] {
+    --code-hl-kw:   #A626A4;
+    --code-hl-type: #0184BC;
+    --code-hl-fn:   #986801;
+    --code-hl-str:  #50A14F;
+    --code-hl-chr:  #B76B01;
+    --code-hl-num:  #B76B01;
+    --code-hl-ann:  #E45649;
+    --code-hl-op:   #383A42;
+    --code-hl-cm:   #A0A1A7;
+  }
+  :root[data-code-theme="contrast"] {
+    --code-hl-kw:   #FF8AF0;
+    --code-hl-type: #6AB8FF;
+    --code-hl-fn:   #FFD866;
+    --code-hl-str:  #8CFFC1;
+    --code-hl-chr:  #FFA96B;
+    --code-hl-num:  #FFA96B;
+    --code-hl-ann:  #FFB86C;
+    --code-hl-op:   #9BE4FF;
+    --code-hl-cm:   #B0BAC9;
+  }
+
 /* ── Interactive console (playground + week-page embeds) ── */
 .console {
   background: var(--surface); border: 1px solid var(--line);
@@ -782,3 +819,181 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   border: 1px solid var(--line);
 }
 .preset-row button:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+/* ── Highlighted editor: a <pre> layer sits behind a transparent <textarea> ── */
+.editor-shell {
+  position: relative;
+  min-height: 8rem;
+  height: 14rem;
+  /* Native grip. The textarea itself cannot be resized any more (it is absolutely
+     positioned), so the shell carries the resize affordance instead. */
+  resize: vertical;
+  overflow: hidden;
+  border-top: 1px solid var(--line);
+}
+.editor-shell .hl-layer,
+.editor-shell textarea.code-edit {
+  position: absolute; inset: 0;
+  margin: 0; width: 100%; height: 100%;
+  box-sizing: border-box;
+  padding: 0.9rem 1.05rem;
+  border: 0;
+  font-family: "IBM Plex Mono", "SF Mono", Consolas, monospace;
+  font-size: 0.83rem;
+  line-height: 1.7;
+  tab-size: 4;
+  white-space: pre;
+  overflow: auto;
+  letter-spacing: normal;
+  font-variant-ligatures: none;
+  font-kerning: none;
+}
+.editor-shell .hl-layer {
+  background: var(--code-bg);
+  color: var(--code-text);
+  pointer-events: none;
+  scrollbar-width: none;
+}
+.editor-shell .hl-layer::-webkit-scrollbar { display: none; }
+.editor-shell textarea.code-edit {
+  background: transparent;
+  color: transparent;
+  caret-color: var(--code-caret);
+  resize: none;
+  outline: none;
+}
+.editor-shell textarea.code-edit::selection {
+  background: color-mix(in srgb, var(--accent) 38%, transparent);
+  color: transparent;
+}
+.editor-shell textarea.code-edit:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.hl-kw   { color: var(--code-hl-kw); }
+.hl-type { color: var(--code-hl-type); }
+.hl-fn   { color: var(--code-hl-fn); }
+.hl-str  { color: var(--code-hl-str); }
+.hl-chr  { color: var(--code-hl-chr); }
+.hl-num  { color: var(--code-hl-num); }
+.hl-ann  { color: var(--code-hl-ann); }
+.hl-op   { color: var(--code-hl-op); }
+.hl-cm   { color: var(--code-hl-cm); font-style: italic; }
+
+/* Quiz snippets get the same colours, without an editor around them. */
+pre.qcode .hl-cm { font-style: italic; }
+
+/* ── Full-screen console ── */
+.console.expanded {
+  position: fixed; inset: 1.25rem; z-index: 200;
+  margin: 0; display: flex; flex-direction: column;
+  max-width: none; box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+}
+.console.expanded .editor-shell {
+  flex: 1 1 auto; height: auto; min-height: 6rem; resize: none;
+}
+.console.expanded .console-out { max-height: 30vh; }
+.console.expanded .console-stdin { min-height: 3rem; }
+body.console-open { overflow: hidden; }
+.expand-btn { margin-left: 0.15rem; }
+@media (max-width: 640px) {
+  .console.expanded { inset: 0; border-radius: 0; }
+}
+
+/* ── Collapsible lecture sections (week pages mirror the slide deck) ── */
+.fold {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+}
+.fold[open] { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.fold > summary {
+  display: flex; align-items: baseline; gap: 0.85rem;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary:hover { background: color-mix(in srgb, var(--accent) 4%, var(--surface)); }
+.fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.fold .fold-num {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--accent); white-space: nowrap;
+}
+.fold .fold-title {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700; font-size: 1.05rem;
+  color: var(--ink); margin-right: auto;
+}
+.fold .fold-meta {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem; color: var(--ink-soft);
+  white-space: nowrap;
+}
+/* the chevron rotates when the section is open */
+.fold .fold-chev {
+  color: var(--ink-soft); font-size: 0.8rem;
+  transition: transform 160ms ease;
+}
+.fold[open] .fold-chev { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .fold .fold-chev { transition: none; } }
+.fold-body {
+  padding: 0.3rem 1.2rem 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.fold-body > .concept:last-child { margin-bottom: 0; }
+@media (max-width: 560px) {
+  .fold > summary { padding: 0.85rem 0.9rem; gap: 0.5rem; flex-wrap: wrap; }
+  .fold .fold-meta { display: none; }
+  .fold-body { padding: 0.3rem 0.9rem 1.2rem; }
+}
+
+/* Expand / collapse all */
+.fold-controls {
+  display: flex; gap: 0.5rem; align-items: center;
+  margin-bottom: 1rem;
+}
+.fold-controls .count {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem; color: var(--ink-soft);
+}
+
+/* ── Figures: comics and photographs ── */
+.fig { margin: 1.2rem 0 1.4rem; text-align: center; }
+.fig img {
+  max-width: 100%; height: auto;
+  border-radius: 8px;
+  background: #FFFFFF;
+  padding: 0.5rem;
+}
+.fig.plain img { background: none; padding: 0; }
+.fig figcaption {
+  font-size: 0.8rem; color: var(--ink-soft);
+  margin-top: 0.5rem; text-align: center;
+}
+.fig figcaption .credit {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem; color: var(--ink-soft); opacity: 0.85;
+  display: block; margin-top: 0.15rem;
+}
+.fig-narrow img { max-width: 30rem; }
+.fig-wide img { max-width: 46rem; }
+
+/* A pull-quote style joke box, matching the deck's */
+.joke {
+  border: 1px solid color-mix(in srgb, var(--amber) 45%, var(--line));
+  border-left: 3px solid var(--amber);
+  background: color-mix(in srgb, var(--amber) 7%, var(--surface));
+  border-radius: 0 10px 10px 0;
+  padding: 0.9rem 1.1rem;
+  margin: 1rem 0;
+}
+.joke p { margin: 0; }
+.joke .attrib {
+  display: block; margin-top: 0.4rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem; color: var(--ink-soft);
+}

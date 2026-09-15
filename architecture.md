@@ -49,6 +49,7 @@ UTS-Programming-I-Website/
 │   ├── style.css           # The single stylesheet for every page
 │   ├── course.js           # Shared engine: theme toggle, code-theme toggle, MCQ quiz
 │   ├── runtime.js          # Java + Python execution (CheerpJ / Pyodide)
+│   ├── highlight.js        # Java/Python syntax highlighter (no dependency)
 │   ├── console-ui.js       # The console widget rendered on pages
 │   └── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
 ├── serve.py                # Dev server WITH Range support — required, see §5
@@ -188,6 +189,18 @@ the playground page.
 > such constraint. If CheerpJ turns out not to be viable, the fallback is a hand-written
 > Java interpreter in the style of CO1005's `minicpp.js`.
 
+### Syntax highlighting (`assets/highlight.js`)
+
+`P1Highlight.toHtml(src, 'java'|'python')` — a single left-to-right scan emitting
+`<span class="hl-*">`, not a parser. **Comments and strings are matched before everything
+else**, so a keyword inside a string, or a `#` inside quotes, is never mis-coloured. Each
+rule is anchored with `^` against the remaining input and the loop has a guard, so it cannot
+stall or go backwards. Used in two places: the console editor overlay, and quiz snippets that
+declare a `lang`.
+
+To add a language: add a rule table and a `classify()` branch. Keep the
+comments-and-strings-first ordering.
+
 ### Week pages (`weeks/week-N.html`)
 
 Each follows the same spine:
@@ -195,7 +208,12 @@ Each follows the same spine:
 1. `<head>` — title, the inline theme bootstrap script, fonts, `../assets/style.css`.
 2. Topbar with `.display-controls`.
 3. `.hero` — week number eyebrow, title, lede, meta chips (including the slides link).
-4. `#concepts` — a `.sec-head` then numbered `.concept` blocks (`<span class="idx">1.4</span>`).
+4. `#concepts` — **one `details.fold` per section of that week's slide deck**, so the page
+   and the lecture have the same shape and the same section numbers. Inside each fold, numbered
+   `.concept` blocks (`<span class="idx">5.3</span>`), figures, notes and consoles.
+   `course.js#initFolds()` wires Expand all / Collapse all, the open counter, and deep links —
+   `week-1.html#s05` opens section 5, and a link to anything inside a closed section opens its
+   parent fold first.
 5. `#quiz` — a `.sec-head` then an empty `<div id="quiz-root">`.
 6. `#thisweek` — what to actually do, tied to the Ed lessons.
 7. `.pagenav`, footer, then `../assets/runtime.js`, `../assets/console-ui.js`,

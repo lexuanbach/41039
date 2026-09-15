@@ -112,7 +112,8 @@
           card.appendChild(chip);
         }
         var pre = el('pre', 'qcode');
-        pre.textContent = q.code;
+        if (q.lang && window.P1Highlight) P1Highlight.apply(pre, q.code, q.lang);
+        else pre.textContent = q.code;
         card.appendChild(pre);
       }
 
@@ -193,9 +194,51 @@
     });
   }
 
+  // ───────── collapsible lecture sections ─────────
+  function initFolds() {
+    var folds = Array.prototype.slice.call(document.querySelectorAll('details.fold'));
+    if (!folds.length) return;
+
+    var expandBtn = document.getElementById('expand-all');
+    var collapseBtn = document.getElementById('collapse-all');
+    var count = document.getElementById('fold-count');
+
+    function paint() {
+      var open = folds.filter(function (f) { return f.open; }).length;
+      if (count) count.textContent = open + ' of ' + folds.length + ' open';
+    }
+    folds.forEach(function (f) { f.addEventListener('toggle', paint); });
+    if (expandBtn) expandBtn.addEventListener('click', function () {
+      folds.forEach(function (f) { f.open = true; });
+      paint();
+    });
+    if (collapseBtn) collapseBtn.addEventListener('click', function () {
+      folds.forEach(function (f) { f.open = false; });
+      paint();
+    });
+
+    // Deep links: /week-1.html#s04 opens that section and scrolls to it. Also
+    // handles a link to anything *inside* a closed section.
+    function openFromHash() {
+      var id = location.hash.slice(1);
+      if (!id) return;
+      var target = document.getElementById(id);
+      if (!target) return;
+      var fold = target.closest ? target.closest('details.fold') : null;
+      if (fold) fold.open = true;
+      else if (target.tagName === 'DETAILS') target.open = true;
+      paint();
+      target.scrollIntoView({ block: 'start' });
+    }
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
+    paint();
+  }
+
   function boot() {
     initTheme();
     initCodeTheme();
+    initFolds();
     initQuiz(window.WEEK_DATA);
   }
 

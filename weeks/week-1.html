@@ -33,7 +33,7 @@
       <nav class="topnav" aria-label="Page navigation">
         <a href="../index.html">Syllabus</a>
         <a href="week-1.html" aria-current="page">Week 1</a>
-        <a href="#concepts">Concepts</a>
+        <a href="#concepts">Lecture</a>
         <a href="#quiz">Quiz</a>
         <a href="#thisweek">This week</a>
         <a href="../playground.html">Playground</a>
@@ -88,58 +88,109 @@
   <section class="block" id="concepts">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow">01 · Concepts</span>
-        <h2>What you should take away</h2>
-        <p>Six ideas, in the order the lecture covers them. Everything here comes from the Week 1 lessons on Ed.</p>
+        <span class="eyebrow">01 &middot; The lecture</span>
+        <h2>Six sections, same as the slides</h2>
+        <p>This follows the Week 1 deck section by section. Click a heading to open it. Code blocks
+        are live — edit them, run them, and break them on purpose.</p>
+      </div>
+
+      <div class="fold-controls">
+        <button class="btn ghost small" id="expand-all" type="button">Expand all</button>
+        <button class="btn ghost small" id="collapse-all" type="button">Collapse all</button>
+        <span class="count" id="fold-count"></span>
+      </div>
+
+      <details class="fold" open id="s01">
+        <summary>
+          <span class="fold-num">01</span>
+          <span class="fold-title">What programming is</span>
+          <span class="fold-meta">3 ideas · 2 comics</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">1.1</span>Telling a computer what to do</h3>
+        <p>Once that meant writing the right sequence of zeroes and ones into memory. In
+        <strong>1954</strong> John Backus developed FORTRAN, and the programmer could start caring
+        about <em>what</em> to do rather than exactly <em>how</em>.</p>
+        <figure class="fig fig-narrow">
+          <img src="../media/eniac.jpg" alt="Two programmers operating the ENIAC computer in 1946" loading="lazy">
+          <figcaption>ENIAC, 1946 — Betty Snyder and Glen Beck. The first programmers were overwhelmingly women.<span class="credit">US Army photo, public domain</span></figcaption>
+        </figure>
+        <figure class="fig fig-wide">
+          <img src="../media/punched-card.jpg" alt="A FORTRAN punched card" loading="lazy">
+          <figcaption>One FORTRAN statement, on one punched card. Drop the box, lose the program.<span class="credit">Photo: Arnold Reinhold, CC BY-SA 2.5</span></figcaption>
+        </figure>
+        <p>The history of programming is the history of <strong>raising the level of
+        abstraction</strong>. Every convenience you are about to complain about was once a luxury.</p>
       </div>
 
       <div class="concept">
-        <h3><span class="idx">1.1</span>What a program is</h3>
-        <p>
-          At the simplest level, programming is <strong>telling a computer what to do</strong>.
-          Once that meant writing the right sequence of zeroes and ones into memory. In
-          <strong>1954</strong> John Backus developed FORTRAN, and the programmer could start
-          caring more about <em>what</em> to do than exactly <em>how</em>.
-        </p>
-        <p>
-          Language design did not stop there — there are now thousands of languages, with
-          hundreds in active use. The history of programming is the history of
-          <strong>raising the level of abstraction</strong>.
-        </p>
-      </div>
-
-      <div class="concept">
-        <h3><span class="idx">1.2</span>The three basic tools</h3>
-        <p>Underlying every general-purpose language are three core concepts:</p>
-        <ul>
-          <li><strong>State</strong> — a way of managing what situation the program is in</li>
-          <li><strong>Branching</strong> — choosing which code to execute, usually based on the state</li>
-          <li><strong>Repetition</strong> — repeating a piece of code, controlled by some parameter</li>
-        </ul>
-        <p>
-          Add basic input and output and that is <em>everything</em> you need to build a
-          general-purpose programming language. This is SLO1.
-        </p>
-        <div class="tbl-scroll">
-          <table class="tbl">
-            <thead><tr><th>Concept</th><th>Week</th><th>Topic</th></tr></thead>
-            <tbody>
-              <tr><td><strong>State</strong></td><td class="mono">Week 2</td><td>Data types and variables</td></tr>
-              <tr><td><strong>Branching</strong></td><td class="mono">Week 3</td><td>Decisions and branching program flow</td></tr>
-              <tr><td><strong>Repetition</strong></td><td class="mono">Week 5</td><td>Loops and iterative program flow</td></tr>
-            </tbody>
-          </table>
+        <h3><span class="idx">1.2</span>&ldquo;Can&rsquo;t AI just do all this now?&rdquo;</h3>
+        <p>A randomised controlled trial by METR (July 2025) gave experienced developers AI tools
+        on their own projects. They predicted they would be <strong>24% faster</strong>. They were
+        <strong>19% slower</strong> — and afterwards still believed they had been 20% faster.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1838.png" alt="xkcd comic about machine learning" loading="lazy">
+          <figcaption><span class="credit">xkcd 1838, <em>Machine Learning</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <div class="note">
+          <span class="tag">The point</span>
+          <p>They could not tell. The tool is not the problem — the inability to evaluate its
+          output is, and that is a reading skill. It is what this subject builds.</p>
         </div>
-        <p>
-          Everything from Week 6 onward — classes, methods, lists, files, inheritance — adds
-          <strong>no fourth idea</strong>. It is about organising these three well as programs
-          get bigger.
-        </p>
       </div>
 
       <div class="concept">
-        <h3><span class="idx">1.3</span>Your first Java program</h3>
-        <p>A Java program is a sequence of <strong>statements</strong> arranged into <strong>blocks</strong>. Blocks nest, and the top level is a <strong>class</strong>.</p>
+        <h3><span class="idx">1.3</span>The hard part is knowing what is hard</h3>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1425.png" alt="xkcd comic: Tasks" loading="lazy">
+          <figcaption><span class="credit">xkcd 1425, <em>Tasks</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <p>Two requests that sound equally reasonable to someone who has never programmed. One is
+        an afternoon&rsquo;s work; the other was an open research problem for decades. Building the
+        instinct for which is which takes the whole session — you will start the first time an
+        &ldquo;easy&rdquo; exercise takes two hours.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.4</span>The three basic tools</h3>
+        <ul>
+          <li><strong>State</strong> — managing what situation the program is in</li>
+          <li><strong>Branching</strong> — choosing which code runs, based on the state</li>
+          <li><strong>Repetition</strong> — repeating code, controlled by some parameter</li>
+        </ul>
+        <p>Add input and output and that is <em>everything</em> needed for a general-purpose
+        language. This is SLO1.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Concept</th><th>Week</th><th>Topic</th></tr></thead>
+          <tbody>
+            <tr><td><strong>State</strong></td><td class="mono">Week 2</td><td>Data types and variables</td></tr>
+            <tr><td><strong>Branching</strong></td><td class="mono">Week 3</td><td>Decisions and branching program flow</td></tr>
+            <tr><td><strong>Repetition</strong></td><td class="mono">Week 5</td><td>Loops and iterative program flow</td></tr>
+          </tbody>
+        </table></div>
+        <p>Everything from Week 6 — classes, methods, lists, files, inheritance — adds
+        <strong>no fourth idea</strong>. It is about organising these three as programs grow.</p>
+      </div>
+        </div>
+      </details>
+
+      <details class="fold" id="s02">
+        <summary>
+          <span class="fold-num">02</span>
+          <span class="fold-title">Your first Java program</span>
+          <span class="fold-meta">1 comic · runnable</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">2.1</span>Hello, Java</h3>
+        <p>A Java program is a sequence of <strong>statements</strong> in <strong>blocks</strong>.
+        Blocks nest, and the top level is a <strong>class</strong>. Run this, then change the
+        message and run it again.</p>
         <div class="p1-console" data-lang="java" data-title="Hello, Java"><script type="text/plain" data-role="source">
 public class Hello {
     public static void main(String[] args) {
@@ -147,39 +198,66 @@ public class Hello {
     }
 }
 </script></div>
-        <p class="sched-note">Change the message and run it again. Then delete a semicolon and see what the compiler says.</p>
-        <p>You are allowed not to understand some of this yet:</p>
-        <div class="tbl-scroll">
-          <table class="tbl">
-            <thead><tr><th>Token</th><th>What it means</th><th>Explained properly in</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">public</td><td>everything can access this</td><td>Week 7</td></tr>
-              <tr><td class="mono">static</td><td>needs no object to run</td><td>Week 7</td></tr>
-              <tr><td class="mono">void</td><td>returns nothing</td><td>Week 7</td></tr>
-              <tr><td class="mono">String[] args</td><td>an array of Strings</td><td>Week 4</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="note warn">
-          <span class="tag">Two rules, not conventions</span>
-          <p>
-            <strong>Java is case sensitive.</strong> <code>bob</code> ≠ <code>Bob</code> ≠
-            <code>BOB</code> ≠ <code>BoB</code>. This will cause most of your errors for the
-            next two weeks. And <strong>the file name must match the public class name</strong>
-            — <code>public class Hello</code> lives in <code>Hello.java</code>. Ed manages files
-            for you, so you may not notice until you compile on your own machine.
-          </p>
-        </div>
+        <p class="sched-note">Now break it on purpose: delete the semicolon and run it again. Read
+        what the compiler says before you put it back.</p>
       </div>
 
       <div class="concept">
-        <h3><span class="idx">1.4</span>Variables, types and values</h3>
-        <p>
-          A <strong>declaration</strong> is a type followed by a name. <strong>Initialisation</strong>
-          is the <em>first</em> assignment of a value. <strong>Assignment</strong> takes the value on
-          the right and stores it in the variable on the left.
-        </p>
-        <div class="p1-console" data-lang="java" data-title="Declaration, initialisation, assignment"><script type="text/plain" data-role="source">
+        <h3><span class="idx">2.2</span>Java is compiled</h3>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-303.png" alt="xkcd comic: Compiling" loading="lazy">
+          <figcaption><span class="credit">xkcd 303, <em>Compiling</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <p>Before your Java runs, a <strong>compiler</strong> reads the whole file and translates
+        it. If it cannot, nothing runs at all — which is why Java catches some mistakes
+        <em>before</em> the program starts. Python skips this step: a trade, not a free win.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.3</span>Two rules, and some conventions</h3>
+        <div class="note warn">
+          <span class="tag">Rules — enforced by the compiler</span>
+          <p><strong>Java is case sensitive.</strong> <code>bob</code> &ne; <code>Bob</code> &ne;
+          <code>BOB</code>. And <strong>the file name must match the public class name</strong> —
+          <code>public class Hello</code> lives in <code>Hello.java</code>.</p>
+        </div>
+        <p>Conventions, which everyone follows but nothing enforces: classes start uppercase,
+        variables lowercase, constants in <code>ALL_CAPS</code>, and you indent every new block.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Token</th><th>What it means</th><th>Explained in</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">public</td><td>everything can access this</td><td>Week 7</td></tr>
+            <tr><td class="mono">static</td><td>needs no object to run</td><td>Week 7</td></tr>
+            <tr><td class="mono">void</td><td>returns nothing</td><td>Week 7</td></tr>
+            <tr><td class="mono">String[] args</td><td>an array of Strings</td><td>Week 4</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note tip">
+          <span class="tag">It is not just you</span>
+          <p>Java 25 added a &ldquo;smooth on-ramp&rdquo; so beginners can skip that boilerplate.
+          On <code>public static void main(String[] args)</code>, the official OpenJDK proposal
+          (JEP 512) says: <em>&ldquo;mysterious and unhelpful&hellip; not used in small
+          programs.&rdquo;</em> If it felt like meaningless ritual, that was not you being slow.</p>
+        </div>
+      </div>
+        </div>
+      </details>
+
+      <details class="fold" id="s03">
+        <summary>
+          <span class="fold-num">03</span>
+          <span class="fold-title">Variables, types and values</span>
+          <span class="fold-meta">1 comic · runnable</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">3.1</span>Declaration, initialisation, assignment</h3>
+        <p><strong>Declaration</strong> is a type and a name. <strong>Initialisation</strong> is the
+        <em>first</em> assignment. <strong>Assignment</strong> takes the value on the right and
+        stores it on the left.</p>
+        <div class="p1-console" data-lang="java" data-title="Variables and arithmetic"><script type="text/plain" data-role="source">
 public class Variables {
     public static void main(String[] args) {
         int a;                // declaration
@@ -198,107 +276,304 @@ public class Variables {
 }
 </script></div>
         <div class="note">
-          <span class="tag">Read this out loud, right to left</span>
-          <p>
-            In maths, <code>x = 4</code> <em>asserts</em> that x and 4 are the same thing. In Java,
-            <code>x = 4;</code> <strong>takes the value on the right and stores it on the left</strong>.
-            That is why <code>a = a + 1;</code> is false as maths but completely routine as Java:
-            <em>take a + 1, put it in a</em>.
-          </p>
-        </div>
-        <p>
-          Java has eight primitive types; in practice you will mostly use <code>int</code>,
-          <code>double</code>, <code>char</code> and <code>boolean</code>. Every type is a promise
-          about how big the value can get — an <code>int</code> runs out at 2,147,483,647.
-        </p>
-        <div class="note warn">
-          <span class="tag">Careful</span>
-          <p><code>7 / 2</code> is <code>3</code>, not <code>3.5</code>. Integer divided by integer gives an integer. Use <code>7.0 / 2</code> to get <code>3.5</code>.</p>
+          <span class="tag">Read it right to left, out loud</span>
+          <p>In maths <code>x = 4</code> <em>asserts</em> that x and 4 are the same. In Java
+          <code>x = 4;</code> <strong>takes the value on the right and stores it on the left</strong>.
+          That is why <code>a = a + 1;</code> is nonsense as maths and routine as Java.</p>
         </div>
       </div>
 
       <div class="concept">
-        <h3><span class="idx">1.5</span>The same ideas in Python</h3>
-        <p>
-          The feature lists of Java and Python are almost identical — object oriented, procedural,
-          imperative, garbage collected. <strong>Only two rows differ</strong>, and they explain
-          nearly everything else you will notice.
-        </p>
-        <div class="tbl-scroll">
-          <table class="tbl">
-            <thead><tr><th></th><th>Java</th><th>Python</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Execution</strong></td><td class="mono">compiled</td><td class="mono">interpreted</td></tr>
-              <tr><td><strong>Typing</strong></td><td class="mono">static</td><td class="mono">dynamic</td></tr>
-            </tbody>
-          </table>
+        <h3><span class="idx">3.2</span>Every type is a promise about size</h3>
+        <p>In December 2014 Psy&rsquo;s <em>Gangnam Style</em> passed
+        <strong>2,147,483,647</strong> YouTube views. That is exactly 2<sup>31</sup>&minus;1 — the
+        largest number a 32-bit <code>int</code> can hold. YouTube moved the counter to 64 bits.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Type</th><th>Runs out at about</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">int</td><td>2.1 billion</td></tr>
+            <tr><td class="mono">long</td><td>9.2 quintillion</td></tr>
+          </tbody>
+        </table></div>
+        <p>In Java, choosing is <strong>your job</strong>. Python has one <code>int</code> with no
+        limit and chooses for you.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.3</span>What this looks like in real code</h3>
+        <p>Nobody ships <code>7 / 2</code>. They ship this — and it prints a plausible number every
+        single time:</p>
+        <div class="p1-console" data-lang="java" data-title="Spot the bug"><script type="text/plain" data-role="source">
+public class ClassAverage {
+    public static void main(String[] args) {
+        int[] marks = {74, 75, 77};
+
+        int total = 0;
+        for (int m : marks) {
+            total = total + m;
+        }
+
+        int average = total / marks.length;
+        System.out.println("Class average: " + average);
+        // 74 + 75 + 77 = 226, over 3 students. It should be 75.33.
+    }
+}
+</script></div>
+        <div class="note danger">
+          <span class="tag">A logic error</span>
+          <p>It compiles. It runs. Nothing warns you. One wrong type, and you have now met the
+          only kind of error that never announces itself.</p>
         </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.4</span>Naming things</h3>
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-1513.png" alt="xkcd comic: Code Quality" loading="lazy">
+          <figcaption><span class="credit">xkcd 1513, <em>Code Quality</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <div class="joke">
+          <p>&ldquo;There are 2 hard problems in computer science: cache invalidation, naming
+          things, and off-by-1 errors.&rdquo;</p>
+          <span class="attrib">Leon Bambrick, after Phil Karlton</span>
+        </div>
+        <p>Name a variable for the person reading it in Week 11. That person is you.</p>
+      </div>
+        </div>
+      </details>
+
+      <details class="fold" id="s04">
+        <summary>
+          <span class="fold-num">04</span>
+          <span class="fold-title">The same ideas in Python</span>
+          <span class="fold-meta">1 comic · runnable</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">4.1</span>Hello, Python</h3>
         <div class="p1-console" data-lang="python" data-title="Hello, Python"><script type="text/plain" data-role="source">
 print("Hello 41039!")
 </script></div>
-        <p>
-          That is the whole program, because <strong>Python allows code outside of classes</strong>.
-          Java requires everything to live inside one. Java's extra ceremony is not pointless — it
-          buys the ability to detect certain errors <em>before</em> the program runs. The two
-          languages made different bets, and neither is better.
-        </p>
+        <p>That is the whole program, because <strong>Python allows code outside of classes</strong>
+        while Java requires everything inside one. The feature lists are almost identical — only
+        two rows differ, and they explain nearly everything else you will notice.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th></th><th>Java</th><th>Python</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Execution</strong></td><td class="mono">compiled</td><td class="mono">interpreted</td></tr>
+            <tr><td><strong>Typing</strong></td><td class="mono">static</td><td class="mono">dynamic</td></tr>
+          </tbody>
+        </table></div>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-353.png" alt="xkcd comic: Python" loading="lazy">
+          <figcaption><span class="credit">xkcd 353, <em>Python</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <p class="sched-note">A joke about how little Python makes you write — and only half a joke.
+        Java&rsquo;s ceremony buys errors caught before the program runs. Neither is better.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.2</span>Indentation is not decoration</h3>
+        <p>Java delimits blocks with <code>{</code> and <code>}</code>, so formatting is cosmetic.
+        <strong>Python uses the indentation itself.</strong> Run this with <code>5</code>, then with
+        <code>50</code>. Then un-indent the <code>print</code> and try <code>50</code> again.</p>
+        <div class="p1-console" data-lang="python" data-title="Change nothing but the spaces" data-stdin="5"><script type="text/plain" data-role="source">
+a = input("Enter a number: ")
+
+if int(a) < 10:
+    print("It's less than 10! Woo.")
+</script></div>
         <div class="note danger">
-          <span class="tag">Indentation is not decoration</span>
-          <p>
-            Java delimits blocks with <code>{</code> and <code>}</code>, so formatting is cosmetic.
-            <strong>Python uses the indentation itself.</strong> Use four spaces, let the editor do
-            it, and <strong>never mix tabs and spaces</strong> — that produces errors which are
-            invisible on screen. In Java bad indentation is ugly; in Python it is wrong.
-          </p>
+          <span class="tag">Practical advice</span>
+          <p>Use <strong>four spaces</strong> and let the editor do it. <strong>Never mix tabs and
+          spaces</strong> — it produces errors that are invisible on screen. In Java bad indentation
+          is ugly; in Python it is wrong.</p>
+        </div>
+      </div>
+        </div>
+      </details>
+
+      <details class="fold" id="s05">
+        <summary>
+          <span class="fold-num">05</span>
+          <span class="fold-title">When things go wrong</span>
+          <span class="fold-meta">1 comic · runnable</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">5.1</span>The first actual bug</h3>
+        <figure class="fig fig-wide">
+          <img src="../media/moth-logbook-crop.jpg" alt="The 1947 logbook page with a moth taped to it" loading="lazy">
+          <figcaption>Harvard Mark II logbook, 9 September 1947. &ldquo;First actual case of bug being found.&rdquo;<span class="credit">Naval Surface Warfare Center, Dahlgren — public domain</span></figcaption>
+        </figure>
+        <p>Engineers had been calling faults &ldquo;bugs&rdquo; since Edison — which is exactly why
+        the note says <em>first actual</em> case. It is a pun, and it only works because the word
+        already existed. Grace Hopper did not coin it; she just found the best possible example.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.2</span>Three kinds of error</h3>
+        <ul>
+          <li><strong>Compile-time</strong> — the compiler cannot compile your code. <em>It tells you.</em></li>
+          <li><strong>Run-time</strong> — it compiles, then crashes while running. <em>It tells you.</em></li>
+          <li><strong>Logic</strong> — it runs perfectly and does the <em>wrong thing</em>. <em>Nothing tells you.</em></li>
+        </ul>
+        <div class="note danger">
+          <span class="tag">8.5 million computers, one array index</span>
+          <p>On 19 July 2024 a CrowdStrike update crashed roughly 8.5 million Windows machines.
+          The code expected <strong>20</strong> values; the update sent <strong>21</strong>. Reading
+          the 21st ran off the end of the array. It compiled, it shipped, and it passed their tests.</p>
+        </div>
+        <div class="joke">
+          <p>A QA engineer walks into a bar. Orders a beer. Orders 0 beers. Orders &minus;1 beers.
+          Orders a lizard.<br>
+          The first real customer asks where the toilet is. The bar bursts into flames.</p>
+          <span class="attrib">Programmer folklore, after Bill Sempf</span>
         </div>
       </div>
 
       <div class="concept">
-        <h3><span class="idx">1.6</span>When things go wrong</h3>
-        <p>There are three kinds of error, and only two of them tell you:</p>
-        <ul>
-          <li><strong>Compile-time errors</strong> — the compiler cannot compile your code. <em>It tells you.</em></li>
-          <li><strong>Run-time errors</strong> — the code compiles, then crashes while running. <em>It tells you.</em></li>
-          <li><strong>Logic errors</strong> — it runs perfectly and does the <em>wrong thing</em>. <em>Nothing tells you.</em></li>
-        </ul>
-        <p>A Java compile error tells you four things. Read them in order:</p>
-        <div class="code-card">
-          <div class="bar"><span class="file">compile error</span></div>
-          <pre>WontCompile.java:3: error: cannot find symbol
-        System.out.println("Hi " + userName + " how are you?");
-                                   ^</pre>
-        </div>
-        <div class="p1-console" data-lang="java" data-title="Run it and read the error"><script type="text/plain" data-role="source">
+        <h3><span class="idx">5.3</span>Reading a compile error</h3>
+        <p>Run this. It will not compile — and that is the point.</p>
+        <div class="p1-console" data-lang="java" data-title="Read the error"><script type="text/plain" data-role="source">
 public class WontCompile {
     public static void main(String[] args) {
         System.out.println("Hi " + userName + " how are you?");
     }
 }
 </script></div>
-        <p>
-          <strong>Which file</strong> → <strong>which line</strong> → <strong>what kind</strong> →
-          <strong>which token</strong> (follow the <code>^</code>). And
-          <code>cannot find symbol</code> means <em>you used a name I have never seen</em> — almost
-          always a typo, a missing declaration, or a capitalisation slip.
-        </p>
+        <p><strong>Which file</strong> &rarr; <strong>which line</strong> &rarr; <strong>what
+        kind</strong> &rarr; <strong>which token</strong> (follow the <code>^</code>).</p>
         <div class="note tip">
           <span class="tag">Two things that will save you</span>
-          <p>
-            <strong>1.</strong> Turn on <strong>Line Numbers</strong> in the Ed editor settings —
-            without them, <code>WontCompile.java:3</code> tells you nothing.
-            <strong>2.</strong> Fix the <em>first</em> error, then recompile. One small bug often
-            produces many messages; errors 2 through 14 are usually downstream of error 1.
-          </p>
-        </div>
-        <p>
-          Python puts the error type <strong>last</strong>, where Java puts it <strong>first</strong>.
-          In a Python traceback, read the last line first.
-        </p>
-        <div class="note">
-          <span class="tag">Not a sign you are bad at this</span>
-          <p>Bugs are an unavoidable part of programming. Everyone gets stuck — the skill being built here is reading what the computer already told you.</p>
+          <p><strong>1.</strong> Turn on <strong>Line Numbers</strong> in the Ed editor settings.
+          <strong>2.</strong> Fix the <em>first</em> error, then recompile — errors 2 through 14 are
+          usually downstream of error 1.</p>
         </div>
       </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.4</span>Crashes, and reading a stack trace</h3>
+        <p>This one compiles. It asks for a name, and then tries to read it as a number.</p>
+        <div class="p1-console" data-lang="java" data-title="Find your own code in the trace" data-stdin="Bach"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class HelloAgain {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Hi, what's your name?");
+        int userName = input.nextInt();
+        System.out.println(userName);
+    }
+}
+</script></div>
+        <p>Most of the trace is inside <code>Scanner</code> — a thoroughly tested library. One line
+        is <strong>yours</strong>. Start there. <em>This program works fine if your name is a
+        number.</em></p>
+        <p>Python puts the error type <strong>last</strong> where Java puts it <strong>first</strong>.
+        In a Python traceback, read the last line first:</p>
+        <div class="p1-console" data-lang="python" data-title="Read the last line first"><script type="text/plain" data-role="source">
+n = "This is not a number"
+
+print(n + 1)
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.5</span>Debugging, honestly</h3>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1739.png" alt="xkcd comic: Fixing Problems" loading="lazy">
+          <figcaption><span class="credit">xkcd 1739, <em>Fixing Problems</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <div class="joke">
+          <p>&ldquo;Debugging is twice as hard as writing a program in the first place. So if you&rsquo;re
+          as clever as you can be when you write it, how will you ever debug it?&rdquo;</p>
+          <span class="attrib">Brian Kernighan, The Elements of Programming Style, 1978</span>
+        </div>
+        <div class="joke">
+          <p>99 little bugs in the code. Take one down, patch it around — <strong>127</strong> little
+          bugs in the code.</p>
+          <span class="attrib">Programmer folklore</span>
+        </div>
+        <p>Write the boring, obvious version first. You will be reading it again at 11pm with
+        something broken. Bugs are not a sign you are bad at this.</p>
+      </div>
+        </div>
+      </details>
+
+      <details class="fold" id="s06">
+        <summary>
+          <span class="fold-num">06</span>
+          <span class="fold-title">Ed, labs and getting help</span>
+          <span class="fold-meta">2 comics</span>
+          <span class="fold-chev" aria-hidden="true">&#9654;</span>
+        </summary>
+        <div class="fold-body">
+
+      <div class="concept">
+        <h3><span class="idx">6.1</span>Ed, and why we ask you to post publicly</h3>
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-979.png" alt="xkcd comic: Wisdom of the Ancients" loading="lazy">
+          <figcaption><span class="credit">xkcd 979, <em>Wisdom of the Ancients</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <ul>
+          <li>A <strong>public</strong> thread answers it once, for everybody</li>
+          <li>A private one answers it once, for you</li>
+          <li><strong>Search first</strong> — and post no code in the thread</li>
+        </ul>
+        <p>Solved it yourself after posting? <strong>Reply with the answer.</strong> Do not be the
+        2003 forum post that says &ldquo;never mind, fixed it&rdquo;.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.2</span>Two ways to get unstuck</h3>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-627.png" alt="xkcd comic: Tech Support Cheat Sheet" loading="lazy">
+          <figcaption><span class="credit">xkcd 627, <em>Tech Support Cheat Sheet</em> — Randall Munroe, CC BY-NC 2.5</span></figcaption>
+        </figure>
+        <figure class="fig fig-narrow">
+          <img src="../media/rubber-duck.jpg" alt="A rubber duck beside a keyboard" loading="lazy">
+          <figcaption>Rubber duck debugging: explain your broken code out loud, line by line, to a duck.<span class="credit">Photo: Tom Morris, CC BY-SA 3.0</span></figcaption>
+        </figure>
+        <p>You usually find the bug mid-sentence: <em>&ldquo;&hellip; this line takes the total
+        and&hellip; oh.&rdquo;</em> The comic is a real algorithm — try it for ten minutes before
+        you post.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.3</span>Run, Mark, and the lab rules</h3>
+        <p><strong>Run</strong> executes your code so you can watch it behave.
+        <strong>Mark</strong> submits it to automated tests.</p>
+        <ul>
+          <li><strong>Unlimited attempts</strong> — attempt 1 and attempt 101 score the same</li>
+          <li><strong>Output must match exactly</strong> — a stray space fails the test</li>
+          <li>You must pass <strong>every</strong> test case in an exercise to get its marks</li>
+          <li>Assessed exercises are due <strong>11:55pm the Monday of the following week</strong></li>
+        </ul>
+        <div class="joke">
+          <p><strong>&ldquo;But it works on my machine!&rdquo;</strong> Ed is the machine that counts.</p>
+          <span class="attrib">Programmer folklore</span>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.4</span>Why we care that you can read code</h3>
+        <p>The Stack Overflow Developer Survey 2025: <strong>84%</strong> of developers use AI
+        tools, but only <strong>3.1%</strong> highly trust the output. The biggest frustration, at
+        <strong>66%</strong>, is <em>&ldquo;AI solutions that are almost right, but not quite.&rdquo;</em></p>
+        <div class="note">
+          <span class="tag">The honest argument</span>
+          <p>&ldquo;Almost right&rdquo; is only visible if you can read the code. That is what this
+          subject builds, and what the four oral code comprehension checks measure. It is also why
+          pasting in code you cannot explain fails twice — as misconduct, and as engineering.</p>
+        </div>
+      </div>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -349,6 +624,14 @@ public class WontCompile {
   </section>
 
   <div class="wrap">
+    <div class="note" style="margin-bottom:1.5rem">
+      <span class="tag">Comics and photographs</span>
+      <p>Comics by <strong>Randall Munroe</strong>, <a href="https://xkcd.com/">xkcd.com</a>, used
+      under <strong>CC BY-NC 2.5</strong>. ENIAC (US Army) and the Mark II logbook (Naval Surface
+      Warfare Center, Dahlgren) are public domain. Punched card &copy; <strong>Arnold
+      Reinhold</strong>, CC BY-SA 2.5; rubber duck &copy; <strong>Tom Morris</strong>, CC BY-SA 3.0.
+      Both via Wikimedia Commons.</p>
+    </div>
     <nav class="pagenav" aria-label="Page navigation">
       <a href="../index.html"><span class="dir">Back</span>Subject outline</a>
       <a href="../slides/week-1-slides.pdf"><span class="dir">Slides</span>Week 1 lecture (PDF)</a>
@@ -364,6 +647,7 @@ public class WontCompile {
   </div>
 </footer>
 <script src="../assets/runtime.js"></script>
+<script src="../assets/highlight.js"></script>
 <script src="../assets/console-ui.js"></script>
 <script src="../assets/w1-data.js"></script>
 <script src="../assets/course.js"></script>
