@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Playground · Run Java and Python · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Write and run Java and Python in your browser — real runtimes, no installation, for 41039 Programming 1.">
+<script>
+  try {
+    const t = localStorage.getItem("p1-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+  try {
+    const c = localStorage.getItem("p1-code-theme");
+    if (c && c !== "midnight") document.documentElement.dataset.codeTheme = c;
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="index.html">Syllabus</a>
+        <a href="weeks/week-1.html">Week 1</a>
+        <a href="playground.html" aria-current="page">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="block" style="padding-top:2.5rem">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Playground</span>
+        <h2>Write it. Run it. Break it.</h2>
+        <p>Real Java and real Python, running inside your browser — nothing to install and nothing to submit. Pick a starting point, change it, and see what happens. Breaking things on purpose is the fastest way to learn what the error messages mean.</p>
+      </div>
+
+      <div id="pg"></div>
+
+      <div class="note warn">
+        <span class="tag">First run is slow</span>
+        <p>Each language downloads a real runtime the first time you use it — a JVM for Java, CPython for Python. That takes a few seconds and needs a network connection. After that it stays loaded and runs quickly.</p>
+      </div>
+
+      <div class="note">
+        <span class="tag">Small differences from Ed</span>
+        <p>
+          Java here is compiled by the <strong>Eclipse compiler</strong> on a Java 8 runtime,
+          while Ed uses <strong>javac</strong> on Java 23. Almost everything behaves identically,
+          but error <em>wording</em> can differ — Eclipse says
+          <code>userName cannot be resolved to a variable</code> where javac says
+          <code>cannot find symbol</code>. The very newest Java syntax will not run here.
+          <strong>Ed is what counts for your marks</strong>; this is for experimenting.
+        </p>
+      </div>
+
+      <div class="note danger">
+        <span class="tag">No stop button</span>
+        <p>An infinite loop cannot be interrupted — reload the page if a program stops responding. Check your loop conditions before you run.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> · Programming 1</span>
+    <p>Java runs on <a href="https://cheerpj.com/">CheerpJ</a> by Leaning Technologies, with the Eclipse batch compiler. Python runs on <a href="https://pyodide.org/">Pyodide</a>.</p>
+  </div>
+</footer>
+
+<script src="assets/runtime.js"></script>
+<script src="assets/console-ui.js"></script>
+<script src="assets/course.js"></script>
+<script>
+(function () {
+  var JAVA_HELLO = [
+    'public class Hello {',
+    '    public static void main(String[] args) {',
+    '        System.out.println("Hello 41039!");',
+    '    }',
+    '}'
+  ].join('\n');
+
+  var PY_HELLO = 'print("Hello 41039!")';
+
+  P1Console.mount(document.getElementById('pg'), {
+    langs: ['java', 'python'],
+    title: 'Console',
+    sources: { java: JAVA_HELLO, python: PY_HELLO },
+    presets: {
+      java: [
+        { name: 'Hello', code: JAVA_HELLO },
+        { name: 'Arithmetic', code: [
+          'public class Arithmetic {',
+          '    public static void main(String[] args) {',
+          '        int a = 8;',
+          '        int b = 7;',
+          '        int c = a * b;',
+          '        System.out.println("c = " + c);',
+          '',
+          '        // Careful: integer divided by integer gives an integer.',
+          '        System.out.println("7 / 2   = " + (7 / 2));',
+          '        System.out.println("7.0 / 2 = " + (7.0 / 2));',
+          '    }',
+          '}'
+        ].join('\n') },
+        { name: 'Strings', code: [
+          'public class Strings {',
+          '    public static void main(String[] args) {',
+          '        String s = "Hello World";',
+          '        System.out.println(s);',
+          '        System.out.println(s.length());   // the space counts',
+          '    }',
+          '}'
+        ].join('\n') },
+        { name: 'Reading input', code: [
+          'import java.util.Scanner;',
+          '',
+          'public class Greet {',
+          '    public static void main(String[] args) {',
+          '        Scanner input = new Scanner(System.in);',
+          '        System.out.println("What is your name?");',
+          '        String name = input.nextLine();',
+          '        System.out.println("Hello " + name + "!");',
+          '    }',
+          '}'
+        ].join('\n'), stdin: 'Bach\n' },
+        { name: 'A compile error', code: [
+          'public class WontCompile {',
+          '    public static void main(String[] args) {',
+          '        System.out.println("Hi " + userName + " how are you?");',
+          '    }',
+          '}'
+        ].join('\n') },
+        { name: 'A crash', code: [
+          'import java.util.Scanner;',
+          '',
+          'public class HelloAgain {',
+          '    public static void main(String[] args) {',
+          '        Scanner input = new Scanner(System.in);',
+          '        System.out.println("Hi, what\'s your name?");',
+          '        int userName = input.nextInt();   // a name is not an int',
+          '        System.out.println(userName);',
+          '    }',
+          '}'
+        ].join('\n'), stdin: 'Bach\n' }
+      ],
+      python: [
+        { name: 'Hello', code: PY_HELLO },
+        { name: 'Indentation', code: [
+          'a = input("Enter a number: ")',
+          '',
+          'if int(a) < 10:',
+          '    print("It\'s less than 10! Woo.")',
+          '',
+          '# Now un-indent that print and run it again with 50.'
+        ].join('\n'), stdin: '5\n' },
+        { name: 'Types', code: [
+          'n = 42',
+          'x = 7 / 2          # Python gives you 3.5 here, Java gives 3',
+          's = "forty two"',
+          '',
+          'print(n, type(n))',
+          'print(x, type(x))',
+          'print(s, type(s))'
+        ].join('\n') },
+        { name: 'A TypeError', code: [
+          'n = "This is not a number"',
+          '',
+          'print(n + 1)',
+          '',
+          '# Read the LAST line of the traceback first.'
+        ].join('\n') }
+      ]
+    }
+  });
+})();
+</script>
+</body>
+</html>

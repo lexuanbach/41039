@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>41039 Programming 1 · September Session 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="41039 Programming 1 — Java and Python taught side by side. Subject outline, learning outcomes, assessment, weekly schedule and study materials.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    // The page still follows the system theme when storage is unavailable.
+  }
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="#"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="#objectives">Objectives</a>
+        <a href="#outcomes">Outcomes</a>
+        <a href="#assessment">Assessment</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#materials">Materials</a>
+        <a href="playground.html">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code color theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">September Session 2026 · Subject Outline · 41039</span>
+        <h1>Programming 1</h1>
+        <p class="lede">Java and Python, taught side by side, from your first line of code. No prior programming knowledge assumed — this subject is designed for people who have never written a program.</p>
+        <div class="meta-chips">
+          <span class="chip"><strong>12 weeks</strong></span>
+          <span class="chip"><strong>6cp</strong> · 150 hours</span>
+          <span class="chip">3 hours per week on campus</span>
+          <span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span>
+        </div>
+      </div>
+      <div class="code-duo" aria-hidden="true">
+        <div class="code-card">
+          <div class="bar">
+            <span class="dot" style="background:#E5645C"></span>
+            <span class="dot" style="background:#E9B44C"></span>
+            <span class="dot" style="background:#6FCF6F"></span>
+            <span class="file">Hello.java</span>
+          </div>
+          <pre><span class="kw">public class</span> <span class="fn">Hello</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        System.out.println(<span class="str">"Hello 41039!"</span>);
+    }
+}</pre>
+        </div>
+        <div class="code-card">
+          <div class="bar">
+            <span class="dot" style="background:#E5645C"></span>
+            <span class="dot" style="background:#E9B44C"></span>
+            <span class="dot" style="background:#6FCF6F"></span>
+            <span class="file">hello.py</span>
+          </div>
+          <pre><span class="fn">print</span>(<span class="str">"Hello 41039!"</span>)
+
+<span class="cm"># Same program. One line.</span>
+<span class="cm"># Week 1 explains what Java bought</span>
+<span class="cm"># with the other five.</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="facts">
+    <div class="wrap">
+      <div class="fact"><div class="k">Subject code</div><div class="v">41039</div></div>
+      <div class="fact"><div class="k">Duration</div><div class="v">12 weeks</div></div>
+      <div class="fact"><div class="k">Labs start</div><div class="v">Week 2</div></div>
+      <div class="fact"><div class="k">Pass mark</div><div class="v">50% overall</div></div>
+    </div>
+  </div>
+
+  <section class="block" id="objectives">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">01 · What this subject covers</span>
+        <h2>Three ideas, then how to organise them</h2>
+        <p>Weeks 2, 3 and 5 deliver the three concepts every general-purpose program is built from. Add input and output and you can write any program at all. Everything from Week 6 adds <strong>no fourth idea</strong> — it is about keeping those three manageable as programs grow.</p>
+      </div>
+      <div class="parts">
+        <article class="part">
+          <span class="tag">Part 1 · Weeks 1–5</span>
+          <h3>The three basic tools</h3>
+          <p>State, decision and iteration — plus the input and output that connect a program to the world. This is SLO1, and it is the whole foundation.</p>
+          <ul>
+            <li>Simplest working program &amp; output</li>
+            <li>Data types &amp; variables</li>
+            <li>Decisions &amp; branching</li>
+            <li>Arrays &amp; user input</li>
+            <li>Loops &amp; iteration</li>
+          </ul>
+        </article>
+        <article class="part p2">
+          <span class="tag">Part 2 · Weeks 6–12</span>
+          <h3>Organising bigger programs</h3>
+          <p>No new primitives — just structure. Classes, methods, lists, files and inheritance are all ways of keeping state, decision and iteration under control at scale.</p>
+          <ul>
+            <li>Classes &amp; constructors</li>
+            <li>Methods, properties &amp; access control</li>
+            <li>Lists &amp; polymorphism</li>
+            <li>File input and output</li>
+            <li>OO techniques &amp; structures</li>
+            <li>Inheritance &amp; interfaces</li>
+          </ul>
+        </article>
+      </div>
+      <div class="note tip" style="margin-top:1.5rem">
+        <span class="tag">Why two languages</span>
+        <p>Python shows you an idea with the least ceremony. Java shows you what that ceremony buys — types checked before the program runs, and errors caught at compile time rather than in front of a user. Seeing the same concept in both is the fastest way to tell a <em>language feature</em> apart from a <em>programming idea</em>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="outcomes">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">02 · Subject learning outcomes</span>
+        <h2>By the end of the session, you can</h2>
+      </div>
+      <div class="outcomes two">
+        <div class="outcome-group">
+          <h3>Write programs</h3>
+          <ul>
+            <li><span><strong>SLO1</strong> — Apply the basic programming concepts of state, iteration and decision</span></li>
+            <li><span><strong>SLO2</strong> — Solve computational problems using abstract modelling</span></li>
+            <li><span><strong>SLO3</strong> — Design and create simple functioning programs</span></li>
+          </ul>
+        </div>
+        <div class="outcome-group">
+          <h3>Explain programs</h3>
+          <ul>
+            <li><span><strong>SLO4</strong> — Interpret, describe and document programs clearly</span></li>
+            <li><span><strong>SLO5</strong> — Reflect on programming decisions and formulate alternatives</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="note" style="margin-top:1.5rem">
+        <span class="tag">Read this twice</span>
+        <p>Writing code is <strong>55%</strong> of the marks. Explaining and reasoning about code is <strong>45%</strong>. Students who treat this as a subject about typing code are consistently surprised by the other half.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="assessment">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 · Assessment</span>
+        <h2>How the final grade is calculated</h2>
+        <p>Pass mark is 50% overall. All assessments are individual. <strong>Canvas → Assignments is authoritative</strong> for tasks and deadlines.</p>
+      </div>
+      <div class="grade-bar" role="img" aria-label="Grade distribution: lab assessments 30%, code comprehension 25%, project 25%, exam 20%">
+        <div class="seg s-lab">30%</div>
+        <div class="seg s-comp">25%</div>
+        <div class="seg s-proj">25%</div>
+        <div class="seg s-exam">20%</div>
+      </div>
+      <div class="grade-cards">
+        <article class="grade-card">
+          <div class="dot-row"><span class="dot c-lab"></span><span class="pct">30%</span></div>
+          <h3>Lab assessments</h3>
+          <p>Exercises most weeks, marked automatically. <strong>Unlimited attempts</strong> — attempt 1 and attempt 101 score the same — but you must pass <strong>every</strong> test case in an exercise to get its marks. Due 11:55pm the Monday of the following week.</p>
+        </article>
+        <article class="grade-card">
+          <div class="dot-row"><span class="dot c-comp"></span><span class="pct">25%</span></div>
+          <h3>Code comprehension</h3>
+          <p>Four in-person orals, about three minutes each, run during lab classes. You are given a short piece of code and asked about it. <strong>The questions are released beforehand.</strong></p>
+        </article>
+        <article class="grade-card">
+          <div class="dot-row"><span class="dot c-proj"></span><span class="pct">25%</span></div>
+          <h3>Project</h3>
+          <p>One program of roughly 500 lines, built progressively across the session. The only assessment touching all five SLOs, and the only one where you design the structure yourself.</p>
+        </article>
+        <article class="grade-card">
+          <div class="dot-row"><span class="dot c-exam"></span><span class="pct">20%</span></div>
+          <h3>Exam</h3>
+          <p>Take-home, open-book, one day. Tests understanding and application, not recall.</p>
+        </article>
+      </div>
+
+      <div class="note warn" style="margin-top:1.5rem">
+        <span class="tag">Code comprehension · four stages</span>
+        <p>Stage 1 in <strong>Week 4</strong> (5%) · Stage 2 in <strong>Week 7</strong> (5%) · Stage 3 in <strong>Week 11</strong> (7%) · Stage 4 in <strong>Week 12</strong> (8%). Timetabling permitting — confirm on Canvas.</p>
+      </div>
+
+      <div class="note tip">
+        <span class="tag">Optional · 0% · Extension</span>
+        <p>Challenging free-form problems, sometimes requiring research beyond the subject. Worth 0% by itself, but <strong>can substitute for the lab assessments</strong>. Worth considering if the weekly exercises feel easy.</p>
+      </div>
+
+      <div class="note danger">
+        <span class="tag">Academic integrity</span>
+        <p>All submitted code is analysed by similarity tools that examine <strong>how code works</strong>, not how it looks — renaming variables does not help. Researching a concept or an error message is encouraged and expected. Submitting code you cannot explain is not, and four times this session you will be asked to explain code out loud, in person. Reported cases go to a committee, not to teaching staff, and can take months to resolve. <strong>Ask for help early instead.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="schedule">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">04 · Schedule</span>
+        <h2>Twelve weeks at a glance</h2>
+        <p>There is <strong>no lab in Week 1</strong> — lab classes start in Week 2. Weekly topics follow the subject outline; exact assessment scheduling is confirmed on Canvas.</p>
+      </div>
+
+      <div class="phase-label">
+        <span class="name">Part 1 · The three basic tools</span>
+        <span class="rule"></span>
+      </div>
+      <div class="sched">
+        <div class="week">
+          <span class="no" data-week="1">Week 1</span>
+          <span class="topic"><span>Simplest working program, and simple output</span>
+            <span class="langs"><span class="lang java">Java</span><span class="lang python">Python</span></span>
+            <span class="sub">Your first program, variables and types, reading an error message. No lab this week.</span>
+          </span>
+        </div>
+        <div class="week">
+          <span class="no" data-week="2">Week 2</span>
+          <span class="topic"><span>Data types and variables</span>
+            <span class="sub">SLO1 · <strong>state</strong> · labs start this week</span>
+          </span>
+        </div>
+        <div class="week">
+          <span class="no" data-week="3">Week 3</span>
+          <span class="topic"><span>Decisions and branching program flow</span>
+            <span class="sub">SLO1 · <strong>decision</strong></span>
+          </span>
+        </div>
+        <div class="week special midterm">
+          <span class="no" data-week="4">Week 4</span>
+          <span class="topic"><span>Arrays and user input</span><span class="badge">Code comprehension 1 · 5%</span></span>
+        </div>
+        <div class="week">
+          <span class="no" data-week="5">Week 5</span>
+          <span class="topic"><span>Loops and iterative program flow</span>
+            <span class="sub">SLO1 · <strong>iteration</strong> · with Weeks 2 and 3, this completes the foundation</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="phase-label ph2">
+        <span class="name">Part 2 · Organising bigger programs</span>
+        <span class="rule"></span>
+      </div>
+      <div class="sched">
+        <div class="week ph2">
+          <span class="no" data-week="6">Week 6</span>
+          <span class="topic">Classes and constructors</span>
+        </div>
+        <div class="week ph2 special midterm">
+          <span class="no" data-week="7">Week 7</span>
+          <span class="topic"><span>Methods, properties and access control</span><span class="badge">Code comprehension 2 · 5%</span></span>
+        </div>
+        <div class="week ph2">
+          <span class="no" data-week="8">Week 8</span>
+          <span class="topic">Lists and polymorphism</span>
+        </div>
+        <div class="week ph2">
+          <span class="no" data-week="9">Week 9</span>
+          <span class="topic">File input and output</span>
+        </div>
+        <div class="week ph2">
+          <span class="no" data-week="10">Week 10</span>
+          <span class="topic">Object oriented programming techniques and structures</span>
+        </div>
+        <div class="week ph2 special midterm">
+          <span class="no" data-week="11">Week 11</span>
+          <span class="topic"><span>Inheritance and interfaces</span><span class="badge">Code comprehension 3 · 7%</span></span>
+        </div>
+        <div class="week ph2 special midterm">
+          <span class="no" data-week="12">Week 12</span>
+          <span class="topic"><span>Review, and a preview of Programming 2</span><span class="badge">Code comprehension 4 · 8%</span></span>
+        </div>
+      </div>
+
+      <p class="sched-note">Weekly topics come from the subject outline. Lab arrangements, session dates and the exact scheduling of assessments may be adjusted to suit our situation here — where anything differs, announcements and Canvas are authoritative.</p>
+    </div>
+  </section>
+
+  <section class="block" id="materials">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">05 · Materials</span>
+        <h2>Where the subject actually happens</h2>
+        <p>All subject material is on Ed. Work through the Lessons page top to bottom each week — lectures, readings and coding exercises are all there, and <strong>nothing needs installing</strong>: Ed gives you Java and Python in the browser.</p>
+      </div>
+      <div class="materials-grid">
+        <a class="mat-card" href="weeks/week-1.html">
+          <span class="mat-num mono">Week 1</span>
+          <h3>Introduction — Your First Program</h3>
+          <p>What programming is, your first Java and Python programs, variables and types, and how to read an error message when it all goes wrong.</p>
+          <span class="mat-meta mono">6 topics · 20 MCQs · lecture slides</span>
+        </a>
+        <a class="mat-card playground" href="playground.html">
+          <span class="mat-num mono">▶</span>
+          <h3>Playground — run Java and Python</h3>
+          <p>A real JVM and real CPython, running in your browser. Write a program, feed it input, run it. Nothing to install, nothing submitted — break things freely.</p>
+          <span class="mat-meta mono">10 example programs · Java + Python</span>
+        </a>
+        <a class="mat-card playground" href="https://edstem.org/au/courses/41298/lessons">
+          <span class="mat-num mono">▶</span>
+          <h3>Ed — Lessons</h3>
+          <p>Lectures, readings and coding exercises. Run the code in the readings, change things, break things — refreshing restores the original, so you cannot damage anything.</p>
+          <span class="mat-meta mono">Java + Python in the browser</span>
+        </a>
+        <a class="mat-card supp" href="https://edstem.org/au/courses/41298/discussion">
+          <span class="mat-num mono">?</span>
+          <h3>Ed — Discussion board</h3>
+          <p>Search first. Then a new thread, short descriptive title, <strong>public</strong> unless genuinely sensitive, and <strong>no code in the post</strong>. Not monitored over the weekend — get stuck on Friday, not Sunday night.</p>
+          <span class="mat-meta mono">anonymous hides you from students, not staff</span>
+        </a>
+      </div>
+
+      <div class="note" style="margin-top:1.75rem">
+        <span class="tag">Optional local setup</span>
+        <p>You do not need it, but if you want to work offline: <strong>OpenJDK</strong> (the subject uses 23; anything after 14 works), <strong>Python 3</strong> (Ed runs 3.12.7), and VS Code handles both.</p>
+      </div>
+
+      <div class="note tip">
+        <span class="tag">How this subject runs</span>
+        <p>Flipped lectures → readings with runnable examples → practice exercises → a 1.5 hour lab weekly from Week 2 → assessed exercises, plus weekly drop-in sessions. The step people skip: when you get stuck, go back and review <em>that specific topic</em>, then try again.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> · Programming 1</span>
+    <p>September Session 2026 · 6cp · Java and Python · Dr. Xuan-Bach Le · <a href="mailto:le.xuan.bach@hcmut.edu.vn">le.xuan.bach@hcmut.edu.vn</a> · Faculty of Computer Science and Engineering, HCMUT</p>
+    <p style="margin-top:0.5rem">We follow the UTS course format for 41039 Programming 1, as conducted at UTS by Dr. Luke Mathieson. Some details may change to suit our actual situation here.</p>
+  </div>
+</footer>
+<script src="assets/course.js"></script>
+</body>
+</html>

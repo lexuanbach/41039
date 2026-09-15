@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 1 · Introduction — Your First Program · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="41039 Programming 1, Week 1 — what programming is, your first Java and Python program, variables and types, and how to read an error message.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="../index.html">Syllabus</a>
+        <a href="week-1.html" aria-current="page">Week 1</a>
+        <a href="#concepts">Concepts</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#thisweek">This week</a>
+        <a href="../playground.html">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Week 1 · 41039 Programming 1</span>
+        <h1>Introduction — Your First Program</h1>
+        <p class="lede">Today assumes you have never programmed before. You will see more things than we can fully explain, and that is on purpose — Week 1 is about recognising the shape of a program, not mastering it.</p>
+        <div class="meta-chips">
+          <span class="chip"><strong>No lab this week</strong></span>
+          <span class="chip">7 Ed lessons · ~2 hours</span>
+          <span class="chip"><a href="../slides/week-1-slides.pdf">Lecture slides (PDF)</a></span>
+          <span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span>
+        </div>
+      </div>
+      <div class="code-card" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" style="background:#E5645C"></span>
+          <span class="dot" style="background:#E9B44C"></span>
+          <span class="dot" style="background:#6FCF6F"></span>
+          <span class="file">Hello.java</span>
+        </div>
+        <pre><span class="kw">public class</span> <span class="fn">Hello</span> {
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        System.out.println(<span class="str">"Hello 41039!"</span>);
+
+    }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="concepts">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">01 · Concepts</span>
+        <h2>What you should take away</h2>
+        <p>Six ideas, in the order the lecture covers them. Everything here comes from the Week 1 lessons on Ed.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.1</span>What a program is</h3>
+        <p>
+          At the simplest level, programming is <strong>telling a computer what to do</strong>.
+          Once that meant writing the right sequence of zeroes and ones into memory. In
+          <strong>1954</strong> John Backus developed FORTRAN, and the programmer could start
+          caring more about <em>what</em> to do than exactly <em>how</em>.
+        </p>
+        <p>
+          Language design did not stop there — there are now thousands of languages, with
+          hundreds in active use. The history of programming is the history of
+          <strong>raising the level of abstraction</strong>.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.2</span>The three basic tools</h3>
+        <p>Underlying every general-purpose language are three core concepts:</p>
+        <ul>
+          <li><strong>State</strong> — a way of managing what situation the program is in</li>
+          <li><strong>Branching</strong> — choosing which code to execute, usually based on the state</li>
+          <li><strong>Repetition</strong> — repeating a piece of code, controlled by some parameter</li>
+        </ul>
+        <p>
+          Add basic input and output and that is <em>everything</em> you need to build a
+          general-purpose programming language. This is SLO1.
+        </p>
+        <div class="tbl-scroll">
+          <table class="tbl">
+            <thead><tr><th>Concept</th><th>Week</th><th>Topic</th></tr></thead>
+            <tbody>
+              <tr><td><strong>State</strong></td><td class="mono">Week 2</td><td>Data types and variables</td></tr>
+              <tr><td><strong>Branching</strong></td><td class="mono">Week 3</td><td>Decisions and branching program flow</td></tr>
+              <tr><td><strong>Repetition</strong></td><td class="mono">Week 5</td><td>Loops and iterative program flow</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Everything from Week 6 onward — classes, methods, lists, files, inheritance — adds
+          <strong>no fourth idea</strong>. It is about organising these three well as programs
+          get bigger.
+        </p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.3</span>Your first Java program</h3>
+        <p>A Java program is a sequence of <strong>statements</strong> arranged into <strong>blocks</strong>. Blocks nest, and the top level is a <strong>class</strong>.</p>
+        <div class="p1-console" data-lang="java" data-title="Hello, Java"><script type="text/plain" data-role="source">
+public class Hello {
+    public static void main(String[] args) {
+        System.out.println("Hello 41039!");
+    }
+}
+</script></div>
+        <p class="sched-note">Change the message and run it again. Then delete a semicolon and see what the compiler says.</p>
+        <p>You are allowed not to understand some of this yet:</p>
+        <div class="tbl-scroll">
+          <table class="tbl">
+            <thead><tr><th>Token</th><th>What it means</th><th>Explained properly in</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">public</td><td>everything can access this</td><td>Week 7</td></tr>
+              <tr><td class="mono">static</td><td>needs no object to run</td><td>Week 7</td></tr>
+              <tr><td class="mono">void</td><td>returns nothing</td><td>Week 7</td></tr>
+              <tr><td class="mono">String[] args</td><td>an array of Strings</td><td>Week 4</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note warn">
+          <span class="tag">Two rules, not conventions</span>
+          <p>
+            <strong>Java is case sensitive.</strong> <code>bob</code> ≠ <code>Bob</code> ≠
+            <code>BOB</code> ≠ <code>BoB</code>. This will cause most of your errors for the
+            next two weeks. And <strong>the file name must match the public class name</strong>
+            — <code>public class Hello</code> lives in <code>Hello.java</code>. Ed manages files
+            for you, so you may not notice until you compile on your own machine.
+          </p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.4</span>Variables, types and values</h3>
+        <p>
+          A <strong>declaration</strong> is a type followed by a name. <strong>Initialisation</strong>
+          is the <em>first</em> assignment of a value. <strong>Assignment</strong> takes the value on
+          the right and stores it in the variable on the left.
+        </p>
+        <div class="p1-console" data-lang="java" data-title="Declaration, initialisation, assignment"><script type="text/plain" data-role="source">
+public class Variables {
+    public static void main(String[] args) {
+        int a;                // declaration
+        a = 1;                // assignment (and initialisation)
+
+        boolean b = true;     // declaration + initialisation
+        b = false;            // assignment only
+
+        System.out.println("a = " + a);
+        System.out.println("b = " + b);
+
+        // Careful: integer divided by integer gives an integer.
+        System.out.println("7 / 2   = " + (7 / 2));
+        System.out.println("7.0 / 2 = " + (7.0 / 2));
+    }
+}
+</script></div>
+        <div class="note">
+          <span class="tag">Read this out loud, right to left</span>
+          <p>
+            In maths, <code>x = 4</code> <em>asserts</em> that x and 4 are the same thing. In Java,
+            <code>x = 4;</code> <strong>takes the value on the right and stores it on the left</strong>.
+            That is why <code>a = a + 1;</code> is false as maths but completely routine as Java:
+            <em>take a + 1, put it in a</em>.
+          </p>
+        </div>
+        <p>
+          Java has eight primitive types; in practice you will mostly use <code>int</code>,
+          <code>double</code>, <code>char</code> and <code>boolean</code>. Every type is a promise
+          about how big the value can get — an <code>int</code> runs out at 2,147,483,647.
+        </p>
+        <div class="note warn">
+          <span class="tag">Careful</span>
+          <p><code>7 / 2</code> is <code>3</code>, not <code>3.5</code>. Integer divided by integer gives an integer. Use <code>7.0 / 2</code> to get <code>3.5</code>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.5</span>The same ideas in Python</h3>
+        <p>
+          The feature lists of Java and Python are almost identical — object oriented, procedural,
+          imperative, garbage collected. <strong>Only two rows differ</strong>, and they explain
+          nearly everything else you will notice.
+        </p>
+        <div class="tbl-scroll">
+          <table class="tbl">
+            <thead><tr><th></th><th>Java</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Execution</strong></td><td class="mono">compiled</td><td class="mono">interpreted</td></tr>
+              <tr><td><strong>Typing</strong></td><td class="mono">static</td><td class="mono">dynamic</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p1-console" data-lang="python" data-title="Hello, Python"><script type="text/plain" data-role="source">
+print("Hello 41039!")
+</script></div>
+        <p>
+          That is the whole program, because <strong>Python allows code outside of classes</strong>.
+          Java requires everything to live inside one. Java's extra ceremony is not pointless — it
+          buys the ability to detect certain errors <em>before</em> the program runs. The two
+          languages made different bets, and neither is better.
+        </p>
+        <div class="note danger">
+          <span class="tag">Indentation is not decoration</span>
+          <p>
+            Java delimits blocks with <code>{</code> and <code>}</code>, so formatting is cosmetic.
+            <strong>Python uses the indentation itself.</strong> Use four spaces, let the editor do
+            it, and <strong>never mix tabs and spaces</strong> — that produces errors which are
+            invisible on screen. In Java bad indentation is ugly; in Python it is wrong.
+          </p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.6</span>When things go wrong</h3>
+        <p>There are three kinds of error, and only two of them tell you:</p>
+        <ul>
+          <li><strong>Compile-time errors</strong> — the compiler cannot compile your code. <em>It tells you.</em></li>
+          <li><strong>Run-time errors</strong> — the code compiles, then crashes while running. <em>It tells you.</em></li>
+          <li><strong>Logic errors</strong> — it runs perfectly and does the <em>wrong thing</em>. <em>Nothing tells you.</em></li>
+        </ul>
+        <p>A Java compile error tells you four things. Read them in order:</p>
+        <div class="code-card">
+          <div class="bar"><span class="file">compile error</span></div>
+          <pre>WontCompile.java:3: error: cannot find symbol
+        System.out.println("Hi " + userName + " how are you?");
+                                   ^</pre>
+        </div>
+        <div class="p1-console" data-lang="java" data-title="Run it and read the error"><script type="text/plain" data-role="source">
+public class WontCompile {
+    public static void main(String[] args) {
+        System.out.println("Hi " + userName + " how are you?");
+    }
+}
+</script></div>
+        <p>
+          <strong>Which file</strong> → <strong>which line</strong> → <strong>what kind</strong> →
+          <strong>which token</strong> (follow the <code>^</code>). And
+          <code>cannot find symbol</code> means <em>you used a name I have never seen</em> — almost
+          always a typo, a missing declaration, or a capitalisation slip.
+        </p>
+        <div class="note tip">
+          <span class="tag">Two things that will save you</span>
+          <p>
+            <strong>1.</strong> Turn on <strong>Line Numbers</strong> in the Ed editor settings —
+            without them, <code>WontCompile.java:3</code> tells you nothing.
+            <strong>2.</strong> Fix the <em>first</em> error, then recompile. One small bug often
+            produces many messages; errors 2 through 14 are usually downstream of error 1.
+          </p>
+        </div>
+        <p>
+          Python puts the error type <strong>last</strong>, where Java puts it <strong>first</strong>.
+          In a Python traceback, read the last line first.
+        </p>
+        <div class="note">
+          <span class="tag">Not a sign you are bad at this</span>
+          <p>Bugs are an unavoidable part of programming. Everyone gets stuck — the skill being built here is reading what the computer already told you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="quiz">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">02 · Check yourself</span>
+        <h2>Twenty questions on Week 1</h2>
+        <p>Answer them all, then grade. Every question explains its answer — including why the wrong options are wrong. Nothing here is recorded or submitted.</p>
+      </div>
+      <div id="quiz-root"></div>
+    </div>
+  </section>
+
+  <section class="block" id="thisweek">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 · This week</span>
+        <h2>What to actually do</h2>
+      </div>
+      <div class="concept">
+        <p>On Ed, work through all seven Week 1 lessons, top to bottom:</p>
+        <ol>
+          <li>Everything you need to know about Ed — <strong>turn on Line Numbers</strong></li>
+          <li>Everything you need to know about labs</li>
+          <li>An important warning — please read this one properly</li>
+          <li>The Basics of Programming</li>
+          <li>Introduction to Java</li>
+          <li>Introduction to Python</li>
+          <li>Debugging Programs — don't skip it; your first lab throws errors at you</li>
+        </ol>
+        <div class="note tip">
+          <span class="tag">Run the code in the readings</span>
+          <p>Change things. Break things on purpose and read what the error says. Refreshing the page restores the original — <strong>you cannot damage anything</strong>.</p>
+        </div>
+        <div class="note">
+          <span class="tag">Key facts</span>
+          <p>
+            <strong>Nothing needs installing</strong> — Ed gives you Java and Python in the browser.
+            <strong>No lab in Week 1</strong>; labs start Week 2. Assessed lab exercises are due
+            <strong>11:55pm the Monday of the following week</strong>, with unlimited attempts — but
+            you must pass <em>all</em> test cases in an exercise to get its marks.
+          </p>
+        </div>
+      </div>
+      <p class="sched-note">Next week: variables, types, and talking to the user.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <nav class="pagenav" aria-label="Page navigation">
+      <a href="../index.html"><span class="dir">Back</span>Subject outline</a>
+      <a href="../slides/week-1-slides.pdf"><span class="dir">Slides</span>Week 1 lecture (PDF)</a>
+      <a href="https://edstem.org/au/courses/41298/lessons"><span class="dir">Next</span>Week 1 lessons on Ed</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> · Programming 1</span>
+    <p>Week 1 · Introduction — Your First Program · Content from the Week 1 lessons on Ed</p>
+  </div>
+</footer>
+<script src="../assets/runtime.js"></script>
+<script src="../assets/console-ui.js"></script>
+<script src="../assets/w1-data.js"></script>
+<script src="../assets/course.js"></script>
+</body>
+</html>
