@@ -185,6 +185,12 @@
             <span class="t-num">M4</span>
             <span class="t-text"><span class="t-title">History of Python</span><span class="t-meta">8 events &middot; 2 comics</span></span>
           </button>
+          <button class="lesson-tab" role="tab" id="tab-m05"
+            aria-controls="panel-m05" aria-selected="false" tabindex="-1"
+            data-target="m05">
+            <span class="t-num">M5</span>
+            <span class="t-text"><span class="t-title">Critical thinking</span><span class="t-meta">5 thinkers &middot; 6 lessons</span></span>
+          </button>
         </nav>
         </div>
 
@@ -1274,6 +1280,94 @@ print(n + 1)
             <img src="../media/xkcd-1987.png" alt="xkcd comic Python Environment" loading="lazy">
             <figcaption><span class="credit"><a href="https://xkcd.com/1987/">xkcd 1987, <em>Python Environment</em></a>
             &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>. The one good argument for leaving Python in the browser and not installing it at all.</span></figcaption>
+          </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m05"
+          aria-labelledby="tab-m05" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M5</span>Critical thinking</h3>
+
+          <p>This section is not on the syllabus and not examinable. It is here because programming turns out to be the most unforgiving thinking exercise you will ever do: the machine tells you when you are wrong, immediately, every time, and without tact. Everything below is about how to use that.</p>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;The first principle is that you must not fool yourself &mdash; and you are the easiest person to fool.&rdquo;</blockquote>
+            <span class="who">Richard Feynman, <em>Cargo Cult Science</em>, Caltech commencement address, 1974</span>
+          </div>
+
+          <h3 class="read-group-title">Five people, five ideas</h3>
+          <div class="timeline">
+          <div class="tl-item with-img">
+            <div class="tl-year">1974</div>
+            <img src="../media/feynman.png" alt="Richard Feynman" loading="lazy">
+            <div class="tl-body"><h4>Richard Feynman &mdash; do not fool yourself</h4><p>In his Caltech commencement address he named the hardest part of honest work: <em>&ldquo;The first principle is that you must not fool yourself &mdash; and you are the easiest person to fool.&rdquo;</em> In debugging this is literal. You will stare at a line, be certain it is correct, and be wrong. The compiler has no opinion about what you meant.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait: <a href="https://commons.wikimedia.org/wiki/File:Richard_Feynman_1959.png">public domain</a> &middot; <a href="https://calteches.library.caltech.edu/51/2/CargoCult.htm">read the address</a></p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1934</div>
+            <img src="../media/popper.jpg" alt="Karl Popper" loading="lazy">
+            <div class="tl-body"><h4>Karl Popper &mdash; make it falsifiable</h4><p>A claim that nothing could ever disprove is not a strong claim, it is an empty one. The useful move is to ask <em>what would show me I am wrong?</em> &mdash; then go and check that. &ldquo;My code is correct&rdquo; is unfalsifiable; &ldquo;this loop runs three times&rdquo; can be printed and checked in ten seconds.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait: <a href="https://commons.wikimedia.org/wiki/File:Karl_Popper.jpg">Franz Barta</a>, no restrictions</p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1995</div>
+            <img src="../media/sagan.jpg" alt="Carl Sagan" loading="lazy">
+            <div class="tl-body"><h4>Carl Sagan &mdash; a kit for detecting nonsense</h4><p><em>The Demon-Haunted World</em> sets out a &ldquo;baloney detection kit&rdquo;: seek independent confirmation, encourage argument from every side, and prefer the hypothesis that survives testing over the one you like. Every one of those works on a Stack Overflow answer and on a chatbot&rsquo;s.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait: NASA/JPL &mdash; <a href="https://commons.wikimedia.org/wiki/File:Carl_Sagan_Planetary_Society.JPG">public domain</a></p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">2011</div>
+            <img src="../media/kahneman.jpg" alt="Daniel Kahneman" loading="lazy">
+            <div class="tl-body"><h4>Daniel Kahneman &mdash; the confident feeling is not evidence</h4><p><em>Thinking, Fast and Slow</em> separates fast, automatic judgement from slow, effortful reasoning, and shows how reliably the fast one misleads us while feeling certain. The study in section 1.2 is this exactly: developers were <strong>19% slower</strong> with AI and were sure they had been 20% faster. Confidence is a feeling, not a measurement.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait: <a href="https://commons.wikimedia.org/wiki/File:Daniel_Kahneman_(3283955327)_(cropped).jpg">nrkbeta</a>, CC BY-SA 2.0</p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1864</div>
+            <img src="../media/babbage.jpg" alt="Charles Babbage" loading="lazy">
+            <div class="tl-body"><h4>Charles Babbage &mdash; garbage in, garbage out</h4><p>Two members of Parliament asked Babbage whether, if you put the wrong figures into his machine, the right answers would come out. His reply is below. A computer is not a source of truth; it is a very fast way of finding out what your assumptions imply.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait: <a href="https://commons.wikimedia.org/wiki/File:Charles_Babbage_-_1860.jpg">public domain</a></p></div>
+          </div>
+          </div>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;On two occasions I have been asked, &lsquo;Pray, Mr. Babbage, if you put into the machine wrong figures, will the right answers come out?&rsquo; &hellip; I am not able rightly to apprehend the kind of confusion of ideas that could provoke such a question.&rdquo;</blockquote>
+            <span class="who">Charles Babbage, <em>Passages from the Life of a Philosopher</em>, 1864 &mdash; <a href="https://www.gutenberg.org/ebooks/57532">read it free</a></span>
+            <span class="caveat">One questioner sat in the House of Lords and one in the Commons. The complaint is not that they were stupid; it is that they assumed a machine could supply judgement it was never given. People still assume this, now about a different machine.</span>
+          </div>
+
+          <h3 class="read-group-title">Six lessons that transfer straight to debugging</h3>
+          <div class="team-card">
+            <div class="team-meta">Lesson 1</div>
+            <h4>The computer is not conspiring against you</h4>
+            <p>It is doing exactly what you wrote. When behaviour and expectation disagree, the expectation is nearly always the thing that is wrong. Start from that assumption and you will find bugs faster than anyone who starts from &ldquo;this makes no sense&rdquo;.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-meta">Lesson 2</div>
+            <h4>Change one thing at a time</h4>
+            <p>Change three and you have learned nothing about which mattered. This is what a controlled experiment is, scaled down to a text editor.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-meta">Lesson 3</div>
+            <h4>Predict before you run</h4>
+            <p>Say out loud what you expect, <em>then</em> press run. If you were right, you understood it. If you were wrong, you have just found the exact edge of what you know &mdash; which is far more useful than a green tick.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-meta">Lesson 4</div>
+            <h4>&ldquo;It works&rdquo; is not evidence that it is correct</h4>
+            <p>The class-average program in section 3 works perfectly on 74, 75 and 76. Choose the inputs that could <em>expose</em> a fault, not the ones that will pass. A test you knew would pass taught you nothing.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-meta">Lesson 5</div>
+            <h4>Be most suspicious of the confident answer</h4>
+            <p>A chatbot, a top-voted Stack Overflow post and a lecturer all sound equally sure. Fluency is not accuracy. Ask what would have to be true for the answer to be right, then check that one thing.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-meta">Lesson 6</div>
+            <h4>Check the claim &mdash; including the ones on this site</h4>
+            <p>Three stories in this lecture are commonly told wrong, and this page corrects them: Grace Hopper did not coin &ldquo;bug&rdquo;, the line about telescopes is Mike Fellows rather than Dijkstra, and Einstein never warned anyone about the internet. Each of those took about two minutes to check. Do the same to me: every claim here links to its source for exactly that reason.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Where this shows up in your marks</span>
+            <p>The four oral code comprehension checks are not memory tests. You are asked what a piece of code does and why, which is Lesson 3 performed out loud. Students who practise predicting before running find them straightforward; students who have only ever run code until the tick appeared do not.</p>
           </div>
         </section>
         </div>
