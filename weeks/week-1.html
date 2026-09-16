@@ -173,6 +173,18 @@
             <span class="t-num">M2</span>
             <span class="t-text"><span class="t-title">Set up VS Code</span><span class="t-meta">optional &middot; Java + Python</span></span>
           </button>
+          <button class="lesson-tab" role="tab" id="tab-m03"
+            aria-controls="panel-m03" aria-selected="false" tabindex="-1"
+            data-target="m03">
+            <span class="t-num">M3</span>
+            <span class="t-text"><span class="t-title">History of Java</span><span class="t-meta">9 events &middot; 1 comic</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-m04"
+            aria-controls="panel-m04" aria-selected="false" tabindex="-1"
+            data-target="m04">
+            <span class="t-num">M4</span>
+            <span class="t-text"><span class="t-title">History of Python</span><span class="t-meta">8 events &middot; 2 comics</span></span>
+          </button>
         </nav>
         </div>
 
@@ -1029,6 +1041,134 @@ print(n + 1)
             <p>Do not spend an evening fighting an installer. Use Ed or the playground, and bring
             the error to a lab from Week 2 &mdash; setup problems are much faster to solve with
             someone looking at your screen.</p>
+          </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m03"
+          aria-labelledby="tab-m03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M3</span>History of Java</h3>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;Write once, run anywhere.&rdquo;</blockquote>
+            <span class="who">Sun Microsystems' slogan for Java, 1995 &mdash; the promise the whole design was built around</span>
+          </div>
+
+          <div class="timeline">
+          <div class="tl-item with-img">
+            <div class="tl-year">1991</div>
+            <img src="../media/sun-logo.png" alt="Sun Microsystems logo" loading="lazy">
+            <div class="tl-body"><h4>It was for television, not the web</h4><p>James Gosling, Mike Sheridan and Patrick Naughton start the Green Project at Sun Microsystems, aiming at interactive TV and consumer electronics. The language is called <strong>Oak</strong>, after a tree outside Gosling's office.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Sun Microsystems &mdash; <a href="https://commons.wikimedia.org/wiki/File:Sun_Microsystems_logo.svg">public domain</a></p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1992</div>
+            <div class="tl-body"><h4>The Star7</h4><p>Oak is first demonstrated on 3 September 1992 running the Star7: a handheld touchscreen device with an animated guide. Interactive TV never happened. The language outlived the product by thirty years and counting.</p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1995</div>
+            <img src="../media/gosling.jpg" alt="James Gosling" loading="lazy">
+            <div class="tl-body"><h4>Renamed, and aimed at the web</h4><p>&ldquo;Oak&rdquo; was already taken, so the team renamed it after Java coffee. Sun announces Java at SunWorld on <strong>23 May 1995</strong>; <strong>JDK 1.0</strong> ships on 23 January 1996. The pitch is <em>write once, run anywhere</em>: compile to bytecode, run on any machine with a JVM.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">James Gosling &mdash; <a href="https://commons.wikimedia.org/wiki/File:James_Gosling_2008.jpg">Peter Campbell</a>, CC BY-SA 4.0</p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1996</div>
+            <img src="../media/duke.png" alt="Duke, the Java mascot" loading="lazy">
+            <div class="tl-body"><h4>Duke</h4><p>Java gets a mascot, drawn by Joe Palrang. Duke is now open source under a BSD licence &mdash; which is the only reason he can appear on this page.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">sbmehta &mdash; <a href="https://commons.wikimedia.org/wiki/File:Duke_(Java_mascot)_waving.svg">BSD licence</a></p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2006&ndash;07</div>
+            <div class="tl-body"><h4>Java becomes open source</h4><p>Sun releases the JDK under the GPL as <strong>OpenJDK</strong>. Almost every JDK you can download today &mdash; Temurin, Corretto, Zulu, Microsoft's &mdash; is a build of that same codebase.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2010</div>
+            <div class="tl-body"><h4>Oracle buys Sun</h4><p>Oracle acquires Sun Microsystems and inherits Java. Gosling leaves within months.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2014</div>
+            <div class="tl-body"><h4>Java 8, and the language loosens up</h4><p>Lambdas and streams arrive. Java stops being purely &ldquo;everything is a class&rdquo; and borrows from functional programming. Java 8 is still running in production somewhere near you.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2017&rarr;</div>
+            <div class="tl-body"><h4>Six months, forever</h4><p>From Java 9, a feature release every six months, with a long-term-support release every two years: <strong>11, 17, 21, 25</strong>. Ed runs Java 23.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2025</div>
+            <div class="tl-body"><h4>Java admits that week one is hard</h4><p>Java 25 delivers <a href='https://openjdk.org/jeps/512'>JEP 512</a>, letting beginners write <code>void main()</code> without a class around it, after four preview rounds. Thirty years on, the ceremony you meet in section 2 is officially acknowledged as a barrier.</p></div>
+          </div>
+          </div>
+
+          <div class="fig plain fig-narrow">
+            <img src="../media/xkcd-1188.png" alt="xkcd comic Bonding" loading="lazy">
+            <figcaption><span class="credit"><a href="https://xkcd.com/1188/">xkcd 1188, <em>Bonding</em></a>
+            &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>. The comic is literally a Java program: <code>class Ball extends Throwable</code>, and a game of catch played with <code>try</code> and <code>catch</code>.</span></figcaption>
+          </div>
+
+          <div class="note">
+            <span class="tag">On Java&rsquo;s reputation for long names</span>
+            <p>It is real, and the canonical example is real too: the Spring Framework ships a class called
+            <a href="https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/aop/framework/AbstractSingletonProxyFactoryBean.html"><code>AbstractSingletonProxyFactoryBean</code></a>.
+            Nobody is joking. You will not write anything like it this session.</p>
+          </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m04"
+          aria-labelledby="tab-m04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M4</span>History of Python</h3>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;Beautiful is better than ugly. Explicit is better than implicit.
+            Simple is better than complex. &hellip; Readability counts.&rdquo;</blockquote>
+            <span class="who">Tim Peters, <em>The Zen of Python</em> (PEP 20). Type <code>import this</code> into any Python to see all nineteen</span>
+          </div>
+
+          <div class="timeline">
+          <div class="tl-item with-img">
+            <div class="tl-year">1989</div>
+            <img src="../media/guido.jpg" alt="Guido van Rossum" loading="lazy">
+            <div class="tl-body"><h4>A Christmas project</h4><p>Guido van Rossum, at <strong>CWI</strong> in Amsterdam, starts Python in December as a hobby over the holidays &mdash; a successor to a teaching language called <strong>ABC</strong>, keeping its readability but fixing what he found frustrating.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Guido van Rossum &mdash; <a href="https://commons.wikimedia.org/wiki/File:Guido-portrait-2014-drc.jpg">Daniel Stroud</a>, CC BY-SA 4.0</p></div>
+          </div>
+          <div class="tl-item with-img">
+            <div class="tl-year">1991</div>
+            <img src="../media/python-logo.png" alt="The Python logo" loading="lazy">
+            <div class="tl-body"><h4>Python 0.9.0</h4><p>The first public release, in February. It already has functions, exceptions, and the core types you meet in section 4: <code>str</code>, <code>list</code>, <code>dict</code>.</p>
+              <p style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Python Software Foundation &mdash; <a href="https://commons.wikimedia.org/wiki/File:Python_logo_and_wordmark.svg">Commons</a>. Python and the logo are PSF trademarks.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">&mdash;</div>
+            <div class="tl-body"><h4>Named after the comedy, not the snake</h4><p>Van Rossum was reading scripts from <em>Monty Python's Flying Circus</em> and wanted a name that was short and slightly irreverent. The snakes came later, from everyone else. Python's own documentation still uses <em>spam</em> and <em>eggs</em> where other languages use <em>foo</em> and <em>bar</em>.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2000</div>
+            <div class="tl-body"><h4>Python 2.0</h4><p>List comprehensions, cyclic garbage collection and Unicode support. Python starts turning up far outside the places that adopted it first.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2008</div>
+            <div class="tl-body"><h4>Python 3.0, and a decade of pain</h4><p>Released 3 December 2008 and <strong>deliberately not backwards compatible</strong> &mdash; the chance to fix old mistakes, chiefly around text and bytes. Splitting the world in two took eleven years to heal. <code>print</code> stopped being a statement and became a function, which is why so many old examples online do not run.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2018</div>
+            <div class="tl-body"><h4>The BDFL steps down</h4><p>After a bruising argument over PEP 572 (the walrus operator), Van Rossum resigns as <em>Benevolent Dictator For Life</em> on 12 July. Python is now run by an elected Steering Council.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2020</div>
+            <div class="tl-body"><h4>Python 2 ends</h4><p>Support for Python 2.7 stops on <strong>1 January 2020</strong>, twenty years after 2.0. If you find a tutorial using <code>print &quot;hello&quot;</code> without brackets, you have found a fossil.</p></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">Today</div>
+            <div class="tl-body"><h4>Number one</h4><p>Python tops the TIOBE index, largely on the back of data science and machine learning &mdash; fields that barely existed when it was a Christmas project. Ed runs 3.12.7.</p></div>
+          </div>
+          </div>
+
+          <div class="fig plain fig-narrow">
+            <img src="../media/xkcd-353.png" alt="xkcd comic Python" loading="lazy">
+            <figcaption><span class="credit"><a href="https://xkcd.com/353/">xkcd 353, <em>Python</em></a>
+            &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>. This comic is why <code>import antigravity</code> is a real command in Python. Try it in the <a href="../playground.html">playground</a>, then read what it does.</span></figcaption>
+          </div>
+
+          <div class="fig plain fig-wide">
+            <img src="../media/xkcd-1987.png" alt="xkcd comic Python Environment" loading="lazy">
+            <figcaption><span class="credit"><a href="https://xkcd.com/1987/">xkcd 1987, <em>Python Environment</em></a>
+            &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>. The one good argument for leaving Python in the browser and not installing it at all.</span></figcaption>
           </div>
         </section>
         </div>
