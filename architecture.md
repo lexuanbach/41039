@@ -50,6 +50,7 @@ UTS-Programming-I-Website/
 │   ├── course.js           # Shared engine: theme toggle, code-theme toggle, MCQ quiz
 │   ├── runtime.js          # Java + Python execution (CheerpJ / Pyodide)
 │   ├── highlight.js        # Java/Python syntax highlighter (no dependency)
+│   ├── editor.js           # Shared code editor: overlay + line-number gutter
 │   ├── exercises.js        # Auto-graded exercise runner
 │   ├── w1-exercises.js     # Week 1 exercise data (window.WEEK_EXERCISES)
 │   ├── console-ui.js       # The console widget rendered on pages
@@ -203,6 +204,25 @@ declare a `lang`.
 
 To add a language: add a rule table and a `classify()` branch. Keep the
 comments-and-strings-first ordering.
+
+### The code editor (`assets/editor.js`)
+
+`P1Editor.create({lang, value, label})` returns `{shell, textarea, repaint, setLang, setValue}`.
+Both the console and the exercise runner use it, so the alignment is solved once.
+
+Three absolutely-positioned layers inside `.editor-shell`: a `.hl-gutter` of line numbers, a
+highlighted `.hl-layer`, and a transparent `textarea.code-edit` on top. **All three must share
+font, size, line-height, letter-spacing and vertical padding**, or the caret drifts from the
+text and the numbers stop matching their lines. Only horizontal padding differs: the gutter
+owns the left strip (`--gutter-w`) and the other two are inset past it with
+`padding-left: calc(var(--gutter-w) + 0.75rem)`.
+
+Verified pixel-exact — textarea vs layer `scrollWidth`/`scrollHeight` delta 0, and gutter
+line *n* sits at the same y as code line *n* (delta 0.00). **No letter-spacing fudge is
+needed; do not add one.** The gutter widens itself past 99 and 999 lines.
+
+Line numbers matter here beyond polish: Week 1 teaches students to read
+`WontCompile.java:3`, and Ed's own editor has line numbers switched on in lesson 1.
 
 ### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
 

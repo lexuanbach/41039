@@ -43,34 +43,12 @@ window.P1Exercises = (function () {
     head.appendChild(brief);
     card.appendChild(head);
 
-    // editor: same highlighted overlay as the console
-    var shell = el('div', 'editor-shell');
-    var layer = el('pre', 'hl-layer');
-    layer.setAttribute('aria-hidden', 'true');
-    var editor = el('textarea', 'code-edit');
-    editor.spellcheck = false;
-    editor.setAttribute('aria-label', ex.title + ' — code editor');
-    editor.value = ex.starter;
-    shell.appendChild(layer);
-    shell.appendChild(editor);
-    card.appendChild(shell);
-
-    function repaint() {
-      if (window.P1Highlight) P1Highlight.apply(layer, editor.value, ex.lang);
-      layer.scrollTop = editor.scrollTop;
-      layer.scrollLeft = editor.scrollLeft;
-    }
-    editor.addEventListener('input', repaint);
-    editor.addEventListener('scroll', repaint);
-    editor.addEventListener('keydown', function (e) {
-      if (e.key !== 'Tab') return;
-      e.preventDefault();
-      var s = editor.selectionStart, t = editor.selectionEnd;
-      editor.value = editor.value.slice(0, s) + '    ' + editor.value.slice(t);
-      editor.selectionStart = editor.selectionEnd = s + 4;
-      repaint();
+    var ed = P1Editor.create({
+      lang: ex.lang, value: ex.starter, label: ex.title + ' \u2014 code editor'
     });
-    repaint();
+    var editor = ed.textarea;
+    card.appendChild(ed.shell);
+    function repaint() { ed.repaint(); }
 
     var bar = el('div', 'console-bar');
     var runBtn = el('button', 'btn primary', 'Run tests');
@@ -100,7 +78,7 @@ window.P1Exercises = (function () {
     card.appendChild(sol);
 
     resetBtn.addEventListener('click', function () {
-      editor.value = ex.starter;
+      ed.setValue(ex.starter);
       results.textContent = '';
       status.textContent = ex.tests.length + ' test' + (ex.tests.length === 1 ? '' : 's');
       status.className = 'console-status';

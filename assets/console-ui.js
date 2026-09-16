@@ -85,35 +85,15 @@ window.P1Console = (function () {
       host.appendChild(presetRow);
     }
 
-    // ── editor: transparent textarea over a highlighted <pre> ──
-    var shell = el('div', 'editor-shell');
-    var layer = el('pre', 'hl-layer');
-    layer.setAttribute('aria-hidden', 'true');
-    var editor = el('textarea', 'code-edit');
-    editor.spellcheck = false;
-    editor.autocapitalize = 'off';
-    editor.autocomplete = 'off';
-    editor.setAttribute('autocorrect', 'off');
-    editor.setAttribute('aria-label', 'Code editor');
-    editor.value = initial[current];
-    enableTab(editor);
-    shell.appendChild(layer);
-    shell.appendChild(editor);
-    host.appendChild(shell);
+    // ── editor (shared factory: overlay + line-number gutter) ──
+    var ed = P1Editor.create({
+      lang: current, value: initial[current], label: 'Code editor'
+    });
+    var editor = ed.textarea;
+    host.appendChild(ed.shell);
 
-    function repaint() {
-      P1Highlight.apply(layer, editor.value, current);
-      syncScroll();
-    }
-    function syncScroll() {
-      layer.scrollTop = editor.scrollTop;
-      layer.scrollLeft = editor.scrollLeft;
-    }
-    editor.addEventListener('input', repaint);
-    editor.addEventListener('scroll', syncScroll);
-    // Tab insertion and preset loading change .value without firing 'input'.
-    editor.addEventListener('keyup', syncScroll);
-    repaint();
+    function repaint() { ed.repaint(); }
+    function syncScroll() { ed.repaint(); }
 
     // ── stdin ──
     var stdinLabel = el('div', 'console-sub');
@@ -159,8 +139,8 @@ window.P1Console = (function () {
       initial[current] = initial[current];
       sources[current] = editor.value;
       current = l;
-      editor.value = sources[l] !== undefined ? sources[l] : (initial[l] || '');
-      repaint();
+      ed.setLang(l);
+      ed.setValue(sources[l] !== undefined ? sources[l] : (initial[l] || ''));
       if (tabs) Array.prototype.forEach.call(tabs.children, function (b) {
         b.setAttribute('aria-pressed', String(b.textContent === LANG_LABEL[l]));
       });

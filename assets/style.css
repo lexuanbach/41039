@@ -842,12 +842,16 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   overflow: hidden;
   border-top: 1px solid var(--line);
 }
+.editor-shell { --gutter-w: 2.4rem; }
+/* All three layers share every metric that affects where a glyph lands. Only the
+   left padding differs: the gutter owns the left strip, the other two start after it. */
+.editor-shell .hl-gutter,
 .editor-shell .hl-layer,
 .editor-shell textarea.code-edit {
-  position: absolute; inset: 0;
-  margin: 0; width: 100%; height: 100%;
+  position: absolute; top: 0; bottom: 0;
+  margin: 0; height: 100%;
   box-sizing: border-box;
-  padding: 0.9rem 1.05rem;
+  padding-top: 0.9rem; padding-bottom: 0.9rem;
   border: 0;
   font-family: "IBM Plex Mono", "SF Mono", Consolas, monospace;
   font-size: 0.83rem;
@@ -858,6 +862,24 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   letter-spacing: normal;
   font-variant-ligatures: none;
   font-kerning: none;
+}
+.editor-shell .hl-layer,
+.editor-shell textarea.code-edit {
+  left: 0; right: 0; width: 100%;
+  padding-left: calc(var(--gutter-w) + 0.75rem);
+  padding-right: 1.05rem;
+}
+.editor-shell .hl-gutter {
+  left: 0; width: var(--gutter-w);
+  padding-right: 0.55rem; padding-left: 0.35rem;
+  text-align: right;
+  color: var(--code-cm);
+  background: color-mix(in srgb, var(--code-bg) 88%, #FFFFFF);
+  border-right: 1px solid color-mix(in srgb, var(--code-bg) 70%, #FFFFFF);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
 }
 .editor-shell .hl-layer {
   background: var(--code-bg);
@@ -1125,3 +1147,40 @@ body.console-open { overflow: hidden; }
 .team-card p, .team-card li { color: var(--ink-soft); font-size: 0.92rem; }
 .team-card ol, .team-card ul { margin: 0.4rem 0 0 1.2rem; }
 .team-card li { margin-bottom: 0.25rem; }
+
+/* ── Further reading ── */
+.read-grid { display: grid; gap: 0.8rem; }
+.read-card {
+  display: block;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  color: inherit;
+}
+.read-card:hover { border-color: var(--accent); }
+.read-card .kind {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--teal);
+}
+.read-card h4 {
+  font-family: "Archivo", sans-serif;
+  font-size: 0.97rem; font-weight: 700;
+  margin: 0.2rem 0 0.25rem;
+  color: var(--ink);
+}
+.read-card p { font-size: 0.87rem; color: var(--ink-soft); margin: 0; }
+.read-card .host {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem; color: var(--ink-soft);
+  display: block; margin-top: 0.35rem; opacity: 0.85;
+}
+.read-group-title {
+  font-family: "Archivo", sans-serif;
+  font-size: 1rem; font-weight: 700;
+  margin: 1.4rem 0 0.6rem;
+}
+.read-group-title:first-of-type { margin-top: 0.4rem; }

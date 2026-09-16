@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=844fe300">
+<link rel="stylesheet" href="../assets/style.css?v=db929540">
 </head>
 <body>
 <header class="topbar">
@@ -149,6 +149,12 @@
             data-target="s09">
             <span class="t-num">09</span>
             <span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">20 questions</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s10"
+            aria-controls="panel-s10" aria-selected="false" tabindex="-1"
+            data-target="s10">
+            <span class="t-num">10</span>
+            <span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">11 links</span></span>
           </button>
         </nav>
 
@@ -691,6 +697,91 @@ print(n + 1)
 
           <div id="quiz-root"></div>
         </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-s10"
+          aria-labelledby="tab-s10" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">10</span>Further reading</h3>
+
+          <p>None of this is assessed. It is here for the moment a section leaves you curious,
+          and for the claims in the lecture that you should check rather than take my word for.</p>
+
+          <h3 class="read-group-title">Behind the claims in this lecture</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">
+              <span class="kind">Study &middot; section 1.2</span>
+              <h4>Do AI tools actually speed developers up?</h4>
+              <p>The randomised trial behind the 19% figure. Sixteen experienced developers, 246 real issues — and a gap between what they felt and what the stopwatch said.</p>
+              <span class="host">metr.org</span>
+            </a>
+            <a class="read-card" href="https://openjdk.org/jeps/512">
+              <span class="kind">Proposal &middot; section 2.3</span>
+              <h4>JEP 512 — why Java 25 lets you skip the boilerplate</h4>
+              <p>Java's own designers on public static void main: “mysterious and unhelpful”. Short, readable, and oddly comforting in week one.</p>
+              <span class="host">openjdk.org</span>
+            </a>
+            <a class="read-card" href="https://www.abc.net.au/news/2024-08-07/drt-crowdstrike-root-cause-analysis/104193866">
+              <span class="kind">Report &middot; section 5.2</span>
+              <h4>CrowdStrike's root cause analysis</h4>
+              <p>How expecting 20 values and receiving 21 took out 8.5 million machines. The technical write-up is heavier going; this is the readable version.</p>
+              <span class="host">abc.net.au</span>
+            </a>
+            <a class="read-card" href="https://www.sec.gov/newsroom/press-releases/2013-222">
+              <span class="kind">Regulator &middot; section 5.2</span>
+              <h4>SEC — Knight Capital</h4>
+              <p>Four million orders sent to fill 212, from code that had sat dormant since 2005. The official account, not the retelling.</p>
+              <span class="host">sec.gov</span>
+            </a>
+            <a class="read-card" href="https://survey.stackoverflow.co/2025/ai">
+              <span class="kind">Survey &middot; section 6.4</span>
+              <h4>Stack Overflow Developer Survey 2025</h4>
+              <p>84% use AI tools; 3.1% highly trust the output. The AI section is the one worth your time.</p>
+              <span class="host">survey.stackoverflow.co</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">When you want to look something up</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://docs.oracle.com/en/java/javase/23/docs/api/">
+              <span class="kind">Reference</span>
+              <h4>Java API documentation</h4>
+              <p>Every class and method in the standard library. Intimidating at first; indispensable by Week 6. Start with String and Scanner.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/">
+              <span class="kind">Reference</span>
+              <h4>The Python documentation</h4>
+              <p>The tutorial is genuinely good and written for people who are new. The library reference is what you will return to.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://pythontutor.com/">
+              <span class="kind">Tool</span>
+              <h4>Python Tutor</h4>
+              <p>Paste a short program and watch it execute one line at a time, with every variable drawn out. The fastest way to see what assignment really does.</p>
+              <span class="host">pythontutor.com</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">If you want to go further</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://projecteuler.net/">
+              <span class="kind">Practice</span>
+              <h4>Project Euler</h4>
+              <p>Mathematical problems that need a program. Problem 1 is within reach after Week 5 — most of the rest are a long game.</p>
+              <span class="host">projecteuler.net</span>
+            </a>
+            <a class="read-card" href="https://xkcd.com/">
+              <span class="kind">Comics</span>
+              <h4>xkcd</h4>
+              <p>Where the comics in this lecture come from. The archive is a reasonable education in programming culture by itself.</p>
+              <span class="host">xkcd.com</span>
+            </a>
+            <a class="read-card" href="https://www.computerhistory.org/tdih/september/9/">
+              <span class="kind">Reading</span>
+              <h4>Hopper's moth, and the myth around it</h4>
+              <p>The Computer History Museum on 9 September 1947. Useful practice at checking a story everyone repeats &mdash; Hopper did not coin the word.</p>
+              <span class="host">computerhistory.org</span>
+            </a>
+          </div>
+        </section>
         </div>
       </div>
     </div>
@@ -789,10 +880,11 @@ print(n + 1)
 </footer>
 <script src="../assets/runtime.js?v=dbe48a15"></script>
 <script src="../assets/highlight.js?v=88b90c66"></script>
-<script src="../assets/console-ui.js?v=3afebf99"></script>
+<script src="../assets/editor.js?v=b445c2da"></script>
+<script src="../assets/console-ui.js?v=9a1259a2"></script>
 <script src="../assets/w1-data.js?v=84ccca87"></script>
 <script src="../assets/w1-exercises.js?v=b3fdff62"></script>
-<script src="../assets/exercises.js?v=fff7bc25"></script>
+<script src="../assets/exercises.js?v=fde17cc5"></script>
 <script src="../assets/course.js?v=5b2f4e11"></script>
 </body>
 </html>
