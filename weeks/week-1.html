@@ -167,6 +167,12 @@
             <span class="t-num">M1</span>
             <span class="t-text"><span class="t-title">History of computing</span><span class="t-meta">9 events &middot; 8 images</span></span>
           </button>
+          <button class="lesson-tab" role="tab" id="tab-m02"
+            aria-controls="panel-m02" aria-selected="false" tabindex="-1"
+            data-target="m02">
+            <span class="t-num">M2</span>
+            <span class="t-text"><span class="t-title">Set up VS Code</span><span class="t-meta">optional &middot; Java + Python</span></span>
+          </button>
         </nav>
         </div>
 
@@ -914,6 +920,116 @@ print(n + 1)
             </div>
           </div>
 
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m02"
+          aria-labelledby="tab-m02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M2</span>Running Java and Python on your own machine</h3>
+
+          <div class="note warn">
+            <span class="tag">You do not need any of this</span>
+            <p>Ed gives you Java and Python in the browser, and Ed is what your marks come from.
+            So is the <a href="../playground.html">playground</a> on this site. Install things
+            locally only if you want to &mdash; and if you do, do it when you are <em>not</em>
+            against a deadline.</p>
+          </div>
+
+          <h3 class="read-group-title">The short way (Windows and macOS)</h3>
+          <p>Microsoft ship a single installer that sets up VS Code, a JDK and the Java extensions
+          together. If you only want Java working, this is the whole job:</p>
+          <div class="read-grid">
+            <a class="read-card" href="https://code.visualstudio.com/docs/java/java-tutorial">
+              <span class="kind">Recommended &middot; Java</span>
+              <h4>Coding Pack for Java</h4>
+              <p>VS Code + the JDK + the Java extension pack, in one download. Windows and macOS
+              only; on Linux install the three pieces separately, below.</p>
+              <span class="host">code.visualstudio.com</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">The longer way, in four steps</h3>
+
+          <div class="tl-item">
+            <div class="tl-year">1</div>
+            <div class="tl-body">
+              <h4>Install VS Code</h4>
+              <p>Download it from <a href="https://code.visualstudio.com/download">code.visualstudio.com/download</a>
+              and pick your operating system. On Windows, tick <em>Add to PATH</em> when the
+              installer offers it.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2</div>
+            <div class="tl-body">
+              <h4>Install a JDK, for Java</h4>
+              <p>VS Code runs Java code but does not include Java itself. Get a JDK from
+              <a href="https://adoptium.net/">Adoptium (Temurin)</a>. Ed runs <strong>Java
+              23</strong>; anything from 17 upwards behaves identically for everything in this
+              subject. Check it worked by opening a terminal and running
+              <code>java -version</code>.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">3</div>
+            <div class="tl-body">
+              <h4>Install Python 3</h4>
+              <p>From <a href="https://www.python.org/downloads/">python.org/downloads</a>. Ed runs
+              <strong>3.12.7</strong>; any recent 3.x is fine. <strong>On Windows, tick &ldquo;Add
+              python.exe to PATH&rdquo;</strong> on the first screen of the installer &mdash;
+              missing that box is the single most common reason <code>python</code> is
+              &ldquo;not recognised&rdquo; afterwards. Check with <code>python --version</code>,
+              or <code>python3 --version</code> on macOS.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">4</div>
+            <div class="tl-body">
+              <h4>Add the two extensions</h4>
+              <p>In VS Code press <code>Ctrl+Shift+X</code> (<code>Cmd+Shift+X</code> on macOS) to
+              open Extensions, then install:</p>
+              <ul>
+                <li><a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack"><strong>Extension Pack for Java</strong></a>
+                  &mdash; Microsoft. Bundles Red Hat's language support, the debugger, the test
+                  runner, Maven and project tools.</li>
+                <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python"><strong>Python</strong></a>
+                  &mdash; Microsoft. Pulls in Pylance for completion and error checking.</li>
+              </ul>
+            </div>
+          </div>
+
+          <h3 class="read-group-title">Running your first file</h3>
+          <p>Make a folder, open it with <strong>File &rarr; Open Folder</strong>, and put your
+          code inside it. Opening a single loose file works less well than opening the folder
+          that contains it &mdash; the Java extension wants a folder to treat as the project.</p>
+          <ul>
+            <li><strong>Java:</strong> create <code>Hello.java</code>, then press the
+              <strong>&#9654; Run</strong> button above <code>main</code>, or <code>F5</code>.</li>
+            <li><strong>Python:</strong> create <code>hello.py</code>, then press
+              <strong>&#9654;</strong> at the top right, or <code>F5</code>.</li>
+          </ul>
+
+          <div class="note danger">
+            <span class="tag">Four things that catch people out</span>
+            <ul>
+              <li><strong>The file name must match the public class name.</strong>
+                <code>public class Hello</code> must live in <code>Hello.java</code>. Ed hides this
+                from you; your own machine will not.</li>
+              <li><strong><code>python</code> vs <code>python3</code>.</strong> On macOS and Linux
+                the command is usually <code>python3</code>. If <code>python</code> opens something
+                ancient or nothing at all, that is why.</li>
+              <li><strong>&ldquo;java is not recognised&rdquo;</strong> means the JDK is not on your
+                PATH. Reinstall and let the installer add it, or use the Coding Pack.</li>
+              <li><strong>Your local Java version is not Ed's.</strong> Code that runs on your
+                machine can still fail on Ed, and <strong>Ed is what is marked</strong>. Submit
+                there and check the result.</li>
+            </ul>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">If it goes wrong</span>
+            <p>Do not spend an evening fighting an installer. Use Ed or the playground, and bring
+            the error to a lab from Week 2 &mdash; setup problems are much faster to solve with
+            someone looking at your screen.</p>
+          </div>
         </section>
         </div>
       </div>
