@@ -1184,3 +1184,73 @@ body.console-open { overflow: hidden; }
   margin: 1.4rem 0 0.6rem;
 }
 .read-group-title:first-of-type { margin-top: 0.4rem; }
+
+/* ── Second nav block under the section rail ── */
+.lesson-side { display: flex; flex-direction: column; gap: 0.8rem; position: sticky; top: 4.5rem; }
+.lesson-side .lesson-nav { position: static; }
+.nav-group-label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.66rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 0.45rem 0.6rem 0.2rem;
+}
+.lesson-nav.misc .lesson-tab[aria-selected="true"] {
+  background: color-mix(in srgb, var(--teal) 12%, transparent);
+  border-left-color: var(--teal);
+}
+.lesson-nav.misc .lesson-tab .t-num { color: var(--teal); }
+@media (max-width: 900px) {
+  .lesson-side { position: static; }
+  .lesson-side .lesson-nav { flex-direction: row; overflow-x: auto; }
+  .nav-group-label { padding: 0.2rem 0.2rem 0; }
+}
+
+/* ── Timeline ── */
+.timeline { display: grid; gap: 0.1rem; margin: 1rem 0 1.4rem; }
+.tl-item {
+  display: grid; grid-template-columns: 4.5rem minmax(0, 1fr);
+  gap: 1rem; padding: 0.7rem 0;
+  border-top: 1px solid var(--line);
+}
+.tl-item:last-child { border-bottom: 1px solid var(--line); }
+.tl-year {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.95rem; font-weight: 600; color: var(--accent);
+}
+.tl-body h4 {
+  font-family: "Archivo", sans-serif; font-size: 0.97rem; font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+.tl-body p { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+.tl-item.with-img { grid-template-columns: 4.5rem 7rem minmax(0, 1fr); }
+.tl-item.with-img img {
+  width: 100%; height: auto; max-height: 7rem; object-fit: cover;
+  border-radius: 6px; background: #FFFFFF;
+}
+@media (max-width: 640px) {
+  .tl-item, .tl-item.with-img { grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.7rem; }
+  .tl-item.with-img img { display: none; }
+}
+
+/* ── Pull quotes ── */
+.pullquote {
+  border-left: 3px solid var(--teal);
+  background: color-mix(in srgb, var(--teal) 6%, var(--surface));
+  border-radius: 0 10px 10px 0;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+}
+.pullquote blockquote {
+  font-size: 1.02rem; line-height: 1.55; color: var(--ink);
+  margin: 0 0 0.5rem; font-style: italic;
+}
+.pullquote .who {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem; color: var(--ink-soft);
+}
+.pullquote .caveat {
+  display: block; margin-top: 0.5rem;
+  font-size: 0.82rem; color: var(--ink-soft);
+  font-style: normal;
+}

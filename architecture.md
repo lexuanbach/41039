@@ -266,9 +266,15 @@ Each follows the same spine:
    `history.replaceState`, so a section can be linked to and survives a reload.
 
    The rail holds more than the lecture: after the deck's sections come **Coding exercises**
-   (`#s07`), **Team activity** (`#s08`) and the **Quiz** (`#s09`). Keeping them as tabs rather
-   than separate page sections means one consistent place to navigate, and the quiz no longer
-   sits kilometres below the content it tests.
+   (`#s07`), **Team activity** (`#s08`), the **Quiz** (`#s09`) and **Further reading** (`#s10`).
+   Keeping them as tabs rather than separate page sections means one consistent place to
+   navigate, and the quiz no longer sits kilometres below the content it tests.
+
+   Below that rail sits a **second `.lesson-nav.misc`** for off-syllabus material — Week 1's is
+   *History of computing* (`#m01`), with `m` ids to keep it distinct from the numbered sections
+   and teal accents so it reads as a different kind of thing. **`initLesson()` collects tabs
+   across every `.lesson-nav` inside `.lesson`**, not just the first, so both rails drive the
+   one content pane and arrow keys cross the boundary. Adding a third rail needs no JS change.
 
    Panels are hidden with the `hidden` attribute, not `display:none` on a parent, and consoles
    mount at load regardless of visibility — the editor shell has an explicit height, so a

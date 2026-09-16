@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=db929540">
+<link rel="stylesheet" href="../assets/style.css?v=3dcacb41">
 </head>
 <body>
 <header class="topbar">
@@ -95,6 +95,7 @@
       </div>
 
       <div class="lesson">
+        <div class="lesson-side">
         <nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">
           <button class="lesson-tab" role="tab" id="tab-s01"
             aria-controls="panel-s01" aria-selected="true" tabindex="0"
@@ -157,6 +158,17 @@
             <span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">11 links</span></span>
           </button>
         </nav>
+
+        <nav class="lesson-nav misc" role="tablist" aria-label="Miscellaneous" aria-orientation="vertical">
+          <div class="nav-group-label">Miscellaneous</div>
+          <button class="lesson-tab" role="tab" id="tab-m01"
+            aria-controls="panel-m01" aria-selected="false" tabindex="-1"
+            data-target="m01">
+            <span class="t-num">M1</span>
+            <span class="t-text"><span class="t-title">History of computing</span><span class="t-meta">9 events &middot; 8 images</span></span>
+          </button>
+        </nav>
+        </div>
 
         <div class="lesson-content">
         <section class="lesson-panel" role="tabpanel" id="panel-s01"
@@ -782,6 +794,113 @@ print(n + 1)
             </a>
           </div>
         </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m01"
+          aria-labelledby="tab-m01" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M1</span>History of computing</h3>
+
+          <p>None of this is examinable. It is here because the ideas in section 1 have a history,
+          and because knowing where <code>public static void main</code> came from makes it feel
+          less arbitrary.</p>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;The Analytical Engine weaves algebraic patterns just as the
+            Jacquard-loom weaves flowers and leaves.&rdquo;</blockquote>
+            <span class="who">Ada Lovelace, Note A to her 1843 translation of Menabrea&rsquo;s
+            paper on the Analytical Engine</span>
+          </div>
+
+          <h3 class="read-group-title">Key events</h3>
+          <div class="timeline">
+            <div class="tl-item with-img">
+              <div class="tl-year">1843</div>
+              <img src="../media/ada-lovelace.jpg" alt="Portrait of Ada Lovelace" loading="lazy">
+              <div class="tl-body"><h4>The first program, for a machine that was never built</h4><p>Ada Lovelace publishes a set of Notes on Babbage's Analytical Engine. Note G contains a step-by-step method for computing Bernoulli numbers &mdash; widely regarded as the first published algorithm intended for a machine. She also saw further than Babbage: that such a machine might manipulate symbols, not just numbers.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Portrait by A. E. Chalon &mdash; <a href="https://commons.wikimedia.org/wiki/File:Ada_Lovelace_portrait.jpg">public domain</a></p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1837&ndash;71</div>
+              <img src="../media/analytical-engine.jpg" alt="Part of Babbage's Analytical Engine" loading="lazy">
+              <div class="tl-body"><h4>The Analytical Engine</h4><p>Charles Babbage designs a general-purpose mechanical computer with a store, a mill, and punched-card input. He never finished it. The design was essentially correct.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">Science Museum &mdash; <a href="https://commons.wikimedia.org/wiki/File:Babbages_Analytical_Engine,_1834-1871._(9660574685).jpg">photo</a>, CC BY-SA 2.0</p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1936</div>
+              <img src="../media/turing.jpg" alt="Alan Turing at 16" loading="lazy">
+              <div class="tl-body"><h4>What a computer can and cannot do</h4><p>Alan Turing's paper <em>On Computable Numbers</em> defines a simple abstract machine and proves there are questions no machine can answer. Written nine years before a working electronic computer existed.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem"><a href="https://commons.wikimedia.org/wiki/File:Alan_Turing_Aged_16.jpg">public domain</a></p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1945&ndash;46</div>
+              <img src="../media/eniac.jpg" alt="Two programmers at the ENIAC" loading="lazy">
+              <div class="tl-body"><h4>ENIAC, and its programmers</h4><p>One of the first general-purpose electronic computers. Its six primary programmers &mdash; Betty Snyder, Betty Jean Jennings, Kay McNulty, Marlyn Wescoff, Fran Bilas and Ruth Lichterman &mdash; were women, and were largely written out of the story for decades.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">US Army &mdash; <a href="https://commons.wikimedia.org/wiki/File:Eniac.jpg">public domain</a></p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1947</div>
+              <img src="../media/moth-logbook-crop.jpg" alt="The 1947 logbook page" loading="lazy">
+              <div class="tl-body"><h4>A moth, in Relay #70</h4><p>Operators on the Harvard Mark II tape a moth into the logbook: &ldquo;First actual case of bug being found.&rdquo; The word <em>bug</em> was already decades old &mdash; which is the joke.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem">NSWC Dahlgren &mdash; <a href="https://commons.wikimedia.org/wiki/File:H96566k.jpg">public domain</a></p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1954</div>
+              <img src="../media/punched-card.jpg" alt="A FORTRAN punched card" loading="lazy">
+              <div class="tl-body"><h4>FORTRAN, and the end of writing machine code</h4><p>John Backus's team at IBM builds a language where you write a formula instead of moving registers by hand. Every abstraction you will use this session descends from this bet.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem"><a href="https://commons.wikimedia.org/wiki/File:FortranCardPROJ039.agr.jpg">Arnold Reinhold</a>, CC BY-SA 2.5</p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1991</div>
+              <img src="../media/guido.jpg" alt="Guido van Rossum" loading="lazy">
+              <div class="tl-body"><h4>Python</h4><p>Guido van Rossum releases Python, designed around readability &mdash; which is why your first Python program is one line and your first Java program is six.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem"><a href="https://commons.wikimedia.org/wiki/File:Guido-portrait-2014-drc.jpg">Daniel Stroud</a>, CC BY-SA 4.0</p>
+              </div>
+            </div>
+            <div class="tl-item with-img">
+              <div class="tl-year">1995</div>
+              <img src="../media/gosling.jpg" alt="James Gosling" loading="lazy">
+              <div class="tl-body"><h4>Java</h4><p>James Gosling's team at Sun releases Java: statically typed, garbage collected, and built to run the same program on any machine. The ceremony you will meet in week one is the price of those promises.</p>
+                <p class="host" style="font-family:'IBM Plex Mono',monospace;font-size:0.7rem;opacity:0.8;margin-top:0.3rem"><a href="https://commons.wikimedia.org/wiki/File:James_Gosling_2008.jpg">Peter Campbell</a>, CC BY-SA 4.0</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-year">2025</div>
+              <div class="tl-body"><h4>The argument you walked in with</h4><p>A randomised trial finds experienced developers were 19% slower with AI assistance while believing they were 20% faster. The history of programming is the history of raising abstraction &mdash; and of arguing about what the new abstraction costs.</p></div>
+            </div>
+          </div>
+
+          <h3 class="read-group-title">Two quotes, and a warning about quotes</h3>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;Most people find the concept of programming obvious, but the doing
+            impossible.&rdquo;</blockquote>
+            <span class="who">Alan Perlis, <em>Epigrams on Programming</em>, ACM SIGPLAN Notices, 1982</span>
+          </div>
+
+          <div class="pullquote">
+            <blockquote>&ldquo;Computer science is no more about computers than astronomy is about
+            telescopes.&rdquo;</blockquote>
+            <span class="who">Mike Fellows &mdash; not Dijkstra</span>
+            <span class="caveat">You will see this attributed to Edsger Dijkstra almost everywhere.
+            It appears to originate with <strong>Mike Fellows</strong>, in an article co-authored
+            with Ian Parberry in <em>Computing Research News</em>, 1993. Dijkstra probably heard it
+            from him. Like the moth, it is a story worth checking before repeating &mdash;
+            <a href="https://quoteinvestigator.com/2021/04/02/computer-science/">Quote
+            Investigator traces it</a>.</span>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">The habit worth taking from this</span>
+            <p>Three times in this lecture a famous story turned out to be slightly wrong: Hopper
+            did not coin &ldquo;bug&rdquo;, Dijkstra did not write that line about telescopes, and
+            the ENIAC programmers were not the assistants history recorded them as. Checking a
+            claim costs two minutes. Repeating a wrong one costs your credibility.</p>
+          </div>
+        </section>
         </div>
       </div>
     </div>
@@ -885,6 +1004,6 @@ print(n + 1)
 <script src="../assets/w1-data.js?v=84ccca87"></script>
 <script src="../assets/w1-exercises.js?v=b3fdff62"></script>
 <script src="../assets/exercises.js?v=fde17cc5"></script>
-<script src="../assets/course.js?v=5b2f4e11"></script>
+<script src="../assets/course.js?v=e68aea7e"></script>
 </body>
 </html>

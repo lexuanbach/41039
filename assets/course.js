@@ -196,9 +196,13 @@
 
   // ───────── lecture sections: list on the left, one panel on the right ─────────
   function initLesson() {
-    var nav = document.querySelector('.lesson-nav');
-    if (!nav) return;
-    var tabs = Array.prototype.slice.call(nav.querySelectorAll('.lesson-tab'));
+    var lesson = document.querySelector('.lesson');
+    if (!lesson) return;
+    // Tabs live in more than one rail (lecture sections, then Miscellaneous), but
+    // they all drive the same content pane, so collect them across every nav.
+    var navs = Array.prototype.slice.call(lesson.querySelectorAll('.lesson-nav'));
+    var tabs = Array.prototype.slice.call(lesson.querySelectorAll('.lesson-tab'));
+    if (!navs.length) return;
     var panels = tabs.map(function (t) {
       return document.getElementById('panel-' + t.dataset.target);
     });
@@ -221,7 +225,7 @@
         else location.hash = id;
       }
       if (opts.scroll) {
-        var top = document.querySelector('.lesson').getBoundingClientRect().top + window.pageYOffset - 80;
+        var top = lesson.getBoundingClientRect().top + window.pageYOffset - 80;
         window.scrollTo({ top: top, behavior: 'auto' });
       }
       current = idx;
@@ -233,7 +237,9 @@
       t.addEventListener('click', function () { select(i, { scroll: true }); });
     });
 
-    // Up/Down (and Left/Right on the narrow strip) move between sections.
+    // Up/Down (and Left/Right on the narrow strip) move between sections, and
+    // across the boundary between the two rails.
+    navs.forEach(function (nav) {
     nav.addEventListener('keydown', function (ev) {
       var k = ev.key, next = null;
       if (k === 'ArrowDown' || k === 'ArrowRight') next = current + 1;
@@ -243,6 +249,7 @@
       if (next === null) return;
       ev.preventDefault();
       select(next, { focusTab: true });
+    });
     });
 
     // Previous / next buttons at the foot of each panel.

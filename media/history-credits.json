@@ -1,0 +1,27 @@
+{
+ "ada-lovelace": {
+  "licence": "Public domain",
+  "artist": "Alfred Edward Chalon",
+  "page": "https://commons.wikimedia.org/wiki/File%3AAda_Lovelace_portrait.jpg"
+ },
+ "turing": {
+  "licence": "Public domain",
+  "artist": "Possibly Arthur Reginald Chaffin (1893-1954)",
+  "page": "https://commons.wikimedia.org/wiki/File%3AAlan_Turing_Aged_16.jpg"
+ },
+ "analytical-engine": {
+  "licence": "CC BY-SA 2.0",
+  "artist": "Charles Babbage",
+  "page": "https://commons.wikimedia.org/wiki/File%3ABabbages_Analytical_Engine%2C_1834-1871._%289660574685%29.jpg"
+ },
+ "guido": {
+  "licence": "CC BY-SA 4.0",
+  "artist": "Photograph by Daniel Stroud, first retouched version uploade",
+  "page": "https://commons.wikimedia.org/wiki/File%3AGuido-portrait-2014-drc.jpg"
+ },
+ "gosling": {
+  "licence": "CC BY-SA 4.0",
+  "artist": "Peter Campbell",
+  "page": "https://commons.wikimedia.org/wiki/File%3AJames_Gosling_2008.jpg"
+ }
+}
