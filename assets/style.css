@@ -1254,3 +1254,18 @@ body.console-open { overflow: hidden; }
   font-size: 0.82rem; color: var(--ink-soft);
   font-style: normal;
 }
+
+/* A misattributed quote shown beside its portrait — the meme format, as the point */
+.pullquote.misquote { border-left-color: var(--amber); background: color-mix(in srgb, var(--amber) 6%, var(--surface)); }
+.misquote-body { display: grid; grid-template-columns: minmax(0, 1fr) 8.5rem; gap: 1.1rem; align-items: start; }
+.misquote-fig { margin: 0; }
+.misquote-fig img { width: 100%; height: auto; border-radius: 8px; display: block; }
+.misquote-fig figcaption { margin-top: 0.4rem; }
+.misquote-fig .credit {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.68rem; line-height: 1.45; color: var(--ink-soft);
+}
+@media (max-width: 640px) {
+  .misquote-body { grid-template-columns: minmax(0, 1fr); }
+  .misquote-fig { max-width: 8.5rem; }
+}
