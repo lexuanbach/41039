@@ -171,7 +171,7 @@
             aria-controls="panel-m02" aria-selected="false" tabindex="-1"
             data-target="m02">
             <span class="t-num">M2</span>
-            <span class="t-text"><span class="t-title">Set up VS Code</span><span class="t-meta">optional &middot; Java + Python</span></span>
+            <span class="t-text"><span class="t-title">Set up VS Code</span><span class="t-meta">optional &middot; + Copilot</span></span>
           </button>
           <button class="lesson-tab" role="tab" id="tab-m03"
             aria-controls="panel-m03" aria-selected="false" tabindex="-1"
@@ -1034,6 +1034,111 @@ print(n + 1)
                 machine can still fail on Ed, and <strong>Ed is what is marked</strong>. Submit
                 there and check the result.</li>
             </ul>
+          </div>
+
+
+          <h3 class="read-group-title">GitHub Copilot, if you want it</h3>
+
+          <div class="note danger">
+            <span class="tag">Read this before you install it</span>
+            <p>Copilot will happily write your lab exercises for you, and that is precisely the
+            problem. This subject marks <strong>45% of your grade on explaining code</strong>, in
+            four oral checks, in person. Code you did not write and cannot explain does not survive
+            that conversation, and submitting it is misconduct &mdash; see section 6.</p>
+            <p>There is also evidence it does not help as much as it feels like it does: in a
+            <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">2025
+            randomised trial</a>, experienced developers were <strong>19% slower</strong> with AI
+            assistance while believing they were 20% faster. In week one, when the whole point is
+            building the instinct for what code does, accepting suggestions you do not understand
+            costs you the thing you came for.</p>
+            <p><strong>A workable rule for this subject:</strong> write it yourself first. Use
+            Copilot to explain code, not to produce it &mdash; ask it <em>why</em> this line fails,
+            not <em>what</em> to type. If you cannot rewrite its answer from memory, you have not
+            learned it yet.</p>
+          </div>
+
+          <h4 style="font-family:Archivo,sans-serif;font-size:0.97rem;margin:1.2rem 0 0.5rem">Step 1 &mdash; Get a GitHub account and apply for GitHub Education</h4>
+          <div class="tl-item">
+            <div class="tl-year">1a</div>
+            <div class="tl-body">
+              <h4>Use a personal account</h4>
+              <p>Create or sign in to a <strong>personal</strong> GitHub account &mdash; not one
+              managed by an organisation. You must be 13 or older and enrolled in a degree or
+              diploma programme.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1b</div>
+            <div class="tl-body">
+              <h4>Apply through your benefits settings</h4>
+              <p>Go to <a href="https://education.github.com/pack">education.github.com/pack</a>, or
+              open your GitHub <em>Settings &rarr; Education benefits</em> and choose
+              <strong>Start an application</strong>. Add your academic email address if you have
+              one.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">1c</div>
+            <div class="tl-body">
+              <h4>Prove you are a student</h4>
+              <p>GitHub accepts a <strong>school ID showing an enrolment date</strong>, a
+              <strong>class schedule</strong>, an <strong>academic transcript</strong>, or an
+              <strong>enrolment verification letter</strong>. If HCMUT has not given you an academic
+              email address, say so and upload one of those documents instead &mdash; the
+              <a href="https://docs.github.com/en/education/explore-the-benefits-of-teaching-and-learning-with-github-education/github-education-for-students/apply-to-github-education-as-a-student">official instructions</a> cover that case explicitly.</p>
+            </div>
+          </div>
+
+          <h4 style="font-family:Archivo,sans-serif;font-size:0.97rem;margin:1.2rem 0 0.5rem">Step 2 &mdash; Turn it on in VS Code</h4>
+          <div class="tl-item">
+            <div class="tl-year">2a</div>
+            <div class="tl-body">
+              <h4>Sign in from the Status Bar</h4>
+              <p>In VS Code, hover the <strong>Copilot icon in the Status Bar</strong> at the bottom
+              of the window and choose <strong>Use AI Features</strong>, then pick a sign-in method
+              and follow the prompts. Recent versions of VS Code ship Copilot already built in, so
+              there is usually nothing to install. If you have no subscription, GitHub offers to set
+              up the free plan.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2b</div>
+            <div class="tl-body">
+              <h4>If the icon is not there</h4>
+              <p>Open the Command Palette with <code>Ctrl+Shift+P</code>
+              (<code>Cmd+Shift+P</code> on macOS) and search for the Copilot sign-in command, or
+              install the <strong>GitHub Copilot</strong> extension from the verified GitHub
+              publisher in the Extensions panel.</p>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-year">2c</div>
+            <div class="tl-body">
+              <h4>Using it</h4>
+              <p>Start typing and grey <em>ghost text</em> appears suggesting the rest &mdash;
+              <code>Tab</code> accepts it, <code>Esc</code> dismisses it. The Chat view in the
+              Activity Bar lets you ask questions about the file you have open. <strong>Select a
+              few lines and ask it to explain them</strong>: that is the use worth having this
+              session.</p>
+            </div>
+          </div>
+
+          <div class="note">
+            <span class="tag">What you actually get, and when</span>
+            <p>Student benefits and Copilot plans change more often than any page can keep up with,
+            and approval can take a few days if a human has to read your documents. The
+            authoritative pages are
+            <a href="https://education.github.com/pack">education.github.com/pack</a> and the
+            <a href="https://docs.github.com/en/copilot">Copilot documentation</a> &mdash; check
+            those rather than a blog, including this one.</p>
+          </div>
+
+          <div class="note warn">
+            <span class="tag">Copilot is not on Ed</span>
+            <p>Your assessed exercises are written and marked on Ed, which has no Copilot. If you
+            have only ever written code with suggestions switched on, the lab will feel very
+            different from your editor. That is worth discovering in week one rather than week
+            four.</p>
           </div>
 
           <div class="note tip">
