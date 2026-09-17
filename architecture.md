@@ -40,9 +40,11 @@ UTS-Programming-I-Website/
 ├── playground.html         # Java + Python console with worked example programs
 ├── selftest.html           # Unlisted: verifies both runtimes on a live deployment
 ├── weeks/
-│   └── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
+│   ├── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
+│   └── week-2-3.html       # Weeks 2+3: conditionals, loops, arrays/lists/dicts, 26-question quiz
 ├── slides/
-│   └── week-1-slides.pdf   # Compiled lecture deck (built from ../UTS-Programming I/w1.tex)
+│   ├── week-1-slides.pdf   # Compiled lecture deck (built from ../UTS-Programming I/w1.tex)
+│   └── week-2-3-slides.pdf # Weeks 2+3 deck  (built from ../UTS-Programming I/w23.tex)
 ├── vendor/
 │   └── ecj.jar             # Eclipse batch compiler 3.26.0 — compiles Java in the browser
 ├── assets/
@@ -53,8 +55,10 @@ UTS-Programming-I-Website/
 │   ├── editor.js           # Shared code editor: overlay + line-number gutter
 │   ├── exercises.js        # Auto-graded exercise runner
 │   ├── w1-exercises.js     # Week 1 exercise data (window.WEEK_EXERCISES)
+│   ├── w23-exercises.js    # Weeks 2+3 exercise data (same global)
 │   ├── console-ui.js       # The console widget rendered on pages
-│   └── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
+│   ├── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
+│   └── w23-data.js         # Weeks 2+3 quiz data (same global)
 ├── serve.py                # Dev server WITH Range support — required, see §5
 ├── bump.py                 # Stamps ?v=<hash> on asset links — run before committing
 ├── .nojekyll               # GitHub Pages: serve files as-is
@@ -104,7 +108,7 @@ window.WEEK_DATA = {
 as** the correct answer, so answer length is never a tell. Audit with:
 
 ```bash
-node -e "global.window={};require('./assets/w1-data.js');
+node -e "global.window={};require('./assets/w1-data.js');   # and again for w23-data.js
 const q=window.WEEK_DATA.quiz;let bad=0;
 q.forEach((x,i)=>{const s=t=>String(t).replace(/<[^>]+>/g,'');
  const c=s(x.opts[x.a]).length;
@@ -120,12 +124,33 @@ Runs **real** Java and **real** Python in the browser. Both runtimes are fetched
 CDN on first use only, so a page that never runs code costs nothing.
 
 ```
-await P1Runtime.run('java'|'python', source, stdinText, {onBoot, onOut, onErr})
-   -> { ok: boolean, phase: 'compile' | 'run' | 'boot' }
+await P1Runtime.run('java'|'python', source, stdinText, {onBoot, onOut, onErr}, {interactive?, eof?})
+   -> { ok: boolean, phase: 'compile' | 'run' | 'boot', needInput?: true }
 ```
 
-**Python — Pyodide** (`v314.0.6`, MPL-2.0). `setStdout`/`setStderr` with batched handlers
-feed the output pane. `input()` is served by assigning `sys.stdin = io.StringIO(...)`,
+**Interactive terminal = re-execution.** Neither runtime can block on a prompt in the page's
+thread, so the console's *⌨ Interactive terminal* mode (key `p1-io-mode`, synced between the
+consoles of a page by the `p1-io` event) runs the program with the lines typed so far. With
+`interactive: true`, a program that reads past the end of `stdinText` stops right there and the
+promise resolves `{needInput: true}`; `console-ui.js` shows the output so far with each typed
+line echoed where it was asked for (`marks[]` = output length at each request), plus a live
+prompt, and on Enter runs again with one more line. Programs in this subject are deterministic,
+so the student simply sees a terminal. A multi-line paste is queued in `pending[]` and fed one
+request at a time. `eof: true` (Ctrl+D) disables the stop so the program sees a real end of
+input; Ctrl+C / *Stop* / Reset abandon the session (a `runToken` makes late results harmless).
+- *Java*: the generated `P1Launcher` wraps `System.in`; at end of input it prints a marker
+  (`\u0001P1-NEED-INPUT\u0001`) and throws a private `Error` (Scanner and BufferedReader only
+  catch `IOException`), which the launcher swallows. The mode is read from `/str/p1mode.txt`, so
+  the launcher never needs recompiling. **Compiled classes are cached per source**
+  (`javaCache`), so a re-run skips ecj: ≈ 0.25 s instead of ≈ 1.3 s. Statics start fresh each run.
+- *Python*: `sys.stdin` is a `StringIO` subclass that raises `_P1NeedInput` (a `BaseException`,
+  so `except Exception:` cannot swallow it) from `readline` / `read` / `__next__`. Every run
+  gets a **fresh globals dict**, so a re-run never sees the previous run's variables.
+The auto-graded exercises always use the plain batch path.
+
+**Python — Pyodide** (`v314.0.6`, MPL-2.0). `setStdout`/`setStderr` with raw `write` handlers
+feed the output pane (not `batched`: a prompt without a newline must reach the page before the
+program stops to wait). `input()` is served by assigning `sys.stdin = io.StringIO(...)`,
 which is more predictable than the stdin-callback API. Uncaught exceptions surface the
 **real CPython traceback**; `cleanTraceback()` strips Pyodide's own frames
 (`/lib/python*.zip`, `_pyodide/_base.py`) and renames `<exec>` to `main.py`, so a student
@@ -207,8 +232,35 @@ comments-and-strings-first ordering.
 
 ### The code editor (`assets/editor.js`)
 
-`P1Editor.create({lang, value, label})` returns `{shell, textarea, repaint, setLang, setValue}`.
-Both the console and the exercise runner use it, so the alignment is solved once.
+`P1Editor.create({lang, value, label, fileName?, fullscreen?})` returns
+`{root, shell, textarea, repaint, setLang, setValue, load}`. Both the console and the exercise
+runner use it, so the alignment is solved once. Callers append **`root`** (toolbar + shell).
+
+**The code window (same design as the sibling CO1005 site).** `root` is a `.editor-wrap`
+holding a `.editor-bar` toolbar above the `.editor-shell`:
+- left — *view*: `A− / A+` (program font size, `--code-scale` 0.85–2, key `p1-code-scale`; the
+  editor layers, gutter, stdin and output all multiply their font-size by it), `↩ Wrap`
+  (soft wrap, default on; `data-code-wrap="off"` on `<html>`, key `p1-wrap`) and the code colour
+  theme (same `p1-code-theme` key as the top-bar button, which `editor.js` hides on pages that
+  have a code window). They are site-wide preferences: every toolbar repaints, and every editor
+  re-measures, on the `p1-view` window event.
+- right — *edit/file*: Undo / Redo (own history: the page writes `textarea.value` itself for
+  Tab, Reset, presets and Open…, which wipes the browser's undo stack; typing bursts < 0.7 s
+  collapse into one step; `setValue()` and the returned `repaint()` record a step, `load()`
+  starts a fresh history — used when the language tab changes), `Save…`
+  (`showSaveFilePicker` where available — the reader picks folder and name — else a download;
+  Java files are named after the public class, Python `program.py`; Ctrl/Cmd+S) and `Open…`.
+  Last comes `⛶ Full screen` when the caller passes `fullscreen: () => element` — the element
+  (the whole console / exercise card) gets `.code-fullscreen` and `<body>` gets
+  `.code-fullscreen-open`; Esc leaves.
+
+**Soft wrap.** The highlight layer renders **one `<div class="cl">` per logical line**
+(`splitLines()` closes and reopens a highlight `<span>` that runs across a line break — block
+comments, triple-quoted strings), and the gutter holds one `<div>` per line whose height is
+measured from that block, so a line wrapped over several rows keeps a single number. Both
+layers must wrap at the same column: `layout()` adds the textarea's scrollbar width to the
+highlight layer's right padding, and re-runs on resize, font change and wrap toggle
+(ResizeObserver + `p1-view`).
 
 Three absolutely-positioned layers inside `.editor-shell`: a `.hl-gutter` of line numbers, a
 highlighted `.hl-layer`, and a transparent `textarea.code-edit` on top. **All three must share
@@ -249,6 +301,13 @@ output instead of a diff.
 > every `solution` against every `stdin`, and reports the output; then paste those in. The
 > generator is deliberately not shipped — it is a few lines, and a stale one is worse than
 > none.
+>
+> **A second, faster oracle.** Weeks 2+3's 36 expectations were generated headlessly instead:
+> compile each Java solution with **this repo's own `vendor/ecj.jar`** (`java -jar vendor/ecj.jar
+> -1.8 -g -nowarn -d out X.java`) and run it on any JVM, and run each Python solution on CPython
+> 3.14 — the same compiler the site uses and the same Python line Pyodide ships. That is faithful
+> for stdout, which is all `expect` compares. It cannot exercise CheerpJ's own quirks (stack-trace
+> lines, the console patch), so a **browser pass on the page is still the acceptance test**.
 
 ### Week pages (`weeks/week-N.html`)
 
@@ -305,6 +364,42 @@ public class Hello {
 `<script type="text/plain">` is used rather than `<pre>` so the code needs no HTML
 escaping. Indentation is stripped with `dedent()`, so the block can sit at any depth.
 
+## 3a. Quotations and comics
+
+Both decks and both week pages carry pull-quotes (`.joke` / `\jokebox`) and xkcd comics
+(`.fig` / `\xkcdcredit`). Two rules, both learned the hard way:
+
+**Never print a quotation you have not checked against a primary source.** Programming
+quotations are among the most misattributed text on the internet, and a wrong one means a
+lecturer states a falsehood to a room. A quote-aggregator site is *not* evidence. Every
+quotation on the Weeks 2+3 material was verified against the original — the scanned book on
+archive.org, the CACM PDF, the Wikisource transcription, the actual mailing-list message —
+and the page's Sources section links that primary source for each one. Two candidates that
+verified only through secondary sources (Brooks' *"show me your flowcharts"* and the EWD 831
+wording) were **dropped rather than printed**, because their primary sources could not be
+reached to confirm the exact wording. Dropping a quote costs nothing; there is always another.
+
+**Never hand-write a comic's number, title or year.** xkcd numbers are very easy to
+misremember, and a wrong credit is a licensing problem as well as an embarrassing one. Use:
+
+```bash
+python3 comics/fetch-comic.py 1652 3062 292      # in ../UTS-Programming I/
+```
+
+It fetches `https://xkcd.com/<num>/info.0.json` (authoritative), saves the image to both
+`comics/` (for the decks) and `../UTS-Programming-I-Website/media/` (for the site), and
+records the real title/year/alt text in `comics/meta.json`. Generate credit lines from that
+file. To re-check that every credit still matches the API metadata, compare the `xkcdcredit`
+/ `figcaption` numbers against `comics/meta.json` — all 23 currently match.
+
+xkcd is **CC BY-NC 2.5** and requires attribution: every use carries a credit naming Randall
+Munroe and linking both the comic and the licence. Non-commercial teaching use only.
+
+> **Beamer gotcha.** `\keyline{}` begins with `\vfill` and must be the **last** thing in a
+> frame. A `\jokebox` placed after it silently overflows the frame — eight did, on the first
+> pass. Put quote boxes *above* the keyline, and size comics by their aspect ratio (wide
+> strips by `width=`, tall ones by `height=`), then confirm with the overfull check below.
+
 ## 4. Content invariants
 
 Check these against the subject outline before changing them — they appear in several
@@ -339,6 +434,17 @@ open http://localhost:8000/index.html
 implement; without them the console reports *"HTTP server does not support the 'Range'
 header. CheerpJ cannot run."* `serve.py` is that handler plus Range support. Any real
 static host (GitHub Pages, nginx, Netlify) already supports Range.
+
+**Deck check** — after editing `../UTS-Programming I/w23.tex` (or `w1.tex`):
+
+```bash
+xelatex -interaction=nonstopmode w23.tex && xelatex -interaction=nonstopmode w23.tex
+grep -c 'Overfull \\vbox' w23.log     # must be 0 — an overfull vbox is content off the slide
+grep -c 'Overfull \\hbox' w23.log     # must be 0
+```
+
+Both decks currently report **0 errors and 0 overfull boxes**; keep it that way, because an
+overfull vbox in beamer means text has silently run off the bottom of a slide.
 
 Worth re-running after layout changes:
 
@@ -382,10 +488,13 @@ Python passing locally tells you nothing about whether Java will.
 
 ## 6. Extending
 
-1. **Weeks 2–12.** Copy `weeks/week-1.html`, write `assets/wN-data.js`, add a `.mat-card`
-   on the homepage. Once there are more than two or three week pages, add CO1005's left
-   sidebar (`aside.side` + `.layout`) so navigation does not depend on the topbar — its CSS
-   is in `../CO1005-Website/assets/style.css` under "Left sidebar".
+1. **Weeks 4–12.** Copy `weeks/week-2-3.html`, write `assets/wN-data.js` and
+   `assets/wN-exercises.js`, add a `.mat-card` on the homepage, and link the topic title in that
+   week's `.week` schedule row (the `.week .topic a` rule tints the underline with the row's part
+   colour). **Two week pages exist now** — at the next one or two, add CO1005's left sidebar
+   (`aside.side` + `.layout`) so navigation does not depend on the topbar, because the topnav is
+   already carrying "Week 1" and "Weeks 2–3" and hides entirely below 640px. Its CSS is in
+   `../CO1005-Website/assets/style.css` under "Left sidebar".
 2. **Auto-graded exercises.** The console can already run code and take stdin, so the
    remaining work is a test harness: run the student's program once per test case and
    compare stdout to an expected string. Copy CO1005's `initExercises()` and its

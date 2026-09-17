@@ -17,6 +17,7 @@
 
     /* Code colors are independent of the light/dark site theme — see #code-theme-toggle. */
     --code-bg: #0A111E;
+    --code-gutter: #111B2D;
     --code-text: #D9E4F5;
     --code-caret: #E8EDF6;
     --code-kw: #7DA2FF;
@@ -26,17 +27,19 @@
   }
 
   :root[data-code-theme="paper"] {
-    --code-bg: #F6F8FA;
-    --code-text: #24292F;
-    --code-caret: #24292F;
-    --code-kw: #0550AE;
-    --code-str: #116329;
-    --code-fn: #8A5300;
-    --code-cm: #6E7781;
+    --code-bg: #E6E9ED;
+    --code-gutter: #D6DBE1;
+    --code-text: #1B1F24;
+    --code-caret: #1B1F24;
+    --code-kw: #0A3F8F;
+    --code-str: #0E5A22;
+    --code-fn: #6F4400;
+    --code-cm: #57606A;
   }
 
   :root[data-code-theme="contrast"] {
     --code-bg: #000000;
+    --code-gutter: #161616;
     --code-text: #FFFFFF;
     --code-caret: #FFFFFF;
     --code-kw: #6AB8FF;
@@ -383,6 +386,21 @@
   }
   .week .topic { font-size: 0.95rem; font-weight: 500; }
   .week .sub { display: block; font-size: 0.84rem; font-weight: 400; color: var(--ink-soft); margin-top: 0.1rem; }
+  /* A schedule row whose week has a page on this site links from its topic title.
+     The underline is tinted with the row's own part colour (--wk-c), so the link
+     reads as part of the schedule rather than as loose body-text link. */
+  .week .topic a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--wk-c, var(--accent)) 45%, transparent);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+  }
+  .week .topic a:hover,
+  .week .topic a:focus-visible {
+    color: var(--wk-c, var(--accent));
+    text-decoration-color: var(--wk-c, var(--accent));
+  }
   .week.special {
     background: color-mix(in srgb, var(--wk-c) 7%, var(--surface));
     border-color: color-mix(in srgb, var(--wk-c) 30%, var(--line));
@@ -708,15 +726,15 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
     --code-hl-cm:   #7E8CA8;
   }
   :root[data-code-theme="paper"] {
-    --code-hl-kw:   #A626A4;
-    --code-hl-type: #0184BC;
-    --code-hl-fn:   #986801;
-    --code-hl-str:  #50A14F;
-    --code-hl-chr:  #B76B01;
-    --code-hl-num:  #B76B01;
-    --code-hl-ann:  #E45649;
-    --code-hl-op:   #383A42;
-    --code-hl-cm:   #A0A1A7;
+    --code-hl-kw:   #8A1C88;
+    --code-hl-type: #0B5C8F;
+    --code-hl-fn:   #6F4400;
+    --code-hl-str:  #1F6B24;
+    --code-hl-chr:  #8F4A00;
+    --code-hl-num:  #8F4A00;
+    --code-hl-ann:  #B3261E;
+    --code-hl-op:   #24292F;
+    --code-hl-cm:   #57606A;
   }
   :root[data-code-theme="contrast"] {
     --code-hl-kw:   #FF8AF0;
@@ -764,7 +782,7 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   background: var(--code-bg); color: var(--code-text);
   border: 0; outline: none;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.83rem; line-height: 1.7;
+  font-size: calc(0.83rem * var(--code-scale, 1)); line-height: 1.7;
   padding: 0.9rem 1.05rem;
   tab-size: 4;
 }
@@ -803,7 +821,7 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   margin: 0; padding: 0.9rem 1.05rem;
   background: var(--code-bg); color: var(--code-text);
   font-family: "IBM Plex Mono", monospace;
-  font-size: 0.82rem; line-height: 1.65;
+  font-size: calc(0.82rem * var(--code-scale, 1)); line-height: 1.65;
   white-space: pre-wrap; word-break: break-word;
   overflow: auto;
   resize: vertical;
@@ -854,11 +872,13 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   padding-top: 0.9rem; padding-bottom: 0.9rem;
   border: 0;
   font-family: "IBM Plex Mono", "SF Mono", Consolas, monospace;
-  font-size: 0.83rem;
+  font-size: calc(0.83rem * var(--code-scale, 1));
+  font-weight: 500;
   line-height: 1.7;
   tab-size: 4;
   white-space: pre;
   overflow: auto;
+  word-spacing: 0;
   letter-spacing: normal;
   font-variant-ligatures: none;
   font-kerning: none;
@@ -874,8 +894,9 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   padding-right: 0.55rem; padding-left: 0.35rem;
   text-align: right;
   color: var(--code-cm);
-  background: color-mix(in srgb, var(--code-bg) 88%, #FFFFFF);
-  border-right: 1px solid color-mix(in srgb, var(--code-bg) 70%, #FFFFFF);
+  background: var(--code-gutter, color-mix(in srgb, var(--code-bg) 88%, #FFFFFF));
+  border-right: 1px solid color-mix(in srgb, var(--code-cm) 35%, transparent);
+  font-variant-numeric: tabular-nums;
   overflow: hidden;
   pointer-events: none;
   user-select: none;
@@ -901,7 +922,7 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
 }
 .editor-shell textarea.code-edit:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
-.hl-kw   { color: var(--code-hl-kw); }
+.hl-kw   { color: var(--code-hl-kw); font-weight: 600; }   /* IBM Plex Mono keeps the same advance width in every weight */
 .hl-type { color: var(--code-hl-type); }
 .hl-fn   { color: var(--code-hl-fn); }
 .hl-str  { color: var(--code-hl-str); }
@@ -914,22 +935,75 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
 /* Quiz snippets get the same colours, without an editor around them. */
 pre.qcode .hl-cm { font-style: italic; }
 
-/* ── Full-screen console ── */
-.console.expanded {
-  position: fixed; inset: 1.25rem; z-index: 200;
-  margin: 0; display: flex; flex-direction: column;
-  max-width: none; box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+/* one block per logical line, so a wrapped line keeps a single line number */
+.editor-shell .hl-layer .cl { min-height: 1.7em; }
+/* soft wrap (default). Both layers must wrap identically: same rules here, and editor.js gives
+   the highlight layer the textarea's scrollbar width as extra right padding. */
+:root:not([data-code-wrap="off"]) .editor-shell .hl-layer,
+:root:not([data-code-wrap="off"]) .editor-shell textarea.code-edit {
+  white-space: pre-wrap; overflow-wrap: anywhere; overflow-x: hidden;
 }
-.console.expanded .editor-shell {
-  flex: 1 1 auto; height: auto; min-height: 6rem; resize: none;
+
+/* ── Code-window toolbar: A− A+ · Wrap · theme | Undo · Redo · Save… · Open… ── */
+.editor-wrap { border-top: 1px solid var(--line); }
+.editor-wrap .editor-shell { border-top: 0; }
+.editor-bar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem;
+  padding: 0.4rem 0.75rem; background: var(--surface);
 }
-.console.expanded .console-out { height: 28vh; }
-.console.expanded .console-stdin { height: 4.5rem; }
-body.console-open { overflow: hidden; }
-.expand-btn { margin-left: 0.15rem; }
-@media (max-width: 640px) {
-  .console.expanded { inset: 0; border-radius: 0; }
+.ed-btn {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 600;
+  color: var(--ink-soft); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 7px;
+  padding: 0.22rem 0.55rem; cursor: pointer; white-space: nowrap;
 }
+.ed-btn:hover:not(:disabled) { color: var(--ink); border-color: var(--ink-soft); }
+.ed-btn:disabled { opacity: 0.4; cursor: default; }
+.ed-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.font-size-group { display: flex; }
+.font-size-group .ed-btn:first-child { border-radius: 7px 0 0 7px; }
+.font-size-group .ed-btn:last-child { border-radius: 0 7px 7px 0; margin-left: -1px; }
+.ed-sep { width: 1px; height: 1.1rem; background: var(--line); margin: 0 0.2rem; }
+.ed-note {
+  flex: 1 1 auto; min-width: 0; text-align: right; margin-right: 0.3rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--teal, var(--accent));
+}
+
+/* ── Full-screen code window: the whole console / exercise card is lifted over the page ── */
+body.code-fullscreen-open { overflow: hidden; }
+.code-fullscreen {
+  position: fixed; inset: 0.75rem; z-index: 1000; margin: 0; max-width: none;
+  display: flex; flex-direction: column; overflow: auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 0 0 100vmax rgba(8, 12, 22, 0.6), 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+.code-fullscreen > * { flex: 0 0 auto; }
+.code-fullscreen > .editor-wrap { flex: 1 1 auto; min-height: 12rem; display: flex; flex-direction: column; }
+.code-fullscreen .editor-shell { flex: 1 1 auto; height: auto; min-height: 6rem; max-height: none; resize: none; }
+.console.code-fullscreen .console-out { height: 28vh; }
+.console.code-fullscreen .console-stdin { height: 4.5rem; }
+@media (max-width: 640px) { .code-fullscreen { inset: 0; border-radius: 0; } }
+
+/* ── Input mode switch and the interactive terminal ── */
+.console-io { padding: 0.6rem 0.9rem; border-top: 1px solid var(--line); }
+.console-io + .console-sub { border-top: 0; }
+.io-mode { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.io-mode button { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 600; color: var(--ink-soft); background: none; border: 0; padding: 0.28rem 0.65rem; cursor: pointer; }
+.io-mode button + button { border-left: 1px solid var(--line); }
+.io-mode button[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--accent); }
+.io-mode button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.console-sub[hidden], .console-stdin[hidden] { display: none; }
+.console-out[data-empty]:empty::before { content: attr(data-empty); }
+.console-out .t-in { color: var(--code-kw); font-weight: 600; }
+.console-out .t-field { display: inline-block; min-width: 1ch; outline: none; color: var(--code-kw); font-weight: 600; caret-color: var(--code-text); white-space: pre-wrap; }
+.console-out.is-terminal { cursor: text; }
+.console-out.is-terminal:focus-within { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent); }
+.term-hint { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; padding: 0.45rem 0.9rem; font-size: 0.78rem; color: var(--ink-soft); border-top: 1px solid var(--line); }
+.term-hint[hidden] { display: none; }
+.term-hint kbd { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 0.3rem; background: var(--surface); }
+.term-hint button { font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; font-weight: 600; color: var(--ink-soft); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 0.15rem 0.45rem; cursor: pointer; }
+.term-hint button:hover { color: var(--ink); border-color: var(--ink-soft); }
 
 /* ── Lecture layout: section list on the left, content on the right ── */
 .lesson {
@@ -1085,7 +1159,7 @@ body.console-open { overflow: hidden; }
 }
 .ex-brief { font-size: 0.9rem; color: var(--ink-soft); margin: 0; }
 .ex-brief code { font-size: 0.85em; }
-.ex .editor-shell { height: 12rem; border-top: 1px solid var(--line); }
+.ex .editor-shell { height: 12rem; }
 
 .ex-tests:not(:empty) { border-top: 1px solid var(--line); padding: 0.7rem 1.1rem 0.9rem; }
 .ex-test { border-radius: 8px; padding: 0.5rem 0.7rem; margin-bottom: 0.45rem; }

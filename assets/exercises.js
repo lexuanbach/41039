@@ -44,10 +44,11 @@ window.P1Exercises = (function () {
     card.appendChild(head);
 
     var ed = P1Editor.create({
-      lang: ex.lang, value: ex.starter, label: ex.title + ' \u2014 code editor'
+      lang: ex.lang, value: ex.starter, label: ex.title + ' \u2014 code editor',
+      fullscreen: function () { return card; }
     });
     var editor = ed.textarea;
-    card.appendChild(ed.shell);
+    card.appendChild(ed.root);
     function repaint() { ed.repaint(); }
 
     var bar = el('div', 'console-bar');

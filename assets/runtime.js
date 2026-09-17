@@ -7,9 +7,17 @@
  * Both are fetched from a CDN on first use only, so a page that never runs code
  * costs nothing. See architecture.md for the licensing note on CheerpJ.
  *
- * API:  await P1Runtime.run('java'|'python', source, stdinText, hooks)
+ * API:  await P1Runtime.run('java'|'python', source, stdinText, hooks, opts)
  *       hooks = { onBoot(msg), onOut(text), onErr(text) }
- *       resolves to { ok: boolean, phase: 'compile'|'run' }
+ *       opts  = { interactive, eof }   — see "interactive terminal" below
+ *       resolves to { ok: boolean, phase: 'compile'|'run', needInput?: true }
+ *
+ * Interactive terminal: neither runtime can block on a prompt in the page's thread, so
+ * the console uses RE-EXECUTION. With opts.interactive, a program that reads past the
+ * end of stdinText stops there and the promise resolves { needInput: true }; the console
+ * shows the output so far plus a live prompt, and runs again with one more line. The
+ * compiled Java classes are cached per source, so a re-run skips the compiler.
+ * opts.eof (Ctrl+D) turns the stop off: the program sees a real end of input.
  */
 window.P1Runtime = (function () {
   'use strict';
@@ -118,7 +126,38 @@ window.P1Runtime = (function () {
       .replace(/Exception in thread "Thread-\d+"/g, 'Exception in thread "main"');
   }
 
-  function runJava(src, stdin, hooks) {
+  /* System.in for every Java run. At the end of the supplied text it either reports a real
+     end of input, or — when /str/p1mode.txt says "1" — prints NEED_MARK and unwinds the
+     program with an Error (Scanner and BufferedReader only catch IOException). */
+  var NEED_MARK = '\u0001P1-NEED-INPUT\u0001';
+  function launcherSource(cls) {
+    return 'import java.io.*;\n' +
+      'public class P1Launcher {\n' +
+      '    static class NeedInput extends Error { NeedInput() { super("waiting for input"); } }\n' +
+      '    public static void main(String[] a) throws Exception {\n' +
+      '        final InputStream f = new FileInputStream("/str/stdin.txt");\n' +
+      '        InputStream m = new FileInputStream("/str/p1mode.txt");\n' +
+      '        final boolean wait = m.read() == 49;\n' +
+      '        m.close();\n' +
+      '        System.setIn(new InputStream() {\n' +
+      '            private int end(int n) {\n' +
+      '                if (n >= 0 || !wait) return n;\n' +
+      '                System.out.flush();\n' +
+      '                System.out.print("\\u0001P1-NEED-INPUT\\u0001");\n' +
+      '                System.out.flush();\n' +
+      '                throw new NeedInput();\n' +
+      '            }\n' +
+      '            public int read() throws IOException { return end(f.read()); }\n' +
+      '            public int read(byte[] b, int o, int n) throws IOException { return n == 0 ? 0 : end(f.read(b, o, n)); }\n' +
+      '            public int available() throws IOException { return f.available(); }\n' +
+      '        });\n' +
+      '        try { ' + cls + '.main(new String[0]); } catch (NeedInput e) { }\n' +
+      '    }\n' +
+      '}\n';
+  }
+  var javaCache = { src: null, cls: null, outDir: null };   // last successful compile
+
+  function runJava(src, stdin, hooks, opts) {
     var onBoot = hooks.onBoot || function () {};
     var onOut = hooks.onOut || function () {};
     var onErr = hooks.onErr || function () {};
@@ -133,6 +172,26 @@ window.P1Runtime = (function () {
         return { ok: false, phase: 'compile' };
       }
 
+      cheerpOSAddStringFile('/str/stdin.txt', stdin || '');
+      cheerpOSAddStringFile('/str/p1mode.txt', opts.interactive && !opts.eof ? '1' : '0');
+
+      var needInput = false, sawException = false;
+      function execute(outDir) {
+        return captureDuring(function () {
+          return cheerpjRunMain('P1Launcher', outDir);
+        }, function (text, isErr) {
+          if (needInput) return;                       // the unwinding after the mark is not program output
+          var at = text.indexOf(NEED_MARK);
+          if (at >= 0) { needInput = true; text = text.slice(0, at); if (!text) return; }
+          if (/Exception in thread|\bError\b.*\n\tat /.test(text)) sawException = true;
+          if (sawException || isErr) onErr(cleanJavaTrace(text));
+          else onOut(text);
+        }).then(function () {
+          return needInput ? { ok: true, phase: 'run', needInput: true } : { ok: !sawException, phase: 'run' };
+        });
+      }
+      if (javaCache.src === src) return execute(javaCache.outDir);   // same program: skip the compiler
+
       var id = ++runSeq;
       // /str/ is flat — cheerpOSAddStringFile does not create directories — and the
       // file name must match the public class name anyway. Only the output
@@ -140,17 +199,7 @@ window.P1Runtime = (function () {
       var outDir = '/files/out' + id;
 
       cheerpOSAddStringFile('/str/' + cls + '.java', src);
-      cheerpOSAddStringFile('/str/stdin.txt', stdin || '');
-      // A generated launcher so System.in comes from the stdin box. CheerpJ has
-      // no stdin option, and this needs no change to the student's own code.
-      cheerpOSAddStringFile('/str/P1Launcher.java',
-        'import java.io.*;\n' +
-        'public class P1Launcher {\n' +
-        '    public static void main(String[] a) throws Exception {\n' +
-        '        System.setIn(new FileInputStream("/str/stdin.txt"));\n' +
-        '        ' + cls + '.main(new String[0]);\n' +
-        '    }\n' +
-        '}\n');
+      cheerpOSAddStringFile('/str/P1Launcher.java', launcherSource(cls));
 
       var compileText = '';
       return captureDuring(function () {
@@ -163,16 +212,8 @@ window.P1Runtime = (function () {
           onErr(cleanJavacPaths(compileText).trim() || 'Compilation failed.');
           return { ok: false, phase: 'compile' };
         }
-        var sawException = false;
-        return captureDuring(function () {
-          return cheerpjRunMain('P1Launcher', outDir);
-        }, function (text, isErr) {
-          if (/Exception in thread|\bError\b.*\n\tat /.test(text)) sawException = true;
-          if (sawException || isErr) onErr(cleanJavaTrace(text));
-          else onOut(text);
-        }).then(function () {
-          return { ok: !sawException, phase: 'run' };
-        });
+        javaCache = { src: src, cls: cls, outDir: outDir };
+        return execute(outDir);
       });
     });
   }
@@ -205,37 +246,72 @@ window.P1Runtime = (function () {
     return keep.join('\n').replace(/File "<exec>"/g, 'File "main.py"');
   }
 
-  function runPython(src, stdin, hooks) {
+  /* sys.stdin for every Python run; the counterpart of P1Launcher above. _P1NeedInput is a
+     BaseException so that a student's `except Exception:` does not swallow it. */
+  var PY_PRELUDE =
+    'import sys, io\n' +
+    'class _P1NeedInput(BaseException): pass\n' +
+    'class _P1Stdin(io.StringIO):\n' +
+    '    def __init__(self, text, wait):\n' +
+    '        super().__init__(text)\n' +
+    '        self._wait = wait\n' +
+    '    def _end(self, s):\n' +
+    '        if s == "" and self._wait:\n' +
+    '            sys.stdout.flush()\n' +
+    '            raise _P1NeedInput()\n' +
+    '        return s\n' +
+    '    def readline(self, *a): return self._end(super().readline(*a))\n' +
+    '    def read(self, *a): return self._end(super().read(*a))\n' +
+    '    def readlines(self, *a): return self.read().splitlines(True)\n' +
+    '    def __next__(self):\n' +
+    '        s = self._end(super().readline())\n' +
+    '        if s == "": raise StopIteration\n' +
+    '        return s\n' +
+    'sys.stdin = _P1Stdin(__p1_stdin__, __p1_wait__)\n';
+
+  function runPython(src, stdin, hooks, opts) {
     var onBoot = hooks.onBoot || function () {};
     var onOut = hooks.onOut || function () {};
     var onErr = hooks.onErr || function () {};
 
     return ensurePyodide(onBoot).then(function (py) {
       onBoot(null);
-      py.setStdout({ batched: function (s) { onOut(s + '\n'); } });
-      py.setStderr({ batched: function (s) { onErr(s + '\n'); } });
+      // Raw writes, not `batched`: a prompt such as input("Name: ") has no newline and must
+      // still reach the page before the program stops to wait.
+      var outDec = new TextDecoder(), errDec = new TextDecoder();
+      py.setStdout({ write: function (buf) { onOut(outDec.decode(buf, { stream: true })); return buf.length; } });
+      py.setStderr({ write: function (buf) { onErr(errDec.decode(buf, { stream: true })); return buf.length; } });
 
-      // input() reads sys.stdin when it is not a terminal, so handing it a
-      // StringIO is enough and avoids depending on the stdin-callback API.
       py.globals.set('__p1_stdin__', stdin || '');
-      return py.runPythonAsync(
-        'import sys, io\n' +
-        'sys.stdin = io.StringIO(__p1_stdin__)\n'
-      ).then(function () {
-        return py.runPythonAsync(src);
+      py.globals.set('__p1_wait__', !!(opts.interactive && !opts.eof));
+      // A fresh namespace per run: re-execution must not see the previous run's variables.
+      var scope = py.globals.get('dict')();
+      scope.set('__name__', '__main__');
+      function done(result) {
+        return py.runPythonAsync('sys.stdout.flush(); sys.stderr.flush()').then(null, function () {}).then(function () {
+          scope.destroy();
+          return result;
+        });
+      }
+      return py.runPythonAsync(PY_PRELUDE).then(function () {
+        return py.runPythonAsync(src, { globals: scope });
       }).then(function () {
-        return { ok: true, phase: 'run' };
+        return done({ ok: true, phase: 'run' });
       }, function (e) {
+        var msg = String(e.message || e);
+        if (/_P1NeedInput/.test(msg)) return done({ ok: true, phase: 'run', needInput: true });
         // Pyodide puts the real CPython traceback in the message.
-        onErr(cleanTraceback(String(e.message || e)) + '\n');
-        return { ok: false, phase: 'run' };
+        return done({ ok: false, phase: 'run' }).then(function (r) {
+          onErr(cleanTraceback(msg) + '\n');
+          return r;
+        });
       });
     });
   }
 
-  function run(lang, src, stdin, hooks) {
+  function run(lang, src, stdin, hooks, opts) {
     var job = function () {
-      return (lang === 'java' ? runJava : runPython)(src, stdin, hooks || {})
+      return (lang === 'java' ? runJava : runPython)(src, stdin, hooks || {}, opts || {})
         .catch(function (e) {
           (hooks.onErr || function () {})('Could not start the ' +
             (lang === 'java' ? 'Java' : 'Python') + ' runtime.\n' + (e && e.message ? e.message : e) + '\n');

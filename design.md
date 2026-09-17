@@ -115,7 +115,10 @@ inside a dark or light block without a `:root` default.**
   the width *is* the data. Carries `role="img"` and a full `aria-label`.
 - **Week row** (`.week`) — grid `5.2rem | 1fr`, 3px left border in the part colour.
   `.special.midterm` tints the row and shows a mono `.badge` for an assessment milestone.
-  `.langs` holds the Java/Python badges for that week.
+  `.langs` holds the Java/Python badges for that week. When that week has a page on this site,
+  its **topic title is a link**: it keeps the row's text colour and takes an underline tinted
+  with the row's own `--wk-c`, so the affordance reads as part of the schedule rather than as a
+  stray body link. A week with no page is plain text — the difference is the signal.
 - **Language badge** (`.lang.java` / `.lang.python`) — mono, uppercase, outlined in the
   language token.
 - **Mat card** (`.mat-card`) — links to a week page or an external resource; 3px top
@@ -138,6 +141,10 @@ inside a dark or light block without a `:root` default.**
   be invisible in dark mode; `.fig.plain` removes the pad. Width is capped by `.fig-narrow`
   (30rem) or `.fig-wide` (46rem) so a wide strip and a tall comic both read well.
 - **Joke** (`.joke`) — amber pull-quote box with a mono `.attrib` line, matching the deck's.
+  Used for verified quotations as well as jokes. The `.attrib` line always names the author,
+  the work and the year — never just the author — so a reader can go and check it, and the
+  Sources section links the primary source. See architecture.md §3a: nothing goes in this box
+  that has not been checked against an original.
 - **Console** (`.console`) — the runnable code widget. Head with a title plus either a
   language badge or `.lang-tabs`; an optional `.preset-row` of example programs; a dark
   `.console-editor` textarea; a labelled `.console-stdin`; an amber `.console-boot` strip
@@ -150,8 +157,14 @@ inside a dark or light block without a `:root` default.**
   from the text under it. Verified pixel-exact (scrollWidth delta 0); no letter-spacing fudge
   is needed, so do not add one.
   · The shell carries `resize: vertical` because an absolutely positioned textarea cannot
-  be resized natively, and **Expand** (`.expand-btn`) toggles `.console.expanded`, a fixed
-  full-viewport overlay closed with Esc.
+  be resized natively. **⛶ Full screen** (last button on the editor toolbar) puts
+  `.code-fullscreen` on the whole console or exercise card — a fixed overlay with a dimmed
+  backdrop, closed with Esc — so Run and the output come along.
+- **Input mode switch** (`.io-mode`) — a two-button segmented control above the stdin box:
+  *Input box* / *⌨ Interactive terminal*. In terminal mode the stdin box is hidden, the output
+  pane is labelled **Terminal** (`.is-terminal`), typed lines are echoed in `--code-kw` bold
+  (`.t-in`), the live prompt is a `contenteditable` `.t-field`, and a `.term-hint` row under
+  the pane offers *End of input (Ctrl+D)* and *Stop (Ctrl+C)*.
 - **Token palette** (`--code-hl-*`) — editor colours follow the **code theme**, not the site's
   light/dark, exactly like `--code-*`. Three sets: midnight, paper, contrast.
 - **Quiz** (`.quiz-q`, `.opt`) — question cards; options are buttons with mono A–D keys.
@@ -166,3 +179,15 @@ inside a dark or light block without a `:root` default.**
 - No decorative animation; effects limited to hover and focus.
 - Purely decorative elements (hero code cards) are `aria-hidden="true"`; the grade bar has
   `role="img"` and a complete `aria-label`.
+
+## Code windows (shared with CO1005)
+
+- **Toolbar** above every editor: `A− A+ · ↩ Wrap · ◐ theme` on the left (site-wide view
+  preferences), `↶ Undo · ↷ Redo | ⤓ Save… · ⤒ Open…` on the right. Buttons are `.ed-btn`
+  (mono 0.72rem, 7px radius) on `--surface`.
+- **Editor text** is IBM Plex Mono **500**, keywords 600 (the family keeps one advance width in
+  every weight, so the caret cannot drift).
+- **Paper** code theme is a light **grey sheet** (`--code-bg #E6E9ED`, gutter `--code-gutter
+  #D6DBE1`) with near-black ink; every token colour is ≥ 4.5:1 on it — re-check contrast when
+  changing one. Midnight and Contrast define `--code-gutter` too.
+- Never compensate caret drift with `letter-spacing`; make the layers' metrics identical instead.
