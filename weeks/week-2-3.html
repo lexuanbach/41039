@@ -1,0 +1,2300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weeks 2 &amp; 3 · Choosing and Repeating · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="41039 Programming 1, Weeks 2 and 3 — booleans and conditionals, switch and match, loops in Java and Python, arrays, lists, dictionaries, sets and tuples, and bundling data together.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=b0411355">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="../index.html">Syllabus</a>
+        <a href="week-1.html">Week 1</a>
+        <a href="week-2-3.html" aria-current="page">Weeks 2–3</a>
+        <a href="#concepts">Lecture</a>
+        <a href="#s14">Quiz</a>
+        <a href="#thisweek">This week</a>
+        <a href="../playground.html">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Weeks 2 &amp; 3 · 41039 Programming 1</span>
+        <h1>Choosing and Repeating</h1>
+        <p class="lede">Week 1 gave you <strong>state</strong> — a program that runs top to bottom and does the same thing every time. These two weeks add the other two tools: <strong>branching</strong>, so a program can choose, and <strong>repetition</strong>, so it can do something a thousand times without you typing it a thousand times. Then the structures worth repeating over: arrays, lists, dicts, sets and tuples.</p>
+        <div class="meta-chips">
+          <span class="chip"><strong>Labs start</strong> · Week 2</span>
+          <span class="chip">11 Ed lessons · ~4 hours</span>
+          <span class="chip"><a href="../slides/week-2-3-slides.pdf">Lecture slides (PDF)</a></span>
+          <span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span>
+        </div>
+      </div>
+      <div class="code-card" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" style="background:#E5645C"></span>
+          <span class="dot" style="background:#E9B44C"></span>
+          <span class="dot" style="background:#6FCF6F"></span>
+          <span class="file">Primes.java</span>
+        </div>
+        <pre><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">2</span>; i &lt; n; ++i) {
+
+    <span class="kw">boolean</span> isPrime = <span class="kw">true</span>;
+
+    <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">2</span>; j &lt; i; ++j) {
+        <span class="kw">if</span> (i % j == <span class="num">0</span>) isPrime = <span class="kw">false</span>;
+    }
+
+    <span class="kw">if</span> (isPrime) System.out.println(i);
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="concepts">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Weeks 2 &amp; 3 &middot; Interactive</span>
+        <h2>The lecture, then the practice</h2>
+        <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
+        has focus. Code blocks are live: edit them, run them, and break them on purpose. Several
+        of them below are <em>meant</em> to fail &mdash; read what the compiler says before you fix them.</p>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-side">
+        <nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">
+          <button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01">
+            <span class="t-num">01</span>
+            <span class="t-text"><span class="t-title">Types, booleans and expressions</span><span class="t-meta">Java &middot; 4 ideas &middot; 4 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02">
+            <span class="t-num">02</span>
+            <span class="t-text"><span class="t-title">Choosing in Java</span><span class="t-meta">Java &middot; 3 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03">
+            <span class="t-num">03</span>
+            <span class="t-text"><span class="t-title">switch and fall-through</span><span class="t-meta">Java &middot; 3 ideas &middot; 2 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04">
+            <span class="t-num">04</span>
+            <span class="t-text"><span class="t-title">Choosing in Python</span><span class="t-meta">Python &middot; 3 ideas &middot; 2 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05">
+            <span class="t-num">05</span>
+            <span class="t-text"><span class="t-title">Loops in Java</span><span class="t-meta">Java &middot; 6 ideas &middot; 6 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06">
+            <span class="t-num">06</span>
+            <span class="t-text"><span class="t-title">Nesting, breaking, continuing</span><span class="t-meta">Java &middot; 5 ideas &middot; 7 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07">
+            <span class="t-num">07</span>
+            <span class="t-text"><span class="t-title">Loops in Python</span><span class="t-meta">Python &middot; 3 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08">
+            <span class="t-num">08</span>
+            <span class="t-text"><span class="t-title">Arrays in Java</span><span class="t-meta">Java &middot; 7 ideas &middot; 7 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s09" aria-controls="panel-s09" aria-selected="false" tabindex="-1" data-target="s09">
+            <span class="t-num">09</span>
+            <span class="t-text"><span class="t-title">Lists in Python</span><span class="t-meta">Python &middot; 4 ideas &middot; 4 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s10" aria-controls="panel-s10" aria-selected="false" tabindex="-1" data-target="s10">
+            <span class="t-num">10</span>
+            <span class="t-text"><span class="t-title">Dictionaries, sets and tuples</span><span class="t-meta">Python &middot; 4 ideas &middot; 5 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s11" aria-controls="panel-s11" aria-selected="false" tabindex="-1" data-target="s11">
+            <span class="t-num">11</span>
+            <span class="t-text"><span class="t-title">Bundling data together</span><span class="t-meta">Java &middot; 5 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s12" aria-controls="panel-s12" aria-selected="false" tabindex="-1" data-target="s12">
+            <span class="t-num">12</span>
+            <span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">8 tasks &middot; auto-marked</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s13" aria-controls="panel-s13" aria-selected="false" tabindex="-1" data-target="s13">
+            <span class="t-num">13</span>
+            <span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">4 activities &middot; in class</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s14" aria-controls="panel-s14" aria-selected="false" tabindex="-1" data-target="s14">
+            <span class="t-num">14</span>
+            <span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">26 questions</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s15" aria-controls="panel-s15" aria-selected="false" tabindex="-1" data-target="s15">
+            <span class="t-num">15</span>
+            <span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">10 links</span></span>
+          </button>
+        </nav>
+
+        <nav class="lesson-nav misc" role="tablist" aria-label="Miscellaneous" aria-orientation="vertical">
+          <div class="nav-group-label">Miscellaneous</div>
+          <button class="lesson-tab" role="tab" id="tab-m01" aria-controls="panel-m01" aria-selected="false" tabindex="-1" data-target="m01">
+            <span class="t-num">M1</span>
+            <span class="t-text"><span class="t-title">Every operator, both languages</span><span class="t-meta">reference &middot; 3 tables</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-m02" aria-controls="panel-m02" aria-selected="false" tabindex="-1" data-target="m02">
+            <span class="t-num">M2</span>
+            <span class="t-text"><span class="t-title">Why arrays start at zero</span><span class="t-meta">Dijkstra &middot; Duff&rsquo;s device</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-m03" aria-controls="panel-m03" aria-selected="false" tabindex="-1" data-target="m03">
+            <span class="t-num">M3</span>
+            <span class="t-text"><span class="t-title">goto, and why break has a leash</span><span class="t-meta">1968 &middot; structured programming</span></span>
+          </button>
+        </nav>
+        </div>
+
+        <div class="lesson-content">
+        <section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">01</span>Types, booleans and expressions</h3>
+
+      <div class="concept">
+        <h3><span class="idx">1.1</span>Java is strongly, statically typed</h3>
+        <p>Variables have types, data has types, and those types must be <strong>compatible</strong> and
+        <strong>known at compile time</strong>. Week 1 showed you one kind of type error. There are
+        others, and they all arrive before the program ever runs.</p>
+        <div class="p1-console" data-lang="java" data-title="Two type errors, on purpose"><script type="text/plain" data-role="source">
+public class NoSuitableMethod {
+    public static void main(String[] args) {
+        int a = Math.round("This isn't a number");
+        int i = 3 / "Hi";
+    }
+}
+</script></div>
+        <p class="sched-note">Two errors from one run. That is normal &mdash; the compiler reports
+        everything it can find, so always start reading at the <strong>first</strong> one.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.2</span>It is not only variables that have a type</h3>
+        <ul>
+          <li><strong>Methods</strong> have a return type. That <code>void</code> in
+          <code>public static void main</code> means &ldquo;returns nothing&rdquo;.</li>
+          <li><strong>Expressions</strong> have a type &mdash; the type of the value they evaluate to.
+          The expression <code>10 + 3</code> has type <code>int</code>.</li>
+        </ul>
+        <p>So <code>int i = 10 + 3;</code> is fine and <code>boolean b = 10 + 3;</code> is not. Run it
+        and read the two types the error names.</p>
+        <div class="p1-console" data-lang="java" data-title="An expression has a type"><script type="text/plain" data-role="source">
+public class IntExpression {
+    public static void main(String[] args) {
+        int i = 10 + 3;
+        System.out.println(i);
+
+        boolean b = 10 + 3;
+    }
+}
+</script></div>
+        <div class="note tip">
+          <span class="tag">Why this matters later</span>
+          <p>Because expressions have types, you can use one <em>anywhere</em> a value of that type is
+          expected. That sounds obvious. It is the reason a whole comparison can be handed straight to
+          an <code>if</code>, stored in a variable, or returned from a method.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.3</span><code>boolean</code> is its own type</h3>
+        <p>Java has a <code>boolean</code> type for every true/false value, and it is
+        <strong>not</strong> compatible with the numeric types. Other languages disagree. This is
+        valid C++:</p>
+        <div class="code-card"><pre>bool b = true;
+int i = 10 + b;   // i is 11 — fine in C++</pre></div>
+        <p>The Java equivalent will not compile at all.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1537.png" alt="xkcd comic: a REPL in an invented language returning absurd results for expressions that mix types" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1537/">xkcd 1537, <em>Types</em></a> (2015) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+        <div class="p1-console" data-lang="java" data-title="booleans are not numbers in Java"><script type="text/plain" data-role="source">
+public class BooleansDontMatchIntsInJava {
+    public static void main(String[] args) {
+        boolean b = true;
+        int i = 10 + b;
+        System.out.println(i);
+    }
+}
+</script></div>
+        <div class="note">
+          <span class="tag">A trade, not a flaw</span>
+          <p>C++ lets you write shorter code and lets a typo compile. Java refuses the shortcut and
+          catches the typo. Neither is &ldquo;right&rdquo; &mdash; but you should know which one you
+          are typing into.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.4</span>The operators that produce a <code>boolean</code></h3>
+        <p>A lone <code>boolean</code> is dull. They become useful as the type of a whole
+        <em>expression</em>, built with these:</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Operator</th><th>Means</th><th>Takes</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">&lt; &lt;= &gt; &gt;=</td><td>less / less-or-equal / greater / greater-or-equal</td><td>two numbers</td></tr>
+            <tr><td class="mono">==</td><td>equal to &mdash; note the <em>two</em> equals signs</td><td>two of any type, though only some pairings are useful</td></tr>
+            <tr><td class="mono">!=</td><td>not equal to</td><td>as above</td></tr>
+            <tr><td class="mono">&amp;&amp;</td><td>and &mdash; true only when both sides are true</td><td>two booleans</td></tr>
+            <tr><td class="mono">||</td><td>or &mdash; true when either side is true</td><td>two booleans</td></tr>
+            <tr><td class="mono">!</td><td>not &mdash; flips true and false</td><td>one boolean</td></tr>
+          </tbody>
+        </table></div>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1033.png" alt="xkcd comic: a driver takes a conditional statement absolutely literally" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1033/">xkcd 1033, <em>Formal Logic</em></a> (2012) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+        <div class="note warn">
+          <span class="tag">The classic typo</span>
+          <p><code>=</code> assigns. <code>==</code> compares. In Java, writing <code>if (x = 5)</code>
+          is usually caught, because the assignment&rsquo;s type is <code>int</code> and an
+          <code>if</code> needs a <code>boolean</code> &mdash; the type system saving you again. In C
+          the same line compiles and has ruined many afternoons.</p>
+        </div>
+        <p>These combine, as long as the types line up. Enter <code>15</code>, then try <code>7</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="Combining comparisons" data-stdin="15"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class CombinedOps {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int i = sc.nextInt();
+
+        boolean b = i > 10 && i < 20;
+
+        System.out.println("Bigger than 10 but less than 20? " + b);
+    }
+}
+</script></div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">02</span>Choosing in Java</h3>
+
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1652.png" alt="xkcd comic: a pedant demands to know what happens if the condition is false" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1652/">xkcd 1652, <em>Conditionals</em></a> (2016) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+        <p class="sched-note">The pedant is asking for the <code>else</code> branch. Everyday English
+        &ldquo;if X, then Y&rdquo; quietly implies &ldquo;otherwise, not Y&rdquo; &mdash; but
+        <code>if (cond) { … }</code> says <strong>nothing at all</strong> about the false case. That gap
+        is this whole section.</p>
+
+      <div class="concept">
+        <h3><span class="idx">2.1</span>The <code>if</code> statement</h3>
+        <p>Now that a program can say whether something is true, it can use that to decide what to do
+        next. The syntax, with the angle brackets standing in for your own code:</p>
+        <div class="code-card"><pre>if (&lt;condition&gt;) {
+    &lt;what to do when the condition is true&gt;
+}</pre></div>
+        <div class="p1-console" data-lang="java" data-title="One choice" data-stdin="42"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Choice {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter a number: ");
+        int i = sc.nextInt();
+
+        if (i < 100) {
+            System.out.println("The number is less than 100.");
+        }
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.2</span>Two <code>if</code>s are not an <code>if-else</code></h3>
+        <p>What about when the condition is false? The obvious move is a second <code>if</code>. It
+        has two problems, and the second one is nastier than it looks.</p>
+        <div class="p1-console" data-lang="java" data-title="Both branches, from one input" data-stdin="50"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Choice {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter a number: ");
+        int i = sc.nextInt();
+
+        if (i < 100) {
+            System.out.println("The number is less than 100.");
+            i = 101;
+        }
+
+        if (i > 100) {
+            System.out.println("The number is greater than 100.");
+        }
+    }
+}
+</script></div>
+        <ol>
+          <li><strong>What about exactly 100?</strong> Neither condition is true, and the program says
+          nothing. Separate conditions need separate care, and this is a good place to introduce a
+          logic bug quietly.</li>
+          <li><strong>The first block changed <code>i</code>.</strong> By the time the second
+          <code>if</code> is tested, <code>i</code> is 101 &mdash; so <em>both</em> messages print for a
+          single input. Run it above and watch it happen.</li>
+        </ol>
+        <div class="joke">
+          <p>Take care to branch the right way on equality.</p>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978</span>
+        </div>
+
+        <p>An <code>else</code> block fixes both, because the two branches become genuinely
+        exclusive: exactly one of them runs.</p>
+        <div class="code-card"><pre>if (&lt;condition&gt;) {
+    &lt;code when the condition is true&gt;
+}
+else {
+    &lt;code when the condition is false&gt;
+}</pre></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.3</span>Many conditions: <code>else if</code></h3>
+        <p>You <em>can</em> nest an <code>if-else</code> inside an <code>else</code>, and it works. But
+        when you are choosing on one value and nothing else, it is nicer to lay the cases out at the
+        same level.</p>
+        <p>The conditions are tested one after another until one is true, or the final
+        <code>else</code> is reached. So <strong>order matters</strong> &mdash; and you can use that
+        deliberately, putting a specific case before an overlapping general one:</p>
+        <div class="p1-console" data-lang="java" data-title="Order decides the winner" data-stdin="42"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Choice {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter a number: ");
+        int i = sc.nextInt();
+
+        if (i == 42) {
+            System.out.println("You've found the answer");
+        }
+        else if (i < 100) {
+            System.out.println("The number is less than 100.");
+        }
+        else if (i == 100) {
+            System.out.println("The number is 100.");
+        }
+        else {
+            System.out.println("The number is greater than 100.");
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">Now move the <code>i == 42</code> branch to the bottom of the ladder and
+        run it again with 42. It becomes unreachable &mdash; and nothing warns you.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">03</span>switch and fall-through</h3>
+
+      <div class="concept">
+        <h3><span class="idx">3.1</span>When every test is &ldquo;is it equal to&hellip;&rdquo;</h3>
+        <p>Suppose <code>x</code> being 1, 5, 87 or 120 means one thing and anything else means
+        another. With an <code>if</code> that is a long boolean condition:</p>
+        <div class="code-card"><pre>if (x == 1 || x == 5 || x == 87 || x == 120) { ... }
+else { ... }</pre></div>
+        <p>Bearable for four cases. Painful for twenty, and worse if each case does something
+        different. A <code>switch</code> is a compacted <code>else if</code> ladder restricted to
+        equality &mdash; one readable line per case, easy to add to.</p>
+        <div class="note">
+          <span class="tag">What you can switch on</span>
+          <p><code>byte</code>, <code>short</code>, <code>char</code>, <code>int</code> and
+          <code>String</code>, plus enums and object types via pattern matching. The remaining
+          primitives are still a preview feature &mdash; and comparing floating-point numbers for
+          equality is a bad idea anyway. You can switch on a whole <em>expression</em>, not just a
+          variable.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.2</span><code>break</code>, and what happens without it</h3>
+        <p>A <code>switch</code> checks the cases in order, and when it finds a match it
+        <strong>starts running there and keeps going</strong> &mdash; through every case below it &mdash;
+        until it hits a <code>break</code> or the end of the block. Predict the output before you run
+        this.</p>
+        <div class="p1-console" data-lang="java" data-title="Fall-through"><script type="text/plain" data-role="source">
+public class BadSwitch {
+    public static void main(String[] args) {
+        int x = 2;
+
+        switch (x) {
+            case 1 : System.out.println("The value is 1.");
+            case 2 : System.out.println("The value is 2.");
+            case 3 : System.out.println("The value is 3.");
+            default : System.out.println("The value is not 1, 2 or 3.");
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">Three lines. It starts at the match, not at the top &mdash; and then
+        nothing stops it. A missing <code>break</code> is one of the most common bugs in this whole
+        subject.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-2200.png" alt="xkcd comic: a program reports that it has reached a state the programmer marked unreachable" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/2200/">xkcd 2200, <em>Unreachable State</em></a> (2019) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.3</span>Fall-through on purpose</h3>
+        <p>Used deliberately, it is how you group cases that share an action:</p>
+        <div class="p1-console" data-lang="java" data-title="Grouped cases" data-stdin="87"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class GoodSwitch {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int x = sc.nextInt();
+
+        switch (x) {
+            case 1 :
+            case 5 :
+            case 87 :
+            case 120 :
+                System.out.println("One of the special values.");
+                break;
+            default :
+                System.out.println("Just an ordinary number.");
+        }
+    }
+}
+</script></div>
+        <div class="note tip">
+          <span class="tag">switch or if-else-if?</span>
+          <p>Context decides; neither is always better. If the conditions cannot be reduced to
+          equality checks, <code>switch</code> is simply not available. If they can, it is worth
+          considering &mdash; a column of one-line cases is easier to extend correctly than a boolean
+          condition three lines long.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">04</span>Choosing in Python</h3>
+
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-1195.png" alt="xkcd comic: a flowchart whose only exit requires the thing it is asking you to get" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1195/">xkcd 1195, <em>Flowchart</em></a> (2013) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      <div class="concept">
+        <h3><span class="idx">4.1</span>Same idea, less punctuation</h3>
+        <p>Conditionals in Python work essentially as they do in Java, with mildly different syntax:
+        <code>elif</code> rather than <code>else if</code>, a colon rather than braces, and
+        indentation doing the work that <code>{ }</code> does in Java.</p>
+        <div class="p1-console" data-lang="python" data-title="if / elif / else" data-stdin="-4"><script type="text/plain" data-role="source">
+print("Enter a number:")
+x = int(input())
+
+if x < 0:
+    print("You entered a negative number.")
+elif x > 0:
+    print("You entered a positive number.")
+else:
+    print("You entered zero.")
+</script></div>
+        <div class="note tip">
+          <span class="tag">Brackets are allowed, but</span>
+          <p><code>if (1 &lt; 2):</code> works. <code>if 1 &lt; 2:</code> is the preferred Python style.
+          Keep the parentheses for grouping, not out of habit from Java.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.2</span>Once you have it in one language</h3>
+        <p>Every imperative language works the same way here &mdash; the ideas transfer and only the
+        syntax changes. That is worth noticing now, because it is the reason this subject teaches two
+        languages at once rather than one twice as deeply.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.3</span><code>match</code> &mdash; Python&rsquo;s switch, sort of</h3>
+        <p>Before version 3.10 Python had nothing like <code>switch</code>, only a hack with dicts
+        that returns known values rather than running code. Since 3.10 there is a
+        <strong>structural pattern matching</strong> statement:</p>
+        <div class="code-card"><pre>match &lt;subject&gt;:
+    case &lt;pattern 1&gt;:
+        &lt;action 1&gt;
+    case &lt;pattern 2&gt;:
+        &lt;action 2&gt;
+    case _:
+        &lt;default action&gt;</pre></div>
+        <p>Notice what is <strong>missing</strong>: there is no <code>break</code>, because there is
+        <strong>no fall-through</strong>. Only the matching block runs. That is the major practical
+        difference from a Java <code>switch</code> &mdash; Python&rsquo;s version comes from functional
+        pattern matching rather than C&rsquo;s fancy jump.</p>
+        <p>Which means the stacked-label trick from section 3.3 is gone. In its place,
+        <code>|</code> gives one case several values:</p>
+        <div class="p1-console" data-lang="python" data-title="match with alternatives" data-stdin="87"><script type="text/plain" data-role="source">
+x = int(input("Enter a number: "))
+
+match x:
+    case 1 | 5 | 87 | 120:
+        print("One of the special values.")
+    case _:
+        print("Just an ordinary number.")
+</script></div>
+        <p class="sched-note">Which does start to look like an <code>if</code>/<code>elif</code> again.
+        The line between them is genuinely fuzzy; <code>match</code> may make later changes tidier, or
+        may not.</p>
+      </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">05</span>Loops in Java</h3>
+
+      <div class="joke">
+        <p>A program without a loop and a structured variable isn&rsquo;t worth writing.</p>
+        <span class="attrib">Alan Perlis, <em>Epigrams on Programming</em>, 1982</span>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.1</span>Repetition is boooooring</h3>
+        <p>To print 1 to 10 with what you know so far, you write ten <code>println</code> lines. To
+        print 1 to 1000 you write a thousand &mdash; and who is going to check that code?</p>
+        <p>The real killer is this: <strong>what if the number changes every time the program
+        runs?</strong> The user picks it. You cannot write out lines for a number you do not know. Until
+        you have a loop, that program is not merely tedious to write &mdash; it is <em>impossible</em>.</p>
+        <div class="joke">
+          <p>A cycle of operations, then, must be understood to signify any set of operations which is repeated more than once.</p>
+          <span class="attrib">Ada Lovelace, Note E to her translation of Menabrea&rsquo;s <em>Sketch of the Analytical Engine</em>, 1843</span>
+        </div>
+        <p class="sched-note">That is very likely the first definition of a loop ever written down &mdash;
+        and it needs no jargon at all. A loop is a group of steps you do more than once.</p>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.2</span>The <code>while</code> loop</h3>
+        <div class="code-card"><pre>while (&lt;condition&gt;) {
+    &lt;code&gt;
+}</pre></div>
+        <p>It repeats the code for as long as the condition is true. Like an <code>if</code>, the
+        condition must be a <code>boolean</code> expression. Three moving parts: set a variable up,
+        test it, change it.</p>
+        <div class="p1-console" data-lang="java" data-title="Print 1 to n" data-stdin="6"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class NPrint {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many numbers would you like to print? ");
+        int n = sc.nextInt();
+
+        int i = 1;
+        while (i <= n) {
+            System.out.println(i);
+            i++;
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">Compared with the fixed version, only the condition changed &mdash;
+        <code>i &lt;= 10</code> became <code>i &lt;= n</code>. The impossible program became trivial.</p>
+        <div class="note danger">
+          <span class="tag">Forget to change the variable and</span>
+          <p>&hellip;the condition never becomes false, and the loop never ends. There is
+          <strong>no way to stop a running program on this page</strong> &mdash; you will have to
+          reload. Delete the <code>i++</code> above and see, once, deliberately.</p>
+        </div>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-1411.png" alt="xkcd comic: a cycle of activities drawn as a loop with no exit" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1411/">xkcd 1411, <em>Loop</em></a> (2014) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+        <p class="sched-note">Read that as a loop and look for the exit condition. There isn&rsquo;t one.
+        Every loop you write, ask the same question: <strong>what makes this stop?</strong></p>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.3</span>The <code>for</code> loop</h3>
+        <p>A <code>for</code> loop gathers those same three parts into one line, in order:</p>
+        <div class="code-card"><pre>for (&lt;initialisation&gt;; &lt;condition&gt;; &lt;modification&gt;) {
+    &lt;code&gt;
+}</pre></div>
+        <p>Read <code>for (int i = 1; i &lt;= n; i++)</code> as &ldquo;for <code>i</code> from 1 to
+        <code>n</code> in steps of 1&rdquo;. Change the details and you change the pattern &mdash;
+        <code>i += 2</code> from 2 gives the even numbers, from 1 gives the odd ones.</p>
+        <div class="p1-console" data-lang="java" data-title="Even numbers up to n" data-stdin="10"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class NEvenPrint {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Pick an ending number: ");
+        int n = sc.nextInt();
+
+        for (int i = 2; i <= n; i += 2) {
+            System.out.println(i);
+        }
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.4</span><code>while</code> vs <code>for</code>: which is best?</h3>
+        <p>Neither. They are <strong>functionally equivalent</strong> &mdash; every <code>while</code>
+        converts to a <code>for</code> and back. Java allows empty statements, so a <code>while</code>
+        becomes <code>for (; i &lt;= 10; )</code>, and an infinite <code>while (true)</code> becomes
+        <code>for (;;)</code>. Going the other way, you just unpack the three parts.</p>
+        <div class="p1-console" data-lang="java" data-title="The same loop, twice"><script type="text/plain" data-role="source">
+public class SameLoop {
+    public static void main(String[] args) {
+        int count = 0;
+        for (int i = 2048; i > 1; i /= 2) {
+            count++;
+        }
+        System.out.println("for:   " + count);
+
+        count = 0;
+        int i = 2048;
+        while (i > 1) {
+            count++;
+            i /= 2;
+        }
+        System.out.println("while: " + count);
+    }
+}
+</script></div>
+        <p>Since the machine cannot tell them apart, the choice is about <strong>what you tell the
+        reader</strong>:</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Use</th><th>When</th><th>Because</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">for</td><td>the number of iterations is driven by an index</td><td>the syntax forces you to state all three parts, and a reader takes in the whole pattern at a glance</td></tr>
+            <tr><td class="mono">while</td><td>you do not know how many steps it will take</td><td>user input, or a condition that is not naturally an index &mdash; there is no index to put in a <code>for</code> header</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.5</span>For-each: walking a collection</h3>
+        <div class="code-card"><pre>for (&lt;type&gt; &lt;name&gt; : &lt;iterable collection&gt;) {
+    &lt;code&gt;
+}</pre></div>
+        <p>Read it as &ldquo;for each element in the collection&hellip;&rdquo;. It hands you the elements
+        one at a time and you never touch an index, so you cannot get the index wrong.</p>
+        <div class="joke">
+          <p>Civilization advances by extending the number of important operations which we can perform without thinking about them.</p>
+          <span class="attrib">Alfred North Whitehead, <em>An Introduction to Mathematics</em>, 1911</span>
+        </div>
+
+        <div class="p1-console" data-lang="java" data-title="For-each over an array"><script type="text/plain" data-role="source">
+public class ForEach {
+    public static void main(String[] args) {
+        int[] a = {1, 3, 5, 7};
+
+        for (int i : a) {
+            System.out.println(i);
+        }
+    }
+}
+</script></div>
+        <p>What counts as an &ldquo;iterable collection&rdquo;? <strong>Arrays, and anything that
+        implements <code>Iterable</code></strong> &mdash; which is most things in the Java library with
+        a linear order. Notably <em>not</em> a <code>String</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="This one does not compile"><script type="text/plain" data-role="source">
+public class ForEach {
+    public static void main(String[] args) {
+        String s = "This won't work";
+
+        for (char c : s) {
+            System.out.println(c);
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">The error message tells you the rule exactly: <em>can only iterate over an
+        array or an instance of java.lang.Iterable</em>. Changing <code>char</code> to
+        <code>String</code> does not help &mdash; the problem is what you are walking, not what you pull
+        out of it.</p>
+        <p>A for-each is just <strong>syntactic sugar</strong>. For an array the compiler writes out
+        the ordinary loop for you:</p>
+        <div class="code-card"><pre>for (int index = 0; index &lt; a.length; index++) {
+    int i = a[index];
+    System.out.println(i);
+}</pre></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.6</span><code>do-while</code>: test afterwards</h3>
+        <p>Both loops so far check the condition <em>before</em> the first pass. Sometimes you need to
+        run the body first &mdash; most often because you need the input before you can judge it.</p>
+        <div class="code-card"><pre>do {
+    &lt;code&gt;
+}
+while (&lt;condition&gt;);   // note the semicolon</pre></div>
+        <p>Written with a plain <code>while</code>, the prompt-and-read has to appear
+        <strong>twice</strong>: once before the loop and once inside it. Once you are writing the same
+        code in two places, look for a better way &mdash; here, this:</p>
+        <div class="joke">
+          <p>Let the machine do the dirty work.</p>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978</span>
+        </div>
+
+        <div class="p1-console" data-lang="java" data-title="Keep asking until they get it right" data-stdin="3
+5
+6"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Input {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n;
+        do {
+            System.out.print("Enter a number: ");
+            n = sc.nextInt();
+            if (n != 6) System.out.println("That's not 6!");
+        }
+        while (n != 6);
+
+        System.out.println("Thank you.");
+    }
+}
+</script></div>
+        <p class="sched-note">The input box above holds three lines &mdash; 3, 5, then 6 &mdash; because
+        the program will ask three times. A <code>do-while</code> body always runs
+        <strong>at least once</strong>.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">06</span>Nesting, breaking, continuing</h3>
+
+      <div class="concept">
+        <h3><span class="idx">6.1</span>Loops inside loops</h3>
+        <p>Once you are inside a block you can write any statement, including another loop. Nesting is
+        how you handle multi-dimensional data and anything of the form &ldquo;for every <em>x</em>, for
+        every <em>y</em>&hellip;&rdquo;.</p>
+        <div class="p1-console" data-lang="java" data-title="Primes below n" data-stdin="20"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Primes {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a positive integer: ");
+        int n = sc.nextInt();
+
+        int count = 0;
+
+        for (int i = 2; i < n; ++i) {
+
+            boolean isPrime = true;
+
+            for (int j = 2; j < i; ++j) {     // nested loop here
+                if (i % j == 0) isPrime = false;
+            }
+
+            if (isPrime) {
+                count++;
+                System.out.println(i + " is prime.");
+            }
+        }
+
+        System.out.println("There are " + count + " primes smaller than " + n);
+    }
+}
+</script></div>
+        <p class="sched-note">Note the inner loop&rsquo;s stopping condition: <code>j &lt; i</code> uses
+        the <em>outer</em> loop&rsquo;s variable. That is common and useful &mdash; the inner loop does a
+        different amount of work each time around.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.2</span>Two dimensions</h3>
+        <p>The same shape walks a two-dimensional array. Rows need not be the same length, so the
+        inner condition is <code>data[i].length</code>, not one fixed number:</p>
+        <div class="p1-console" data-lang="java" data-title="Walking a ragged 2-D array"><script type="text/plain" data-role="source">
+public class Matrix {
+    public static void main(String[] args) {
+        int[][] data = {{1,2,4},{7,8},{7,3,7},{9,5,2,2,5}};
+
+        for (int i = 0; i < data.length; ++i) {
+            for (int j = 0; j < data[i].length; ++j) {
+                System.out.print(data[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+</script></div>
+        <p>Three dimensions is one more level of nesting, and so on. Matrix multiplication is the
+        classic triple nest &mdash; and note there that the names <code>i</code> and <code>j</code> can
+        be reused in a later set of loops, because a variable declared in a <code>for</code> header is
+        <strong>local to that loop</strong>.</p>
+        <div class="joke">
+          <p>&hellip;there is a recurring group of one or more cycles; that is, a cycle of a cycle, or a cycle of cycles.</p>
+          <span class="attrib">Ada Lovelace, Note E, 1843 &mdash; nested loops, named 115 years before Java</span>
+        </div>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.3</span>Loops with almost no body</h3>
+        <p>Only the middle part of a <code>for</code> header is restricted &mdash; it has to evaluate to
+        a <code>boolean</code>. The other two can be almost any expression, so a loop can have an empty
+        body and still do work:</p>
+        <div class="p1-console" data-lang="java" data-title="How far would you like to go?"><script type="text/plain" data-role="source">
+public class EmptyLoop {
+    public static void main(String[] args) {
+        int sum = 0;
+
+        for (int i = 0; i <= 10; sum += i++);
+
+        System.out.println(sum);
+    }
+}
+</script></div>
+        <div class="note warn">
+          <span class="tag">Do not take this as an invitation</span>
+          <p>Cramming everything into the smallest space is not a programming strategy &mdash; outside
+          the <a href="https://www.ioccc.org/">Obfuscated C Code Contest</a>, where it is the entire
+          point. Code is read far more often than it is written, including by you, next month.</p>
+        </div>
+        <div class="joke">
+          <p>Write clearly &mdash; don&rsquo;t be too clever.</p>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978 &mdash; the book&rsquo;s first rule</span>
+        </div>
+
+        <p>The genuinely useful version of this is remembering that a loop body can be a
+        <strong>single statement</strong> with no braces at all. Combined with a for-each, that reads
+        beautifully:</p>
+        <div class="p1-console" data-lang="java" data-title="Sum an array in one line"><script type="text/plain" data-role="source">
+public class ShortLoop {
+    public static void main(String[] args) {
+        int[] values = {3, 6, 1, 8, 3, 8, 9, 0, 3};
+        int sum = 0;
+
+        for (int n : values) sum += n;
+
+        System.out.println(sum);
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.4</span>Finishing early with <code>break</code></h3>
+        <p>You met <code>break</code> in a <code>switch</code>. In a loop it ends the loop and the
+        program carries on from the next statement after it. In nested loops, the question is
+        <em>which</em> loop &mdash; run this and see:</p>
+        <div class="p1-console" data-lang="java" data-title="break in nested loops"><script type="text/plain" data-role="source">
+public class ElectricBoogaloo {
+    public static void main(String[] args) {
+        for (int i = 0; i < 3; ++i) {
+            System.out.println(i + " : In the outer loop.");
+            for (int j = 0; j < 3; ++j) {
+                System.out.println(i + "," + j + ": About to break.");
+                break;
+            }
+        }
+
+        System.out.println("All looping done.");
+    }
+}
+</script></div>
+        <p><strong>Only the current loop.</strong> What <code>break</code> really does is jump to the
+        end of the current block &mdash; usually the next <code>}</code>. The outer loop keeps going and
+        starts a fresh inner loop each time.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-710.png" alt="xkcd comic: a person obsessively applying a simple numeric rule over and over" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/710/">xkcd 710, <em>Collatz Conjecture</em></a> (2010) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+        <p>To leave both at once, label the outer loop and break to the label:</p>
+        <div class="p1-console" data-lang="java" data-title="Labelled break"><script type="text/plain" data-role="source">
+public class ElectricBoogaloo {
+    public static void main(String[] args) {
+        done: for (int i = 0; i < 3; ++i) {
+            System.out.println(i + " : In the outer loop.");
+            for (int j = 0; j < 3; ++j) {
+                System.out.println(i + "," + j + ": About to break out.");
+                break done;
+            }
+        }
+
+        System.out.println("All looping done.");
+    }
+}
+</script></div>
+        <div class="note tip">
+          <span class="tag">Not a goto</span>
+          <p>You can only break out to a block that <strong>encloses</strong> you, so control always
+          moves outward and forward &mdash; never into some unrelated block elsewhere. That restriction
+          is what keeps it from being the spaghetti machine an unrestricted <code>goto</code> is. More
+          on that in <a href="#m03">M3</a>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.5</span><code>continue</code>: skip just this one</h3>
+        <p>The inverse of <code>break</code>. It abandons the rest of this iteration and goes back to
+        the start of the loop.</p>
+        <p>It reads best as a <strong>filter</strong>: &ldquo;this one is no good, next please&rdquo;.
+        With a labelled <code>continue</code>, the prime finder from 6.1 loses both the
+        <code>isPrime</code> variable and the trailing <code>if</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="Primes, filtered" data-stdin="20"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Primes {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a positive integer: ");
+        int n = sc.nextInt();
+
+        int count = 0;
+
+        next :
+        for (int i = 2; i < n; ++i) {
+            for (int j = 2; j < i; ++j) if (i % j == 0) continue next;
+            count++;
+            System.out.println(i + " is prime.");
+        }
+
+        System.out.println("There are " + count + " primes smaller than " + n);
+    }
+}
+</script></div>
+        <p class="sched-note">Same answers as 6.1, less bookkeeping. Compare the two and decide for
+        yourself which one you would rather read in six months.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">07</span>Loops in Python</h3>
+
+      <div class="concept">
+        <h3><span class="idx">7.1</span>The shape of a Python loop</h3>
+        <p>Python has <code>while</code> and <code>for</code>, but its <code>for</code> is always a
+        for-each &mdash; there is no three-part header. To count, you iterate over
+        <code>range(n)</code>, which gives 0, 1, &hellip;, n&minus;1:</p>
+        <div class="p1-console" data-lang="python" data-title="range, and a while"><script type="text/plain" data-role="source">
+for i in range(5):
+    print(i)
+
+print("---")
+
+i = 0
+while i < 5:
+    print(i)
+    i += 1
+</script></div>
+        <div class="note">
+          <span class="tag">Where this is covered</span>
+          <p>The Ed lesson bundle for these two weeks contains <em>Loops in Python 2</em> &mdash; the
+          control keywords below. The basics above are here so that the examples make sense; the
+          Python loop reading proper sits with the rest of the Python material on Ed.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.2</span><code>break</code> and <code>continue</code></h3>
+        <p>Both work in both kinds of loop, and mean exactly what they meant in Java:
+        <code>break</code> stops the loop immediately and resumes after it; <code>continue</code> skips
+        the rest of this iteration and goes back to the start.</p>
+        <div class="p1-console" data-lang="python" data-title="Stop at 7, and multiples of 3"><script type="text/plain" data-role="source">
+# Only prints up to 7, even though the range goes to 9.
+for i in range(10):
+    if (i > 7):
+        break
+    print(i)
+
+print("---")
+
+# Just the multiples of 3.
+for i in range(31):
+    if i % 3 != 0:
+        continue
+    print(i)
+</script></div>
+        <p class="sched-note">Python has no labelled <code>break</code>. To leave nested loops you
+        restructure &mdash; commonly with a flag variable, or by moving the inner loop into a function
+        once you have those.</p>
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-1205.png" alt="xkcd comic: a table of how long you can work on making a routine task more efficient before you spend more time than you save" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1205/">xkcd 1205, <em>Is It Worth the Time?</em></a> (2013) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+        <p class="sched-note">Automating repetition is the whole point of a loop &mdash; but the chart
+        is honest about the other half: sometimes the loop costs more than the tedium it removes.</p>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.3</span>Loop-<code>else</code> &mdash; the genuinely strange one</h3>
+        <p>Python lets you attach an <code>else</code> clause to a loop. It runs when the loop ends
+        because its <strong>condition failed</strong> &mdash; and a <code>break</code> skips it.</p>
+        <div class="p1-console" data-lang="python" data-title="Two loops, one else each"><script type="text/plain" data-role="source">
+i = 0
+while i < 5:
+    print(str(i) + ": still in the loop.")
+    i += 1
+else:
+    print("Finished the loop.")
+
+print("---")
+
+while True:
+    print("This will get printed once.")
+    break
+else:
+    print("This won't get printed.")
+
+print("This gets printed after the loop finishes.")
+</script></div>
+        <div class="note tip">
+          <span class="tag">Read it as &ldquo;no break&rdquo;</span>
+          <p>The keyword is confusing &mdash; this <code>else</code> has nothing to do with the
+          <code>else</code> of an <code>if</code>. Mentally rename it &ldquo;if the loop was never
+          broken out of&rdquo;, and its one good use appears: a search loop that <code>break</code>s on
+          a hit, with the &ldquo;not found&rdquo; message in the <code>else</code>.</p>
+        </div>
+      </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">08</span>Arrays in Java</h3>
+
+      <div class="concept">
+        <h3><span class="idx">8.1</span>Fifty variables is not a plan</h3>
+        <p>Averaging two marks needs two variables. Three needs three. Fifty needs fifty &mdash; and
+        then someone has to check that all fifty names appear correctly in the sum.</p>
+        <p>Worse is the flexible version. Handling &ldquo;2 or 3 marks&rdquo; with an <code>if</code>
+        already looks fragile, and it breaks the moment the user enters 0, 1, or 4. Two problems, one
+        answer:</p>
+        <ol>
+          <li>You do not want to invent a new variable name for every value.</li>
+          <li>You want one piece of code that copes with every reasonable case.</li>
+        </ol>
+        <p>That is exactly what an array is for.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.2</span>What an array actually is</h3>
+        <p>A block of <strong>contiguous memory</strong>, cut into equal-sized elements. Each element
+        holds one value of the array&rsquo;s declared type, so once you know where the array starts,
+        reaching element <em>i</em> is just an offset from that address &mdash; which is essentially what
+        the number in the square brackets does.</p>
+        <ul>
+          <li>The number of elements is the <strong>length</strong>.</li>
+          <li>The first element has index <strong>0</strong>, the second 1, and the last is at
+          <strong>length &minus; 1</strong>. This is 0-indexing, and it is normal across most
+          languages &mdash; see <a href="#m02">M2</a> for why.</li>
+        </ul>
+        <div class="p1-console" data-lang="java" data-title="An array of three" data-stdin="8
+9
+10"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class ArrayExample {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int[] values = new int[3];
+
+        System.out.println("Enter three numbers: ");
+        values[0] = sc.nextInt();
+        values[1] = sc.nextInt();
+        values[2] = sc.nextInt();
+
+        System.out.println("Cells: " + values.length);
+        System.out.println("Average: " + (values[0] + values[1] + values[2]) / values.length);
+    }
+}
+</script></div>
+        <p>Line by interesting line:</p>
+        <div class="joke">
+          <p>I found this amazing: only about 10 percent of professional programmers were able to get this small program right.</p>
+          <span class="attrib">Jon Bentley, <em>Programming Pearls: Writing Correct Programs</em>, CACM 26(12), 1983 &mdash; on binary search</span>
+        </div>
+        <p class="sched-note">Bentley gave professional programmers an hour to write binary search over an
+        array. Ninety percent shipped a bug &mdash; almost all of them at the boundaries. When your loop
+        bound looks obviously right, that is exactly the feeling those programmers had.</p>
+
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Code</th><th>What it is</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">int[] values</td><td>a variable of type &ldquo;array of int&rdquo;; the <strong>underlying type</strong> is <code>int</code></td></tr>
+            <tr><td class="mono">new int[3]</td><td>arrays are <strong>objects</strong> in Java, so they are created with <code>new</code></td></tr>
+            <tr><td class="mono">values[0]</td><td>the element (or <em>cell</em>) at position 0 &mdash; same syntax to read and to write</td></tr>
+            <tr><td class="mono">values.length</td><td>a field every array carries, giving its number of elements. No brackets &mdash; it is not a method</td></tr>
+          </tbody>
+        </table></div>
+        <div class="note tip">
+          <span class="tag">For anyone who has met C</span>
+          <p>The size does <strong>not</strong> have to be known at compile time. <code>new int[n]</code>
+          with <code>n</code> read from the user is perfectly legal, because Java objects are allocated
+          at run time. If you have never seen C, this will seem too obvious to mention.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.3</span>Arrays plus loops</h3>
+        <p>Section 8.1 wanted one program for any number of marks. With an array <em>and</em> a loop
+        you finally have it &mdash; and the loop bound comes from the array itself:</p>
+        <div class="p1-console" data-lang="java" data-title="Any number of marks" data-stdin="5
+80
+75
+91
+68
+77"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Average {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many marks will you enter? ");
+        int n = sc.nextInt();
+
+        int[] values = new int[n];
+
+        System.out.println("Enter the marks: ");
+        for (int i = 0; i < values.length; i++) {
+            values[i] = sc.nextInt();
+        }
+
+        int sum = 0;
+        for (int v : values) sum += v;
+
+        System.out.println("The average is: " + (double) sum / values.length);
+    }
+}
+</script></div>
+        <p class="sched-note">The underlying type need not be primitive either &mdash;
+        <code>String[] words = new String[2];</code> works exactly the same way.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.4</span>More than one dimension</h3>
+        <p>Nothing new: just add more brackets. <code>new int[2][2]</code> gives a 2&times;2 grid.</p>
+        <p>The interesting part is that <strong><code>int[][]</code> is an array of arrays</strong>, not
+        a special two-dimensional object. Append <code>[]</code> to a type to mean &ldquo;array of
+        that&rdquo;, and <code>int[][]</code> reads as &ldquo;array of <code>int[]</code>&rdquo;. Two
+        consequences:</p>
+        <ul>
+          <li><code>values[i]</code> hands you back a whole <code>int[]</code>, which is why
+          <code>data[i].length</code> in section 6.2 made sense.</li>
+          <li>The rows do not have to be the same length. <code>new int[3][]</code> creates the outer
+          array and lets you size each row yourself &mdash; a <strong>ragged</strong> array that uses
+          only the space it needs.</li>
+        </ul>
+        <div class="p1-console" data-lang="java" data-title="A ragged array"><script type="text/plain" data-role="source">
+public class Ragged {
+    public static void main(String[] args) {
+        int[][] matrix = new int[3][];
+
+        matrix[0] = new int[3];
+        matrix[1] = new int[2];
+        matrix[2] = new int[1];
+
+        for (int[] row : matrix) {
+            System.out.println("row length " + row.length);
+        }
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.5</span>Fixed size, and what a variable really holds</h3>
+        <p>A Java array is <strong>not resizable</strong>. You can point the variable at a new, bigger
+        array, but the data does not come with it unless you copy it.</p>
+        <p>And pointing the variable somewhere else does not destroy the old array &mdash; the variable
+        simply stops referring to it. If something else still refers to it, it is still there, unchanged:</p>
+        <div class="p1-console" data-lang="java" data-title="Two variables, one array"><script type="text/plain" data-role="source">
+public class ArrayResize {
+    public static void main(String[] args) {
+        int[] a = new int[2];
+        a[0] = 1;
+        a[1] = 4;
+
+        int[] b = a;
+
+        System.out.println("a[1] == " + a[1] + ", b[1] == " + b[1]);
+
+        a = new int[4];   // a new, bigger array
+
+        System.out.println("a[1] == " + a[1] + ", b[1] == " + b[1]);
+    }
+}
+</script></div>
+        <p class="sched-note">After the reassignment <code>b[1]</code> is still 4, but <code>a[1]</code>
+        is 0. This is your first real encounter with <strong>references</strong>, and it will come back
+        repeatedly from Week 6 onwards.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.6</span>Tidbits worth knowing</h3>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Thing</th><th>Detail</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Array literal</strong></td><td><code>int[] a = {1, 4, 7, 8, 2};</code> when you already know the contents</td></tr>
+            <tr><td><strong>One type only</strong></td><td><code>{1, "Hi", 3.4}</code> is not allowed &mdash; see section 11</td></tr>
+            <tr><td><strong>C-style syntax</strong></td><td><code>int a[] = new int[3];</code> also compiles, a concession to arriving C programmers</td></tr>
+            <tr><td><strong>Auto-initialised</strong></td><td>every cell gets a default: <code>0</code> for numbers, <code>false</code> for booleans, <code>null</code> for any object type</td></tr>
+            <tr><td><strong>Maximum size</strong></td><td>indices are <code>int</code>s, so the ceiling is <code>Integer.MAX_VALUE</code>; in practice you run out of contiguous memory long before that. A <code>long</code> index is rejected outright</td></tr>
+          </tbody>
+        </table></div>
+        <div class="p1-console" data-lang="java" data-title="What is in a brand new array?"><script type="text/plain" data-role="source">
+public class Defaults {
+    public static void main(String[] args) {
+        int[] numbers = new int[3];
+        String[] words = new String[3];
+        boolean[] flags = new boolean[3];
+
+        System.out.println(numbers[1]);
+        System.out.println(words[1]);
+        System.out.println(flags[1]);
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.7</span>The two array errors you will actually meet</h3>
+        <p>The common one is going out of bounds. Notice <strong>when</strong> it is caught:</p>
+        <div class="p1-console" data-lang="java" data-title="Out of bounds"><script type="text/plain" data-role="source">
+public class ArrayError {
+    public static void main(String[] args) {
+        int[] a = new int[5];
+
+        System.out.println("The program really did start.");
+        System.out.println(a[23]);
+    }
+}
+</script></div>
+        <p>The first line prints, then it throws. This is a <strong>run-time</strong> error, not a
+        compile error &mdash; even though a human can see that 23 is too big, the compiler cannot decide
+        this in general, so it does not try.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-3062.png" alt="xkcd comic: a proposed language that eliminates off-by-one errors by making every integer wrong by forty or fifty instead" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/3062/">xkcd 3062, <em>Off By One</em></a> (2025) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+        <div class="joke">
+          <p>&hellip;every occurrence of every subscript of every subscripted variable was on every occasion checked at run time against both the upper and the lower declared bounds of the array.</p>
+          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture</span>
+        </div>
+        <p>That is Hoare describing his own Algol compiler in the 1960s. When customers were later
+        offered the option to switch those checks <em>off</em> for speed, they unanimously told him not to
+        &mdash; they already knew how often subscript errors happen, and how badly they end. He then adds:</p>
+
+        <div class="joke">
+          <p>I note with fear and horror that even in 1980, language designers and users have not learned this lesson.</p>
+          <span class="attrib">C. A. R. Hoare, same lecture</span>
+        </div>
+        <p class="sched-note">So the exception you just saw is not Java being fussy. It is a Turing Award
+        winner&rsquo;s hard-won argument, finally built into the language.</p>
+
+        <p>The other one <em>is</em> caught at compile time: using an array you never initialised.</p>
+        <div class="p1-console" data-lang="java" data-title="Never initialised"><script type="text/plain" data-role="source">
+public class ArrayError {
+    public static void main(String[] args) {
+        int[] a;
+
+        System.out.println(a[0]);
+    }
+}
+</script></div>
+        <p class="sched-note">Two errors, two moments. Knowing which kind you are looking at tells you
+        where to go looking &mdash; a compile error is in the text of your program, a run-time error is in
+        what it was given.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s09" aria-labelledby="tab-s09" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">09</span>Lists in Python</h3>
+
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-1185.png" alt="xkcd comic: a series of deliberately terrible sorting algorithms" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/1185/">xkcd 1185, <em>Ineffective Sorts</em></a> (2013) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      <div class="concept">
+        <h3><span class="idx">9.1</span>No arrays here</h3>
+        <p>Python, unlike almost every other imperative language, has <strong>no array type</strong> as
+        a basic type. Libraries add them &mdash; NumPy most famously &mdash; but vanilla Python uses the
+        <strong>list</strong> as its &ldquo;collect a bunch of data together&rdquo; type.</p>
+        <p>Lists are indexed like Java arrays, from 0. Two differences, both from Python&rsquo;s
+        dynamic type system:</p>
+        <ul>
+          <li>They have <strong>no fixed size</strong>.</li>
+          <li>Their elements may have <strong>different types</strong>.</li>
+        </ul>
+        <div class="p1-console" data-lang="python" data-title="Square brackets make a list"><script type="text/plain" data-role="source">
+l = []                      # an empty list
+ll = [1, 2, 3]              # three elements
+mixed = [1, "Hi", 16.2, (2, 4)]
+
+print(l)
+print(ll)
+print(mixed)
+
+letters = ['a', 'b', 'c']
+print(letters[2] + letters[0] + letters[1])
+</script></div>
+        <div class="note warn">
+          <span class="tag">len(l), not l.length</span>
+          <p>Lists are objects, but they offer no length field or method of their own. Python uses the
+          generic <code>len</code> function, which works on anything that properly reports a length
+          &mdash; there is some syntactic misdirection going on, and you will meet it again with strings,
+          dicts and sets.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">9.2</span>Changing the length</h3>
+        <p><code>append(elem)</code> adds to the end. <code>insert(pos, elem)</code> puts one at
+        <code>pos</code>, moving what was there &mdash; and everything after it &mdash; up one place.</p>
+        <div class="p1-console" data-lang="python" data-title="append and insert"><script type="text/plain" data-role="source">
+l = []
+l.append(1)
+l.append(2.0)
+l.append('tree')
+print(l)
+print(len(l))
+
+names = ["Mad", "dangerous to know"]
+names.insert(1, "bad")
+print(names)
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">9.3</span>Joining lists together</h3>
+        <p><code>+</code> builds a new list, <code>+=</code> and <code>extend</code> add to the end of
+        an existing one:</p>
+        <div class="p1-console" data-lang="python" data-title="Three ways to join"><script type="text/plain" data-role="source">
+l1 = [1, 2, 3]
+l2 = [4, 5, 6]
+
+l3 = l1 + l2
+print(l3)
+
+l3.extend([7, 8, 9])
+print(l3)
+
+l3 += [10]
+print(l3)
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">9.4</span>Slice assignment</h3>
+        <p>A whole list can be dropped into the middle of another with a <strong>slice</strong>:
+        <code>l[a:b] = m</code> replaces everything the slice covers with the contents of
+        <code>m</code>. Both indices mean &ldquo;just before that position&rdquo;.</p>
+        <p>Which gives a neat trick: a slice of <strong>zero width</strong>, like <code>l[1:1]</code>,
+        covers nothing, so nothing is removed and <code>m</code> is simply squeezed in at that point.</p>
+        <div class="p1-console" data-lang="python" data-title="Squeeze in, and replace"><script type="text/plain" data-role="source">
+l = [1, 2, 3]
+
+l[1:1] = ['a', 'b', 'c']    # squeezed between elements 0 and 1
+print(l)
+
+l[1:3] = ["wooooo"]         # elements 1 and 2 replaced by one element
+print(l)
+</script></div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s10" aria-labelledby="tab-s10" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">10</span>Dictionaries, sets and tuples</h3>
+
+      <div class="concept">
+        <h3><span class="idx">10.1</span>Why Python has three more of these</h3>
+        <p>Java keeps its primitive types to the smallest set it could get away with, and does
+        everything else through classes and objects. Python has a different goal: a wide range of
+        tools with lightweight syntax, at some cost in uniformity.</p>
+        <p>So Python ships three more data structures with syntax of their own. Java has two of the
+        three &mdash; not by default, more work to use, and more structured in return. There is no Java
+        tuple at all.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Type</th><th>Is</th><th>Written</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">dict</td><td>like a list, but reached by a <strong>key</strong> instead of a number</td><td><code>{'a' : 1, 'b' : 2}</code></td></tr>
+            <tr><td class="mono">set</td><td>an unordered collection with <strong>no duplicates</strong></td><td><code>{1, 2, 3}</code></td></tr>
+            <tr><td class="mono">tuple</td><td>a list you <strong>cannot change</strong> once made</td><td><code>(1, 'a', 5.4)</code></td></tr>
+          </tbody>
+        </table></div>
+        <p class="sched-note">Internally these are classes, like everything else. Python just gives you
+        special syntax so you never have to see that part.</p>
+        <div class="joke">
+          <p>Data dominates. If you&rsquo;ve chosen the right data structures and organized things well, the algorithms will almost always be self-evident.</p>
+          <span class="attrib">Rob Pike, <em>Notes on Programming in C</em>, Rule 5, 1989</span>
+        </div>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">10.2</span>Dictionaries</h3>
+        <p>A dict (hash-map, associative array, hash-table &mdash; same idea, many names) stores
+        <strong>key&ndash;value pairs</strong>. You get at a value with square brackets and its key,
+        exactly as you would with a list index.</p>
+        <div class="p1-console" data-lang="python" data-title="Reading, changing, adding, deleting"><script type="text/plain" data-role="source">
+luke_data = {'name' : 'Luke', 'job' : 'Lecturer', 'subject' : '41039'}
+
+print("Luke's name is " + luke_data['name'])   # read
+
+luke_data['subject'] = '41052'                 # change an existing key
+print("Subject is now " + luke_data['subject'])
+
+luke_data['favourite tea'] = 'Earl Grey'       # the SAME syntax adds a new one
+print(luke_data)
+
+del luke_data['subject']                       # del removes an entry
+print(luke_data)
+</script></div>
+        <p>Iterating takes a moment&rsquo;s thought, because every entry has two halves. Plain
+        <code>for k in d:</code> gives you the <strong>keys</strong>:</p>
+        <div class="p1-console" data-lang="python" data-title="Four ways to iterate"><script type="text/plain" data-role="source">
+luke_data = {'name' : 'Luke', 'job' : 'Lecturer', 'subject' : '41039'}
+
+for k in luke_data:              # keys — the default
+    print(k)
+
+print('-------------')
+
+for k in luke_data:
+    print(luke_data[k])          # look each value up by its key
+
+print('-------------')
+
+for v in luke_data.values():     # or ask for the values directly
+    print(v)
+
+print('-------------')
+
+for x in luke_data.items():      # each entry as a (key, value) tuple
+    print(x)
+</script></div>
+        <div class="note warn">
+          <span class="tag">KeyError</span>
+          <p>The main dict error. Ask for a key that is not there &mdash; usually a typo &mdash; and you
+          get a <code>KeyError</code> naming the key you asked for. Try changing
+          <code>luke_data['name']</code> above to <code>luke_data['nme']</code>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">10.3</span>Sets</h3>
+        <p>The mathematical idea, built in: a collection with <strong>no duplicates</strong> and
+        <strong>no guaranteed order</strong>. Add the same element five times and one survives.</p>
+        <p>You cannot pull an element out by position &mdash; if you could, it would be a list, and
+        Python already has one of those. What you can do is ask whether something is
+        <strong>in</strong> it, and combine sets with the usual operations:</p>
+        <div class="p1-console" data-lang="python" data-title="Membership, and set operations" data-stdin="13"><script type="text/plain" data-role="source">
+primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
+
+n = int(input("Enter a number: "))
+if n in primes:
+    print(n, "is a prime.")
+else:
+    print(n, "is not a prime.")
+
+set1 = {1, 2, 3}
+set2 = {1, 2}
+set3 = {5, 6}
+
+print(set2, "subset of", set1, ":", set2 <= set1)
+print(set1, "union", set3, "is", set1 | set3)
+print(set1, "intersection", set2, "is", set1 & set2)
+print(set1, "minus", set2, "is", set1 - set2)
+print(set1, "symmetric minus", set3, "is", set1 ^ set3)
+</script></div>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Operator</th><th>On sets, means</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">&lt;=  &lt;</td><td>subset · proper subset</td></tr>
+            <tr><td class="mono">&gt;=  &gt;</td><td>superset · proper superset</td></tr>
+            <tr><td class="mono">|  &amp;</td><td>union · intersection</td></tr>
+            <tr><td class="mono">-  ^</td><td>difference · symmetric difference</td></tr>
+          </tbody>
+        </table></div>
+        <p>To change one, use <code>add</code> and <code>remove</code> &mdash; there is no index to
+        assign to. And the negation of <code>in</code> is <code>not in</code>, not <code>not x in</code>.</p>
+        <div class="note warn">
+          <span class="tag">The empty-braces trap</span>
+          <p>Sets and dicts share <code>{ }</code>, and the empty case had to belong to one of them. It
+          went to <code>dict</code>. So <code>{}</code> is an <strong>empty dict</strong>, and an empty
+          set has to be written <code>set()</code>.</p>
+        </div>
+        <div class="p1-console" data-lang="python" data-title="Prove it"><script type="text/plain" data-role="source">
+print(type(set()))
+print(type({}))
+
+no_repeats = {1, 1, 1, 1, 2}
+print(no_repeats)
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">10.4</span>Tuples</h3>
+        <p>A tuple is a list you cannot change. Index it, iterate it, read it &mdash; but you cannot
+        assign to an element, add one or remove one. That sounds like a limitation until you notice how
+        often you never needed to change the data anyway, which makes tuples the natural way to
+        <strong>bundle a few values together</strong>.</p>
+        <p>It is the <strong>comma</strong> that makes a tuple, not the parentheses &mdash; the brackets
+        just look nicer. Which leads to one genuinely odd edge case:</p>
+        <div class="p1-console" data-lang="python" data-title="Yay edge cases"><script type="text/plain" data-role="source">
+t = 1, 'a', 5.4
+print(t)                 # prints with parentheses anyway
+
+not_a_tuple = (1)        # just a number in brackets!
+print(type(not_a_tuple))
+
+singleton = (1,)         # the comma is what does it
+print(type(singleton))
+
+empty = ()
+print(empty, type(empty))
+</script></div>
+        <p class="sched-note">Everything else works the way you would now expect:
+        <code>primes[0]</code> for an element, <code>for p in primes:</code> to walk it. This is the
+        same tuple <code>d.items()</code> handed you in 10.2.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s11" aria-labelledby="tab-s11" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">11</span>Bundling data together</h3>
+
+      <div class="concept">
+        <h3><span class="idx">11.1</span>Easy in Python</h3>
+        <p>Each person has a name (a <code>str</code>) and a favourite number (an <code>int</code>).
+        Python&rsquo;s dynamic types make a list of pairs trivial:</p>
+        <div class="p1-console" data-lang="python" data-title="A list of tuples" data-stdin="2
+Bach
+7
+Linh
+3"><script type="text/plain" data-role="source">
+count = int(input("How many people are there? "))
+
+people = []
+
+for i in range(count):
+    name = input("Enter a name: ")
+    num = int(input("Enter their favourite number: "))
+    people.append((name, num))
+
+print("These are all the people and their favourite numbers: " + str(people))
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">11.2</span>&hellip;and stuck in Java</h3>
+        <p>Try the same thing in Java and you cannot even write the declaration:</p>
+        <div class="code-card"><pre>???[] people = ???[];   // what type goes here?
+
+people[i] = name? num?  // and how do both go in one cell?</pre></div>
+        <ul>
+          <li>A Java array has <strong>one</strong> element type, so it cannot hold Strings and
+          <code>int</code>s together.</li>
+          <li>Java has <strong>no tuple</strong>.</li>
+          <li>Java <em>does</em> have <code>List</code>, but it has the same type restriction.</li>
+        </ul>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">11.3</span>The answer with nothing new: parallel arrays</h3>
+        <p>Keep the halves in <strong>separate arrays, kept in step by index</strong>. All the types
+        match, so Java is happy &mdash; and <code>names[i]</code> goes with <code>numbers[i]</code>
+        because you make sure it does.</p>
+        <div class="p1-console" data-lang="java" data-title="Two arrays, one index" data-stdin="2
+Bach
+7
+Linh
+3"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Favourites {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many people? ");
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        String[] names = new String[n];
+        int[] numbers = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter a name: ");
+            String name = sc.nextLine();
+            System.out.print("Enter their favourite number: ");
+            int num = sc.nextInt();
+            sc.nextLine();
+
+            names[i] = name;
+            numbers[i] = num;
+        }
+
+        System.out.print("All the people and their favourite numbers: ");
+        for (int i = 0; i < n; i++) {
+            System.out.print("(" + names[i] + ", " + numbers[i] + ") ");
+        }
+        System.out.println();
+    }
+}
+</script></div>
+        <div class="note warn">
+          <span class="tag">Why &ldquo;kept in step&rdquo; is doing a lot of work</span>
+          <p>Nothing in the language ties <code>names[3]</code> to <code>numbers[3]</code>. Sort one
+          array and forget the other, insert into one and not the other, and the data is silently
+          wrong &mdash; no error, no crash. It works, but the correctness lives in your head rather than
+          in the code.</p>
+        <div class="joke">
+          <p>Bad programmers worry about the code. Good programmers worry about data structures and their relationships.</p>
+          <span class="attrib">Linus Torvalds, git mailing list, 27 July 2006</span>
+        </div>
+
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">11.4</span>What C and C++ do: <code>struct</code></h3>
+        <p>Java&rsquo;s culture comes from C and C++, where this problem has a name. A
+        <code>struct</code> is literally a way to bundle data of different types &mdash; often called
+        &ldquo;plain old data&rdquo;:</p>
+        <div class="code-card"><pre>struct data {
+    std::string name;
+    int num;
+};</pre></div>
+        <p>With that, one collection holds the pairs, and the rest of the program looks much like the
+        Java above &mdash; just without the second array.</p>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-676.png" alt="xkcd comic about layers of abstraction" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/676/">xkcd 676, <em>Abstraction</em></a> (2009) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">11.5</span>The Java version: a class that only carries data</h3>
+        <div class="code-card"><pre>class Data {
+    public String name;
+    public int num;
+}</pre></div>
+        <p>Structurally close to the <code>struct</code>, with four differences worth naming:</p>
+        <ul>
+          <li>The keyword is <code>class</code>.</li>
+          <li>Each data member is marked <code>public</code>.</li>
+          <li>You create one with <code>new</code>, exactly as with <code>Scanner</code>.</li>
+          <li>You reach a member with the dot operator: <code>d.name</code>.</li>
+        </ul>
+        <p>Two things will look unfamiliar. It is <strong>not</strong> marked <code>public</code>,
+        which is what lets it share a file with another class. And it has <strong>no methods at
+        all</strong> &mdash; no <code>main</code>, nothing.</p>
+        <div class="p1-console" data-lang="java" data-title="One array, both fields" data-stdin="2
+Bach
+7
+Linh
+3"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Favourites {
+
+    // Declared inside another class, and not public, which limits the damage
+    // it can do. It must be static so that main — also static — can use it.
+    static class Data {
+        public String name;
+        public int num;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many people? ");
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        Data[] people = new Data[n];      // now a single array
+
+        for (int i = 0; i < n; i++) {
+            Data d = new Data();
+            System.out.print("Enter a name: ");
+            d.name = sc.nextLine();
+            System.out.print("Enter their favourite number: ");
+            d.num = sc.nextInt();
+            sc.nextLine();
+            people[i] = d;
+        }
+
+        System.out.print("All the people and their favourite numbers: ");
+        for (int i = 0; i < n; i++) {
+            System.out.print("(" + people[i].name + ", " + people[i].num + ") ");
+        }
+        System.out.println();
+    }
+}
+</script></div>
+        <div class="note danger">
+          <span class="tag">This is deliberately bad OO</span>
+          <p>Java is object-oriented first and foremost, and this is the first step towards that &mdash;
+          but you do not yet have the tools to do it properly, so public fields and no methods is the
+          quick-and-ugly version. It is here because it solves today&rsquo;s problem with today&rsquo;s
+          knowledge. The classes module replaces it, and you should expect to be told off for writing
+          this once you know better.</p>
+        </div>
+      </div>
+        </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-s12" aria-labelledby="tab-s12" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">12</span>Coding exercises</h3>
+
+          <p>Eight exercises, marked automatically against test cases &mdash; the same idea as the Ed
+          labs, but nothing here is recorded or submitted. Write your answer, press <strong>Run
+          tests</strong>, and read what comes back. A worked solution sits under each one, but try it
+          first: reading a solution teaches you far less than failing a test does.</p>
+
+          <div class="note warn">
+            <span class="tag">Output must match exactly</span>
+            <p>A capital letter or a missing full stop fails the test, exactly as it would on Ed.
+            Trailing spaces and the final newline are the only things forgiven &mdash; which is why the
+            times table in exercise 5 can end each line with a space.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Read the failure, not just the cross</span>
+            <p>A failing test shows the input, what was expected and what your program actually
+            printed. If the program did not compile or crashed, you get the real compiler output or
+            stack trace instead &mdash; Week 1&rsquo;s skill, now doing real work.</p>
+          </div>
+
+          <div id="exercises-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s13" aria-labelledby="tab-s13" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">13</span>Team activity</h3>
+
+          <p>Three or four people, fifteen minutes, then two minutes to report back. These run in the
+          lecture and in the lab &mdash; class activities like these count towards the participation
+          side of your mark.</p>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 1 &middot; 10 min &middot; no computers</div>
+            <h4>Write the conditions, and find the gap</h4>
+            <p>On paper, write the rules a ticket machine uses to price a fare: child under 6 free,
+            child 6&ndash;15 half price, student with a card half price, senior over 60 free on
+            weekends, everyone else full price.</p>
+            <ol>
+              <li>Turn them into one <code>if</code> / <code>else if</code> ladder. What order did you
+              put them in, and why?</li>
+              <li>Find an input that falls through <strong>every</strong> branch. Find one that matches
+              <strong>two</strong> branches &mdash; which one wins?</li>
+              <li>A 15-year-old student with a card on a Sunday. What does your ladder charge them?
+              Is that what you intended?</li>
+            </ol>
+            <p><strong>Report back:</strong> the case your first draft got wrong.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 2 &middot; 10 min &middot; one laptop per group</div>
+            <h4>Break the loop on purpose</h4>
+            <p>Open section 5.2&rsquo;s &ldquo;Print 1 to n&rdquo; console. Take turns making
+            <strong>one</strong> change each and predicting the result <em>before</em> running it:</p>
+            <ul>
+              <li>delete the <code>i++</code></li>
+              <li>change <code>i &lt;= n</code> to <code>i &lt; n</code></li>
+              <li>start <code>i</code> at 0 instead of 1</li>
+              <li>move the <code>i++</code> above the <code>println</code></li>
+            </ul>
+            <p><strong>Report back:</strong> three of those four change the output by exactly one
+            number. Which one is a different kind of mistake altogether, and why is it worse?</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 3 &middot; 10 min &middot; one laptop per group</div>
+            <h4>Guess before you run</h4>
+            <p>Each person picks one console from this page <em>without</em> running it, reads it
+            aloud, and states what it will print. Then run it. Good candidates: the fall-through switch
+            in 3.2, the two-<code>if</code> bug in 2.2, the aliasing demo in 8.5, and the loop-else in
+            7.3.</p>
+            <ol>
+              <li>Who was wrong, and what exactly did they assume?</li>
+              <li>Was the mistake about <em>syntax</em> or about <em>what the machine does</em>?</li>
+            </ol>
+            <p><strong>Report back:</strong> the one that surprised the most people in your group.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 4 &middot; 10 min &middot; discussion</div>
+            <h4>Parallel arrays, and the bug nobody sees</h4>
+            <p>Section 11.3 keeps <code>names</code> and <code>numbers</code> in step by index. Nothing
+            in the language enforces that.</p>
+            <ol>
+              <li>Write down three ways a later change to that program could break the pairing.</li>
+              <li>What would the program do when it breaks &mdash; crash, or quietly print the wrong
+              person&rsquo;s number?</li>
+              <li>Which of those two is worse, and why is that the whole argument for 11.5?</li>
+            </ol>
+            <p><strong>Report back:</strong> your worst realistic scenario, in one sentence.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Why we do this out loud</span>
+            <p>Four times this session you will be asked to explain code in person. Groups that talk
+            through code every week find that conversation ordinary; groups that never do find it
+            hard. That is the whole reason these activities exist.</p>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s14" aria-labelledby="tab-s14" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">14</span>Quiz</h3>
+
+          <p>Twenty-six questions across both weeks. Answer them all, then grade. Every question
+          explains its answer, including why the wrong options are wrong. Nothing is recorded or
+          submitted.</p>
+
+          <div class="note tip">
+            <span class="tag">Most of these are &ldquo;what does this print?&rdquo;</span>
+            <p>Work it out in your head first. If you are unsure, the honest move is to paste the
+            snippet into the <a href="../playground.html">Playground</a> afterwards &mdash; but guess
+            before you run, or you learn nothing about what you actually believed.</p>
+          </div>
+
+          <div id="quiz-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s15" aria-labelledby="tab-s15" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">15</span>Further reading</h3>
+
+          <p>None of this is assessed. It is here for the moment a section leaves you curious, and for
+          the claims above that you should check rather than take our word for.</p>
+
+          <h3 class="read-group-title">The official word</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html">
+              <span class="kind">Tutorial &middot; sections 2, 3, 5, 6</span>
+              <h4>Control flow statements</h4>
+              <p>Oracle's own walkthrough of if-then-else, switch, while, do-while, for and the branching statements. The reference version of everything in sections 2 to 7.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html">
+              <span class="kind">Tutorial &middot; section 8</span>
+              <h4>Arrays</h4>
+              <p>Declaring, creating, indexing and copying arrays, including the multi-dimensional case and the array-of-arrays point that makes ragged arrays possible.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/tutorial/datastructures.html">
+              <span class="kind">Tutorial &middot; sections 9, 10</span>
+              <h4>Python data structures</h4>
+              <p>The detailed version of lists, dicts, sets and tuples — every method, plus list comprehensions, which you will want the moment this stops feeling new.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/tutorial/controlflow.html">
+              <span class="kind">Tutorial &middot; sections 4, 7</span>
+              <h4>Python control flow, including match</h4>
+              <p>if, for, range, break, continue and the loop-else — plus the match statement, which does considerably more than the switch-like use shown here.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://peps.python.org/pep-0636/">
+              <span class="kind">Tutorial &middot; section 4.3</span>
+              <h4>PEP 636 — Structural Pattern Matching</h4>
+              <p>The official tutorial for match, written by the people who added it. Start here to see why it is pattern matching rather than a switch with a new coat of paint.</p>
+              <span class="host">peps.python.org</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">Behind the claims on this page</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html">
+              <span class="kind">Note &middot; M2</span>
+              <h4>Why numbering should start at zero</h4>
+              <p>Dijkstra's one-page argument from 1982 that <code>0 ≤ i &lt; N</code> is the least awkward of the four ways to write a range. Short, and oddly persuasive.</p>
+              <span class="host">cs.utexas.edu</span>
+            </a>
+            <a class="read-card" href="https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf">
+              <span class="kind">Paper &middot; M3</span>
+              <h4>Go To Statement Considered Harmful</h4>
+              <p>Two pages from 1968 that started an argument still running today — and the reason Java's labelled break comes on a leash. The title was the editor's, not Dijkstra's.</p>
+              <span class="host">homepages.cwi.nl</span>
+            </a>
+            <a class="read-card" href="https://www.ioccc.org/">
+              <span class="kind">Contest &middot; section 6.3</span>
+              <h4>The International Obfuscated C Code Contest</h4>
+              <p>Where cramming everything into one expression is the point rather than the problem. Running since 1984. Look at a winner, then never write code like it.</p>
+              <span class="host">ioccc.org</span>
+            </a>
+            <a class="read-card" href="https://en.wikipedia.org/wiki/Duff%27s_device">
+              <span class="kind">History &middot; M2</span>
+              <h4>Duff's device</h4>
+              <p>Tom Duff, 1983: a loop unrolled by interleaving a switch with a do-while. The trick behind the switch-with-no-breaks in the Ed arrays reading.</p>
+              <span class="host">wikipedia.org</span>
+            </a>
+            <a class="read-card" href="https://en.wikiquote.org/wiki/Alan_Perlis">
+              <span class="kind">Quotation &middot; section 5</span>
+              <h4>Perlis — Epigrams on Programming</h4>
+              <p>The source of the epigraph at the top of section 5. A hundred and change one-liners from 1982, of which a great many are still exactly right.</p>
+              <span class="host">wikiquote.org</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-m01" aria-labelledby="tab-m01" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M1</span>Every operator, both languages</h3>
+
+          <p>Reference, not reading. You do not need to memorise any of this &mdash; you need to know
+          it exists, so that when you meet <code>^</code> or <code>//</code> or <code>&gt;&gt;&gt;</code>
+          in someone else&rsquo;s code you know where to look.</p>
+
+          <h3 class="read-group-title">Java</h3>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Group</th><th>Operators</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Assignment</td><td class="mono">=</td><td>right to left</td></tr>
+              <tr><td>Arithmetic</td><td class="mono">+ - * / %</td><td>the result takes the type that loses no information &mdash; <code>int</code> plus <code>short</code> gives an <code>int</code></td></tr>
+              <tr><td>String</td><td class="mono">+</td><td>concatenates, as long as the other operand is primitive or has a <code>toString</code></td></tr>
+              <tr><td>Unary</td><td class="mono">+ - ++ --</td><td>prefix <code>++</code> returns the value <em>after</em> adding; postfix returns the value <em>before</em></td></tr>
+              <tr><td>Equality</td><td class="mono">== !=</td><td>for object variables this asks &ldquo;the same object?&rdquo;, <strong>not</strong> &ldquo;the same value?&rdquo;</td></tr>
+              <tr><td>Relational</td><td class="mono">&lt; &gt; &lt;= &gt;=</td><td>numeric primitives only</td></tr>
+              <tr><td>Logical</td><td class="mono">&amp; | &amp;&amp; || !</td><td><code>&amp;&amp;</code> and <code>||</code> <strong>short-circuit</strong>; <code>&amp;</code> and <code>|</code> always evaluate both sides</td></tr>
+              <tr><td>Ternary</td><td class="mono">? :</td><td><code>A ? B : C</code> &mdash; shorthand for a small if-else that produces a value</td></tr>
+              <tr><td>Bitwise</td><td class="mono">~ &amp; | ^ &lt;&lt; &gt;&gt; &gt;&gt;&gt;</td><td><code>&gt;&gt;</code> keeps the sign bit, <code>&gt;&gt;&gt;</code> does not</td></tr>
+              <tr><td>Compound</td><td class="mono">+= -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;=</td><td><code>A op= B</code> means <code>A = A op B</code></td></tr>
+              <tr><td>Access</td><td class="mono">[] . () (type) instanceof ::</td><td>yes, the square brackets are an operator</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Precedence, highest first.</strong> Everything on one line ties, and ties are
+          broken by the associativity given:</p>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>#</th><th>Operators</th><th>Associativity</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">1</td><td class="mono">() [] .</td><td>left to right</td></tr>
+              <tr><td class="mono">2</td><td class="mono">postfix ++ --</td><td>right to left</td></tr>
+              <tr><td class="mono">3</td><td class="mono">prefix ++ -- ! ~ unary + - (type)</td><td>right to left</td></tr>
+              <tr><td class="mono">4</td><td class="mono">* / %</td><td>right to left</td></tr>
+              <tr><td class="mono">5</td><td class="mono">+ -</td><td>left to right</td></tr>
+              <tr><td class="mono">6</td><td class="mono">&gt;&gt; &lt;&lt; &gt;&gt;&gt;</td><td>left to right</td></tr>
+              <tr><td class="mono">7</td><td class="mono">&lt; &lt;= &gt; &gt;=</td><td>left to right</td></tr>
+              <tr><td class="mono">8</td><td class="mono">== !=</td><td>left to right</td></tr>
+              <tr><td class="mono">9&ndash;13</td><td class="mono">&amp; &nbsp;&middot;&nbsp; ^ &nbsp;&middot;&nbsp; | &nbsp;&middot;&nbsp; &amp;&amp; &nbsp;&middot;&nbsp; ||</td><td>left to right, in that order</td></tr>
+              <tr><td class="mono">14</td><td class="mono">?:</td><td>right to left</td></tr>
+              <tr><td class="mono">15</td><td class="mono">= += -= *= /= %= and friends</td><td>right to left</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 class="read-group-title">Python</h3>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Group</th><th>Operators</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Arithmetic</td><td class="mono">+ - * / % ** //</td><td><code>/</code> is <strong>always</strong> floating point; <code>//</code> is floor division and <code>**</code> is exponentiation</td></tr>
+              <tr><td>Comparison</td><td class="mono">== != &lt; &lt;= &gt; &gt;=</td><td>produce <code>True</code> or <code>False</code></td></tr>
+              <tr><td>Assignment</td><td class="mono">= += -= *= /= **= //= %=</td><td>as in Java</td></tr>
+              <tr><td>Logical</td><td class="mono">and · or · not · is · is not · in · not in</td><td>English words, not symbols &mdash; which also rules them out as variable names</td></tr>
+              <tr><td>Bitwise</td><td class="mono">&amp; | ^ ~ &lt;&lt; &gt;&gt;</td><td>different from the logical operators; you will not need these for a while</td></tr>
+              <tr><td>Grouping</td><td class="mono">()</td><td>allowed, but used sparingly by convention &mdash; <code>if 1 &lt; 2:</code> over <code>if (1 &lt; 2):</code></td></tr>
+              <tr><td>Conversion</td><td class="mono">int() float() complex() bool() str()</td><td>not operators, but you will use them constantly</td></tr>
+            </tbody>
+          </table></div>
+          <div class="note warn">
+            <span class="tag">One difference that bites</span>
+            <p>Python&rsquo;s <code>/</code> always gives a float, so <code>9 / 3</code> is
+            <code>3.0</code>. Java&rsquo;s <code>/</code> on two <code>int</code>s gives an
+            <code>int</code>, so <code>9 / 3</code> is <code>3</code> and <code>7 / 2</code> is
+            <code>3</code>. Same symbol, different answer &mdash; the Week 1 trap, and the reason
+            exercise 4 insists on a <code>double</code>.</p>
+          </div>
+          <p><strong>Python precedence, highest first:</strong>
+          <code>()</code> &middot;
+          <code>**</code> &middot;
+          <code>~</code> &middot;
+          <code>* / // %</code> &middot;
+          <code>+ -</code> &middot;
+          <code>&lt;&lt; &gt;&gt;</code> &middot;
+          <code>&amp;</code> &middot;
+          <code>^</code> &middot;
+          <code>|</code> &middot;
+          comparisons, <code>is</code>, <code>in</code> &middot;
+          <code>not</code> &middot;
+          <code>and</code> &middot;
+          <code>or</code>.</p>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-m02" aria-labelledby="tab-m02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M2</span>Why arrays start at zero</h3>
+
+      <div class="concept">
+        <h3><span class="idx">M2.1</span>Not an accident, and not only about memory</h3>
+        <p>The usual explanation is that index <em>i</em> is an offset from the start of the array, so
+        the first element sits at offset 0. True, and it is where the convention came from. But there
+        is a better argument, and it is about <em>ranges</em>.</p>
+        <p>In 1982 Edsger Dijkstra wrote a one-page note,
+        <a href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html">EWD 831</a>, asking
+        how to write &ldquo;the numbers 1 through 10&rdquo;. There are four options:</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Form</th><th>Trouble</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1 &le; i &lt; 11</td><td>the upper bound is not itself a number in the sequence</td></tr>
+            <tr><td class="mono">0 &lt; i &le; 10</td><td>the lower bound is not itself a number in the sequence</td></tr>
+            <tr><td class="mono">1 &le; i &le; 10</td><td>an empty range needs an upper bound <em>below</em> the natural numbers</td></tr>
+            <tr><td class="mono">0 &lt; i &lt; 11</td><td>both problems at once</td></tr>
+          </tbody>
+        </table></div>
+        <p>The first form wins on two counts: the <strong>length is simply upper minus lower</strong>,
+        and an empty range is the harmless <code>a &le; i &lt; a</code>. Adopt it, then start indices at
+        the smallest natural number, and you get <code>0 &le; i &lt; N</code> &mdash; which is exactly
+        the shape of every <code>for</code> loop you have written today.</p>
+        <div class="note tip">
+          <span class="tag">Look at your own loops</span>
+          <p><code>for (int i = 0; i &lt; a.length; i++)</code>. No <code>+ 1</code>, no
+          <code>- 1</code>, and the number of iterations is visibly <code>a.length</code>. Try writing
+          the same loop 1-indexed and count how many places you have to get right.</p>
+        </div>
+        <figure class="fig fig-narrow plain">
+          <img src="../media/xkcd-2248.png" alt="xkcd comic: a New Year countdown that is off by one" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/2248/">xkcd 2248, <em>New Year's Eve</em></a> (2019) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">M2.2</span>Duff&rsquo;s device, and switches with no breaks</h3>
+        <p>The Ed arrays reading uses a <code>switch</code> with no <code>break</code>s to pick where to
+        <em>start</em> reading values &mdash; deliberately falling all the way down. That looks like a
+        party trick. It is actually a technique with a name and a date.</p>
+        <p>In 1983 Tom Duff, then at Lucasfilm, needed to copy data faster than a straightforward loop
+        allowed. The answer was <strong>loop unrolling</strong>: do eight copies per iteration instead
+        of one, so the loop&rsquo;s own overhead is paid one-eighth as often. The awkward part is the
+        leftovers &mdash; what if the count is not a multiple of eight? Duff&rsquo;s answer was to
+        interleave a <code>switch</code> <em>through</em> a <code>do-while</code>, jumping into the
+        middle of the unrolled body so the remainder is handled first.</p>
+        <p>It is legal C, it is genuinely clever, and Duff himself expected it to start an argument.
+        Today compilers unroll loops for you, so it is history rather than advice &mdash; but it is why
+        fall-through exists at all, and it is worth knowing that the ugly thing in the reading is a
+        fossil of real engineering.</p>
+        <div class="note warn">
+          <span class="tag">The lesson, though</span>
+          <p>&ldquo;Old, slow computers with bad compilers&rdquo; is the context that made this worth
+          doing. None of those three conditions holds for you. Write the clear loop.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-m03" aria-labelledby="tab-m03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M3</span>goto, and why break has a leash</h3>
+
+        <figure class="fig fig-wide plain">
+          <img src="../media/xkcd-292.png" alt="xkcd comic: choosing a goto instead of restructuring the program, with consequences" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/292/">xkcd 292, <em>goto</em></a> (2007) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+
+      <div class="concept">
+        <h3><span class="idx">M3.1</span>The letter that started it</h3>
+        <p>In March 1968 the <em>Communications of the ACM</em> published a two-page letter by Edsger
+        Dijkstra arguing that the <code>goto</code> statement &mdash; jump anywhere, from anywhere &mdash;
+        should be abolished from high-level languages. His argument was not that it was inelegant. It
+        was that <strong>with unrestricted jumps you cannot describe where a running program has got
+        to</strong>, so you cannot reason about it &mdash; and neither can the person reading it.</p>
+        <div class="joke">
+          <p>The quality of programmers is a decreasing function of the density of go to statements in the programs they produce.</p>
+          <span class="attrib">E. W. Dijkstra, CACM 11(3), March 1968</span>
+        </div>
+        <p class="sched-note">The famous title, <em>Go To Statement Considered Harmful</em>, was not
+        Dijkstra&rsquo;s &mdash; the editor, Niklaus Wirth, supplied it. It went on to spawn a whole
+        genre of &ldquo;considered harmful&rdquo; papers, including several arguing the opposite.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">M3.2</span>What replaced it, and what survives</h3>
+        <p>What won was <strong>structured programming</strong>: build programs out of blocks with one
+        way in and one way out &mdash; sequence, selection, repetition. That is precisely the
+        <code>if</code>, the <code>switch</code> and the loops in sections 2 to 7. Everything you
+        learned this week is the settlement of that argument.</p>
+        <p>Java took it literally. <code>goto</code> is a <strong>reserved word in Java that does
+        nothing</strong> &mdash; you cannot use it as a variable name, and you cannot use it to jump
+        either. What Java offers instead is the labelled <code>break</code> and <code>continue</code>
+        from section 6.4, with one rule that makes all the difference:</p>
+        <div class="note tip">
+          <span class="tag">The leash</span>
+          <p>You may only break to a block that <strong>encloses</strong> the break. Control therefore
+          moves outward and forward, never sideways into unrelated code. The block structure still
+          tells you where you can possibly end up &mdash; which is exactly the property Dijkstra said
+          <code>goto</code> destroys.</p>
+        </div>
+        <p>So the labelled break is not a loophole. It is the largest amount of jumping that can be
+        allowed while keeping the thing that made structured programming worth having.</p>
+        <div class="joke">
+          <p>The price of reliability is the pursuit of the utmost simplicity.</p>
+          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture</span>
+        </div>
+
+      </div>
+        </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="thisweek">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 &middot; These two weeks</span>
+        <h2>What to actually do</h2>
+      </div>
+      <div class="concept">
+        <p>On Ed, work through the eleven Week 2 and 3 lessons. They interleave the two languages
+        deliberately &mdash; this order matches the sections above:</p>
+        <ol>
+          <li>Booleans and Conditional Statements &mdash; Or &mdash; How to Choose in Java</li>
+          <li>Conditional Statements in Python</li>
+          <li>Loops in Java 1 &mdash; while, for, for-each, do-while</li>
+          <li>Loops in Java 2 &mdash; nesting, break, continue</li>
+          <li>Loops in Python 2 &mdash; break, continue, loop-else</li>
+          <li>Arrays in Java</li>
+          <li>Lists in Python</li>
+          <li>Dictionaries, Sets and Tuples in Python</li>
+          <li>Bundling Data Together in Java &mdash; your first taste of a class</li>
+          <li>Java Trivia, Tidbits and Tables &mdash; reference, skim it</li>
+          <li>A Python Miscellany &mdash; reference, skim it</li>
+        </ol>
+        <div class="note tip">
+          <span class="tag">The last two are not readings</span>
+          <p>They are operator tables. Skim them once so you know what is in them, then come back when
+          you meet a symbol you do not recognise. Both are reproduced in <a href="#m01">M1</a> on this
+          page, side by side.</p>
+        </div>
+        <div class="note warn">
+          <span class="tag">Labs have started</span>
+          <p>Assessed lab exercises are due <strong>11:55pm the Monday of the following week</strong>,
+          with unlimited attempts &mdash; but you must pass <em>all</em> test cases in an exercise to
+          get its marks. <strong>Canvas &rarr; Assignments is authoritative</strong> for what is due
+          and when; where this page differs, Canvas and the announcements win.</p>
+        </div>
+        <div class="note">
+          <span class="tag">If you only do one thing</span>
+          <p>Predict the output of every runnable block on this page <em>before</em> you press Run.
+          Being wrong and finding out immediately is the fastest form of learning available to you,
+          and it is free.</p>
+        </div>
+      </div>
+      <p class="sched-note">Coming up in Week 4: arrays and user input in earnest &mdash; plus the first
+      code comprehension check.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="block" id="sources" style="padding-top:1rem">
+      <div class="sec-head">
+        <span class="eyebrow">Sources</span>
+        <h2>Everything cited on this page</h2>
+        <p>The lecture content comes from the Week 2 and 3 lessons on Ed. The links below are for the
+        claims this page adds around them &mdash; checking a source yourself is a better habit than
+        trusting any lecture slide, including ours.</p>
+      </div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin-bottom:0.6rem">Documentation</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">2&ndash;7</td><td><a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/flow.html">Oracle &mdash; <em>Control Flow Statements</em></a>, The Java Tutorials</td></tr>
+          <tr><td class="mono">8</td><td><a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html">Oracle &mdash; <em>Arrays</em></a>, The Java Tutorials</td></tr>
+          <tr><td class="mono">4.3</td><td><a href="https://peps.python.org/pep-0636/">PEP 636 &mdash; <em>Structural Pattern Matching: Tutorial</em></a></td></tr>
+          <tr><td class="mono">7, 9, 10</td><td><a href="https://docs.python.org/3/tutorial/datastructures.html">Python &mdash; <em>Data Structures</em></a> and <a href="https://docs.python.org/3/tutorial/controlflow.html"><em>More Control Flow Tools</em></a></td></tr>
+          <tr><td class="mono">M1</td><td><a href="https://docs.oracle.com/javase/tutorial/java/nutsandbolts/operators.html">Oracle &mdash; <em>Operators</em></a>, and <a href="https://docs.python.org/3/reference/expressions.html#operator-precedence">Python &mdash; <em>Operator precedence</em></a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Quotations</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">Every quotation on this page was checked against a
+      primary source &mdash; the original paper, book or message, not a quotation website.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">2.2, 6.3</td><td>Brian W. Kernighan &amp; P. J. Plauger, <a href="https://archive.org/details/the-elements-of-programming-style-second-edition"><em>The Elements of Programming Style</em></a>, 2nd ed., McGraw-Hill, 1978 &mdash; &ldquo;Take care to branch the right way on equality&rdquo; (ch. 6), &ldquo;Write clearly &mdash; don&rsquo;t be too clever&rdquo; (the book&rsquo;s first rule), &ldquo;Let the machine do the dirty work&rdquo;</td></tr>
+          <tr><td class="mono">5.1, 6.1</td><td>Ada Lovelace, <a href="https://en.wikisource.org/wiki/Scientific_Memoirs/3/Sketch_of_the_Analytical_Engine_invented_by_Charles_Babbage,_Esq./Notes_by_the_Translator">Note E of the Translator&rsquo;s Notes</a> to L. F. Menabrea, <em>Sketch of the Analytical Engine</em>, <em>Scientific Memoirs</em> vol. III, 1843, p. 716</td></tr>
+          <tr><td class="mono">5.5</td><td>Alfred North Whitehead, <a href="https://archive.org/details/introductiontoma00whituoft"><em>An Introduction to Mathematics</em></a>, 1911, ch. V</td></tr>
+          <tr><td class="mono">8.2, 8.7, M3.2</td><td>C. A. R. Hoare, <a href="https://worrydream.com/refs/Hoare_1981_-_The_Emperors_Old_Clothes.pdf"><em>The Emperor&rsquo;s Old Clothes</em></a>, 1980 ACM Turing Award Lecture, <em>Communications of the ACM</em> 24(2), February 1981, pp. 75&ndash;83</td></tr>
+          <tr><td class="mono">8.2</td><td>Jon Bentley, <a href="https://www.cs.tufts.edu/~nr/cs257/archive/jon-bentley/correct-programs.pdf"><em>Programming Pearls: Writing Correct Programs</em></a>, <em>Communications of the ACM</em> 26(12), December 1983, pp. 1040&ndash;1045</td></tr>
+          <tr><td class="mono">10.1</td><td>Rob Pike, <a href="https://www.lysator.liu.se/c/pikestyle.html"><em>Notes on Programming in C</em></a>, Rule 5, 21 February 1989</td></tr>
+          <tr><td class="mono">11.3</td><td>Linus Torvalds, <a href="https://lwn.net/Articles/193245/">message to the git mailing list</a>, 27 July 2006</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Comics</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">
+        All by <strong>Randall Munroe</strong>, <a href="https://xkcd.com/">xkcd.com</a>, used under
+        <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>:
+        <a href="https://xkcd.com/292/">292</a>, <a href="https://xkcd.com/676/">676</a>,
+        <a href="https://xkcd.com/710/">710</a>, <a href="https://xkcd.com/1033/">1033</a>,
+        <a href="https://xkcd.com/1185/">1185</a>, <a href="https://xkcd.com/1195/">1195</a>,
+        <a href="https://xkcd.com/1205/">1205</a>, <a href="https://xkcd.com/1411/">1411</a>,
+        <a href="https://xkcd.com/1537/">1537</a>, <a href="https://xkcd.com/1652/">1652</a>,
+        <a href="https://xkcd.com/2200/">2200</a>, <a href="https://xkcd.com/2248/">2248</a>,
+        <a href="https://xkcd.com/3062/">3062</a>.
+      </p>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Articles, papers and notes</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">5</td><td>Alan J. Perlis, <a href="https://en.wikiquote.org/wiki/Alan_Perlis"><em>Epigrams on Programming</em></a>, <em>ACM SIGPLAN Notices</em> 17(9), September 1982</td></tr>
+          <tr><td class="mono">6.3</td><td><a href="https://www.ioccc.org/">The International Obfuscated C Code Contest</a>, running since 1984</td></tr>
+          <tr><td class="mono">M2.1</td><td>E. W. Dijkstra, <a href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html"><em>Why numbering should start at zero</em></a> (EWD 831), 11 August 1982</td></tr>
+          <tr><td class="mono">M2.2</td><td><a href="https://en.wikipedia.org/wiki/Duff%27s_device">Duff&rsquo;s device</a> &mdash; Tom Duff, Lucasfilm, 1983</td></tr>
+          <tr><td class="mono">M3.1</td><td>E. W. Dijkstra, <a href="https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf"><em>Go To Statement Considered Harmful</em></a>, <em>Communications of the ACM</em> 11(3), March 1968, pp. 147&ndash;148</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <nav class="pagenav" aria-label="Page navigation">
+      <a href="week-1.html"><span class="dir">Previous</span>Week 1 &mdash; Your first program</a>
+      <a href="../slides/week-2-3-slides.pdf"><span class="dir">Slides</span>Weeks 2&ndash;3 lecture (PDF)</a>
+      <a href="https://edstem.org/au/courses/41298/lessons"><span class="dir">Next</span>Week 2&ndash;3 lessons on Ed</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> &middot; Programming 1</span>
+    <p>Weeks 2 &amp; 3 &middot; Choosing and Repeating &middot; Content from the Week 2 and 3 lessons on Ed</p>
+  </div>
+</footer>
+<script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=2028e428"></script>
+<script src="../assets/console-ui.js?v=9f252260"></script>
+<script src="../assets/w23-data.js?v=63b7d9f8"></script>
+<script src="../assets/w23-exercises.js?v=164a4b3e"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=e68aea7e"></script>
+</body>
+</html>
