@@ -136,6 +136,26 @@ inside a dark or light block without a `:root` default.**
   becomes a horizontally scrolling strip above the content**, because a 17rem sidebar and a
   code editor cannot share a phone screen. Each panel ends with previous/next buttons, so the
   lecture can be read straight through without returning to the rail.
+- **Photograph** (`.photo`) — a real photograph, framed edge to edge in a card with its
+  caption and `.credit` on a bar underneath. This is a different object from `.fig`: a comic is
+  line art that needs a white pad, a photograph fills its frame. Variants: `.banner` (a 21:8
+  strip that opens a section, 16:9 on phones), `.side` (20rem, beside prose) and `.portrait`.
+  A photograph whose subject sits off-centre may carry its own inline `object-position` — that
+  is per-image framing, not a new token.
+- **Media row** (`.media-row`) — prose in one column and a photograph in the other, collapsing
+  to one column at 820px. Use it when the picture is an aside; use a `.banner` when it opens a
+  section.
+- **Quote with a portrait** (`.joke.with-photo`) — the author's photograph in a circle in a
+  left column that spans the whole box, with the quote and its `.attrib` beside it. Two authors
+  get two smaller circles, stacked. A quote only gets a portrait when the photograph has been
+  confirmed to be of that person (check which Wikipedia article uses the file); everything else
+  stays a plain `.joke`. The portrait's credit goes inside the `.attrib`, because it is part of
+  the licence.
+- **Did you know?** (`.note.with-media`) — a `.note` with text on the left and a square
+  photograph plus its credit on the right; below 560px the picture drops under the text and sits
+  beside its credit. `img.contain` for a chart or diagram, which must not be cropped and needs a
+  white sheet in both themes. Every one of these carries a link to the source the fact was
+  checked against — see architecture.md §3a.
 - **Figure** (`.fig`) — a comic or photograph with a caption and a `.credit` line. Comics sit
   on a white pad (`.fig` default) because xkcd's PNGs have transparent backgrounds and would
   be invisible in dark mode; `.fig.plain` removes the pad. Width is capped by `.fig-narrow`

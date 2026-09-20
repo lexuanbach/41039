@@ -1,0 +1,202 @@
+{
+ "fact-ascii-chart": {
+  "artist": "An unknown officer or employee of the United States Government",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AUSASCII_code_chart.svg",
+  "credit_line": "File:USASCII code chart.png , MIL-STD-188-100, pg. B-2, Fig 1, 1972. (different scan)",
+  "date": "1967",
+  "description": "US-ASCII (1967) Code Chart. \"SUB\" (column 1 / row 10) and other symbols were introduced with the 1967 revision. Control Characters: (see File:US ASCII Control Character Symbols.png )",
+  "file": "fact-ascii-chart.png",
+  "licence": "Public domain",
+  "licence_url": ""
+ },
+ "fact-corrado-bohm": {
+  "artist": "Carbonem",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ACorradoBoemETAPS2013_2013-03-22_0.33.36.jpg",
+  "credit_line": "Own work",
+  "date": "2013-03-22 10:33:36",
+  "description": "This photo was taken by Marco Carbone at the ETAPS 2013 event (www.etaps.org). The particular event was the celebration of Böhm's 90th birthday with the ETAPS community and his family.",
+  "file": "fact-corrado-bohm.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "fact-ibm-704": {
+  "artist": "NASA",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AIBM_Electronic_Data_Processing_Machine_-_GPN-2000-001881.jpg",
+  "credit_line": "Great Images in NASA Description",
+  "date": "1957-03-21",
+  "description": "Man and woman working with IBM type 704 electronic data processing machine used for making computations for aeronautical research. Langley NACA",
+  "file": "fact-ibm-704.jpg",
+  "licence": "Public domain",
+  "licence_url": ""
+ },
+ "fact-joshua-bloch": {
+  "artist": "Billy Bob Bain",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AJoshua_Bloch_at_JavaOne_2005_%28cropped%29.jpg",
+  "credit_line": "https://www.flickr.com/photos/astros/24462130/",
+  "date": "2005-06-27 16:29:28",
+  "description": "Josh at JavaOne 2005",
+  "file": "fact-joshua-bloch.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "photo-athletics-lanes": {
+  "artist": "Santeri Viinamäki",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AAthletics_track_start_line_numbers_1%2C_2%2C_3.jpg",
+  "credit_line": "Own work",
+  "date": "2016-08-19 13:01:01",
+  "description": "Athletics track start line numbers 1, 2, 3.",
+  "file": "photo-athletics-lanes.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-card-catalog": {
+  "artist": "MarkBuckawicki",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AWooden_Card_Catalog_Furniture.jpg",
+  "credit_line": "Own work",
+  "date": "2018-04-07 15:59:52",
+  "description": "A wooden card catalog chest of drawers at a public library in Nashua, New Hampshire",
+  "file": "photo-card-catalog.jpg",
+  "licence": "CC0",
+  "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+ },
+ "photo-conveyor": {
+  "artist": "falco",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AConveyor_system_in_a_factory.jpg",
+  "credit_line": "https://pixabay.com/photos/factory-industrial-hall-logistics-1137993/",
+  "date": "2015-06-25 12:57:09",
+  "description": "Conveyor system in a factory",
+  "file": "photo-conveyor.jpg",
+  "licence": "CC0",
+  "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+ },
+ "photo-fence-posts": {
+  "artist": "Trish Steel",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APost_and_rail_fence%2C_Bishopstone_-_geograph.org.uk_-_1009517.jpg",
+  "credit_line": "From geograph.org.uk",
+  "date": "2008-10-17",
+  "description": "Post and rail fence, Bishopstone Autumn shadows in Croucheston.",
+  "file": "photo-fence-posts.jpg",
+  "licence": "CC BY-SA 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/2.0"
+ },
+ "photo-george-boole": {
+  "artist": "Unknown author",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AGeorge_Boole_color.jpg",
+  "credit_line": "http://schools.keldysh.ru/sch444/museum/1_17-19.htm",
+  "date": "circa 1864/1865",
+  "description": "George Boole , mathematician, 1815-1864",
+  "file": "photo-george-boole.jpg",
+  "licence": "Public domain",
+  "licence_url": ""
+ },
+ "photo-po-boxes": {
+  "artist": "Frank Schulenburg",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APO_boxes_at_the_historic_Chico_Post_Office_%282024%29-L1005460.jpg",
+  "credit_line": "Own work",
+  "date": "2024-05-13 12:23:34",
+  "description": "PO boxes at the historic U.S. Post Office in downtown Chico, California, on May 13, 2024. The building was added to the National Register of Historic Places in January 1985.",
+  "file": "photo-po-boxes.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-railway-turnout": {
+  "artist": "Mikael Johansson",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ATreskensv%C3%A4xel_vid_Jenny.jpg",
+  "credit_line": "author",
+  "date": "2006-07-07",
+  "description": "Dual-gauge railway line at Jenny, Sweden, with narrow-gauge (891 mm) line diverging from the standard-gauge (1435 mm) line.",
+  "file": "photo-railway-turnout.jpg",
+  "licence": "CC BY-SA 3.0",
+  "licence_url": "http://creativecommons.org/licenses/by-sa/3.0/"
+ },
+ "photo-tally-counter": {
+  "artist": "Storye book",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AHand_tally_and_knitting_row_counter_007.jpg",
+  "credit_line": "Linda Spashett Own work",
+  "date": "2010",
+  "description": "A standard-design hand counter or clicker tally, sold as a knitting counter. Each click of the silver-coloured lever advances the count upwards by one. This gadget has the advantage for knitting over dedicated knitting row counters in that it counts up to four figures and in that it can be used where on-needle counters are not possible. It is also more robust and easier to handle than some dedicat",
+  "file": "photo-tally-counter.jpg",
+  "licence": "CC BY 3.0",
+  "licence_url": "https://creativecommons.org/licenses/by/3.0"
+ },
+ "portrait-bentley": {
+  "artist": "",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AJon_Bentley_informaticien.jpg",
+  "credit_line": "https://engineering.lehigh.edu/dac/jon-bentley",
+  "date": "2013-01-01",
+  "description": "Jon Bentley informaticien",
+  "file": "portrait-bentley.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "portrait-dijkstra": {
+  "artist": "Hamilton Richards",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg",
+  "credit_line": "manuscripts of Edsger W. Dijkstra , University Texas at Austin",
+  "date": "1 Aug 2002 (as metadata)",
+  "description": "Portrait of en:Edsger W. Dijkstra , one of the greatest mathematicians in the history of modern mathematics.",
+  "file": "portrait-dijkstra.jpg",
+  "licence": "CC BY-SA 3.0",
+  "licence_url": "http://creativecommons.org/licenses/by-sa/3.0/"
+ },
+ "portrait-hoare": {
+  "artist": "Rama",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg",
+  "credit_line": "Own work",
+  "date": "Taken on 20 June 2011, 11:27 (according to Exif data)",
+  "description": "السير توني هور يلقي محاضرة في مدرسة لوزان الاتحادية للفنون التطبيقية في 20 يونيو 2011",
+  "file": "portrait-hoare.jpg",
+  "licence": "CC BY-SA 2.0 fr",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en"
+ },
+ "portrait-kernighan": {
+  "artist": "Ben Lowe",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg",
+  "credit_line": "File:Brian_Kernighan_in_2012_at_Bell_Labs_1.jpg",
+  "date": "7 September 2012, 10:10:44",
+  "description": "Brian Kernighan speaks at a tribute to Dennis Ritchie at Bells Labs.",
+  "file": "portrait-kernighan.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "portrait-lovelace": {
+  "artist": "Antoine Claudet",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AAda_Lovelace_daguerreotype_by_Antoine_Claudet_1843_-_cropped.png",
+  "credit_line": "shared by Paul Graham on x.com https://x.com/paulg/status/1927655441913250041",
+  "date": "circa 1843 date QS:P,+1843-00-00T00:00:00Z/9,P1480,Q5727902",
+  "description": "Ada Lovelace daguerreotype by Antoine Claudet 1843 - cropped",
+  "file": "portrait-lovelace.jpg",
+  "licence": "Public domain",
+  "licence_url": ""
+ },
+ "portrait-pike": {
+  "artist": "Kevin Shockey",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ARob-pike-oscon.jpg",
+  "credit_line": "https://www.flickr.com/photos/shockeyk/4833152910/in/photostream/",
+  "date": "2010-07-22 12:50:45",
+  "description": "Rob Pike giving a keynote at OSCON 2010",
+  "file": "portrait-pike.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "portrait-torvalds": {
+  "artist": "Krd (photo) Von Sprat (crop/extraction)",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ALinuxCon_Europe_Linus_Torvalds_03_%28cropped%29.jpg",
+  "credit_line": "File:LinuxCon Europe Linus Torvalds 03.jpg",
+  "date": "2014-10-15 10:04:49",
+  "description": "A cropped and rotated version of an image of Linus Torvalds speaking at the LinuxCon Europe 2014 in Düsseldorf",
+  "file": "portrait-torvalds.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "portrait-whitehead": {
+  "artist": "unknown",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AANWhitehead.jpg",
+  "credit_line": "Splendour Of The Heavens by Hutchinsons, 1923, p. 675",
+  "date": "1923",
+  "description": "Photo of Alfred North Whitehead",
+  "file": "portrait-whitehead.jpg",
+  "licence": "Public domain",
+  "licence_url": ""
+ }
+}

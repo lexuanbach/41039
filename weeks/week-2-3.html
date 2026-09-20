@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=b0411355">
+<link rel="stylesheet" href="../assets/style.css?v=f921c06f">
 </head>
 <body>
 <header class="topbar">
@@ -257,6 +257,17 @@ public class BooleansDontMatchIntsInJava {
           catches the typo. Neither is &ldquo;right&rdquo; &mdash; but you should know which one you
           are typing into.</p>
         </div>
+<div class="note with-media">
+  <div class="note-text">
+    <span class="tag">Did you know?</span>
+    <p>The type is named after a person. George Boole published <em>An Investigation of the Laws of Thought</em> in <strong>1854</strong>, arguing that logic could be done as algebra &mdash; with values that are only ever true or false. There were no computers to apply it to. Eighty-three years later a 21-year-old master&rsquo;s student, <strong>Claude Shannon</strong>, noticed in his 1937 MIT thesis that Boole&rsquo;s algebra described exactly what a circuit of relay switches does &mdash; and the two halves of your <code>boolean</code> finally met. <a href="https://en.wikipedia.org/wiki/A_Symbolic_Analysis_of_Relay_and_Switching_Circuits" target="_blank" rel="noopener">Source: Wikipedia &mdash; A Symbolic Analysis of Relay and Switching Circuits</a>.</p>
+  </div>
+  <figure class="note-media">
+    <img src="../media/photo-george-boole.jpg" width="320" height="320" loading="lazy"
+         alt="Engraved portrait of George Boole, the mathematician who devised Boolean algebra">
+    <figcaption><span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AGeorge_Boole_color.jpg" target="_blank" rel="noopener">Unknown author, 1864</a> &middot; public domain</span></figcaption>
+  </figure>
+</div>
       </div>
 
       <div class="concept">
@@ -317,7 +328,12 @@ public class CombinedOps {
         <code>if (cond) { … }</code> says <strong>nothing at all</strong> about the false case. That gap
         is this whole section.</p>
 
-      <div class="concept">
+
+<figure class="photo banner">
+  <img src="../media/photo-railway-turnout.jpg" loading="lazy" alt="A railway turnout seen from a train: a single track splitting into two">
+  <figcaption><strong>One set of rails in, two out.</strong> A railway turnout is the physical version of an <code>if</code>: the points are thrown one way or the other, the train takes exactly one route, and the two routes meet again further down the line.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3ATreskensv%C3%A4xel_vid_Jenny.jpg" target="_blank" rel="noopener">Mikael Johansson, 2006</a> &middot; <a href="http://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a></span></figcaption>
+</figure>      <div class="concept">
         <h3><span class="idx">2.1</span>The <code>if</code> statement</h3>
         <p>Now that a program can say whether something is true, it can use that to decide what to do
         next. The syntax, with the angle brackets standing in for your own code:</p>
@@ -373,13 +389,35 @@ public class Choice {
           <code>if</code> is tested, <code>i</code> is 101 &mdash; so <em>both</em> messages print for a
           single input. Run it above and watch it happen.</li>
         </ol>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-kernighan.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Brian Kernighan">
+          </div>
           <p>Take care to branch the right way on equality.</p>
-          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978</span>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg" target="_blank" rel="noopener">Ben Lowe, 2012</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
         </div>
 
         <p>An <code>else</code> block fixes both, because the two branches become genuinely
         exclusive: exactly one of them runs.</p>
+        <div class="note with-media">
+          <div class="note-text">
+            <span class="tag">Did you know?</span>
+            <p>The first <code>IF</code> in a high-level language had <strong>three</strong> exits
+            and no <code>else</code> at all. FORTRAN for the IBM 704 offered only the
+            &ldquo;arithmetic IF&rdquo;: <code>IF (X) 10, 20, 30</code> jumps to statement 10 if
+            <code>X</code> is negative, 20 if it is zero and 30 if it is positive. The true/false
+            &ldquo;logical IF&rdquo; you are learning here only arrived with FORTRAN IV in 1962.
+            <a href="https://en.wikipedia.org/wiki/Fortran#FORTRAN" target="_blank" rel="noopener">Source:
+            Wikipedia &mdash; Fortran</a>.</p>
+          </div>
+          <figure class="note-media">
+            <img src="../media/fact-ibm-704.jpg" width="320" height="320" loading="lazy"
+                 alt="A man and a woman operating an IBM 704 computer at NACA Langley in 1957">
+            <figcaption><span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AIBM_Electronic_Data_Processing_Machine_-_GPN-2000-001881.jpg" target="_blank" rel="noopener">NASA, 1957</a> &middot; public domain</span></figcaption>
+          </figure>
+        </div>
         <div class="code-card"><pre>if (&lt;condition&gt;) {
     &lt;code when the condition is true&gt;
 }
@@ -445,6 +483,17 @@ else { ... }</pre></div>
           equality is a bad idea anyway. You can switch on a whole <em>expression</em>, not just a
           variable.</p>
         </div>
+<div class="note with-media">
+  <div class="note-text">
+    <span class="tag">Did you know?</span>
+    <p>A <code>char</code> can sit in that list because to the machine it <em>is</em> a small number. In ASCII <code>'A'</code> is 65 and <code>'a'</code> is 97. The gap of 32 was deliberate: in 1963 the committee placed the lowercase letters so that each differs from its capital by <strong>a single bit</strong>, which made case-insensitive matching, keyboards and printers simpler to build. That is why <code>switch</code>, <code>&lt;</code> and <code>+</code> all work on characters. <a href="https://en.wikipedia.org/wiki/ASCII#History" target="_blank" rel="noopener">Source: Wikipedia &mdash; ASCII (history)</a>.</p>
+  </div>
+  <figure class="note-media">
+    <img class="contain" src="../media/fact-ascii-chart.png" width="320" height="320" loading="lazy"
+         alt="The 1967 US-ASCII code chart: 128 characters arranged in a grid by their bit patterns, capitals in columns 4 and 5 and lowercase in columns 6 and 7">
+    <figcaption><span class="credit">Chart: <a href="https://commons.wikimedia.org/wiki/File%3AUSASCII_code_chart.svg" target="_blank" rel="noopener">An unknown officer or employee of the United States Government, 1967</a> &middot; public domain</span></figcaption>
+  </figure>
+</div>
       </div>
 
       <div class="concept">
@@ -584,6 +633,11 @@ match x:
         </section>
         <section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" hidden tabindex="0">
           <h3 class="panel-head"><span class="panel-num">05</span>Loops in Java</h3>
+<figure class="photo banner">
+  <img src="../media/photo-conveyor.jpg" loading="lazy" alt="A conveyor belt curving through a factory">
+  <figcaption><strong>The same few metres of belt, over and over.</strong> A factory does not build a separate machine for each bottle. It builds one station and runs the line &mdash; which is the entire argument for a loop.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AConveyor_system_in_a_factory.jpg" target="_blank" rel="noopener">falco, 2015</a> &middot; <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank" rel="noopener">CC0</a></span></figcaption>
+</figure>
 
       <div class="joke">
         <p>A program without a loop and a structured variable isn&rsquo;t worth writing.</p>
@@ -597,12 +651,28 @@ match x:
         <p>The real killer is this: <strong>what if the number changes every time the program
         runs?</strong> The user picks it. You cannot write out lines for a number you do not know. Until
         you have a loop, that program is not merely tedious to write &mdash; it is <em>impossible</em>.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-lovelace.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Ada Lovelace">
+          </div>
           <p>A cycle of operations, then, must be understood to signify any set of operations which is repeated more than once.</p>
-          <span class="attrib">Ada Lovelace, Note E to her translation of Menabrea&rsquo;s <em>Sketch of the Analytical Engine</em>, 1843</span>
+          <span class="attrib">Ada Lovelace, Note E to her translation of Menabrea&rsquo;s <em>Sketch of the Analytical Engine</em>, 1843
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AAda_Lovelace_daguerreotype_by_Antoine_Claudet_1843_-_cropped.png" target="_blank" rel="noopener">Antoine Claudet, 1843</a> &middot; public domain</span></span>
         </div>
         <p class="sched-note">That is very likely the first definition of a loop ever written down &mdash;
         and it needs no jargon at all. A loop is a group of steps you do more than once.</p>
+<div class="note with-media">
+  <div class="note-text">
+    <span class="tag">Did you know?</span>
+    <p>Sequence, selection and iteration are not just convenient &mdash; they are <em>enough</em>. The <strong>B&ouml;hm&ndash;Jacopini theorem</strong> (1966) proves that any computable function can be written using only those three ways of combining sub-programs. Everything software has ever done can, in principle, be built out of Sections 2 and 5 of this page. <a href="https://en.wikipedia.org/wiki/Structured_program_theorem" target="_blank" rel="noopener">Source: Wikipedia &mdash; Structured program theorem</a>.</p>
+  </div>
+  <figure class="note-media">
+    <img src="../media/fact-corrado-bohm.jpg" width="320" height="320" loading="lazy"
+         alt="Corrado Böhm cutting a cake at his 90th-birthday celebration at the ETAPS conference in 2013">
+    <figcaption><span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3ACorradoBoemETAPS2013_2013-03-22_0.33.36.jpg" target="_blank" rel="noopener">Carbonem, 2013</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></span></figcaption>
+  </figure>
+</div>
 
       </div>
 
@@ -614,6 +684,14 @@ match x:
         <p>It repeats the code for as long as the condition is true. Like an <code>if</code>, the
         condition must be a <code>boolean</code> expression. Three moving parts: set a variable up,
         test it, change it.</p>
+        <figure class="photo side">
+          <img src="../media/photo-tally-counter.jpg" loading="lazy"
+               alt="A hand tally counter showing 0042 in its little window">
+          <figcaption><strong>Set it, test it, change it.</strong> A hand tally counter is one
+            variable and one <code>++</code>. The doorman decides when to stop &mdash; that decision
+            is the loop&rsquo;s condition, and it is the part a counter cannot do for itself.
+            <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AHand_tally_and_knitting_row_counter_007.jpg" target="_blank" rel="noopener">Storye book, 2010</a> &middot; <a href="https://creativecommons.org/licenses/by/3.0" target="_blank" rel="noopener">CC BY 3.0</a></span></figcaption>
+        </figure>
         <div class="p1-console" data-lang="java" data-title="Print 1 to n" data-stdin="6"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
@@ -717,9 +795,14 @@ public class SameLoop {
 }</pre></div>
         <p>Read it as &ldquo;for each element in the collection&hellip;&rdquo;. It hands you the elements
         one at a time and you never touch an index, so you cannot get the index wrong.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-whitehead.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Alfred North Whitehead">
+          </div>
           <p>Civilization advances by extending the number of important operations which we can perform without thinking about them.</p>
-          <span class="attrib">Alfred North Whitehead, <em>An Introduction to Mathematics</em>, 1911</span>
+          <span class="attrib">Alfred North Whitehead, <em>An Introduction to Mathematics</em>, 1911
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AANWhitehead.jpg" target="_blank" rel="noopener">unknown, 1923</a> &middot; public domain</span></span>
         </div>
 
         <div class="p1-console" data-lang="java" data-title="For-each over an array"><script type="text/plain" data-role="source">
@@ -770,9 +853,14 @@ while (&lt;condition&gt;);   // note the semicolon</pre></div>
         <p>Written with a plain <code>while</code>, the prompt-and-read has to appear
         <strong>twice</strong>: once before the loop and once inside it. Once you are writing the same
         code in two places, look for a better way &mdash; here, this:</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-kernighan.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Brian Kernighan">
+          </div>
           <p>Let the machine do the dirty work.</p>
-          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978</span>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg" target="_blank" rel="noopener">Ben Lowe, 2012</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
         </div>
 
         <div class="p1-console" data-lang="java" data-title="Keep asking until they get it right" data-stdin="3
@@ -866,9 +954,14 @@ public class Matrix {
         classic triple nest &mdash; and note there that the names <code>i</code> and <code>j</code> can
         be reused in a later set of loops, because a variable declared in a <code>for</code> header is
         <strong>local to that loop</strong>.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-lovelace.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Ada Lovelace">
+          </div>
           <p>&hellip;there is a recurring group of one or more cycles; that is, a cycle of a cycle, or a cycle of cycles.</p>
-          <span class="attrib">Ada Lovelace, Note E, 1843 &mdash; nested loops, named 115 years before Java</span>
+          <span class="attrib">Ada Lovelace, Note E, 1843 &mdash; nested loops, named 115 years before Java
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AAda_Lovelace_daguerreotype_by_Antoine_Claudet_1843_-_cropped.png" target="_blank" rel="noopener">Antoine Claudet, 1843</a> &middot; public domain</span></span>
         </div>
 
       </div>
@@ -895,9 +988,14 @@ public class EmptyLoop {
           the <a href="https://www.ioccc.org/">Obfuscated C Code Contest</a>, where it is the entire
           point. Code is read far more often than it is written, including by you, next month.</p>
         </div>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-kernighan.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Brian Kernighan">
+          </div>
           <p>Write clearly &mdash; don&rsquo;t be too clever.</p>
-          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978 &mdash; the book&rsquo;s first rule</span>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978 &mdash; the book&rsquo;s first rule
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg" target="_blank" rel="noopener">Ben Lowe, 2012</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
         </div>
 
         <p>The genuinely useful version of this is remembering that a loop body can be a
@@ -1096,6 +1194,11 @@ print("This gets printed after the loop finishes.")
         </section>
         <section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" hidden tabindex="0">
           <h3 class="panel-head"><span class="panel-num">08</span>Arrays in Java</h3>
+<figure class="photo banner">
+  <img src="../media/photo-athletics-lanes.jpg" loading="lazy" style="object-position: center 35%" alt="The start of an athletics track with the lane numbers 1, 2 and 3 painted on it">
+  <figcaption><strong>Same idea, different first number.</strong> The track numbers its lanes 1, 2, 3; a Java array numbers its cells 0, 1, 2. Everything else is identical &mdash; equal-sized slots, in order, reached by number rather than by name. <a href="#m02">M2</a> explains why the counting starts where it does.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AAthletics_track_start_line_numbers_1%2C_2%2C_3.jpg" target="_blank" rel="noopener">Santeri Viinamäki, 2016</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></span></figcaption>
+</figure>
 
       <div class="concept">
         <h3><span class="idx">8.1</span>Fifty variables is not a plan</h3>
@@ -1123,6 +1226,11 @@ print("This gets printed after the loop finishes.")
           <strong>length &minus; 1</strong>. This is 0-indexing, and it is normal across most
           languages &mdash; see <a href="#m02">M2</a> for why.</li>
         </ul>
+<figure class="photo banner">
+  <img src="../media/photo-po-boxes.jpg" loading="lazy" alt="A room lined with hundreds of identical numbered post-office boxes">
+  <figcaption><strong>A wall of numbered boxes, all the same size.</strong> You do not search a post office wall &mdash; you are told a number and go straight there. That is what makes <code>values[847]</code> as fast as <code>values[0]</code>: the address is arithmetic, not a search.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3APO_boxes_at_the_historic_Chico_Post_Office_%282024%29-L1005460.jpg" target="_blank" rel="noopener">Frank Schulenburg, 2024</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></span></figcaption>
+</figure>
         <div class="p1-console" data-lang="java" data-title="An array of three" data-stdin="8
 9
 10"><script type="text/plain" data-role="source">
@@ -1145,13 +1253,29 @@ public class ArrayExample {
 }
 </script></div>
         <p>Line by interesting line:</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-bentley.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Jon Bentley">
+          </div>
           <p>I found this amazing: only about 10 percent of professional programmers were able to get this small program right.</p>
-          <span class="attrib">Jon Bentley, <em>Programming Pearls: Writing Correct Programs</em>, CACM 26(12), 1983 &mdash; on binary search</span>
+          <span class="attrib">Jon Bentley, <em>Programming Pearls: Writing Correct Programs</em>, CACM 26(12), 1983 &mdash; on binary search
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AJon_Bentley_informaticien.jpg" target="_blank" rel="noopener">Wikimedia Commons, 2013</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></span></span>
         </div>
         <p class="sched-note">Bentley gave professional programmers an hour to write binary search over an
         array. Ninety percent shipped a bug &mdash; almost all of them at the boundaries. When your loop
         bound looks obviously right, that is exactly the feeling those programmers had.</p>
+<div class="note with-media">
+  <div class="note-text">
+    <span class="tag">Did you know?</span>
+    <p>It was not only the students. In 2006 <strong>Joshua Bloch</strong>, who wrote much of the Java library you are about to use, found the same class of bug in <code>java.util.Arrays.binarySearch</code> &mdash; <code>(low + high) / 2</code> overflows once the array is big enough. It had been shipping in the JDK, he wrote, &ldquo;after lying in wait for nine years or so&rdquo;. The published version in Bentley&rsquo;s own <em>Programming Pearls</em> had it too. <a href="https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/" target="_blank" rel="noopener">Source: Joshua Bloch, Google Research blog, 2 June 2006</a>.</p>
+  </div>
+  <figure class="note-media">
+    <img src="../media/fact-joshua-bloch.jpg" width="320" height="320" loading="lazy"
+         alt="Portrait of Joshua Bloch, author of much of the Java collections library">
+    <figcaption><span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AJoshua_Bloch_at_JavaOne_2005_%28cropped%29.jpg" target="_blank" rel="noopener">Billy Bob Bain, 2005</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a></span></figcaption>
+  </figure>
+</div>
 
         <div class="tbl-scroll"><table class="tbl">
           <thead><tr><th>Code</th><th>What it is</th></tr></thead>
@@ -1308,22 +1432,37 @@ public class ArrayError {
         <p>The first line prints, then it throws. This is a <strong>run-time</strong> error, not a
         compile error &mdash; even though a human can see that 23 is too big, the compiler cannot decide
         this in general, so it does not try.</p>
+<figure class="photo side">
+  <img src="../media/photo-fence-posts.jpg" loading="lazy" alt="A post-and-rail fence running along a lane, its posts evenly spaced">
+  <figcaption><strong>The fencepost question.</strong> A 100-metre fence with a post every 10 metres needs eleven posts, not ten. Ask it of a loop &mdash; <code>&lt;</code> or <code>&lt;=</code>, <code>0</code> or <code>1</code> &mdash; and you get the same off-by-one, which is why it is the error every array bug is made of.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3APost_and_rail_fence%2C_Bishopstone_-_geograph.org.uk_-_1009517.jpg" target="_blank" rel="noopener">Trish Steel, 2008</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0" target="_blank" rel="noopener">CC BY-SA 2.0</a></span></figcaption>
+</figure>
         <figure class="fig fig-narrow plain">
           <img src="../media/xkcd-3062.png" alt="xkcd comic: a proposed language that eliminates off-by-one errors by making every integer wrong by forty or fifty instead" loading="lazy">
           <figcaption><span class="credit"><a href="https://xkcd.com/3062/">xkcd 3062, <em>Off By One</em></a> (2025) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
         </figure>
 
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-hoare.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Tony Hoare">
+          </div>
           <p>&hellip;every occurrence of every subscript of every subscripted variable was on every occasion checked at run time against both the upper and the lower declared bounds of the array.</p>
-          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture</span>
+          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg" target="_blank" rel="noopener">Rama, 2011</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en">CC BY-SA 2.0 fr</a></span></span>
         </div>
         <p>That is Hoare describing his own Algol compiler in the 1960s. When customers were later
         offered the option to switch those checks <em>off</em> for speed, they unanimously told him not to
         &mdash; they already knew how often subscript errors happen, and how badly they end. He then adds:</p>
 
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-hoare.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Tony Hoare">
+          </div>
           <p>I note with fear and horror that even in 1980, language designers and users have not learned this lesson.</p>
-          <span class="attrib">C. A. R. Hoare, same lecture</span>
+          <span class="attrib">C. A. R. Hoare, same lecture
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg" target="_blank" rel="noopener">Rama, 2011</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en">CC BY-SA 2.0 fr</a></span></span>
         </div>
         <p class="sched-note">So the exception you just saw is not Java being fussy. It is a Turing Award
         winner&rsquo;s hard-won argument, finally built into the language.</p>
@@ -1461,14 +1600,24 @@ print(l)
         </table></div>
         <p class="sched-note">Internally these are classes, like everything else. Python just gives you
         special syntax so you never have to see that part.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-pike.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Rob Pike">
+          </div>
           <p>Data dominates. If you&rsquo;ve chosen the right data structures and organized things well, the algorithms will almost always be self-evident.</p>
-          <span class="attrib">Rob Pike, <em>Notes on Programming in C</em>, Rule 5, 1989</span>
+          <span class="attrib">Rob Pike, <em>Notes on Programming in C</em>, Rule 5, 1989
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ARob-pike-oscon.jpg" target="_blank" rel="noopener">Kevin Shockey, 2010</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
         </div>
 
       </div>
 
-      <div class="concept">
+
+<figure class="photo banner">
+  <img src="../media/photo-card-catalog.jpg" loading="lazy" alt="Rows of wooden card-catalogue drawers with handwritten labels">
+  <figcaption><strong>Look it up by what it is called, not by where it sits.</strong> A library card catalogue is a dict: you arrive with a key &mdash; a title, an author &mdash; and it hands back the value, without you walking the shelves. A list would make you start at drawer 0 and read every card.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AWooden_Card_Catalog_Furniture.jpg" target="_blank" rel="noopener">MarkBuckawicki, 2018</a> &middot; <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en" target="_blank" rel="noopener">CC0</a></span></figcaption>
+</figure>      <div class="concept">
         <h3><span class="idx">10.2</span>Dictionaries</h3>
         <p>A dict (hash-map, associative array, hash-table &mdash; same idea, many names) stores
         <strong>key&ndash;value pairs</strong>. You get at a value with square brackets and its key,
@@ -1489,6 +1638,17 @@ print(luke_data)
 </script></div>
         <p>Iterating takes a moment&rsquo;s thought, because every entry has two halves. Plain
         <code>for k in d:</code> gives you the <strong>keys</strong>:</p>
+        <div class="note">
+          <span class="tag">Did you know?</span>
+          <p>That the loop comes out in the order you inserted the keys is a <em>recent</em>
+          promise. Until Python 3.6 a dict had no defined order at all, and the same program could
+          print its keys differently on another machine. Python 3.6 happened to preserve insertion
+          order as an implementation detail; <strong>Python 3.7</strong> made it
+          &ldquo;an official part of the Python language spec&rdquo;. Code written before 2018 that
+          relies on it was simply lucky.
+          <a href="https://docs.python.org/3/whatsnew/3.7.html" target="_blank" rel="noopener">Source:
+          What&rsquo;s New In Python 3.7</a>.</p>
+        </div>
         <div class="p1-console" data-lang="python" data-title="Four ways to iterate"><script type="text/plain" data-role="source">
 luke_data = {'name' : 'Luke', 'job' : 'Lecturer', 'subject' : '41039'}
 
@@ -1683,9 +1843,14 @@ public class Favourites {
           array and forget the other, insert into one and not the other, and the data is silently
           wrong &mdash; no error, no crash. It works, but the correctness lives in your head rather than
           in the code.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-torvalds.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Linus Torvalds">
+          </div>
           <p>Bad programmers worry about the code. Good programmers worry about data structures and their relationships.</p>
-          <span class="attrib">Linus Torvalds, git mailing list, 27 July 2006</span>
+          <span class="attrib">Linus Torvalds, git mailing list, 27 July 2006
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ALinuxCon_Europe_Linus_Torvalds_03_%28cropped%29.jpg" target="_blank" rel="noopener">Krd (photo) Von Sprat (crop/extraction), 2014</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></span></span>
         </div>
 
         </div>
@@ -2124,9 +2289,14 @@ public class Favourites {
         should be abolished from high-level languages. His argument was not that it was inelegant. It
         was that <strong>with unrestricted jumps you cannot describe where a running program has got
         to</strong>, so you cannot reason about it &mdash; and neither can the person reading it.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-dijkstra.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Edsger W. Dijkstra">
+          </div>
           <p>The quality of programmers is a decreasing function of the density of go to statements in the programs they produce.</p>
-          <span class="attrib">E. W. Dijkstra, CACM 11(3), March 1968</span>
+          <span class="attrib">E. W. Dijkstra, CACM 11(3), March 1968
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg" target="_blank" rel="noopener">Hamilton Richards, 2002</a> &middot; <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></span></span>
         </div>
         <p class="sched-note">The famous title, <em>Go To Statement Considered Harmful</em>, was not
         Dijkstra&rsquo;s &mdash; the editor, Niklaus Wirth, supplied it. It went on to spawn a whole
@@ -2152,9 +2322,14 @@ public class Favourites {
         </div>
         <p>So the labelled break is not a loophole. It is the largest amount of jumping that can be
         allowed while keeping the thing that made structured programming worth having.</p>
-        <div class="joke">
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-hoare.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Tony Hoare">
+          </div>
           <p>The price of reliability is the pursuit of the utmost simplicity.</p>
-          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture</span>
+          <span class="attrib">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg" target="_blank" rel="noopener">Rama, 2011</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en">CC BY-SA 2.0 fr</a></span></span>
         </div>
 
       </div>
@@ -2262,12 +2437,48 @@ public class Favourites {
         <a href="https://xkcd.com/3062/">3062</a>.
       </p>
 
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Photographs</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">From <a href="https://commons.wikimedia.org/">Wikimedia
+      Commons</a>, reused under the licence each one names. Author and licence come from the Commons API
+      rather than from anyone&rsquo;s memory &mdash; see <span class="mono">media/fetch-photo.py</span>.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Image</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">ascii-chart</td><td><a href="https://commons.wikimedia.org/wiki/File%3AUSASCII_code_chart.svg">USASCII code chart</a> &mdash; An unknown officer or employee of the United States Government, 1967 &middot; public domain</td></tr>
+          <tr><td class="mono">corrado-bohm</td><td><a href="https://commons.wikimedia.org/wiki/File%3ACorradoBoemETAPS2013_2013-03-22_0.33.36.jpg">CorradoBoemETAPS2013 2013-03-22 0.33.36</a> &mdash; Carbonem, 2013 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">joshua-bloch</td><td><a href="https://commons.wikimedia.org/wiki/File%3AJoshua_Bloch_at_JavaOne_2005_%28cropped%29.jpg">Joshua Bloch at JavaOne 2005 (cropped)</a> &mdash; Billy Bob Bain, 2005 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+          <tr><td class="mono">athletics-lanes</td><td><a href="https://commons.wikimedia.org/wiki/File%3AAthletics_track_start_line_numbers_1%2C_2%2C_3.jpg">Athletics track start line numbers 1, 2, 3</a> &mdash; Santeri Viinamäki, 2016 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">card-catalog</td><td><a href="https://commons.wikimedia.org/wiki/File%3AWooden_Card_Catalog_Furniture.jpg">Wooden Card Catalog Furniture</a> &mdash; MarkBuckawicki, 2018 &middot; <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a></td></tr>
+          <tr><td class="mono">conveyor</td><td><a href="https://commons.wikimedia.org/wiki/File%3AConveyor_system_in_a_factory.jpg">Conveyor system in a factory</a> &mdash; falco, 2015 &middot; <a href="http://creativecommons.org/publicdomain/zero/1.0/deed.en">CC0</a></td></tr>
+          <tr><td class="mono">fence-posts</td><td><a href="https://commons.wikimedia.org/wiki/File%3APost_and_rail_fence%2C_Bishopstone_-_geograph.org.uk_-_1009517.jpg">Post and rail fence, Bishopstone - geograph.org.uk - 1009517</a> &mdash; Trish Steel, 2008 &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0">CC BY-SA 2.0</a></td></tr>
+          <tr><td class="mono">george-boole</td><td><a href="https://commons.wikimedia.org/wiki/File%3AGeorge_Boole_color.jpg">George Boole color</a> &mdash; Unknown author, 1864 &middot; public domain</td></tr>
+          <tr><td class="mono">po-boxes</td><td><a href="https://commons.wikimedia.org/wiki/File%3APO_boxes_at_the_historic_Chico_Post_Office_%282024%29-L1005460.jpg">PO boxes at the historic Chico Post Office (2024)-L1005460</a> &mdash; Frank Schulenburg, 2024 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">railway-turnout</td><td><a href="https://commons.wikimedia.org/wiki/File%3ATreskensv%C3%A4xel_vid_Jenny.jpg">Treskensväxel vid Jenny</a> &mdash; Mikael Johansson, 2006 &middot; <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></td></tr>
+          <tr><td class="mono">tally-counter</td><td><a href="https://commons.wikimedia.org/wiki/File%3AHand_tally_and_knitting_row_counter_007.jpg">Hand tally and knitting row counter 007</a> &mdash; Storye book, 2010 &middot; <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a></td></tr>
+          <tr><td class="mono">bentley</td><td><a href="https://commons.wikimedia.org/wiki/File%3AJon_Bentley_informaticien.jpg">Jon Bentley informaticien</a> &mdash; Wikimedia Commons, 2013 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">dijkstra</td><td><a href="https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg">Edsger Wybe Dijkstra</a> &mdash; Hamilton Richards, 2002 &middot; <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a></td></tr>
+          <tr><td class="mono">hoare</td><td><a href="https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg">Sir Tony Hoare IMG 5125</a> &mdash; Rama, 2011 &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en">CC BY-SA 2.0 fr</a></td></tr>
+          <tr><td class="mono">kernighan</td><td><a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg">Brian Kernighan in 2012 at Bell Labs 1(cropped)</a> &mdash; Ben Lowe, 2012 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+          <tr><td class="mono">lovelace</td><td><a href="https://commons.wikimedia.org/wiki/File%3AAda_Lovelace_daguerreotype_by_Antoine_Claudet_1843_-_cropped.png">Ada Lovelace daguerreotype by Antoine Claudet 1843 - cropped</a> &mdash; Antoine Claudet, 1843 &middot; public domain</td></tr>
+          <tr><td class="mono">pike</td><td><a href="https://commons.wikimedia.org/wiki/File%3ARob-pike-oscon.jpg">Rob-pike-oscon</a> &mdash; Kevin Shockey, 2010 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+          <tr><td class="mono">torvalds</td><td><a href="https://commons.wikimedia.org/wiki/File%3ALinuxCon_Europe_Linus_Torvalds_03_%28cropped%29.jpg">LinuxCon Europe Linus Torvalds 03 (cropped)</a> &mdash; Krd (photo) Von Sprat (crop/extraction), 2014 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">whitehead</td><td><a href="https://commons.wikimedia.org/wiki/File%3AANWhitehead.jpg">ANWhitehead</a> &mdash; unknown, 1923 &middot; public domain</td></tr>
+        </tbody>
+      </table></div>
+
       <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Articles, papers and notes</h3>
       <div class="tbl-scroll"><table class="tbl">
         <thead><tr><th>Used in</th><th>Source</th></tr></thead>
         <tbody>
           <tr><td class="mono">5</td><td>Alan J. Perlis, <a href="https://en.wikiquote.org/wiki/Alan_Perlis"><em>Epigrams on Programming</em></a>, <em>ACM SIGPLAN Notices</em> 17(9), September 1982</td></tr>
           <tr><td class="mono">6.3</td><td><a href="https://www.ioccc.org/">The International Obfuscated C Code Contest</a>, running since 1984</td></tr>
+          <tr><td class="mono">1.3</td><td>Claude E. Shannon, <a href="https://en.wikipedia.org/wiki/A_Symbolic_Analysis_of_Relay_and_Switching_Circuits"><em>A Symbolic Analysis of Relay and Switching Circuits</em></a>, MIT master&rsquo;s thesis, 1937 &mdash; and George Boole, <em>An Investigation of the Laws of Thought</em>, 1854</td></tr>
+          <tr><td class="mono">2.2</td><td><a href="https://en.wikipedia.org/wiki/Fortran#FORTRAN">Fortran</a> &mdash; the three-way arithmetic IF, and the logical IF in FORTRAN IV (1962)</td></tr>
+          <tr><td class="mono">3.1</td><td><a href="https://en.wikipedia.org/wiki/ASCII#History">ASCII (history)</a> &mdash; the 1963 decision to place the cases one bit apart</td></tr>
+          <tr><td class="mono">5.1</td><td><a href="https://en.wikipedia.org/wiki/Structured_program_theorem">The structured program theorem</a> &mdash; Corrado B&ouml;hm &amp; Giuseppe Jacopini, 1966</td></tr>
+          <tr><td class="mono">8.2</td><td>Joshua Bloch, <a href="https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/"><em>Extra, Extra &mdash; Read All About It: Nearly All Binary Searches and Mergesorts are Broken</em></a>, Google Research blog, 2 June 2006</td></tr>
+          <tr><td class="mono">10.2</td><td><a href="https://docs.python.org/3/whatsnew/3.7.html">What&rsquo;s New In Python 3.7</a> &mdash; dict insertion order becomes part of the language spec</td></tr>
           <tr><td class="mono">M2.1</td><td>E. W. Dijkstra, <a href="https://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD831.html"><em>Why numbering should start at zero</em></a> (EWD 831), 11 August 1982</td></tr>
           <tr><td class="mono">M2.2</td><td><a href="https://en.wikipedia.org/wiki/Duff%27s_device">Duff&rsquo;s device</a> &mdash; Tom Duff, Lucasfilm, 1983</td></tr>
           <tr><td class="mono">M3.1</td><td>E. W. Dijkstra, <a href="https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf"><em>Go To Statement Considered Harmful</em></a>, <em>Communications of the ACM</em> 11(3), March 1968, pp. 147&ndash;148</td></tr>

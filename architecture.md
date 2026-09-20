@@ -364,10 +364,11 @@ public class Hello {
 `<script type="text/plain">` is used rather than `<pre>` so the code needs no HTML
 escaping. Indentation is stripped with `dedent()`, so the block can sit at any depth.
 
-## 3a. Quotations and comics
+## 3a. Quotations, photographs and comics
 
-Both decks and both week pages carry pull-quotes (`.joke` / `\jokebox`) and xkcd comics
-(`.fig` / `\xkcdcredit`). Two rules, both learned the hard way:
+Both decks and both week pages carry pull-quotes (`.joke` / `\jokebox`), photographs
+(`.photo`, `.note.with-media`, `.joke.with-photo`) and xkcd comics (`.fig` /
+`\xkcdcredit`). Three rules, all learned the hard way:
 
 **Never print a quotation you have not checked against a primary source.** Programming
 quotations are among the most misattributed text on the internet, and a wrong one means a
@@ -394,6 +395,28 @@ file. To re-check that every credit still matches the API metadata, compare the 
 
 xkcd is **CC BY-NC 2.5** and requires attribution: every use carries a credit naming Randall
 Munroe and linking both the comic and the licence. Non-commercial teaching use only.
+
+**Never hand-write a photograph's author or licence either.** Every photograph on the site
+comes from Wikimedia Commons through:
+
+```bash
+python3 media/fetch-photo.py --search "tally counter"          # find the file
+python3 media/fetch-photo.py --width 1200 \
+        photo-tally-counter "File:Hand tally and knitting row counter 007.jpg"
+python3 media/fetch-photo.py --credit photo-tally-counter      # print the credit markup
+```
+
+It asks the Commons API for the real artist, date, licence and licence URL, saves the image
+into `media/` and records the metadata in **`media/photo-credits.json`**. Every credit line
+in the HTML — inline on the figure, and the Photographs table in a page's Sources section —
+is generated from that file, so a licence can never drift from the image it belongs to. When
+the image is a person, confirm it is actually them before using it: ask the Commons API which
+Wikipedia articles use the file (`prop=globalusage`), or ask Wikipedia which file it uses for
+that person (`prop=pageimages`). Two candidate portraits were rejected this way.
+
+**A "Did you know?" note states a fact, so it carries the source it was checked against** —
+a link in the note itself, and a row in the page's Sources table. The same rule as quotations:
+if the claim cannot be checked against something authoritative, it does not go on the page.
 
 > **Beamer gotcha.** `\keyline{}` begins with `\vfill` and must be the **last** thing in a
 > frame. A `\jokebox` placed after it silently overflows the frame — eight did, on the first

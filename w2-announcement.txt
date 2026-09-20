@@ -1,0 +1,130 @@
+Subject: Before the next lecture — revise Week 1, and what Weeks 2 & 3 cover
+
+
+Hi everyone,
+
+Two things before we meet again: how the next lecture starts, and what to read
+beforehand so it lands properly.
+
+
+WE START WITH REVISION — AND THERE IS EXTRA CREDIT IN IT
+
+The lecture opens with a short revision of Lecture 1, and taking part in it
+earns extra credit. It is not a test, and it is not designed to catch anyone
+out — I ask questions, you answer, and the points go to the people who join in.
+
+So please spend some time revising Lecture 1 before you come. The most useful
+half hour you can spend is the Week 1 page on the subject website:
+
+    https://lexuanbach.github.io/41039/weeks/week-1.html
+
+Go back over these five, in this order:
+
+    01  What programming is
+    02  Your first Java program
+    03  Variables, types and values
+    04  The same ideas in Python
+    05  When things go wrong — reading an error message
+
+Then do the 20-question quiz at the bottom of that page. Every question
+explains its answer, including why the wrong options are wrong, so a wrong
+answer still teaches you something. If you can get through the quiz comfortably,
+you are ready for the revision.
+
+If you cannot, that is exactly what the revision is for — come anyway, and bring
+the question.
+
+
+PRE-READING FOR WEEKS 2 & 3
+
+The next two weeks are one block of material. The Ed lessons are the assessed
+content and the primary reading:
+
+    https://edstem.org/au/courses/41298/lessons
+
+There are eleven of them, and they interleave Java and Python deliberately:
+
+     1. Booleans and Conditional Statements — how to choose in Java
+     2. Conditional Statements in Python
+     3. Loops in Java 1 — while, for, for-each, do-while
+     4. Loops in Java 2 — nesting, break, continue
+     5. Loops in Python 2 — break, continue, loop-else
+     6. Arrays in Java
+     7. Lists in Python
+     8. Dictionaries, Sets and Tuples in Python
+     9. Bundling Data Together in Java — your first taste of a class
+    10. Java Trivia, Tidbits and Tables — reference, skim it
+    11. A Python Miscellany — reference, skim it
+
+Before the lecture, the useful minimum is lessons 1 to 3. If you read nothing
+else, read those — the lecture will make far more sense if you have already seen
+an "if" and a "while" once.
+
+The same material, with runnable code, a 26-question quiz and eight auto-marked
+exercises, is on the subject website:
+
+    https://lexuanbach.github.io/41039/weeks/week-2-3.html
+
+The lecture slides are linked from the top of that page.
+
+
+WHAT TO EXPECT IN THE LECTURE
+
+Week 1 gave you state — a program that runs top to bottom and does the same
+thing every time. These two weeks add the other two tools, and that is nearly
+everything:
+
+  * Branching, so a program can choose:  if / else if / else, and switch,
+    in Java and in Python.
+
+  * Repetition, so a program can do something a thousand times without you
+    typing it a thousand times:  while, for, for-each, do-while, break and
+    continue.
+
+  * Then the structures worth repeating over: arrays in Java, and lists,
+    dictionaries, sets and tuples in Python.
+
+Two honest warnings, because they catch nearly everyone:
+
+  - Arrays and lists are numbered from 0, not from 1. The last element of a
+    10-element array is number 9. Almost every array bug you will write in your
+    life is one step either side of that.
+
+  - A loop that never changes its condition never stops. Every loop you write,
+    ask yourself: what makes this stop?
+
+Both have a whole section of the website page to themselves.
+
+
+LABS
+
+Labs run from this week. Assessed lab exercises are due 11:55pm the Monday of
+the following week, with unlimited attempts — but you must pass every test case
+in an exercise to get its marks, and the output has to match exactly, down to
+the spaces.
+
+Canvas → Assignments is authoritative for what is due and when. Where anything
+here or on the website differs from Canvas, Canvas and the announcements win.
+
+Huy Tran is your lab tutor:  huy.tran@uts.edu.au
+
+
+IF YOU ONLY DO ONE THING
+
+On the website page, predict the output of every runnable block before you press
+Run. Being wrong and finding out one second later is the fastest form of learning
+available to you, and it costs nothing.
+
+And as always: ask early, ask on the Ed forum, and ask publicly unless it is
+genuinely personal. Everyone gets stuck learning to program. The students who do
+well are not the ones who never get stuck — they are the ones who ask.
+
+The forum is not monitored over the weekend, so if something is broken, ask
+during the week rather than on Sunday night.
+
+See you at the lecture — with Lecture 1 fresh in your mind.
+
+
+Dr. Xuan-Bach Le
+Faculty of Computer Science and Engineering, HCMUT
+le.xuan.bach@hcmut.edu.vn
