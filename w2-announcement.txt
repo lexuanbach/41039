@@ -98,13 +98,7 @@ Both have a whole section of the website page to themselves.
 
 LABS
 
-Labs run from this week. Assessed lab exercises are due 11:55pm the Monday of
-the following week, with unlimited attempts — but you must pass every test case
-in an exercise to get its marks, and the output has to match exactly, down to
-the spaces.
-
-Canvas → Assignments is authoritative for what is due and when. Where anything
-here or on the website differs from Canvas, Canvas and the announcements win.
+Labs run from this week.
 
 Huy Tran is your lab tutor:  huy.tran@uts.edu.au
 

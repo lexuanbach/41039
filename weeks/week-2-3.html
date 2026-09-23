@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=f921c06f">
+<link rel="stylesheet" href="../assets/style.css?v=af6bdc99">
 </head>
 <body>
 <header class="topbar">
@@ -176,6 +176,10 @@
           <button class="lesson-tab" role="tab" id="tab-m03" aria-controls="panel-m03" aria-selected="false" tabindex="-1" data-target="m03">
             <span class="t-num">M3</span>
             <span class="t-text"><span class="t-title">goto, and why break has a leash</span><span class="t-meta">1968 &middot; structured programming</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-m04" aria-controls="panel-m04" aria-selected="false" tabindex="-1" data-target="m04">
+            <span class="t-num">M4</span>
+            <span class="t-text"><span class="t-title">Flowcharts: the same logic, drawn</span><span class="t-meta">CO1005 &middot; symbols &amp; two worked diagrams</span></span>
           </button>
         </nav>
         </div>
@@ -337,6 +341,8 @@ public class CombinedOps {
         <h3><span class="idx">2.1</span>The <code>if</code> statement</h3>
         <p>Now that a program can say whether something is true, it can use that to decide what to do
         next. The syntax, with the angle brackets standing in for your own code:</p>
+        <p class="sched-note">Before the code: <a href="#m04">M4</a> draws this same choice as a
+        diamond with two arrows that reunite &mdash; the picture behind the syntax.</p>
         <div class="code-card"><pre>if (&lt;condition&gt;) {
     &lt;what to do when the condition is true&gt;
 }</pre></div>
@@ -723,6 +729,8 @@ public class NPrint {
         </figure>
         <p class="sched-note">Read that as a loop and look for the exit condition. There isn&rsquo;t one.
         Every loop you write, ask the same question: <strong>what makes this stop?</strong></p>
+        <p class="sched-note"><a href="#m04">M4</a> draws this same question as an arrow that loops back
+        on itself &mdash; the same trap, before a single line of Java exists.</p>
 
       </div>
 
@@ -2334,6 +2342,233 @@ public class Favourites {
 
       </div>
         </section>
+        <section class="lesson-panel" role="tabpanel" id="panel-m04" aria-labelledby="tab-m04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M4</span>Flowcharts: the same logic, drawn</h3>
+
+          <p>Everything in sections 2 to 7 is a way of writing <em>choice</em> and <em>repetition</em>
+          in Java or Python syntax. There is an older, language-free way to write the same two ideas:
+          a <strong>flowchart</strong>, built from a handful of standard symbols and arrows. This panel
+          is adapted from Chapter 1 of CO1005, an introductory programming course taught the same way
+          &mdash; algorithm first, language second.</p>
+
+          <div class="joke with-photo">
+            <div class="quote-photos">
+              <img class="quote-photo" src="../media/portrait-knuth.jpg" width="240" height="240" loading="lazy"
+                   alt="Portrait of Donald Knuth">
+            </div>
+            <p>An algorithm must be seen to be believed, and the best way to learn what an algorithm is all about is to try it.</p>
+            <span class="attrib">Donald E. Knuth, <em>The Art of Computer Programming, Vol. 1</em>, 1968
+            <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File:Donald_Ervin_Knuth_(cropped).jpg" target="_blank" rel="noopener">Alex Handy, 2011</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/2.0/" target="_blank" rel="noopener">CC BY-SA 2.0</a> (cropped)</span></span>
+          </div>
+          <p class="sched-note">Take the diagrams below and trace them by hand with concrete numbers,
+          the same way the live-coding demo traced a stack trace back to one line of code.</p>
+
+          <div class="concept wide">
+            <h3><span class="idx">M4.1</span>Seven symbols, and that is all of them</h3>
+            <p>Each shape has exactly one job. Learn these seven and you can read any flowchart you
+            meet, in this course or anywhere else.</p>
+            <div class="symbols">
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Terminal symbol"><rect class="fc-terminal" x="14" y="10" width="92" height="28" rx="14"/></svg>
+                <h4>Terminal</h4>
+                <p>Marks the <strong>Start</strong> and the <strong>End</strong>. Exactly one way in, one way out.</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Input/output symbol"><polygon class="fc-io" points="26,10 114,10 94,38 6,38"/></svg>
+                <h4>Input / Output</h4>
+                <p>Reads data in (<em>Input Hours, Rate</em>) or displays results (<em>Display Pay</em>).</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Process symbol"><rect class="fc-process" x="14" y="10" width="92" height="28"/></svg>
+                <h4>Process</h4>
+                <p>A calculation or assignment: <span class="mono">Pay &larr; Hours &times; Rate</span>.</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="56" viewBox="0 0 120 56" aria-label="Decision symbol"><polygon class="fc-decision" points="60,4 112,28 60,52 8,28"/></svg>
+                <h4>Decision</h4>
+                <p>Asks a yes/no question. Flow leaves along the <em>Yes</em> arrow or the <em>No</em> arrow &mdash; exactly one.</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Flowline symbol"><defs><marker id="sym-arrow-m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs><line class="fc-line" x1="14" y1="24" x2="102" y2="24" marker-end="url(#sym-arrow-m4)"/></svg>
+                <h4>Flowlines</h4>
+                <p>Arrows connecting the symbols. They define the order of execution.</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Connector symbol"><circle class="fc-connector" cx="60" cy="24" r="12"/></svg>
+                <h4>Connector</h4>
+                <p>Joins parts of a flowchart &mdash; when it continues in another column or on another page.</p>
+              </div>
+              <div class="symbol-card">
+                <svg width="120" height="48" viewBox="0 0 120 48" aria-label="Predefined process symbol"><rect class="fc-process" x="14" y="10" width="92" height="28"/><line class="fc-line" x1="24" y1="10" x2="24" y2="38"/><line class="fc-line" x1="96" y1="10" x2="96" y2="38"/></svg>
+                <h4>Predefined process</h4>
+                <p>A named sub-algorithm defined elsewhere &mdash; a preview of the methods you will meet from Week 6.</p>
+              </div>
+            </div>
+
+            <div class="note with-media">
+              <div class="note-text">
+                <span class="tag">Did you know?</span>
+                <p>These symbols are not a computing invention. In <strong>1921</strong>, industrial
+                engineers Frank and Lillian Gilbreth presented <em>&ldquo;Process Charts: First Steps
+                in Finding the One Best Way to Do Work&rdquo;</em> to the American Society of Mechanical
+                Engineers &mdash; a way to draw a <em>factory</em> procedure as symbols joined by lines,
+                so a wasted step became visible on paper before it cost a minute on the floor. ASME
+                standardised a symbol set from that paper in 1947 &mdash; the same year John von Neumann
+                and Herman Goldstine drew the first &ldquo;flow diagrams&rdquo; for a stored-program
+                computer that was still being built. Two decades later, Dijkstra&rsquo;s 1968 letter on
+                <code>goto</code> in <a href="#m03">M3</a> is the third chapter of the same story: how to
+                keep a chain of steps something a person can actually follow.
+                <a href="https://en.wikipedia.org/wiki/Flowchart#History" target="_blank" rel="noopener">Source: Wikipedia &mdash; Flowchart (history)</a>.</p>
+              </div>
+              <figure class="note-media">
+                <img class="contain" src="../media/gilbreth-process-chart-1921.jpg" width="320" height="320" loading="lazy"
+                     alt="1921 process chart diagram titled 'Process Chart for Loading Rifle Grenades', a chain of numbered steps connected by lines">
+                <figcaption><span class="credit">Diagram: Frank B. &amp; Lillian M. Gilbreth, <em>Process Charts</em>, ASME (1921), Fig. 5 &middot; <a href="https://commons.wikimedia.org/wiki/File:Process_Chart_for_Loading_Rifle_Grenades,1921.jpg" target="_blank" rel="noopener">Wikimedia Commons</a> &middot; public domain</span></figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="concept wide">
+            <h3><span class="idx">M4.2</span>One flowchart, and the same thing as pseudocode</h3>
+            <p style="max-width:46rem">A payroll calculation: read three values, compute one, display two.
+            Four working symbols, in sequence &mdash; and <code>Name</code>, <code>Hours</code>,
+            <code>Pay</code> are exactly what section 1 called them: <strong>variables</strong>, named
+            places that hold values.</p>
+            <div class="media-row" style="--media-w:20rem">
+              <div style="max-width:40rem">
+                <p><strong>Pseudocode</strong> trades symbols for English-like phrases. It is the same
+                algorithm as the diagram, written the other way &mdash; and you should be able to convert
+                between the two in either direction.</p>
+                <div class="code-card">
+                  <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">payroll.pseudo</span></div>
+                  <pre>Input the three values into
+    the variables Name, Hours, Rate
+Calculate Pay = Hours * Rate
+Display Name and Pay</pre>
+                </div>
+                <p class="sched-note">This is precisely the shape of <a href="#s02">section 2&rsquo;s</a>
+                <code>if</code> and <a href="#s05">section 5&rsquo;s</a> loops, minus any choice or
+                repetition &mdash; a straight line of steps is a flowchart too, just a short one.</p>
+              </div>
+              <figure class="fig fig-narrow">
+                <svg viewBox="0 0 340 400" width="340" height="400" role="img" aria-label="Payroll flowchart: Start, input Name Hours Rate, Pay assigned Hours times Rate, display Name and Pay, End">
+                  <defs><marker id="pay-arrow-m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+                  <rect class="fc-terminal" x="110" y="12" width="120" height="36" rx="18"/>
+                  <text class="fc-text" x="170" y="30" text-anchor="middle" dominant-baseline="middle">Start</text>
+                  <line class="fc-line" x1="170" y1="48" x2="170" y2="72" marker-end="url(#pay-arrow-m4)"/>
+                  <polygon class="fc-io" points="92,78 262,78 240,122 70,122"/>
+                  <text class="fc-text" x="166" y="93" text-anchor="middle">Input Name,</text>
+                  <text class="fc-text" x="166" y="110" text-anchor="middle">Hours, Rate</text>
+                  <line class="fc-line" x1="170" y1="122" x2="170" y2="148" marker-end="url(#pay-arrow-m4)"/>
+                  <rect class="fc-process" x="70" y="154" width="200" height="44"/>
+                  <text class="fc-text" x="170" y="171" text-anchor="middle">Calculate</text>
+                  <text class="fc-text" x="170" y="188" text-anchor="middle">Pay &larr; Hours &times; Rate</text>
+                  <line class="fc-line" x1="170" y1="198" x2="170" y2="224" marker-end="url(#pay-arrow-m4)"/>
+                  <polygon class="fc-io" points="92,230 262,230 240,274 70,274"/>
+                  <text class="fc-text" x="166" y="245" text-anchor="middle">Display</text>
+                  <text class="fc-text" x="166" y="262" text-anchor="middle">Name, Pay</text>
+                  <line class="fc-line" x1="170" y1="274" x2="170" y2="300" marker-end="url(#pay-arrow-m4)"/>
+                  <rect class="fc-terminal" x="110" y="306" width="120" height="36" rx="18"/>
+                  <text class="fc-text" x="170" y="324" text-anchor="middle" dominant-baseline="middle">End</text>
+                </svg>
+                <figcaption>One input, one process, one output, wrapped in Start/End terminals.</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="concept wide">
+            <h3><span class="idx">M4.3</span>The two shapes from this week, drawn</h3>
+            <p style="max-width:46rem">Every <code>if</code> you wrote in section 2 and every loop you
+            wrote in section 5 has exactly one of these two shapes underneath it.</p>
+
+            <div class="media-row" style="--media-w:19rem">
+              <div style="max-width:40rem">
+                <p><strong>Branching.</strong> A decision diamond splits the flow in two. With only a
+                &ldquo;then&rdquo; branch you get <code>if &hellip; then S endif</code>; with both, you
+                get <code>if &hellip; then S1 else S2 endif</code>. The paths <strong>always reunite</strong>
+                below &mdash; which is the picture of exactly what <a href="#s02">section 2.2</a> proved
+                with code: an <code>if</code> with no <code>else</code> gives you no guarantee that either
+                branch ran, but an <code>if</code>/<code>else</code> guarantees <strong>exactly one</strong>
+                did.</p>
+              </div>
+              <figure class="fig fig-narrow">
+                <svg viewBox="0 0 380 268" width="380" height="268" role="img" aria-label="If-then-else shape: decision diamond with Yes branch to statements S1 and No branch to statements S2, both joining below">
+                  <defs><marker id="br-arrow-m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+                  <polygon class="fc-decision" points="190,10 268,52 190,94 112,52"/>
+                  <text class="fc-text" x="190" y="47" text-anchor="middle">test</text>
+                  <text class="fc-text" x="190" y="63" text-anchor="middle">condition?</text>
+                  <polyline class="fc-line" points="112,52 92,52 92,146" marker-end="url(#br-arrow-m4)"/>
+                  <text class="fc-label" x="72" y="44">Yes</text>
+                  <polyline class="fc-line" points="268,52 288,52 288,146" marker-end="url(#br-arrow-m4)"/>
+                  <text class="fc-label" x="292" y="44">No</text>
+                  <rect class="fc-process" x="38" y="152" width="108" height="40"/>
+                  <text class="fc-text" x="92" y="172" text-anchor="middle" dominant-baseline="middle">S1</text>
+                  <rect class="fc-process" x="234" y="152" width="108" height="40"/>
+                  <text class="fc-text" x="288" y="172" text-anchor="middle" dominant-baseline="middle">S2</text>
+                  <polyline class="fc-line" points="92,192 92,228 182,228" marker-end="url(#br-arrow-m4)"/>
+                  <polyline class="fc-line" points="288,192 288,228 198,228" marker-end="url(#br-arrow-m4)"/>
+                  <circle class="fc-connector" cx="190" cy="228" r="7"/>
+                  <line class="fc-line" x1="190" y1="235" x2="190" y2="258" marker-end="url(#br-arrow-m4)"/>
+                </svg>
+                <figcaption>if&ndash;then&ndash;else: exactly one of S1, S2 runs, then the paths reunite.</figcaption>
+              </figure>
+            </div>
+
+            <div class="media-row" style="--media-w:19rem">
+              <div style="max-width:40rem">
+                <p><strong>Repetition.</strong> A loop is a decision whose <em>No</em> arrow points
+                <strong>back up</strong> to an earlier step instead of forward. This one prints 4 to 9
+                with their squares &mdash; the flowchart version of <a href="#s05">section 5&rsquo;s</a>
+                <code>while</code> loop, three moving parts and all: set <code>NUM</code> up, test it,
+                change it.</p>
+                <div class="note danger">
+                  <span class="tag">What makes this stop?</span>
+                  <p>Nothing stops the <em>No</em> arrow pointing back to itself forever. Erase the step
+                  <span class="mono">NUM &larr; NUM + 1</span> and <span class="mono">NUM &gt; 9</span> never
+                  becomes true &mdash; the diagram spins in the same small circle for as long as the
+                  machine keeps running. You already met the comic version of this exact trap between
+                  <a href="#s04">sections 3 and 4</a>: a decision box whose only way out loops back to
+                  itself.</p>
+                </div>
+              </div>
+              <figure class="fig fig-narrow">
+                <svg viewBox="0 0 400 560" width="400" height="560" role="img" aria-label="Loop flowchart printing numbers 4 to 9 with their squares, with the No branch of NUM greater than 9 looping back">
+                  <defs><marker id="lp-arrow-m4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+                  <rect class="fc-terminal" x="160" y="10" width="120" height="36" rx="18"/>
+                  <text class="fc-text" x="220" y="28" text-anchor="middle" dominant-baseline="middle">Start</text>
+                  <line class="fc-line" x1="220" y1="46" x2="220" y2="68" marker-end="url(#lp-arrow-m4)"/>
+                  <rect class="fc-process" x="130" y="74" width="180" height="40"/>
+                  <text class="fc-text" x="220" y="94" text-anchor="middle" dominant-baseline="middle">NUM &larr; 4</text>
+                  <line class="fc-line" x1="220" y1="114" x2="220" y2="136" marker-end="url(#lp-arrow-m4)"/>
+                  <rect class="fc-process" x="130" y="142" width="180" height="40"/>
+                  <text class="fc-text" x="220" y="162" text-anchor="middle" dominant-baseline="middle">SQNUM &larr; NUM &times; NUM</text>
+                  <line class="fc-line" x1="220" y1="182" x2="220" y2="204" marker-end="url(#lp-arrow-m4)"/>
+                  <polygon class="fc-io" points="152,210 310,210 288,252 130,252"/>
+                  <text class="fc-text" x="218" y="226" text-anchor="middle">Print</text>
+                  <text class="fc-text" x="218" y="243" text-anchor="middle">NUM, SQNUM</text>
+                  <line class="fc-line" x1="220" y1="252" x2="220" y2="274" marker-end="url(#lp-arrow-m4)"/>
+                  <rect class="fc-process" x="130" y="280" width="180" height="40"/>
+                  <text class="fc-text" x="220" y="300" text-anchor="middle" dominant-baseline="middle">NUM &larr; NUM + 1</text>
+                  <line class="fc-line" x1="220" y1="320" x2="220" y2="342" marker-end="url(#lp-arrow-m4)"/>
+                  <polygon class="fc-decision" points="220,348 310,392 220,436 130,392"/>
+                  <text class="fc-text" x="220" y="395" text-anchor="middle" dominant-baseline="middle">NUM &gt; 9 ?</text>
+                  <polyline class="fc-line" points="130,392 56,392 56,162 122,162" marker-end="url(#lp-arrow-m4)"/>
+                  <text class="fc-label" x="96" y="382">No</text>
+                  <line class="fc-line" x1="220" y1="436" x2="220" y2="470" marker-end="url(#lp-arrow-m4)"/>
+                  <text class="fc-label" x="230" y="456">Yes</text>
+                  <rect class="fc-terminal" x="160" y="476" width="120" height="36" rx="18"/>
+                  <text class="fc-text" x="220" y="494" text-anchor="middle" dominant-baseline="middle">STOP</text>
+                </svg>
+                <figcaption>The No arrow loops back, so the body repeats until NUM &gt; 9.</figcaption>
+              </figure>
+            </div>
+
+            <p class="sched-note">Same rule, every time you draw or read one: before you trust a loop
+            shape, find the arrow that points backward and check what makes it eventually point
+            forward instead.</p>
+          </div>
+        </section>
+
         </div>
       </div>
     </div>
@@ -2501,7 +2736,7 @@ public class Favourites {
 </footer>
 <script src="../assets/runtime.js?v=4cdadefe"></script>
 <script src="../assets/highlight.js?v=88b90c66"></script>
-<script src="../assets/editor.js?v=2028e428"></script>
+<script src="../assets/editor.js?v=19d11bd5"></script>
 <script src="../assets/console-ui.js?v=9f252260"></script>
 <script src="../assets/w23-data.js?v=63b7d9f8"></script>
 <script src="../assets/w23-exercises.js?v=164a4b3e"></script>

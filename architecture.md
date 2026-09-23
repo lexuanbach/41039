@@ -254,6 +254,12 @@ holding a `.editor-bar` toolbar above the `.editor-shell`:
   (the whole console / exercise card) gets `.code-fullscreen` and `<body>` gets
   `.code-fullscreen-open`; Esc leaves.
 
+**Automatic indentation.** Enter carries the current line's leading whitespace forward. It adds
+four spaces after a Java opening brace or a Python suite colon; comments and strings are ignored,
+and a Python colon inside unmatched brackets (for example, a dictionary entry) does not open a
+suite. Pressing Enter between Java `{}` expands the pair to three lines and aligns the closing
+brace. Each automatic edit is one undo step.
+
 **Soft wrap.** The highlight layer renders **one `<div class="cl">` per logical line**
 (`splitLines()` closes and reopens a highlight `<span>` that runs across a line break — block
 comments, triple-quoted strings), and the gutter holds one `<div>` per line whose height is

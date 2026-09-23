@@ -1,0 +1,801 @@
+% 41039 Programming 1 -- Revision of Week 1
+% Shown at the start of the Weeks 2 & 3 lecture, before any new material.
+% Active recall: every frame asks before it tells. Answers appear on \pause.
+% Style follows w1.tex / w23.tex (Courses/UTS-Programming I/); structure follows the
+% CO1005 revision deck (CO1005-Website/lecture3-slides/revision-week1-2/).
+% Compile: xelatex revision-week-1.tex   (run twice; bk-logo.png sits next to this file)
+
+\documentclass[aspectratio=169]{beamer}
+\makeatletter
+
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+
+% Beamer's default enumerate label expands to itself once enumitem takes the optional
+% argument, and TeX runs out of input stack. An explicit label breaks the loop.
+\setlist[enumerate]{label=\arabic*.}
+\setlist[itemize]{label=\usebeamertemplate{itemize item}}
+
+\definecolor{bkblue}{RGB}{0,70,140}
+\definecolor{bktitlebg}{RGB}{64,116,169}
+\definecolor{codebg}{RGB}{244,246,249}
+\definecolor{codecmt}{RGB}{110,120,130}
+\definecolor{codegray}{RGB}{110,120,135}
+\definecolor{codestr}{RGB}{150,60,20}
+\definecolor{badred}{RGB}{185,40,40}
+\definecolor{goodgreen}{RGB}{20,125,70}
+\definecolor{srcgrey}{RGB}{105,115,128}
+
+\usetheme{default}
+\useinnertheme{rounded}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{titlelike}{bg=bktitlebg,fg=white}
+\setbeamercolor{frametitle}{fg=bkblue,bg=}
+\setbeamercolor{author}{fg=bkblue}
+\setbeamercolor{institute}{fg=bkblue}
+\setbeamercolor{section in toc}{fg=bkblue}
+\setbeamerfont{frametitle}{size=\Large,series=\mdseries}
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize,series=\bfseries}
+
+\setbeamertemplate{frametitle}{%
+  \vspace*{0.35em}%
+  \begin{minipage}[b]{0.84\textwidth}%
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+  \end{minipage}\hfill%
+  \begin{minipage}[b]{0.10\textwidth}%
+    \raggedleft\includegraphics[height=0.75cm]{bk-logo.png}%
+  \end{minipage}\\[0.1em]%
+  {\color{bkblue}\rule{\textwidth}{0.7pt}}%
+}
+
+\setbeamercolor{footbar}{bg=bkblue,fg=white}
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
+    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+  \end{beamercolorbox}%
+}
+
+\newcommand{\keyline}[1]{\vfill\begin{center}\textcolor{bkblue}{\textbf{#1}}\end{center}\vspace*{0.2em}}
+\newcommand{\hd}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\srcline}[1]{{\color{srcgrey}\scriptsize #1\par}}
+\newcommand{\srclink}[2]{\href{#1}{\texttt{#2}}}
+\newcommand{\badlabel}[1]{\textcolor{badred}{\ding{55}~\textbf{#1}}}
+\newcommand{\goodlabel}[1]{\textcolor{goodgreen}{\ding{51}~\textbf{#1}}}
+\newcommand{\neutrallabel}[1]{\textcolor{bkblue}{\textbf{#1}}}
+\newcommand{\timing}[2]{\hfill{\small\textcolor{bkblue}{\textbf{#1 \textbullet{} #2}}}}
+% a blank to be filled in, numbered so the word bank can be checked against it
+\newcommand{\blank}[1]{\underline{\hspace{1.1em}\textbf{(#1)}\hspace{1.1em}}}
+
+\hypersetup{colorlinks=true, urlcolor=bkblue, linkcolor=bkblue}
+
+% --- Question box: what the room is being asked --------------------------
+\newtcolorbox{discussionbox}[1]{
+  title=\textbf{#1}, coltitle=bkblue, colback=white, colframe=bkblue,
+  colbacktitle=bkblue!10, boxrule=1pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+% --- Answer box: revealed after they have committed to an answer ---------
+\newtcolorbox{contextbox}[1]{
+  title=\textbf{#1}, coltitle=white, colback=bkblue!5, colframe=bkblue,
+  colbacktitle=bkblue!80, boxrule=0.6pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{bkblue}\bfseries,
+  commentstyle=\color{codecmt}\itshape,
+  stringstyle=\color{codestr},
+  backgroundcolor=\color{codebg},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{bkblue},
+  xleftmargin=1.1em, framexleftmargin=1.1em,
+  framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
+  showstringspaces=false, columns=fullflexible, keepspaces=true,
+  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+}
+\lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
+\lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
+\lstset{style=code}
+
+\setbeamertemplate{title page}{%
+  \vspace*{0.5em}
+  \begin{centering}
+    \begin{beamercolorbox}[sep=8pt,center,rounded=true,shadow=false]{title}
+      \usebeamerfont{title}\inserttitle\par
+      \ifx\insertsubtitle\@empty\else
+        \vskip0.4em{\usebeamerfont{subtitle}\insertsubtitle\par}
+      \fi
+    \end{beamercolorbox}
+    \vskip1.0em
+    \includegraphics[height=1.7cm]{bk-logo.png}
+    \vskip1.0em
+    {\usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par}
+    \vskip0.5em
+    {\usebeamercolor[fg]{institute}\usebeamerfont{institute}\insertinstitute\par}
+    \vskip0.6em
+    {\usebeamerfont{date}\insertdate\par}
+  \end{centering}
+}
+
+\title[41039 Programming 1 --- Revision of Week 1]{41039 Programming 1}
+\subtitle{Revision of Week 1: programs, Java, types and errors}
+\author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
+\institute{\small Faculty of Computer Science and Engineering, HCMUT}
+\date{September Session 2026}
+
+\AtBeginSection[]{%
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}%
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% ======================================================================
+\begin{frame}{How the next fifteen minutes work}
+  \hd{This is not a test.} Nothing here is recorded against you, and nothing you say
+  wrongly costs you anything.
+  \vspace{0.6em}
+  \begin{itemize}
+    \item Every slide \textbf{asks} before it \textbf{tells}. Commit to an answer first ---
+      out loud, or on paper, or just in your head.
+    \item \textbf{Answering earns extra credit.} Being wrong out loud earns it too. The only
+      way to miss out is to say nothing.
+    \item If a slide makes no sense to you, that is the single most useful thing you can
+      tell me today. Say so.
+  \end{itemize}
+  \vspace{0.6em}
+  \hd{Why bother revising at all?} Everything today --- choosing and repeating --- is built
+  on top of Week 1. A shaky \code{int} makes a shaky \code{for} loop.
+  \keyline{Recalling something is what fixes it. Re-reading it does not.}
+\end{frame}
+
+% ======================================================================
+\section{Java and Python}
+% ======================================================================
+
+\begin{frame}<1-2>{Fill the blanks: Java and Python}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+    \begin{itemize}
+      \item Java is \blank{1} before it runs; Python is \blank{2}, line by line.
+      \item Java is \blank{3} typed: types are fixed and checked \emph{before} the
+        program runs. Python is \blank{4} typed: variables have no type ---
+        but the data still does.
+      \item Java has four whole-number types and you pick the size.
+        Python has \blank{5}, with no size limit.
+      \item Both languages are \blank{6}: you never free memory by hand.
+    \end{itemize}
+    \column{0.43\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{0.8em}}l@{}}
+        \textbf{a)} interpreted        & \textbf{g)} statically\\
+        \textbf{b)} one                & \textbf{h)} procedural\\
+        \textbf{c)} compiled           & \textbf{i)} dynamically\\
+        \textbf{d)} imperative         & \textbf{j)} four\\
+        \textbf{e)} garbage collected  & \textbf{k)} object oriented\\
+        \textbf{f)} two                & \textbf{l)} semicolons\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} c) \textbf{compiled} \quad \textbf{(2)} a) \textbf{interpreted}\\[0.25em]
+      \textbf{(3)} g) \textbf{statically} \quad \textbf{(4)} i) \textbf{dynamically}\\[0.25em]
+      \textbf{(5)} b) \textbf{one} --- Python's \code{int} has no size limit\\[0.25em]
+      \textbf{(6)} e) \textbf{garbage collected}. Procedural, imperative, object
+      oriented: both languages are all three
+    \end{contextbox}}
+  \end{columns}
+  \keyline{Only the last two rows of the comparison table differ --- and they explain nearly everything else you will notice.}
+\end{frame}
+
+\begin{frame}{Which kind of error is it?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \begin{discussionbox}{Compile-time, run-time or logic?}
+      \small
+      \begin{enumerate}[itemsep=0.35em, leftmargin=1.3em]
+        \item You forget a semicolon.
+        \item \code{int userName = input.nextInt();} --- and the user types \code{Bach}.
+        \item Your program averages 74, 75 and 77 and prints \code{75}.
+        \item You write \code{Bob} where you declared \code{bob}.
+        \item In Python, \code{print(name + age)} where \code{age} is an \code{int}.
+      \end{enumerate}
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} compile-time\\[0.2em]
+      \textbf{2.} run-time --- \code{InputMismatchException}. It works fine if your name
+      happens to be a number\\[0.2em]
+      \textbf{3.} \textcolor{badred}{\textbf{logic}}\\[0.2em]
+      \textbf{4.} compile-time --- \code{cannot find symbol}\\[0.2em]
+      \textbf{5.} run-time --- Python's \code{TypeError}
+    \end{contextbox}
+  \end{columns}
+  \keyline{Four of the five tell you. Only the logic error is silent --- and that one cost
+  Knight Capital \$460 million.}
+\end{frame}
+
+% ======================================================================
+\section{Your first Java program}
+% ======================================================================
+
+\begin{frame}[fragile]{Spot the errors \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \badlabel{Four things are wrong. The file is \code{Greeting.java}.}
+\begin{lstlisting}[style=bad, language=Java, numbers=left, numberstyle=\tiny\color{codegray}, numbersep=0.9em]
+public class greeting {
+
+    public static void Main(String[] args) {
+        System.out.println("Hi there!")
+        System.out.Println("Bye!");
+    }
+}
+\end{lstlisting}
+    \column{0.44\textwidth}
+    \pause
+    \goodlabel{Fixes}
+    \begin{itemize}[itemsep=0.3em]
+      \small
+      \item Line 1: the class name must match the file --- \code{Greeting}, not
+        \code{greeting}. Java is \textbf{case sensitive}.
+      \item Line 3: the method is \code{main}, lowercase. \code{Main} compiles, then the
+        program will not start.
+      \item Line 4: every statement ends with a \code{;}
+      \item Line 5: \code{println}, not \code{Println}. Case again.
+    \end{itemize}
+  \end{columns}
+  \keyline{bob != Bob != BOB. This will cause most of your errors for another fortnight.}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{Fill the blanks: name the parts}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+\begin{lstlisting}[language=Java, escapeinside={(*@}{@*)}]
+public (*@\blank{1}@*) Hello {
+
+    public static (*@\blank{2}@*) main(
+            (*@\blank{3}@*)[] args) {
+
+        System.out.(*@\blank{4}@*)(
+            "Hello 41039!")(*@\blank{5}@*)
+    }
+}
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small And: this file must be called \blank{6}}
+    \column{0.43\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{0.8em}}l@{}}
+        \textbf{a)} \code{void}       & \textbf{g)} \code{Hello.java}\\
+        \textbf{b)} \code{print}      & \textbf{h)} \code{class}\\
+        \textbf{c)} \code{;}          & \textbf{i)} \code{int}\\
+        \textbf{d)} \code{String}     & \textbf{j)} \code{hello.java}\\
+        \textbf{e)} \code{method}     & \textbf{k)} \code{println}\\
+        \textbf{f)} \code{:}          & \textbf{l)} \code{Main.java}\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} h) \code{class} --- everything from \code{\{} to the matching \code{\}}
+      belongs to it\\[0.2em]
+      \textbf{(2)} a) \code{void} --- \code{main} is a \textbf{method}:
+      \code{<return type> <name>(<parameters>)}; \code{void} means it returns nothing\\[0.2em]
+      \textbf{(3)} d) \code{String} --- the type of the parameter\\[0.2em]
+      \textbf{(4)} k) \code{println} --- \code{print} would leave the cursor on the line\\[0.2em]
+      \textbf{(5)} c) \code{;} --- every statement ends with one\\[0.2em]
+      \textbf{(6)} g) \code{Hello.java} --- the class name, case included
+    \end{contextbox}}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Variables, types and values}
+% ======================================================================
+
+\begin{frame}[fragile]{Types and names: quick quiz}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{A. Which type would you declare?}
+\begin{lstlisting}[language=Java]
+____ studentCount = 341;
+____ average      = 75.33;
+____ grade        = 'D';
+____ passed       = true;
+\end{lstlisting}
+    \vspace{0.2em}
+    \neutrallabel{B. Which break Java's naming conventions?}\\[0.3em]
+    {\small\ttfamily class Student \quad class student\\[0.2em]
+     int MyTotal \quad int myTotal \quad Math.PI}
+    \vspace{0.4em}
+
+    \neutrallabel{C. What is the biggest number an \code{int} holds?}
+    \column{0.48\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{A.} \code{int}, \code{double}, \code{char}, \code{boolean}.
+      Note \code{'D'} uses single quotes --- \code{"D"} is a \code{String}.\\[0.35em]
+      \textbf{B.} \badlabel{Wrong:} \code{class student} --- class names start
+      \textbf{upper}case --- and \code{int MyTotal} --- variables start
+      \textbf{lower}case. \code{Math.PI} is a constant, so all caps is right.
+      Conventions, not rules: the compiler accepts every one of them.\\[0.3em]
+      \textbf{C.} \code{2,147,483,647} --- that is $2^{31}-1$, and it is why an \code{int}
+      broke YouTube's view counter.
+    \end{contextbox}
+  \end{columns}
+  \keyline{In practice: int, double, char, boolean.}
+\end{frame}
+
+\begin{frame}[fragile]{Predict the output \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=Java]
+int a = 7;
+int b = 2;
+
+System.out.println(a / b);      // (a)
+System.out.println(7.0 / b);    // (b)
+System.out.println(a % b);      // (c)
+System.out.println("a = " + a); // (d)
+System.out.println(a + b);      // (e)
+
+a = a + 1;
+System.out.println(a);          // (f)
+\end{lstlisting}
+    \column{0.49\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{(a)} \code{3} --- int divided by int gives an \textbf{int}. The \code{.5} is
+      not rounded, it is \emph{discarded}\\[0.25em]
+      \textbf{(b)} \code{3.5} --- one \code{double} operand is enough\\[0.25em]
+      \textbf{(c)} \code{1} --- \code{\%} is the remainder\\[0.25em]
+      \textbf{(d)} \code{a = 7} --- here \code{+} \textbf{joins Strings}\\[0.25em]
+      \textbf{(e)} \code{9} --- the same \code{+}, now \textbf{adding}. What it does
+      depends on the types beside it\\[0.25em]
+      \textbf{(f)} \code{8} --- read \code{=} right to left: \emph{take \code{a+1},
+      put it in \code{a}}
+    \end{contextbox}
+  \end{columns}
+  \keyline{= is not equality. It is "take the right, store it in the left".}
+\end{frame}
+
+\begin{frame}[fragile]{The bug that compiles, runs, and lies}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+int totalMarks = 226;
+int studentCount = 3;
+
+int classAverage
+        = totalMarks / studentCount;
+
+System.out.println("Average: "
+        + classAverage);
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{Three questions}
+      \small
+      \textbf{1.} What does it print?\quad
+      \textbf{2.} What \emph{should} it print?\\
+      \textbf{3.} Which of the three kinds of error is this?
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} \code{Average: 75}\qquad \textbf{2.} \code{75.33}\\[0.3em]
+      \textbf{3.} A \textcolor{badred}{\textbf{logic error}}. It compiles, it runs, and it
+      prints a plausible number every single time.\\[0.3em]
+      \goodlabel{Fix} \code{(double) totalMarks / studentCount} --- and make
+      \code{classAverage} a \code{double} too. Changing only the variable is not enough:
+      the division has already happened.
+    \end{contextbox}
+  \end{columns}
+  \keyline{One wrong type. No error message. This is the class of bug that makes the news.}
+\end{frame}
+
+% ======================================================================
+\section{The same ideas in Python}
+% ======================================================================
+
+\begin{frame}[fragile]{Same program, two languages: name five differences}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=Java]
+public class Greet {
+    public static void main(String[] a) {
+        String name = "Bach";
+        int age = 20;
+        boolean ok = true;
+        System.out.println(name + age);
+    }
+}
+\end{lstlisting}
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=Python]
+name = "Bach"
+age = 20
+ok = True
+print(name + str(age))
+\end{lstlisting}
+    \vspace{0.3em}
+    {\small Why does the Python version need \code{str(age)} when the Java one does not?}
+  \end{columns}
+  \pause
+  \vspace{0.3em}
+  \begin{contextbox}{Answers}
+    \small\raggedright
+    No class or \code{main}; no type on the left of \code{=}; no semicolons; no braces;
+    \code{True} is capitalised where Java writes \code{true}. And the \code{str()}: Java's
+    \code{+} silently converts the \code{int}; Python's \emph{refuses} to mix \code{str}
+    and \code{int}, and raises a \code{TypeError}.
+  \end{contextbox}
+  \vspace{0.2em}
+  \begin{center}\textcolor{bkblue}{\textbf{In Python variables have no type. The data still
+  does. That is ``dynamically typed''.}}\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{One space changes the answer}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \neutrallabel{A}
+\begin{lstlisting}[language=Python]
+a = 20
+if a < 10:
+    print("small")
+    print("done")
+\end{lstlisting}
+    \neutrallabel{B}
+\begin{lstlisting}[language=Python]
+a = 20
+if a < 10:
+    print("small")
+print("done")
+\end{lstlisting}
+    \column{0.47\textwidth}
+    \begin{discussionbox}{With \code{a = 20}, what does each print?}
+      \small Only the indentation of the last line differs.
+    \end{discussionbox}
+    \pause
+    \vspace{0.25em}
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{A} prints \textbf{nothing} --- both \code{print}s are inside the \code{if}.\\[0.25em]
+      \textbf{B} prints \code{done} --- that line is outside it, so it always runs.\\[0.25em]
+      Four spaces, never mixed with tabs.
+    \end{contextbox}
+  \end{columns}
+  \keyline{In Java bad indentation is ugly. In Python it is wrong.}
+\end{frame}
+
+% ======================================================================
+\section{When things go wrong}
+% ======================================================================
+
+\begin{frame}[fragile]{Read the compiler, do not argue with it}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}
+Greeting.java:4: error: cannot find symbol
+    System.out.println("Hi " + userName);
+                               ^
+  symbol:   variable userName
+  location: class Greeting
+1 error
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{Four questions}
+      \small
+      \textbf{1.} Which file, and which line?\quad
+      \textbf{2.} Which token?\\
+      \textbf{3.} What does \code{cannot find symbol} actually mean?\\
+      \textbf{4.} You get 14 errors. Which do you fix?
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} \code{Greeting.java}, line \textbf{4}\\[0.25em]
+      \textbf{2.} \code{userName} --- follow the \code{\^{}}\\[0.25em]
+      \textbf{3.} \emph{You used a name I have never seen} --- a typo, a missing
+      declaration, or a capitalisation slip\\[0.25em]
+      \textbf{4.} The \textbf{first} one, then recompile. Errors 2--14 are usually
+      downstream of error 1\\[0.3em]
+      And turn on line numbers in Ed --- without them, \code{Greeting.java:4} tells you
+      nothing.
+    \end{contextbox}
+  \end{columns}
+  \keyline{Which file, which line, what kind, which token. Every time, in that order.}
+\end{frame}
+
+\begin{frame}[fragile]{In pairs: make it print \code{Bach20} \timing{Pairs}{2 minutes}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \badlabel{This crashes. Why, and what is the smallest fix?}
+\begin{lstlisting}[style=bad, language=Python]
+name = "Bach"
+age = 20
+print(name + age)
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{Then answer this}
+      \small The equivalent Java line, \code{System.out.println(name + age)},
+      does \emph{not} crash. Is Java being helpful, or is it being dangerous?
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    \pause
+    \goodlabel{Fix}
+\begin{lstlisting}[style=good, language=Python]
+print(name + str(age))
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small \code{TypeError: can only concatenate str (not "int") to str}. Python will not
+    guess what you meant.}
+    \vspace{0.5em}
+    \begin{contextbox}{Both, honestly}
+      \small\raggedright
+      Java's convenience is real, and so is the risk: the day you \emph{meant} to add two
+      numbers and one of them was a \code{String}, Java will happily join them and say
+      nothing. Python's refusal is noisy, early and cheap.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Live coding}
+% ======================================================================
+
+\begin{frame}[fragile]{Live coding: the Java program \timing{One at the keyboard}{4 min}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+\begin{lstlisting}[language=Java]
+import java.util.Scanner;
+
+public class Average {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.print("First number: ");
+        int a = input.nextInt();
+        System.out.print("Second number: ");
+        // TODO 1: read the second number into an int b
+
+        // TODO 2: an int sum, holding a + b
+
+        // TODO 3: a double average. 7 and 2 give 4.5
+
+        System.out.println("Sum: " + sum);
+        System.out.println("Average: " + average);
+    }
+}
+\end{lstlisting}
+    \column{0.40\textwidth}
+    \begin{discussionbox}{Expected run}
+      \small\ttfamily
+      First number: 7\\
+      Second number: 2\\
+      Sum: 9\\
+      Average: 4.5
+    \end{discussionbox}
+    \vspace{0.3em}
+    {\small One volunteer types, on the projector. Everyone else: shout the moment you see a
+    mistake --- that earns credit too. Run it before anyone says it is finished.}
+    \vspace{0.3em}
+    \pause
+    \begin{contextbox}{Watch for}
+      \small\raggedright
+      \code{sum / 2} compiles, runs, and prints \code{4}. Nobody will be told. Ask the
+      room \emph{why} before you fix it.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{One answer --- and then break it}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \goodlabel{The three missing lines}
+\begin{lstlisting}[style=good, language=Java]
+int b = input.nextInt();
+
+int sum = a + b;
+
+double average = sum / 2.0;
+// or:  (double) sum / 2
+\end{lstlisting}
+    \vspace{0.2em}
+    \badlabel{The one that lies}
+\begin{lstlisting}[style=bad, language=Java]
+double average = sum / 2;   // 4, not 4.5
+\end{lstlisting}
+    {\small \code{int / int} is an \code{int}. Storing it in a \code{double} afterwards
+    does not bring the .5 back.}
+    \column{0.46\textwidth}
+    \pause
+    \begin{discussionbox}{Now break it}
+      \small Run it again and type \code{seven} for the first number.
+      \begin{itemize}\small
+        \item What kind of error is this --- compile-time, run-time or logic?
+        \item Five lines of stack trace. Which one is \emph{yours}?
+      \end{itemize}
+    \end{discussionbox}
+    \vspace{0.3em}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      Run-time: \code{InputMismatchException}, the same one as Lecture 1. Four lines are
+      inside \code{Scanner}; the one that says \code{Average.main} is yours. Start there.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Live coding: the same, in Python \timing{A different volunteer}{4 min}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+\begin{lstlisting}[language=Python]
+a = input("First number: ")
+b = input("Second number: ")
+
+# TODO 1: a and b are text right now.
+#         Turn both into whole numbers.
+
+# TODO 2: total = a + b, and average = total / 2
+
+# TODO 3: print two lines, exactly:
+#         Sum: 9   and   Average: 4.5
+#         careful: you cannot + a str and an int
+\end{lstlisting}
+    \column{0.40\textwidth}
+    \begin{discussionbox}{Expected run}
+      \small\ttfamily
+      First number: 7\\
+      Second number: 2\\
+      Sum: 9\\
+      Average: 4.5
+    \end{discussionbox}
+    \vspace{0.3em}
+    {\small Same rules. Same program as the Java one --- so before typing anything:
+    what do you expect to be \emph{different}?}
+    \vspace{0.3em}
+    \pause
+    \begin{contextbox}{Watch for}
+      \small\raggedright
+      Skip TODO 1 and \code{a + b} is \code{"72"}. No error. \code{input()} always
+      gives you a \code{str}, and \code{+} on two strings joins them.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{One answer --- and what was different}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \goodlabel{One way}
+\begin{lstlisting}[style=good, language=Python]
+a = int(a)
+b = int(b)
+total = a + b
+average = total / 2
+print("Sum: " + str(total))
+print("Average: " + str(average))
+\end{lstlisting}
+    \vspace{0.2em}
+    \badlabel{Skip the int() and nothing complains}
+\begin{lstlisting}[style=bad, language=Python]
+total = a + b      # "72" -- a logic bug
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \pause
+    \begin{contextbox}{Three differences, all from Lecture 1}
+      \small\raggedright
+      \textbf{Input arrives as text.} Java's \code{nextInt()} converted for you;
+      Python's \code{input()} does not, so you call \code{int()} --- and typing
+      \code{seven} now fails \emph{there}, with a \code{ValueError}.\\[0.3em]
+      \textbf{\code{/} gives 4.5 by itself.} Java's \code{9 / 2} gave 4. Same symbol,
+      different bet.\\[0.3em]
+      \textbf{\code{+} will not mix.} \code{"Sum: " + total} is the \code{Bach20}
+      crash again, so \code{str()} goes back in.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Bridge to today}
+% ======================================================================
+
+\begin{frame}[fragile]{Where Week 1 stops}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Everything you can write so far}
+\begin{lstlisting}[language=Java]
+int mark = 74;
+
+System.out.println("Mark: " + mark);
+System.out.println("Result: PASS");
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small Top to bottom. It prints \code{PASS} for a mark of 74 --- and \code{PASS} for a
+    mark of 4.}
+    \vspace{0.4em}
+    \begin{discussionbox}{Two questions for today}
+      \small
+      \textbf{1.} How would you print \code{FAIL} below 50?\\
+      \textbf{2.} How would you do it for \emph{all 341} students?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    \goodlabel{After today}
+\begin{lstlisting}[style=good, language=Java]
+for (int mark : marks) {
+    if (mark >= 50) {
+        System.out.println("PASS");
+    } else {
+        System.out.println("FAIL");
+    }
+}
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small \textbf{1.} \code{if}--\code{else} --- branching.
+    \textbf{2.} A loop --- repetition. Both arrive today.}
+  \end{columns}
+  \keyline{State was one third of the toolkit. Today you get the other two thirds.}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Week 1}
+    \begin{itemize}[itemsep=0.3em]
+      \small
+      \item[\textcolor{goodgreen}{\ding{51}}] name the \textbf{three tools} --- state,
+        branching, repetition --- and say which one you have
+      \item[\textcolor{goodgreen}{\ding{51}}] write the skeleton of a Java program:
+        \code{class}, \code{main}, braces, semicolons, matching \textbf{file name}
+      \item[\textcolor{goodgreen}{\ding{51}}] declare \code{int}, \code{double},
+        \code{char}, \code{boolean} with a legal name
+      \item[\textcolor{goodgreen}{\ding{51}}] predict \textbf{integer division},
+        \code{\%}, and \code{+} on Strings
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{\phantom{Week 1}}
+    \begin{itemize}[itemsep=0.3em]
+      \small
+      \item[\textcolor{goodgreen}{\ding{51}}] read \code{=} right to left
+      \item[\textcolor{goodgreen}{\ding{51}}] write the same program in \textbf{Python}, and
+        say why the indentation is not decoration
+      \item[\textcolor{goodgreen}{\ding{51}}] tell \textbf{compile-time}, \textbf{run-time}
+        and \textbf{logic} errors apart, and say which one is silent
+      \item[\textcolor{goodgreen}{\ding{51}}] read a compiler message: file, line, kind,
+        token --- and fix the \textbf{first} one
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{contextbox}{If any box is unticked}
+      \small A 20-question quiz with an explanation for every option:\\
+      \srclink{https://lexuanbach.github.io/41039/weeks/week-1.html}{lexuanbach.github.io/41039}
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\end{document}

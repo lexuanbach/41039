@@ -1127,6 +1127,34 @@ body.code-fullscreen-open { overflow: hidden; }
    decorative here and get the tighter cap above. */
 .fig.plain img { max-height: 26rem; }
 
+/* Inline SVG diagrams (flowcharts) reuse .fig for the frame and caption, but an
+   <svg> needs its own sizing rule — .fig img above does not match it. */
+.fig svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+.fig-narrow svg { max-width: 24rem; }
+.fig-wide svg { max-width: 40rem; }
+
+/* Flowchart symbol shapes (theme-aware: fill/stroke follow light/dark tokens) */
+.fc-terminal  { fill: color-mix(in srgb, var(--accent) 12%, var(--surface)); stroke: var(--accent); stroke-width: 1.6; }
+.fc-io        { fill: color-mix(in srgb, var(--teal) 12%, var(--surface)); stroke: var(--teal); stroke-width: 1.6; }
+.fc-process   { fill: var(--surface); stroke: var(--ink-soft); stroke-width: 1.6; }
+.fc-decision  { fill: color-mix(in srgb, var(--amber) 12%, var(--surface)); stroke: var(--amber); stroke-width: 1.6; }
+.fc-connector { fill: var(--surface); stroke: var(--ink-soft); stroke-width: 1.6; }
+.fc-text  { fill: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+.fc-label { fill: var(--ink-soft); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+.fc-line  { stroke: var(--ink-soft); stroke-width: 1.5; fill: none; }
+.fc-arrowhead { fill: var(--ink-soft); }
+
+/* Flowchart symbol reference cards */
+.symbols { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1.1rem; margin: 1rem 0 1.4rem; }
+.symbol-card {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; padding: 1.1rem 1.2rem;
+  box-shadow: var(--shadow, none);
+}
+.symbol-card svg { display: block; margin: 0 auto 0.7rem; }
+.symbol-card h4 { font-family: "Archivo", sans-serif; font-size: 0.98rem; margin-bottom: 0.25rem; }
+.symbol-card p { font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+
 /* A pull-quote style joke box, matching the deck's */
 .joke {
   border: 1px solid color-mix(in srgb, var(--amber) 45%, var(--line));

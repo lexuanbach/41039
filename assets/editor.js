@@ -15,6 +15,10 @@
  *   ed.setValue(v)   — replaces the text; undoable (Reset, presets, Open…)
  *   ed.load(v)       — replaces the text and starts a fresh undo history (switching language)
  *
+ * Enter keeps the current line's indentation and adds four spaces after a Java
+ * opening brace or a Python suite colon. In Java, pressing Enter between { and }
+ * also puts the closing brace on its own, correctly aligned line.
+ *
  * Toolbar, left:  A− / A+ (program font size) · Wrap · code colour theme. These are
  *   site-wide preferences kept in localStorage; every toolbar repaints on 'p1-view'.
  * Toolbar, right: Undo · Redo · Save… · Open… · Full screen
@@ -118,6 +122,76 @@ window.P1Editor = (function () {
     return lines;
   }
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  /* Find the last real code character before the caret. Comments and string contents
+     must not make `// {`, `"{"` or `# note:` open a block. For Python, keep bracket
+     depth too: a colon at the end of a dictionary entry is not a suite colon. */
+  function codeState(source, lang) {
+    var last = '', round = 0, square = 0, curly = 0;
+    var quote = '', triple = false, escaped = false, lineComment = false, blockComment = false;
+    for (var i = 0; i < source.length; i++) {
+      var c = source[i], next = source[i + 1], three = source.slice(i, i + 3);
+      if (lineComment) {
+        if (c === '\n') lineComment = false;
+        continue;
+      }
+      if (blockComment) {
+        if (c === '*' && next === '/') { blockComment = false; i++; }
+        continue;
+      }
+      if (quote) {
+        if (triple) {
+          if (three === quote + quote + quote) { quote = ''; triple = false; i += 2; }
+        } else if (escaped) {
+          escaped = false;
+        } else if (c === '\\') {
+          escaped = true;
+        } else if (c === quote || (c === '\n' && lang === 'python')) {
+          quote = '';
+        }
+        continue;
+      }
+      if (lang === 'java' && c === '/' && next === '/') { lineComment = true; i++; continue; }
+      if (lang === 'java' && c === '/' && next === '*') { blockComment = true; i++; continue; }
+      if (lang === 'python' && c === '#') { lineComment = true; continue; }
+      if ((c === '"' || c === "'") && lang === 'python' && three === c + c + c) {
+        quote = c; triple = true; last = 'string'; i += 2; continue;
+      }
+      if (c === '"' || c === "'") { quote = c; last = 'string'; continue; }
+      if (/\s/.test(c)) continue;
+      last = c;
+      if (c === '(') round++;
+      else if (c === ')') round = Math.max(0, round - 1);
+      else if (c === '[') square++;
+      else if (c === ']') square = Math.max(0, square - 1);
+      else if (c === '{') curly++;
+      else if (c === '}') curly = Math.max(0, curly - 1);
+    }
+    return { last: last, nested: round + square + curly > 0 };
+  }
+
+  function newlineEdit(value, start, end, lang) {
+    var before = value.slice(0, start), after = value.slice(end);
+    var line = before.slice(before.lastIndexOf('\n') + 1);
+    var base = (line.match(/^[ \t]*/) || [''])[0];
+    var state = codeState(before, lang);
+    var opens = lang === 'java' ? state.last === '{'
+              : lang === 'python' && state.last === ':' && !state.nested;
+    var indent = base + (opens ? '    ' : '');
+
+    // The common `{|}` case becomes three lines, with the caret on the middle one.
+    if (lang === 'java' && opens && /^[ \t]*}/.test(after)) {
+      after = after.replace(/^[ \t]*(?=})/, '');
+      return {
+        value: before + '\n' + indent + '\n' + base + after,
+        caret: before.length + 1 + indent.length
+      };
+    }
+    return {
+      value: before + '\n' + indent + after,
+      caret: before.length + 1 + indent.length
+    };
+  }
 
   function create(opts) {
     opts = opts || {};
@@ -353,6 +427,14 @@ window.P1Editor = (function () {
     ta.addEventListener('keyup', sync);
     ta.addEventListener('click', sync);
     ta.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        var edit = newlineEdit(ta.value, ta.selectionStart, ta.selectionEnd, lang);
+        ta.value = edit.value;
+        ta.selectionStart = ta.selectionEnd = edit.caret;
+        repaint(); record(false);
+        return;
+      }
       if (ev.key === 'Tab') {                 // Tab indents rather than moving focus — this is an editor.
         ev.preventDefault();
         var s = ta.selectionStart, e = ta.selectionEnd;
