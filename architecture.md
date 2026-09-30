@@ -41,10 +41,13 @@ UTS-Programming-I-Website/
 ├── selftest.html           # Unlisted: verifies both runtimes on a live deployment
 ├── weeks/
 │   ├── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
-│   └── week-2-3.html       # Weeks 2+3: conditionals, loops, arrays/lists/dicts, 26-question quiz
+│   ├── week-2-3.html       # Weeks 2+3: conditionals, loops, arrays/lists/dicts, 26-question quiz
+│   ├── week-4.html         # Week 4: methods, functions, stack/heap, by value vs by reference, records, 24-question quiz
+│   └── week-5.html         # Week 5: OOP, classes/objects (Java + Python), static, constructors, enums, advanced switch, 24-question quiz
 ├── slides/
 │   ├── week-1-slides.pdf   # Compiled lecture deck (built from ../UTS-Programming I/w1.tex)
 │   └── week-2-3-slides.pdf # Weeks 2+3 deck  (built from ../UTS-Programming I/w23.tex)
+│                           # (no Week 4 or 5 deck yet — each page has commented placeholders for its link)
 ├── vendor/
 │   └── ecj.jar             # Eclipse batch compiler 3.26.0 — compiles Java in the browser
 ├── assets/
@@ -56,9 +59,13 @@ UTS-Programming-I-Website/
 │   ├── exercises.js        # Auto-graded exercise runner
 │   ├── w1-exercises.js     # Week 1 exercise data (window.WEEK_EXERCISES)
 │   ├── w23-exercises.js    # Weeks 2+3 exercise data (same global)
+│   ├── w4-exercises.js     # Week 4 exercise data (same global)
+│   ├── w5-exercises.js     # Week 5 exercise data (same global)
 │   ├── console-ui.js       # The console widget rendered on pages
 │   ├── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
-│   └── w23-data.js         # Weeks 2+3 quiz data (same global)
+│   ├── w23-data.js         # Weeks 2+3 quiz data (same global)
+│   ├── w4-data.js          # Week 4 quiz data (same global)
+│   └── w5-data.js          # Week 5 quiz data (same global)
 ├── serve.py                # Dev server WITH Range support — required, see §5
 ├── bump.py                 # Stamps ?v=<hash> on asset links — run before committing
 ├── .nojekyll               # GitHub Pages: serve files as-is
@@ -108,7 +115,7 @@ window.WEEK_DATA = {
 as** the correct answer, so answer length is never a tell. Audit with:
 
 ```bash
-node -e "global.window={};require('./assets/w1-data.js');   # and again for w23-data.js
+node -e "global.window={};require('./assets/w1-data.js');   # and again for w23, w4, w5
 const q=window.WEEK_DATA.quiz;let bad=0;
 q.forEach((x,i)=>{const s=t=>String(t).replace(/<[^>]+>/g,'');
  const c=s(x.opts[x.a]).length;
@@ -117,6 +124,11 @@ console.log(bad+' flagged');"
 ```
 
 Require **0 flagged** after every edit to quiz data.
+
+**Answer position.** `initQuiz()` does **not** shuffle options, so the position of the correct
+option is visible to anyone who notices a pattern. `w1-data.js` and `w23-data.js` put every
+correct answer at `a: 0` (always "A"); `w4-data.js` and `w5-data.js` spread them across A–D. Either vary `a` in
+the data, or add a shuffle to `initQuiz()` (remapping `a`) before relying on the older quizzes.
 
 ### The interactive console (`assets/runtime.js` + `assets/console-ui.js`)
 
@@ -308,7 +320,7 @@ output instead of a diff.
 > generator is deliberately not shipped — it is a few lines, and a stale one is worse than
 > none.
 >
-> **A second, faster oracle.** Weeks 2+3's 36 expectations were generated headlessly instead:
+> **A second, faster oracle.** Weeks 2+3's 36 expectations, Week 4's 35 and Week 5's 34 were generated headlessly instead:
 > compile each Java solution with **this repo's own `vendor/ecj.jar`** (`java -jar vendor/ecj.jar
 > -1.8 -g -nowarn -d out X.java`) and run it on any JVM, and run each Python solution on CPython
 > 3.14 — the same compiler the site uses and the same Python line Pyodide ships. That is faithful
@@ -517,13 +529,22 @@ Python passing locally tells you nothing about whether Java will.
 
 ## 6. Extending
 
-1. **Weeks 4–12.** Copy `weeks/week-2-3.html`, write `assets/wN-data.js` and
+1. **Weeks 6–12.** Copy `weeks/week-5.html` (or `week-4.html`), write `assets/wN-data.js` and
    `assets/wN-exercises.js`, add a `.mat-card` on the homepage, and link the topic title in that
    week's `.week` schedule row (the `.week .topic a` rule tints the underline with the row's part
-   colour). **Two week pages exist now** — at the next one or two, add CO1005's left sidebar
-   (`aside.side` + `.layout`) so navigation does not depend on the topbar, because the topnav is
-   already carrying "Week 1" and "Weeks 2–3" and hides entirely below 640px. Its CSS is in
+   colour). Add the new page to the `.topnav` of every existing week page too. **Four week pages
+   exist now** — add CO1005's left sidebar (`aside.side` + `.layout`) before the next one, so
+   navigation does not depend on the topbar: the topnav is already carrying "Week 1",
+   "Weeks 2–3", "Week 4" and "Week 5" and hides entirely below 640px. Its CSS is in
    `../CO1005-Website/assets/style.css` under "Left sidebar".
+
+   **Java features newer than 8 cannot run in the console** (ECJ runs with `-1.8`; CheerpJ is a
+   Java 8/11 VM). Week 4's records (Java 16) and Week 5's switch expressions (14), pattern
+   matching and record patterns (21) and `_` (22) are therefore shown as static `.code-card`s
+   with their real output, verified on a current JDK at the lowest `--release` that accepts them,
+   and labelled with that version. Week 5 §8.2 deliberately includes one console that fails, to
+   show students ECJ's own "supported from Java 14 onwards only" message. Do the same for any
+   later feature (`var`, text blocks, and so on). Enums (Java 5) run fine.
 2. **Auto-graded exercises.** The console can already run code and take stdin, so the
    remaining work is a test harness: run the student's program once per test case and
    compare stdout to an expected string. Copy CO1005's `initExercises()` and its

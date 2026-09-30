@@ -19,6 +19,16 @@
   "licence": "CC BY-SA 4.0",
   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
  },
+ "fact-edsac": {
+  "artist": "Copyright Computer Laboratory, University of Cambridge . Reproduced by permission.",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AEDSAC_%2810%29.jpg",
+  "credit_line": "http://www.cl.cam.ac.uk/Relics/archive_photos.html#Copyright_Licencing",
+  "date": "2008-10-25",
+  "description": "EDSAC I in construction. EDSAC was one of the first computers to implement the stored program (von Neumann) architecture.",
+  "file": "fact-edsac.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
  "fact-ibm-704": {
   "artist": "NASA",
   "commons": "https://commons.wikimedia.org/wiki/File%3AIBM_Electronic_Data_Processing_Machine_-_GPN-2000-001881.jpg",
@@ -38,6 +48,16 @@
   "file": "fact-joshua-bloch.jpg",
   "licence": "CC BY 2.0",
   "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "fact-kristen-nygaard": {
+  "artist": "Jorge Stolfi",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AKristen-Nygaard-SBLP-1997-head.png",
+  "credit_line": "Own work",
+  "date": "circa 1997 date QS:P,+1997-00-00T00:00:00Z/9,P1480,Q5727902 -09-04",
+  "description": "Kristen Nygaard, inventor of the Simula programming language and object-oriented programming, at the Brazilian Symposium on Programming Languages (SBLP'97), Institute of Economics Auditorium entrance. Photo taken with a Pentax camera, scanned from a color print, cropped and color-adjusted.",
+  "file": "fact-kristen-nygaard.png",
+  "licence": "Public domain",
+  "licence_url": ""
  },
  "photo-athletics-lanes": {
   "artist": "Santeri Viinamäki",
@@ -69,6 +89,16 @@
   "licence": "CC0",
   "licence_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
  },
+ "photo-cookie-cutter": {
+  "artist": "Personal Creations",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AApple_Shaped_Cookies_%2814888835148%29.jpg",
+  "credit_line": "Apple Shaped Cookies",
+  "date": "2014-02-01 15:38",
+  "description": "Apple shaped stainless steel cookie cutter and dough with apple cookie cutter shaped outlines.",
+  "file": "photo-cookie-cutter.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
  "photo-fence-posts": {
   "artist": "Trish Steel",
   "commons": "https://commons.wikimedia.org/wiki/File%3APost_and_rail_fence%2C_Bishopstone_-_geograph.org.uk_-_1009517.jpg",
@@ -89,6 +119,16 @@
   "licence": "Public domain",
   "licence_url": ""
  },
+ "photo-playing-cards": {
+  "artist": "Sudzie",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APlaying_Cards_-_number_fives.jpg",
+  "credit_line": "Own work",
+  "date": "2021-06-07 16:48:53",
+  "description": "hand of four cards, the cards being the number 5 in all four suits.",
+  "file": "photo-playing-cards.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
  "photo-po-boxes": {
   "artist": "Frank Schulenburg",
   "commons": "https://commons.wikimedia.org/wiki/File%3APO_boxes_at_the_historic_Chico_Post_Office_%282024%29-L1005460.jpg",
@@ -108,6 +148,16 @@
   "file": "photo-railway-turnout.jpg",
   "licence": "CC BY-SA 3.0",
   "licence_url": "http://creativecommons.org/licenses/by-sa/3.0/"
+ },
+ "photo-stack-plates": {
+  "artist": "Santeri Viinamäki",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AStack_of_dinner_plates.jpg",
+  "credit_line": "Own work",
+  "date": "2016-07-23 18:20:07",
+  "description": "Stack of dinner plates.",
+  "file": "photo-stack-plates.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
  },
  "photo-tally-counter": {
   "artist": "Storye book",
@@ -176,6 +226,16 @@
   "date": "2010-07-22 12:50:45",
   "description": "Rob Pike giving a keynote at OSCON 2010",
   "file": "portrait-pike.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "portrait-stroustrup": {
+  "artist": "ICPCNews",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABjarne_Stroustrup_%282013%29.jpg",
+  "credit_line": "DSC_5591",
+  "date": "2013-07-01 23:04",
+  "description": "Photographer: Victor Zavyalov",
+  "file": "portrait-stroustrup.jpg",
   "licence": "CC BY 2.0",
   "licence_url": "https://creativecommons.org/licenses/by/2.0"
  },

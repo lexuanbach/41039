@@ -1,0 +1,766 @@
+% 41039 Programming 1 -- Revision of Week 2
+% Shown at the start of the next lecture, before any new material.
+% Scope: sections 1-4 of w23.tex only -- types and booleans, if / else if / else, switch and
+% fall-through, if/elif and match in Python. Loops are NOT revised here (see README.md).
+% Active recall: every frame asks before it tells. Answers appear on \pause.
+% Style and macros are identical to revision-week-1.tex.
+% Compile: xelatex revision-week-2.tex   (run twice; bk-logo.png sits next to this file)
+
+\documentclass[aspectratio=169]{beamer}
+\makeatletter
+
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{pifont}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+
+% Beamer's default enumerate label expands to itself once enumitem takes the optional
+% argument, and TeX runs out of input stack. An explicit label breaks the loop.
+\setlist[enumerate]{label=\arabic*.}
+\setlist[itemize]{label=\usebeamertemplate{itemize item}}
+
+\definecolor{bkblue}{RGB}{0,70,140}
+\definecolor{bktitlebg}{RGB}{64,116,169}
+\definecolor{codebg}{RGB}{244,246,249}
+\definecolor{codecmt}{RGB}{110,120,130}
+\definecolor{codegray}{RGB}{110,120,135}
+\definecolor{codestr}{RGB}{150,60,20}
+\definecolor{badred}{RGB}{185,40,40}
+\definecolor{goodgreen}{RGB}{20,125,70}
+\definecolor{srcgrey}{RGB}{105,115,128}
+
+\usetheme{default}
+\useinnertheme{rounded}
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor{titlelike}{bg=bktitlebg,fg=white}
+\setbeamercolor{frametitle}{fg=bkblue,bg=}
+\setbeamercolor{author}{fg=bkblue}
+\setbeamercolor{institute}{fg=bkblue}
+\setbeamercolor{section in toc}{fg=bkblue}
+\setbeamerfont{frametitle}{size=\Large,series=\mdseries}
+\setbeamerfont{title}{size=\Large,series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize,series=\bfseries}
+
+\setbeamertemplate{frametitle}{%
+  \vspace*{0.35em}%
+  \begin{minipage}[b]{0.84\textwidth}%
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
+  \end{minipage}\hfill%
+  \begin{minipage}[b]{0.10\textwidth}%
+    \raggedleft\includegraphics[height=0.75cm]{bk-logo.png}%
+  \end{minipage}\\[0.1em]%
+  {\color{bkblue}\rule{\textwidth}{0.7pt}}%
+}
+
+\setbeamercolor{footbar}{bg=bkblue,fg=white}
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
+    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+  \end{beamercolorbox}%
+}
+
+\newcommand{\keyline}[1]{\vfill\begin{center}\textcolor{bkblue}{\textbf{#1}}\end{center}\vspace*{0.2em}}
+\newcommand{\hd}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\srcline}[1]{{\color{srcgrey}\scriptsize #1\par}}
+\newcommand{\srclink}[2]{\href{#1}{\texttt{#2}}}
+\newcommand{\badlabel}[1]{\textcolor{badred}{\ding{55}~\textbf{#1}}}
+\newcommand{\goodlabel}[1]{\textcolor{goodgreen}{\ding{51}~\textbf{#1}}}
+\newcommand{\neutrallabel}[1]{\textcolor{bkblue}{\textbf{#1}}}
+\newcommand{\timing}[2]{\hfill{\small\textcolor{bkblue}{\textbf{#1 \textbullet{} #2}}}}
+% a blank to be filled in, numbered so the word bank can be checked against it
+\newcommand{\blank}[1]{\underline{\hspace{1.1em}\textbf{(#1)}\hspace{1.1em}}}
+\newcommand{\yes}{\textcolor{goodgreen}{\ding{51}}}
+\newcommand{\no}{\textcolor{badred}{\ding{55}}}
+
+\hypersetup{colorlinks=true, urlcolor=bkblue, linkcolor=bkblue}
+
+% --- Question box: what the room is being asked --------------------------
+\newtcolorbox{discussionbox}[1]{
+  title=\textbf{#1}, coltitle=bkblue, colback=white, colframe=bkblue,
+  colbacktitle=bkblue!10, boxrule=1pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+% --- Answer box: revealed after they have committed to an answer ---------
+\newtcolorbox{contextbox}[1]{
+  title=\textbf{#1}, coltitle=white, colback=bkblue!5, colframe=bkblue,
+  colbacktitle=bkblue!80, boxrule=0.6pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{bkblue}\bfseries,
+  commentstyle=\color{codecmt}\itshape,
+  stringstyle=\color{codestr},
+  backgroundcolor=\color{codebg},
+  frame=leftline, framerule=1.2pt, rulecolor=\color{bkblue},
+  xleftmargin=1.1em, framexleftmargin=1.1em,
+  framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
+  showstringspaces=false, columns=fullflexible, keepspaces=true,
+  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+}
+\lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
+\lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
+\lstset{style=code}
+% listings' Python predates 3.10; teach it the soft keywords this deck uses
+\lstdefinelanguage{Py}[]{Python}{morekeywords={match,case,elif}}
+
+\setbeamertemplate{title page}{%
+  \vspace*{0.5em}
+  \begin{centering}
+    \begin{beamercolorbox}[sep=8pt,center,rounded=true,shadow=false]{title}
+      \usebeamerfont{title}\inserttitle\par
+      \ifx\insertsubtitle\@empty\else
+        \vskip0.4em{\usebeamerfont{subtitle}\insertsubtitle\par}
+      \fi
+    \end{beamercolorbox}
+    \vskip1.0em
+    \includegraphics[height=1.7cm]{bk-logo.png}
+    \vskip1.0em
+    {\usebeamercolor[fg]{author}\usebeamerfont{author}\insertauthor\par}
+    \vskip0.5em
+    {\usebeamercolor[fg]{institute}\usebeamerfont{institute}\insertinstitute\par}
+    \vskip0.6em
+    {\usebeamerfont{date}\insertdate\par}
+  \end{centering}
+}
+
+\title[41039 Programming 1 --- Revision of Week 2]{41039 Programming 1}
+\subtitle{Revision of Week 2: booleans, \texttt{if}, \texttt{switch} and \texttt{match}}
+\author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
+\institute{\small Faculty of Computer Science and Engineering, HCMUT}
+\date{September Session 2026}
+
+\AtBeginSection[]{%
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}%
+}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+% ======================================================================
+\begin{frame}{How the next twenty minutes work}
+  \hd{Same rules as last week.} This is not a test. Nothing here is recorded against you,
+  and nothing you say wrongly costs you anything.
+  \vspace{0.6em}
+  \begin{itemize}
+    \item Every slide \textbf{asks} before it \textbf{tells}. Commit to an answer first ---
+      out loud, or on paper, or just in your head.
+    \item \textbf{Answering earns extra credit.} Being wrong out loud earns it too. The only
+      way to miss out is to say nothing.
+    \item Two of you will be at the keyboard near the end. Everyone else earns credit by
+      shouting the fix.
+  \end{itemize}
+  \vspace{0.6em}
+  \hd{Why this, before loops?} Every loop has a condition, and a condition is exactly what
+  Week 2 was about. A loop that tests the wrong \code{boolean} runs forever, or never.
+  \keyline{Recalling something is what fixes it. Re-reading it does not.}
+\end{frame}
+
+% ======================================================================
+\section{Types and booleans}
+% ======================================================================
+
+\begin{frame}<1-2>{Fill the blanks: types and booleans}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+    \begin{itemize}[itemsep=0.45em]
+      \item Java is \blank{1} typed: every type is known at \blank{2}.
+      \item \code{10 + 3} has type \blank{3}.\\ \code{i > 10} has type \blank{4}.
+      \item \blank{5} assigns. \blank{6} compares.
+      \item \code{a \&\& b} is true when \blank{7} sides are.\\
+        \code{a || b} is true when \blank{8} side is.
+    \end{itemize}
+    \column{0.43\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{0.8em}}l@{}}
+        \textbf{a)} dynamically    & \textbf{g)} \code{=}\\
+        \textbf{b)} \code{boolean} & \textbf{h)} run time\\
+        \textbf{c)} statically     & \textbf{i)} both\\
+        \textbf{d)} \code{String}  & \textbf{j)} \code{==}\\
+        \textbf{e)} compile time   & \textbf{k)} either\\
+        \textbf{f)} \code{int}     & \textbf{l)} \code{!=}\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} c) \textbf{statically} \quad \textbf{(2)} e) \textbf{compile time}\\[0.25em]
+      \textbf{(3)} f) \code{int} \quad \textbf{(4)} b) \code{boolean} --- a comparison is an
+      expression, and it has a type\\[0.25em]
+      \textbf{(5)} g) \code{=} \quad \textbf{(6)} j) \code{==} --- two equals signs\\[0.25em]
+      \textbf{(7)} i) \textbf{both} \quad \textbf{(8)} k) \textbf{either} --- at least one.
+      Python spells them \code{and}, \code{or}, \code{not}
+    \end{contextbox}}
+  \end{columns}
+  \keyline{An if needs a boolean. Almost every rule on this slide follows from that.}
+\end{frame}
+
+\begin{frame}[fragile]{Which of these compile? \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+int i = 15;
+
+boolean a = 10 + 3;               // 1
+boolean b = i > 10 && i < 20;     // 2
+int     c = 10 + true;            // 3
+if (i = 15) { ... }               // 4
+boolean d = !(i == 100);          // 5
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{For each line}
+      \small Compiles, or not? If not --- what is the compiler complaining about?
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1} \no{} \code{int cannot be converted to boolean}. Not the number ---
+      the \textbf{type of the expression}\\[0.25em]
+      \textbf{2} \yes{} two \code{boolean}s joined by \code{\&\&} is a \code{boolean}\\[0.25em]
+      \textbf{3} \no{} \code{boolean} is its own type, not a number. Valid C++; not
+      Java\\[0.25em]
+      \textbf{4} \no{} \code{=} assigns, so this is an \code{int}, and an \code{if}
+      needs a \code{boolean}. The classic typo, caught\\[0.25em]
+      \textbf{5} \yes{} \code{d} is \code{true}
+    \end{contextbox}
+  \end{columns}
+  \keyline{Three errors, one idea: expressions have types.}
+\end{frame}
+
+\begin{frame}[fragile]{True or false? \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
+int i = 15;
+
+i > 10 && i < 20          // (a)
+i < 10 || i > 20          // (b)
+!(i == 15)                // (c)
+i != 15 || i >= 15        // (d)
+i > 15                    // (e)
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small And: how would you write (a) in Python?}
+    \column{0.46\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{(a)} \code{true} --- both sides are true\\[0.25em]
+      \textbf{(b)} \code{false} --- \emph{neither} side is\\[0.25em]
+      \textbf{(c)} \code{false} --- \code{i == 15} is true, and \code{!} flips it\\[0.25em]
+      \textbf{(d)} \code{true} --- the left side is false, but \code{||} only needs
+      one\\[0.25em]
+      \textbf{(e)} \textcolor{badred}{\textbf{\code{false}}} --- 15 is not greater than 15.
+      \code{i >= 15} would be true\\[0.35em]
+      Python: \code{i > 10 and i < 20}. The words are spelled out
+    \end{contextbox}
+  \end{columns}
+  \keyline{> and >= differ on exactly one value. That value is where the bugs live.}
+\end{frame}
+
+% ======================================================================
+\section{Choosing in Java}
+% ======================================================================
+
+\begin{frame}[fragile]{Two \texttt{if}s, again \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+if (mark < 50) {
+    System.out.println("Fail");
+    mark = mark + 10;   // bonus marks
+}
+if (mark >= 50) {
+    System.out.println("Pass");
+}
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{What prints when \code{mark} is\ldots}
+      \small
+      \textbf{A.} 45 \qquad \textbf{B.} 38 \qquad \textbf{C.} 50\\[0.2em]
+      \textbf{D.} One word fixes it. Which, and where?
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{A.} \code{Fail} \emph{and} \code{Pass}. The first block made it 55, and the
+      second \code{if} tests the \textbf{new} value\\[0.25em]
+      \textbf{B.} \code{Fail} only --- 48 is still below 50\\[0.25em]
+      \textbf{C.} \code{Pass} only\\[0.25em]
+      \textbf{D.} \code{else} --- in place of the second \code{if (mark >= 50)}. Now
+      \textbf{exactly one} runs, whatever the first block does to \code{mark}
+    \end{contextbox}
+  \end{columns}
+  \keyline{Two ifs give you no guarantee. An else guarantees exactly one.}
+\end{frame}
+
+\begin{frame}[fragile]{Order decides the winner}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
+int kg = 25;
+if (kg > 0) {
+    System.out.println("Small: $5");
+} else if (kg > 10) {
+    System.out.println("Medium: $12");
+} else if (kg > 20) {
+    System.out.println("Large: $20");
+} else {
+    System.out.println("Invalid weight");
+}
+\end{lstlisting}
+    \begin{discussionbox}{Three questions}
+      \small
+      \textbf{1.} What prints?\quad \textbf{2.} Which branches can \emph{never} run?\quad
+      \textbf{3.} Any warning?
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} \code{Small: \$5} --- for a 25\,kg parcel\\[0.3em]
+      \textbf{2.} \code{Medium} and \code{Large}. Anything above 10 is also above 0, and the
+      ladder stops at the \textbf{first} true test\\[0.3em]
+      \textbf{3.} No. It compiles, runs, and quietly undercharges\\[0.4em]
+      \goodlabel{Fix} test \code{kg > 20} first, then \code{kg > 10}, then \code{kg > 0}:
+      \textbf{specific before general}
+    \end{contextbox}
+  \end{columns}
+  \keyline{The compiler checks your types. It does not check your logic.}
+\end{frame}
+
+\begin{frame}[fragile]{Find the gaps \timing{Pairs}{90 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \badlabel{For some temperatures this prints nothing.}
+\begin{lstlisting}[style=bad, language=Java]
+if (temp < 20) {
+    System.out.println("Cold");
+}
+else if (temp > 20 && temp < 30) {
+    System.out.println("Warm");
+}
+else if (temp > 30) {
+    System.out.println("Hot");
+}
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small \code{temp} is an \code{int}. Which values print nothing --- and what is the
+    smallest fix?}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      Exactly \textbf{20} and exactly \textbf{30}. No test is true, and no final
+      \code{else} catches them. The fix needs no \code{temp >= 20}: the ladder only
+      gets there if \code{temp < 20} was false.
+    \end{contextbox}
+    \goodlabel{Fix}
+\begin{lstlisting}[style=good, language=Java]
+if (temp < 20) {
+    System.out.println("Cold");
+} else if (temp < 30) {
+    System.out.println("Warm");
+} else {
+    System.out.println("Hot");
+}
+\end{lstlisting}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{\texttt{switch} and fall-through}
+% ======================================================================
+
+\begin{frame}[fragile]{Predict the output \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+switch (day) {
+    case 6 : System.out.println("Saturday");
+    case 7 : System.out.println("Sunday");
+             break;
+    case 1 : System.out.println("Monday");
+    default : System.out.println("Weekday");
+}
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{What prints when \code{day} is\ldots}
+      \small \textbf{A.} 6 \qquad \textbf{B.} 7 \qquad \textbf{C.} 1 \qquad \textbf{D.} 3
+    \end{discussionbox}
+    \column{0.44\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{A.} \code{Saturday}, \code{Sunday} --- no \code{break} after case 6, so it
+      \textbf{falls through} into case 7, then stops at its \code{break}\\[0.25em]
+      \textbf{B.} \code{Sunday} --- it starts \emph{at the match}, not at the top\\[0.25em]
+      \textbf{C.} \code{Monday}, \code{Weekday} --- falls through into
+      \code{default}\\[0.25em]
+      \textbf{D.} \code{Weekday} --- nothing matches, so \code{default} runs
+    \end{contextbox}
+  \end{columns}
+  \keyline{A switch starts at the match and stops at a break --- not at the next case.}
+\end{frame}
+
+\begin{frame}[fragile]{Could this be a \texttt{switch}?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \begin{discussionbox}{Yes or no --- and why?}
+      \small
+      \begin{enumerate}[itemsep=0.35em, leftmargin=1.3em]
+        \item \code{x == 1 || x == 5 || x == 87}\\ where \code{x} is an \code{int}
+        \item \code{mark >= 50}
+        \item \code{c == 'y' || c == 'Y'}\\ where \code{c} is a \code{char}
+        \item \code{temp == 36.6}\\ where \code{temp} is a \code{double}
+        \item \code{choice} is 1, 2 or 3 --- anything else is an error
+      \end{enumerate}
+    \end{discussionbox}
+    \column{0.49\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} \yes{} equality on an \code{int}: stack \code{case 1 :}
+      \code{case 5 :} \code{case 87 :} over one body\\[0.25em]
+      \textbf{2.} \no{} not an equality check --- no ranges\\[0.25em]
+      \textbf{3.} \yes{} \code{char} is switchable: \code{case 'y' : case 'Y' :}\\[0.25em]
+      \textbf{4.} \no{} \code{double} is not switchable. Only \code{byte}, \code{short},
+      \code{char}, \code{int}, \code{String} (and enums, later)\\[0.25em]
+      \textbf{5.} \yes{} three cases; the error goes in \code{default}
+    \end{contextbox}
+  \end{columns}
+  \keyline{switch is a restricted tool: equality only, on a short list of types.}
+\end{frame}
+
+% ======================================================================
+\section{Choosing in Python}
+% ======================================================================
+
+\begin{frame}[fragile]{Spot the errors: Python \timing{Alone}{60 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+    \badlabel{Five things are wrong. Someone learnt Java first.}
+\begin{lstlisting}[style=bad, language=Py, numbers=left, numberstyle=\tiny\color{codegray}, numbersep=0.9em]
+x = int(input("Enter a number: "))
+if (x > 0 && x < 10) {
+    print("small")
+else if x == 10:
+print("ten")
+else
+    print("big")
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \pause
+    \goodlabel{Fixed}
+\begin{lstlisting}[style=good, language=Py]
+x = int(input("Enter a number: "))
+if x > 0 and x < 10:
+    print("small")
+elif x == 10:
+    print("ten")
+else:
+    print("big")
+\end{lstlisting}
+    \begin{itemize}[itemsep=0.15em]
+      \footnotesize
+      \item Line 2: \code{and}, not \code{\&\&}; a \textbf{colon}, not \code{\{}
+      \item Line 4: \code{elif}, not \code{else if}
+      \item Line 5: the body must be \textbf{indented} --- indentation \emph{is} the block
+      \item Line 6: \code{else} needs its colon
+    \end{itemize}
+  \end{columns}
+  \keyline{The brackets around the condition are allowed. They are just not Python style.}
+\end{frame}
+
+\begin{frame}[fragile]{\texttt{match}: predict, then compare}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=Py]
+match day:
+    case 6 | 7:
+        print("Weekend")
+    case 1:
+        print("Monday")
+    case _:
+        print("Weekday")
+\end{lstlisting}
+    \vspace{0.2em}
+    \begin{discussionbox}{Three questions}
+      \small
+      \textbf{1.} \code{day = 1}: what prints? (Java's \code{switch} printed two
+      lines for 1.)\\[0.15em]
+      \textbf{2.} \code{case 6 | 7} and \code{case \_}: what are they in Java?\\[0.15em]
+      \textbf{3.} Delete \code{case \_}. What prints for \code{day = 9}?
+    \end{discussionbox}
+    \column{0.49\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{1.} \code{Monday} only. \textbf{No fall-through}: only the matching block
+      runs, so there is no \code{break} to forget\\[0.25em]
+      \textbf{2.} Stacked labels \code{case 6 : case 7 :}, and \code{default :}\\[0.25em]
+      \textbf{3.} \textbf{Nothing}, and no error. Handle the case you are sure cannot
+      happen --- it costs two lines
+    \end{contextbox}
+    \vspace{0.2em}
+    {\scriptsize
+    \begin{tabular}{@{}lll@{}}
+      \toprule
+       & \textbf{Java \code{switch}} & \textbf{Python \code{match}}\\
+      \midrule
+      Fall-through & yes --- needs \code{break} & no --- never\\
+      Grouping & stacked \code{case} labels & \code{case a | b:}\\
+      Default & \code{default :} & \code{case \_:}\\
+      \bottomrule
+    \end{tabular}}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Live coding}
+% ======================================================================
+
+\begin{frame}[fragile]{Live coding: ticket prices \timing{One at the keyboard}{4 min}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.60\textwidth}
+\begin{lstlisting}[language=Java]
+import java.util.Scanner;
+
+public class Ticket {
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.print("Age: ");
+        int age = input.nextInt();
+
+        // TODO 1: "Invalid age" if < 0 or > 120
+        //         -- test this FIRST. Why?
+        // TODO 2: "Child: $8"   if under 18
+        // TODO 3: "Senior: $10" if 65 or over
+        // TODO 4: "Adult: $15"  otherwise
+    }
+}
+\end{lstlisting}
+    \column{0.37\textwidth}
+    \begin{discussionbox}{Run it with all of these}
+      \small
+      \renewcommand{\arraystretch}{1.05}
+      \begin{tabular}{@{}r@{\quad$\to$\quad}l@{}}
+        \code{17}  & \code{Child: \$8}\\
+        \code{18}  & \code{Adult: \$15}\\
+        \code{64}  & \code{Adult: \$15}\\
+        \code{65}  & \code{Senior: \$10}\\
+        \code{-1}  & \code{Invalid age}\\
+        \code{130} & \code{Invalid age}\\
+      \end{tabular}
+    \end{discussionbox}
+    \vspace{0.3em}
+    {\small Exactly \textbf{one} line, for every age. One volunteer types; the room
+    shouts fixes --- credit for both.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{One answer --- and three ways to get it wrong}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.5\textwidth}
+    \goodlabel{One way}
+\begin{lstlisting}[style=good, language=Java]
+if (age < 0 || age > 120) {
+    System.out.println("Invalid age");
+} else if (age < 18) {
+    System.out.println("Child: $8");
+} else if (age >= 65) {
+    System.out.println("Senior: $10");
+} else {
+    System.out.println("Adult: $15");
+}
+\end{lstlisting}
+    \pause
+    \begin{discussionbox}{Each of these compiles. What goes wrong?}
+      \small
+      \textbf{A.} \code{age < 0 \&\& age > 120}\\[0.1em]
+      \textbf{B.} \code{age > 65} instead of \code{age >= 65}\\[0.1em]
+      \textbf{C.} test \code{age < 18} before the invalid test
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \small\raggedright
+      \textbf{A.} Never true: no age is below 0 \emph{and} above 120. -1 prints
+      \code{Child}, 130 prints \code{Senior}\\[0.2em]
+      \textbf{B.} A 65-year-old pays \code{Adult}. Off by one\\[0.2em]
+      \textbf{C.} -1 is under 18 too: \code{Child: \$8}\\[0.3em]
+      \textbf{All three} compile and run. Only the boundary inputs catch them ---
+      which is why the six test inputs were 17/18, 64/65, and two that ``can never
+      happen''.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Live coding: which day? \timing{A different volunteer}{4 min}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+\begin{lstlisting}[language=Py]
+day = input("Day number (1-7): ")
+
+# TODO 1: day is text right now.
+#         Turn it into a whole number.
+
+# TODO 2: one match statement that prints
+#           Weekend       for 6 or 7
+#           Weekday       for 1 to 5
+#           Invalid day   for anything else
+#         careful -- Python has no break,
+#         and no stacked cases
+\end{lstlisting}
+    \column{0.40\textwidth}
+    \begin{discussionbox}{Run it with all of these}
+      \small
+      \renewcommand{\arraystretch}{1.05}
+      \begin{tabular}{@{}r@{\quad$\to$\quad}l@{}}
+        \code{6} & \code{Weekend}\\
+        \code{3} & \code{Weekday}\\
+        \code{9} & \code{Invalid day}\\
+      \end{tabular}
+    \end{discussionbox}
+    \vspace{0.3em}
+    {\small Before typing: what will look different from a Java \code{switch}?}
+    \vspace{0.2em}
+    \pause
+    \begin{contextbox}{Watch for}
+      \small\raggedright
+      Skip TODO 1 and \emph{every} input prints \code{Invalid day}, with no error:
+      the text \code{"6"} never equals the number \code{6}.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{One answer --- and the same thing in Java}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \goodlabel{Python}
+\begin{lstlisting}[style=good, language=Py]
+day = int(day)
+
+match day:
+    case 6 | 7:
+        print("Weekend")
+    case 1 | 2 | 3 | 4 | 5:
+        print("Weekday")
+    case _:
+        print("Invalid day")
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small Type \code{six}: a \code{ValueError} at \code{int()} --- Week 1, still
+    true.}
+    \column{0.49\textwidth}
+    \pause
+    \neutrallabel{Java: count the differences}
+\begin{lstlisting}[language=Java]
+switch (day) {
+    case 6 :
+    case 7 :
+        System.out.println("Weekend");
+        break;
+    case 1 : case 2 : case 3 :
+    case 4 : case 5 :
+        System.out.println("Weekday");
+        break;
+    default :
+        System.out.println("Invalid day");
+}
+\end{lstlisting}
+    {\small Stacked labels for \code{|}, \code{default} for \code{\_} --- and two
+    \code{break}s. Delete the first: 6 prints \code{Weekend} \emph{and}
+    \code{Weekday}.}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Bridge to today}
+% ======================================================================
+
+\begin{frame}[fragile]{Where Week 2 stops}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Everything you can write so far}
+\begin{lstlisting}[language=Java]
+int age = input.nextInt();
+
+if (age < 0 || age > 120) {
+    System.out.println("Invalid age");
+}
+else ...
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small The user types \code{-5}. The program says \code{Invalid age} --- and ends.}
+    \vspace{0.3em}
+    \begin{discussionbox}{The question for today}
+      \small How would you \emph{keep asking} until the age is valid?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    \goodlabel{After today}
+\begin{lstlisting}[style=good, language=Java]
+int age;
+do {
+    System.out.print("Age: ");
+    age = input.nextInt();
+} while (age < 0 || age > 120);
+\end{lstlisting}
+    \vspace{0.2em}
+    {\small The same \code{boolean} as the \code{if}, now deciding whether to go
+    \emph{round again}.}
+  \end{columns}
+  \keyline{State, then choosing. Today: repeating --- the third tool.}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Week 2}
+    \begin{itemize}[itemsep=0.2em]
+      \small
+      \item[\yes] say the \textbf{type of an expression}, and why \code{if (x = 5)} does
+        not compile
+      \item[\yes] evaluate \code{\&\&}, \code{||} and \code{!} --- and tell \code{>} from
+        \code{>=} on the boundary
+      \item[\yes] explain why \textbf{two \code{if}s are not an \code{if-else}}
+      \item[\yes] order an \code{else if} ladder: \textbf{specific before general}
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{\phantom{Week 2}}
+    \begin{itemize}[itemsep=0.2em]
+      \small
+      \item[\yes] predict a \code{switch} with a missing \code{break}, and use
+        \textbf{fall-through on purpose}
+      \item[\yes] say when a \code{switch} is \emph{not} available
+      \item[\yes] write the same choice with \code{if}/\code{elif}/\code{else} and
+        \code{match} --- and say why \code{match} needs no \code{break}
+      \item[\yes] ask of every branch: \textbf{what if it is exactly the boundary?}
+    \end{itemize}
+    \vspace{0.3em}
+    \begin{contextbox}{If any box is unticked}
+      \small Sections 01--04, quiz questions 1--8 and exercises 1--3:\\
+      \srclink{https://lexuanbach.github.io/41039/weeks/week-2-3.html}{lexuanbach.github.io/41039}
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\end{document}

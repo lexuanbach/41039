@@ -1,0 +1,2261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 5 · Classes, Objects and Enums · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="41039 Programming 1, Week 5 — the principles of object-oriented programming, classes and objects in Java and Python, static members, constructors and this, objects in memory, enums in Java and Python, and Java's newer switch: switch expressions, pattern matching and when clauses.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=920aa91b">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="../index.html">Syllabus</a>
+        <a href="week-1.html">Week 1</a>
+        <a href="week-2-3.html">Weeks 2–3</a>
+        <a href="week-4.html">Week 4</a>
+        <a href="week-5.html" aria-current="page">Week 5</a>
+        <a href="#concepts">Lecture</a>
+        <a href="#s11">Quiz</a>
+        <a href="#thisweek">This week</a>
+        <a href="../playground.html">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Week 5 · 41039 Programming 1</span>
+        <h1>Classes, Objects and Enums</h1>
+        <p class="lede">Week 4 split a program into methods. This week the methods get something to
+        belong to: <strong>objects</strong>, bundles of data together with the code allowed to touch it,
+        built from <strong>classes</strong>. You will write your own classes in Java and Python, see what
+        <code>new</code> and <code>this</code> really do, meet <strong>enums</strong> &mdash; types with a
+        fixed set of values &mdash; and see what Java&rsquo;s <code>switch</code> has grown into since
+        Week 2.</p>
+        <div class="meta-chips">
+          <span class="chip">5 Ed lessons</span>
+          <!-- Placeholder: no Week 5 deck exists yet. When slides/week-5-slides.pdf is compiled, add
+               <span class="chip"><a href="../slides/week-5-slides.pdf">Lecture slides (PDF)</a></span> -->
+          <span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span>
+        </div>
+      </div>
+      <div class="code-card" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" style="background:#E5645C"></span>
+          <span class="dot" style="background:#E9B44C"></span>
+          <span class="dot" style="background:#6FCF6F"></span>
+          <span class="file">BankAccount.java</span>
+        </div>
+        <pre><span class="kw">public class</span> BankAccount {
+
+    <span class="kw">private</span> String customerName;
+    <span class="kw">private double</span> balance;
+
+    <span class="kw">public</span> <span class="fn">BankAccount</span>(String name, <span class="kw">double</span> start) {
+        <span class="kw">this</span>.customerName = name;
+        <span class="kw">this</span>.balance = start;
+    }
+
+    <span class="kw">public void</span> <span class="fn">deposit</span>(<span class="kw">double</span> amount) {
+        <span class="kw">if</span> (amount &gt; 0) <span class="kw">this</span>.balance += amount;
+    }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="concepts">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Week 5 &middot; Interactive</span>
+        <h2>The lecture, then the practice</h2>
+        <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
+        has focus. Code blocks are live: edit them, run them, and break them on purpose. Several
+        of them are <em>meant</em> to fail &mdash; read what the compiler says before you fix them.</p>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-side">
+        <nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">
+          <button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01">
+            <span class="t-num">01</span>
+            <span class="t-text"><span class="t-title">The ideas behind OOP</span><span class="t-meta">Java &middot; 5 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02">
+            <span class="t-num">02</span>
+            <span class="t-text"><span class="t-title">Classes and objects in Java</span><span class="t-meta">Java &middot; 4 ideas &middot; 4 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03">
+            <span class="t-num">03</span>
+            <span class="t-text"><span class="t-title">static: the class itself</span><span class="t-meta">Java &middot; 3 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04">
+            <span class="t-num">04</span>
+            <span class="t-text"><span class="t-title">Constructors, this, and memory</span><span class="t-meta">Java &middot; 5 ideas &middot; 4 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05">
+            <span class="t-num">05</span>
+            <span class="t-text"><span class="t-title">Classes and objects in Python</span><span class="t-meta">Python &middot; 4 ideas &middot; 5 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06">
+            <span class="t-num">06</span>
+            <span class="t-text"><span class="t-title">Dunder methods and open doors</span><span class="t-meta">Python &middot; 3 ideas &middot; 6 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07">
+            <span class="t-num">07</span>
+            <span class="t-text"><span class="t-title">Enums</span><span class="t-meta">Java + Python &middot; 7 ideas &middot; 7 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08">
+            <span class="t-num">08</span>
+            <span class="t-text"><span class="t-title">Advanced switch</span><span class="t-meta">Java &middot; 5 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s09" aria-controls="panel-s09" aria-selected="false" tabindex="-1" data-target="s09">
+            <span class="t-num">09</span>
+            <span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">8 tasks &middot; auto-marked</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s10" aria-controls="panel-s10" aria-selected="false" tabindex="-1" data-target="s10">
+            <span class="t-num">10</span>
+            <span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">3 activities &middot; in class</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s11" aria-controls="panel-s11" aria-selected="false" tabindex="-1" data-target="s11">
+            <span class="t-num">11</span>
+            <span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">24 questions</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s12" aria-controls="panel-s12" aria-selected="false" tabindex="-1" data-target="s12">
+            <span class="t-num">12</span>
+            <span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">9 links</span></span>
+          </button>
+        </nav>
+
+        <nav class="lesson-nav misc" role="tablist" aria-label="Miscellaneous" aria-orientation="vertical">
+          <div class="nav-group-label">Miscellaneous</div>
+          <button class="lesson-tab" role="tab" id="tab-m01" aria-controls="panel-m01" aria-selected="false" tabindex="-1" data-target="m01">
+            <span class="t-num">M1</span>
+            <span class="t-text"><span class="t-title">Classes in Java and Python, side by side</span><span class="t-meta">reference &middot; 1 table</span></span>
+          </button>
+        </nav>
+        </div>
+
+        <div class="lesson-content">
+        <section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">01</span>The ideas behind OOP</h3>
+
+      <div class="concept">
+        <h3><span class="idx">1.1</span>A brief history</h3>
+        <p><strong>Object-oriented programming</strong> (OOP) is a broad family of ways to design
+        programs, centred on one idea: bind data to the code that is allowed to manipulate it, in a single
+        entity called an <strong>object</strong>.</p>
+        <p>Historically the idea grew, possibly ironically, out of the functional language Lisp in the late
+        1950s and early 1960s. <strong>Simula</strong> introduced many of the concepts still in C++ and Java
+        &mdash; classes, dynamic binding, inheritance &mdash; with syntax close to Algol 60, which is why
+        it reads fairly easily to a Java programmer. <strong>Smalltalk</strong> was designed as an OO language
+        from the ground up and is often called the first &ldquo;true&rdquo; one, but Simula has had the
+        greater effect so far &mdash; not least because Bjarne Stroustrup used it during his doctoral work
+        and then built its ideas into C++.</p>
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-stroustrup.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Bjarne Stroustrup">
+          </div>
+          <p>The class concept allowed me to map my application concepts into the language constructs in a direct way that made my code more readable than I had seen in any other language.</p>
+          <span class="attrib">Bjarne Stroustrup, <em>A History of C++: 1979&ndash;1991</em>, HOPL-II, 1993 &mdash; on writing his PhD simulator in Simula
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ABjarne_Stroustrup_%282013%29.jpg" target="_blank" rel="noopener">Victor Zavyalov / ICPCNews, 2013</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
+        </div>
+        <p>OOP became the dominant paradigm in the 1990s, with C++, the arrival of Java, and a software
+        industry that needed modular, reusable, maintainable programs at large scale. Like any tool it can
+        be used badly; used well, it is a very powerful way to build large software that can be extended
+        without being rewritten.</p>
+        <div class="note with-media">
+          <div class="note-text">
+            <span class="tag">Did you know?</span>
+            <p>Two Turing Awards in three years went to object orientation. The 2001 award went to
+            <strong>Ole-Johan Dahl and Kristen Nygaard</strong> &ldquo;for ideas fundamental to the emergence
+            of object-oriented programming, through their design of the programming languages Simula I and
+            Simula 67&rdquo;; the 2003 award to <strong>Alan Kay</strong> for &ldquo;leading the team that
+            developed Smalltalk&rdquo;, among other things. Both Stroustrup and James Gosling, Java&rsquo;s
+            creator, have named Simula as a major influence.
+            <a href="https://en.wikipedia.org/wiki/Turing_Award" target="_blank" rel="noopener">Source: Wikipedia &mdash;
+            Turing Award</a> and <a href="https://en.wikipedia.org/wiki/Simula" target="_blank" rel="noopener">Simula</a>.</p>
+          </div>
+          <figure class="note-media">
+            <img src="../media/fact-kristen-nygaard.png" width="320" height="320" loading="lazy" style="object-position: center 20%"
+                 alt="Kristen Nygaard, co-designer of Simula, photographed in 1997">
+            <figcaption><span class="credit">Kristen Nygaard. Photo: <a href="https://commons.wikimedia.org/wiki/File%3AKristen-Nygaard-SBLP-1997-head.png" target="_blank" rel="noopener">Jorge Stolfi, 1997</a> &middot; public domain</span></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.2</span>The four pillars</h3>
+        <p>&ldquo;Object-oriented&rdquo; covers anything whose fundamental unit is the object, but almost
+        every OO language rests on four principles:</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Pillar</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Encapsulation</strong></td><td>Data is enclosed in objects. That gives it context, and control over how it is accessed and changed.</td></tr>
+            <tr><td><strong>Abstraction</strong></td><td>Implementation details are hidden from the outside. Two implementations that do the same job are interchangeable; users only deal with the abstraction.</td></tr>
+            <tr><td><strong>Inheritance</strong></td><td>Objects can inherit properties from other objects, so subtypes exist, share what they have in common and differ only where they need to.</td></tr>
+            <tr><td><strong>Polymorphism</strong></td><td>One thing, many &ldquo;shapes&rdquo;: different implementations of the same method, objects with several types, type information abstracted away.</td></tr>
+          </tbody>
+        </table></div>
+        <p>They are not completely separate &mdash; encapsulation enables abstraction, inheritance supports
+        polymorphism, polymorphism supports abstraction. Under all four sits a vaguer but stronger idea,
+        shared with the <em>modular programming</em> that came before OOP: <strong>any unit of a program
+        should not have to care how the rest of the program works in order to work correctly</strong>.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.3</span>Encapsulation</h3>
+        <p>The simplest pillar to get hold of, though its payoff only really shows when you build something
+        large or fix someone else&rsquo;s code. This <code>BankAccount</code> (the one from lab 5)
+        encapsulates two pieces of data and offers methods for controlled access to them. The balance is
+        kept as a whole number of <strong>cents</strong>:</p>
+        <div class="p1-console" data-lang="java" data-title="BankAccount, storing cents"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount("Linh", 100.10f);
+        acc.deposit(0.10f);
+        for (int i = 0; i < 10; i++) acc.withdraw(0.10f);
+        acc.deposit(19.99f);
+        System.out.println(acc.accountName() + ": " + acc.currentBalance());
+
+        BankAccount big = new BankAccount("Bach", 1000000.00f);
+        for (int i = 0; i < 1000; i++) big.deposit(0.01f);
+        System.out.println(big.accountName() + ": " + big.currentBalance());
+    }
+}
+
+class BankAccount {
+
+    private String accountName;
+    private int balance;             // in cents
+
+    public BankAccount(String accountName, float initialBalance) {
+        this.accountName = accountName;
+        this.balance = Math.round(initialBalance * 100);
+    }
+
+    public float currentBalance() {
+        return (float) this.balance / 100;
+    }
+
+    public void withdraw(float amount) {
+        balance -= Math.round(amount * 100);
+    }
+
+    public void deposit(float amount) {
+        balance += Math.round(amount * 100);
+    }
+
+    public String accountName() {
+        return this.accountName;
+    }
+}
+</script></div>
+        <p class="sched-note">Two classes in one file: only one may be <code>public</code>, and the file is
+        named after it &mdash; the Week 1 rule. <code>BankAccount</code> has no access modifier, which is
+        what lets it share the file.</p>
+        <p><code>accountName</code> and <code>balance</code> are <code>private</code>, so code outside the
+        class cannot interfere with them except through the methods. Try it: this <code>main</code> reaches
+        for the balance directly.</p>
+        <div class="p1-console" data-lang="java" data-title="Reaching past the methods"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount("Linh", 100.10f);
+        acc.balance = 1000000;     // just give myself a million cents
+    }
+}
+
+class BankAccount {
+    private String accountName;
+    private int balance;
+
+    public BankAccount(String accountName, float initialBalance) {
+        this.accountName = accountName;
+        this.balance = Math.round(initialBalance * 100);
+    }
+}
+</script></div>
+        <div class="note warn">
+          <span class="tag">Safety, not security</span>
+          <p><code>private</code> is there to stop <em>accidental</em> interference, not a determined
+          attacker. It is about safety, and a step towards abstraction: code that uses
+          <code>BankAccount</code> never needs to know how the data is stored inside, only which public
+          methods it can call.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.4</span>Abstraction &mdash; and we tested the claim</h3>
+        <p>Abstraction says you should not have to care about the insides of something when they do not
+        matter to what it does. A clockwork watch, a digital watch and a phone all present the time; you
+        use them interchangeably whether there are gears inside or a connection to an atomic clock.</p>
+        <p>For code, that means the rest of a program should not have to change when an implementation does.
+        The Ed lesson offers a second <code>BankAccount</code> that stores a <code>float</code> instead of
+        cents, and says the lab program could &ldquo;probably (I haven&rsquo;t tested it)&rdquo; use it
+        unchanged. So test it. Same <code>main</code>, word for word; only the inside of
+        <code>BankAccount</code> differs:</p>
+        <div class="p1-console" data-lang="java" data-title="Same interface, float inside"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        BankAccount acc = new BankAccount("Linh", 100.10f);
+        acc.deposit(0.10f);
+        for (int i = 0; i < 10; i++) acc.withdraw(0.10f);
+        acc.deposit(19.99f);
+        System.out.println(acc.accountName() + ": " + acc.currentBalance());
+
+        BankAccount big = new BankAccount("Bach", 1000000.00f);
+        for (int i = 0; i < 1000; i++) big.deposit(0.01f);
+        System.out.println(big.accountName() + ": " + big.currentBalance());
+    }
+}
+
+class BankAccount {
+
+    private String accountName;
+    private float balance;           // the amount itself
+
+    public BankAccount(String accountName, float initialBalance) {
+        this.accountName = accountName;
+        this.balance = initialBalance;
+    }
+
+    public float currentBalance() {
+        return (float) Math.round(balance * 100) / 100;
+    }
+
+    public void withdraw(float amount) {
+        balance -= amount;
+    }
+
+    public void deposit(float amount) {
+        balance += amount;
+    }
+
+    public String accountName() {
+        return this.accountName;
+    }
+}
+</script></div>
+        <p>Linh&rsquo;s account agrees with the cents version, to the cent. Bach&rsquo;s does not: a thousand
+        one-cent deposits into a million-dollar account simply vanish. A Java <code>float</code> is an IEEE
+        754 32-bit number with only about seven significant digits, and near 1,000,000 the gap between one
+        <code>float</code> and the next is 0.0625 &mdash; so adding 0.01 rounds straight back to where it
+        started.</p>
+        <div class="note tip">
+          <span class="tag">What abstraction does and does not promise</span>
+          <p>The swap worked exactly as abstraction says it should: <code>main</code> compiled and ran
+          without a single change. What abstraction cannot do is make the new implementation <em>correct</em>.
+          That is why the Java lesson suggests storing money as an <code>int</code> number of cents &mdash; and
+          why &ldquo;I haven&rsquo;t tested it&rdquo; is a sentence worth never leaving in your own code.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.5</span>Inheritance and polymorphism, briefly</h3>
+        <p>Inheritance arrives properly in the next few lessons. In Java it comes in two forms, class-based
+        inheritance and interfaces, and it does two jobs at once: a child class reuses its parent&rsquo;s data
+        and methods instead of reimplementing them, and a child can be treated as the same kind of thing as
+        its parent.</p>
+        <p>Polymorphism comes in three basic forms:</p>
+        <ul>
+          <li><strong>Ad-hoc</strong> &mdash; the same method name applied to different parameter lists. You
+          have used it constantly: it is Week 4&rsquo;s <a href="week-4.html#s03">overloading</a>, and the
+          reason <code>System.out.println</code> has ten versions.</li>
+          <li><strong>Parametric</strong> &mdash; type information abstracted out, so code can store or move
+          objects without caring much what type they are. Coming very soon.</li>
+          <li><strong>Sub-type</strong> &mdash; an object can be treated as having the type of any of its
+          parent classes. Also coming very soon.</li>
+        </ul>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">02</span>Classes and objects in Java</h3>
+<figure class="photo banner">
+  <img src="../media/photo-cookie-cutter.jpg" loading="lazy" style="object-position: center 45%" alt="An apple-shaped metal cookie cutter beside rolled dough with several apple shapes cut into it">
+  <figcaption><strong>One cutter, many cookies.</strong> The cutter is the class: it defines the shape but is not itself something you can eat. Each cookie is an object &mdash; the same shape as every other, but its own separate piece of dough, which can be iced differently from its neighbours.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AApple_Shaped_Cookies_%2814888835148%29.jpg" target="_blank" rel="noopener">Personal Creations, 2014</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a></span></figcaption>
+</figure>
+
+      <div class="concept">
+        <h3><span class="idx">2.1</span>The dot operator, said out loud</h3>
+        <p>A piece of syntax you have been using quietly since Week 1: <code>.</code>, said &ldquo;dot&rdquo;.
+        It takes the thing on its left and retrieves the member inside it named on its right.</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Code</th><th>What the dots do</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">System.out.println("Hi")</td><td>look in the class <code>System</code> for the class-level variable <code>out</code> (a <code>PrintStream</code> &mdash; Week 4, 3.3); in that object find the method <code>println(String)</code>, and run it with <code>"Hi"</code></td></tr>
+            <tr><td class="mono">sc.nextInt()</td><td>go to the object that the variable <code>sc</code> refers to, find its method <code>nextInt()</code>, and run it with no arguments</td></tr>
+          </tbody>
+        </table></div>
+        <p>A dot gives you either a <strong>value</strong> (reading a variable) or a <strong>method</strong>
+        (which then runs straight away). Because an object variable holds a <em>reference</em> &mdash; Week 4,
+        section 6.3 &mdash; the dot is sometimes called the <strong>dereference operator</strong>: it follows
+        the reference to the object. Beyond that there is nothing special about it; it just gets things out
+        of other things.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.2</span>Classes are templates for objects</h3>
+        <p>An object is a construct that encapsulates data and offers methods to interact with it. An OO
+        language needs a way to define objects &mdash; what data they hold, what methods they have &mdash; and
+        Java is <strong>class-based</strong> (as opposed to <em>prototype-based</em>): a class is the template
+        for its objects.</p>
+        <div class="code-card"><pre>&lt;access modifier&gt; class &lt;Name&gt; {
+    &lt;data and methods&gt;
+}</pre></div>
+        <ul>
+          <li>Access modifiers are the ones you know from methods. Classes are almost always
+          <code>public</code> for now &mdash; and each <code>.java</code> file can have only one public class,
+          named the same as the file.</li>
+          <li>Class names follow the variable rules, but start with an <strong>upper-case</strong> letter:
+          <code>Scanner</code>, <code>String</code>, <code>BankAccount</code>.</li>
+        </ul>
+        <p>An empty class is perfectly legal, and occasionally handy as a placeholder to fill in later.
+        <code>Empty</code> here has no access modifier at all:</p>
+        <div class="p1-console" data-lang="java" data-title="The empty class"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        Empty empty = new Empty();
+        System.out.println("Made an Empty object. It does nothing, but it exists.");
+    }
+}
+
+class Empty {
+
+}
+</script></div>
+        <div class="note tip">
+          <span class="tag">One class, one purpose</span>
+          <p>A class should have a single clear purpose: it models <strong>one entity</strong> in the system.
+          What counts as one entity depends on the system, and gets clearer with practice &mdash; but it is
+          usually obvious what does <em>not</em> belong. A class modelling a bank account should not also
+          store the staffing details of a branch.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.3</span>A class with data and methods</h3>
+        <p>A bank account should know whose it is and how much is in it, and offer ways to read and change
+        that. Both the data and the methods are <strong>members</strong> of the class:</p>
+        <div class="p1-console" data-lang="java" data-title="BankAccount, with rules" data-stdin="50
+500"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Runner {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        BankAccount acc = new BankAccount("Linh", 100.0);
+
+        System.out.print("Deposit how much? ");
+        acc.deposit(sc.nextDouble());
+        System.out.print("Withdraw how much? ");
+        acc.withdraw(sc.nextDouble());
+
+        System.out.println(acc.getCustomerName() + " has " + acc.getBalance());
+    }
+}
+
+class BankAccount {
+
+    private String customerName;
+    private double balance;
+
+    public BankAccount(String customerName, double startingBalance) {
+        this.customerName = customerName;
+        this.balance = startingBalance;
+    }
+
+    public String getCustomerName() {
+        return this.customerName;
+    }
+
+    public void withdraw(double amount) {
+        if (this.balance >= amount && amount > 0) {
+            this.balance -= amount;
+        }
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            this.balance += amount;
+        }
+    }
+
+    public double getBalance() {
+        return this.balance;
+    }
+}
+</script></div>
+        <p>With 50 then 500, the withdrawal is quietly refused &mdash; the rule lives <em>inside</em> the
+        class, so no caller can forget it. The class has all the fundamental elements:</p>
+        <ul>
+          <li><strong>Data members</strong>, declared <code>private</code> so that only objects of this class
+          can reach them. What could go wrong if they were <code>public</code>?</li>
+          <li><strong>Method members</strong>, which allow controlled access to the data.</li>
+        </ul>
+        <p>And notice what is <em>missing</em>: none of these members is <code>static</code>, and there is no
+        <code>main</code>. <code>BankAccount</code> cannot do anything by itself &mdash; you create objects to
+        hold the data, and other classes build them into a program. An OO program works through the
+        interactions of classes and objects.</p>
+        <div class="note">
+          <span class="tag">A simplified example</span>
+          <p>A real version would want an <code>AccountHolder</code> class instead of a bare name, would store
+          cents rather than a <code>double</code> (section 1.4), and would say what happens when a withdrawal
+          fails &mdash; and it is probably not this class&rsquo;s job to validate amounts at all.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.4</span>Classes are types</h3>
+        <p>A class is not only a template: it is a <strong>type</strong>. A variable&rsquo;s type can be a
+        class, and so can the element type of an array, the return type of a method and the type of a
+        parameter. That buys real confidence:</p>
+        <div class="code-card"><pre>BankAccount[] accounts = new BankAccount[numberOfAccounts];</pre></div>
+        <p>Nothing that is not a <code>BankAccount</code> can get into <code>accounts</code> &mdash; the
+        compiler (or, failing that, the runtime) stops it. And because an object can be handed to a method,
+        you can pass in <em>functionality</em>, not just data: below, <code>countSameOwner</code> does not pull
+        the names out and compare them itself; it <strong>asks the account</strong>, because the account knows
+        what &ldquo;same owner&rdquo; means.</p>
+        <div class="p1-console" data-lang="java" data-title="Ask the object"><script type="text/plain" data-role="source">
+public class Runner {
+
+    public static int countSameOwner(BankAccount account, BankAccount[] all) {
+        int count = 0;
+        for (BankAccount candidate : all) {
+            if (account.hasSameOwner(candidate)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        BankAccount[] accounts = new BankAccount[3];
+        accounts[0] = new BankAccount("Linh", 100);
+        accounts[1] = new BankAccount("Bach", 250);
+        accounts[2] = new BankAccount("Linh", 40);
+
+        System.out.println("Linh owns " + countSameOwner(accounts[0], accounts) + " accounts.");
+    }
+}
+
+class BankAccount {
+    private String customerName;
+    private double balance;
+
+    public BankAccount(String customerName, double startingBalance) {
+        this.customerName = customerName;
+        this.balance = startingBalance;
+    }
+
+    public boolean hasSameOwner(BankAccount other) {
+        return this.customerName.equals(other.customerName);
+    }
+}
+</script></div>
+        <p class="sched-note">Two details: <code>hasSameOwner</code> may read <code>other.customerName</code>
+        even though it is private, because <code>private</code> means &ldquo;only code in this class&rdquo;,
+        not &ldquo;only this object&rdquo;. And Strings are compared with <code>.equals</code>, not
+        <code>==</code> &mdash; section 4.4 shows why. The Ed lesson&rsquo;s own version of this method returns
+        a <code>List</code>, which you have not met in Java yet; it is the same idea.</p>
+        <p>Now try to put something else in the array:</p>
+        <div class="p1-console" data-lang="java" data-title="The type system says no"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        BankAccount[] accounts = new BankAccount[2];
+        accounts[0] = new BankAccount();
+        accounts[1] = "Linh's account";
+    }
+}
+
+class BankAccount {
+}
+</script></div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">03</span>static: the class itself</h3>
+
+      <div class="concept">
+        <h3><span class="idx">3.1</span>One copy, shared by every object</h3>
+        <p>Objects quickly become the main actors in a Java program, but the class is still a thing in its
+        own right. Anything marked <code>static</code> lives on the <strong>class</strong>: it exists without
+        any objects, and it is <em>not</em> copied into objects at all. Reach a static variable through an
+        object and you get the one class-level copy that every object shares:</p>
+        <div class="p1-console" data-lang="java" data-title="Silly, but instructive"><script type="text/plain" data-role="source">
+public class Silly {
+    private static int value = 10;
+
+    public static void main(String[] args) {
+
+        Silly a = new Silly();
+        Silly b = new Silly();
+
+        System.out.println(a.value);      // access the value from a
+        b.value = 30;                     // change it from b
+        System.out.println(a.value);      // access it from a again
+        System.out.println(Silly.value);  // access it from the class itself
+    }
+}
+</script></div>
+        <p>The Java Language Specification: for a <code>static</code> field &ldquo;there exists exactly one
+        incarnation of the field, no matter how many instances (possibly zero) of the class may eventually
+        be created&rdquo;. If every object of a class should share one value, this is how; it is also how to
+        define program-wide constants, as <code>static final</code> &mdash; like the <code>pizzas</code> array in
+        Week 4&rsquo;s <a href="week-4.html#s03">pizza shop</a>.</p>
+        <div class="note warn">
+          <span class="tag">Legal, but misleading</span>
+          <p><code>a.value</code> <em>looks</em> as though it belongs to <code>a</code>. It does not. Write
+          <code>Silly.value</code> for static members, so the code says what is really happening.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.2</span>Static methods</h3>
+        <p>The class also provides all the <code>static</code> methods. <code>main</code> is the obvious one
+        &mdash; it runs first, before any object exists. But any method that needs nothing beyond its
+        parameters (and other static data) can be static and used without creating an object:</p>
+        <div class="p1-console" data-lang="java" data-title="A class that is useful without objects"><script type="text/plain" data-role="source">
+public class Circle {
+
+    private double x, y, radius;
+
+    public static final double PI = 3.141592;
+
+    public Circle(double x, double y, double radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+    }
+
+    public double area() {
+        return area(radius);
+    }
+
+    public static double area(double radius) {
+        return PI * radius * radius;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("The area of a circle of radius 5 is " + area(5) + ".");
+    }
+}
+</script></div>
+        <p><code>x</code>, <code>y</code> and <code>radius</code> need an object before they have any memory or
+        value, but the static constant <code>PI</code> and the static <code>area(double)</code> can be used with
+        no <code>Circle</code> in existence. The instance method <code>area()</code> simply hands its own radius
+        to the static one &mdash; two methods called <code>area</code>, told apart by their parameter lists:
+        Week 4&rsquo;s overloading again.</p>
+        <p class="sched-note">Java also provides a far better &pi; as the static constant <code>Math.PI</code>
+        &mdash; another class used without ever creating an object of it.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.3</span>What a static method cannot see</h3>
+        <p>A static method runs on the class, with no particular object &mdash; so there is no
+        <code>radius</code> for it to read. The compiler says so:</p>
+        <div class="p1-console" data-lang="java" data-title="Static code, instance data"><script type="text/plain" data-role="source">
+public class Circle {
+
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    public static double area() {
+        return 3.141592 * radius * radius;   // whose radius?
+    }
+
+    public static void main(String[] args) {
+        System.out.println(area());
+    }
+}
+</script></div>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Member</th><th>Lives on</th><th>Needs an object?</th><th>Can use</th></tr></thead>
+          <tbody>
+            <tr><td><code>static</code> variable</td><td>the class &mdash; one copy</td><td>no</td><td>&mdash;</td></tr>
+            <tr><td>instance variable</td><td>each object &mdash; one copy per object</td><td>yes</td><td>&mdash;</td></tr>
+            <tr><td><code>static</code> method</td><td>the class</td><td>no: <code>Circle.area(5)</code></td><td>its parameters and static members only</td></tr>
+            <tr><td>instance method</td><td>the class, run <em>for</em> one object</td><td>yes: <code>c.area()</code></td><td>everything, including that object&rsquo;s variables via <code>this</code></td></tr>
+          </tbody>
+        </table></div>
+        <p class="sched-note">This is the same rule as Week 4&rsquo;s <em>Cannot make a static reference to
+        the non-static method</em>, now for a variable.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">04</span>Constructors, <code>this</code>, and objects in memory</h3>
+
+      <div class="concept">
+        <h3><span class="idx">4.1</span>What an object is, in memory</h3>
+        <p>In Java <strong>all</strong> objects are created dynamically, so they always live on the
+        <strong>heap</strong> (Week 4, <a href="week-4.html#s06">section 6.3</a>). A new object gets space only
+        for the class&rsquo;s non-<code>static</code> variables, plus a little bookkeeping. The methods, the
+        <code>static</code> variables and everything else shared by all objects of the class are stored once,
+        with the class &mdash; the JVM specification calls that area the <strong>method area</strong>, which
+        stores &ldquo;per-class structures such as the run-time constant pool, field and method data, and the
+        code for methods and constructors&rdquo;.</p>
+        <p>An object variable is then just a <strong>reference</strong> to where that data sits on the heap
+        &mdash; which is exactly what made Week 4&rsquo;s arrays behave as they did when passed to methods.</p>
+        <figure class="fig fig-wide">
+          <svg viewBox="0 0 460 300" width="460" height="300" role="img" aria-label="Two Circle objects in memory. On the stack, main's frame holds c1 and c2, each pointing to its own Circle object on the heap: one with x 6, y 7, radius 3 and colour Colourless, the other with x 0, y 0, radius 0 and colour Colourless. Both objects refer to the single class Circle in the method area, which holds PI and the code of every method.">
+            <defs><marker id="obj-arrow-w5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+            <text class="fc-label" x="20" y="18">STACK</text>
+            <text class="fc-label" x="210" y="18">HEAP</text>
+            <rect class="fc-process" x="20" y="30" width="150" height="96" rx="6"/>
+            <text class="fc-text" x="32" y="52" font-weight="600">main(args)</text>
+            <text class="fc-text" x="32" y="80">c1 =</text>
+            <circle class="fc-arrowhead" cx="76" cy="76" r="4"/>
+            <text class="fc-text" x="32" y="108">c2 =</text>
+            <circle class="fc-arrowhead" cx="76" cy="104" r="4"/>
+            <line class="fc-line" x1="10" y1="136" x2="180" y2="136"/>
+            <polyline class="fc-line" points="80,76 190,76 190,62 206,62" marker-end="url(#obj-arrow-w5)"/>
+            <polyline class="fc-line" points="80,104 190,104 190,160 206,160" marker-end="url(#obj-arrow-w5)"/>
+            <rect class="fc-io" x="208" y="30" width="170" height="86" rx="6"/>
+            <text class="fc-label" x="220" y="48">a Circle object</text>
+            <text class="fc-text" x="220" y="68">x = 6.0</text><text class="fc-text" x="300" y="68">y = 7.0</text>
+            <text class="fc-text" x="220" y="86">radius = 3.0</text>
+            <text class="fc-text" x="220" y="104">colour = &#8226;</text>
+            <rect class="fc-io" x="208" y="128" width="170" height="86" rx="6"/>
+            <text class="fc-label" x="220" y="146">another Circle object</text>
+            <text class="fc-text" x="220" y="166">x = 0.0</text><text class="fc-text" x="300" y="166">y = 0.0</text>
+            <text class="fc-text" x="220" y="184">radius = 0.0</text>
+            <text class="fc-text" x="220" y="202">colour = &#8226;</text>
+            <polyline class="fc-line" points="378,70 420,70 420,234" stroke-dasharray="4 3" marker-end="url(#obj-arrow-w5)"/>
+            <line class="fc-line" x1="378" y1="170" x2="420" y2="170" stroke-dasharray="4 3"/>
+            <rect class="fc-terminal" x="20" y="238" width="420" height="54" rx="6"/>
+            <text class="fc-text" x="32" y="258" font-weight="600">class Circle</text>
+            <text class="fc-label" x="428" y="258" text-anchor="end">method area: one copy, shared</text>
+            <text class="fc-text" x="32" y="280">PI = 3.141529</text><text class="fc-text" x="170" y="280">code of Circle(), area(), getX(), &#8230;</text>
+          </svg>
+          <figcaption>After <code>new Circle(6, 7, 3)</code> and <code>new Circle()</code> in section 4.3: two
+          objects, each with its <em>own</em> four variables, and one class holding the shared
+          <code>PI</code> and the code of every method. (Each <code>colour</code> is itself a reference, to a
+          String elsewhere on the heap.)</figcaption>
+        </figure>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.2</span><code>new</code> and constructors</h3>
+        <p>You have written this line in every program that reads input:</p>
+        <div class="code-card"><pre>Scanner sc = new Scanner(System.in);</pre></div>
+        <p>Type, variable name, then an initialisation that creates an object on the spot.
+        <code>new</code> tells the JVM to allocate the right amount of heap memory for a <code>Scanner</code> and
+        run a special method called a <strong>constructor</strong> &mdash; here the one that takes
+        <code>System.in</code>. A constructor is where the object&rsquo;s data members are normally initialised
+        and anything else it needs is prepared. It runs <strong>once per object</strong>, and always
+        <strong>first</strong>.</p>
+        <div class="code-card"><pre>public class &lt;ClassName&gt; {
+
+    &lt;access modifier&gt; &lt;ClassName&gt;(&lt;parameter list&gt;) {
+        &lt;code&gt;
+    }
+
+}</pre></div>
+        <ul>
+          <li>An access modifier and a parameter list, like any method &mdash; but <strong>no return
+          type</strong>, not even <code>void</code>.</li>
+          <li>Its name is the class&rsquo;s name, so it is one of the few method names that starts with a
+          capital letter.</li>
+          <li>A class can have several constructors, following the normal overloading rules.</li>
+          <li>If you write <strong>no</strong> constructor, Java supplies a <strong>default
+          constructor</strong> that takes no parameters and does nothing beyond creating the object. That is why
+          <code>new Empty()</code> worked in section 2.2.</li>
+        </ul>
+        <p>The catch in that last rule: <em>no</em> constructor. Write one of your own and the free one is gone:</p>
+        <div class="p1-console" data-lang="java" data-title="Where did Point() go?"><script type="text/plain" data-role="source">
+public class Runner {
+    public static void main(String[] args) {
+        Point p = new Point();
+    }
+}
+
+class Point {
+    private int x, y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+</script></div>
+        <p class="sched-note">Ed&rsquo;s <code>javac</code> words it as <em>constructor Point in class Point cannot
+        be applied to given types</em>. The fix is to declare a <code>Point()</code> yourself, if a point with no
+        coordinates makes sense &mdash; which is where the next section&rsquo;s trick comes in.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.3</span><code>this</code></h3>
+        <p>An object can always get a reference to <em>itself</em> with the keyword <code>this</code>. It has two
+        handy uses:</p>
+        <ol>
+          <li><strong>Telling a field from a parameter with the same name</strong>: <code>this.x = x;</code> sets
+          the object&rsquo;s <code>x</code> to the value of the parameter <code>x</code>. Common practice in
+          constructors.</li>
+          <li><strong>Calling another constructor</strong>: <code>this(0, 0, 0);</code> runs a different
+          constructor of the same class. It must be the <strong>first line</strong> of the calling constructor.
+          This lets a short constructor fill in defaults without repeating code.</li>
+        </ol>
+        <div class="p1-console" data-lang="java" data-title="Circle, with a chain of constructors"><script type="text/plain" data-role="source">
+public class Circle {
+
+    public static final double PI = 3.141529;   // an approximation of Pi
+
+    private double x;
+    private double y;
+    private double radius;
+    private String colour;
+
+    // The default constructor
+    public Circle() {
+        this(0, 0, 0);                        // call a different constructor
+    }
+
+    // A different constructor with multiple parameters
+    public Circle(double x, double y, double radius) {
+        this(x, y, radius, "Colourless");     // call another different constructor
+    }
+
+    // The full constructor (not an official name) that actually does something
+    public Circle(double x, double y, double radius, String colour) {
+        this.x = x;          // set the object's x to the value of the parameter x
+        this.y = y;
+        this.radius = radius;
+        this.colour = colour;
+    }
+
+    public double area() {
+        return area(radius);
+    }
+
+    public static double area(double radius) {
+        return PI * radius * radius;
+    }
+
+    public double getX() { return this.x; }
+    public double getY() { return this.y; }
+    public double getRadius() { return this.radius; }
+    public String getColour() { return this.colour; }
+
+    public static void main(String[] args) {
+        Circle c = new Circle(6, 7, 3);
+        System.out.println("The area of the circle is " + c.area() + ".");
+        System.out.println("The colour of the circle is " + c.getColour() + ".");
+
+        Circle d = new Circle();
+        System.out.println("d is at (" + d.getX() + ", " + d.getY() + ") with radius " + d.getRadius() + ".");
+    }
+}
+</script></div>
+        <p class="sched-note">Follow <code>new Circle()</code>: it calls the three-parameter constructor with
+        zeros, which calls the four-parameter one with <code>"Colourless"</code>. Only one constructor actually
+        sets fields, so there is one place to get it right. (This <code>PI</code>, 3.141529, is the Ed
+        lesson&rsquo;s own &ldquo;approximation&rdquo; &mdash; it even has two digits swapped compared with
+        section 3.2&rsquo;s. One more reason to use <code>Math.PI</code>.)</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.4</span>Two variables, one object &mdash; again</h3>
+        <p>Because an object variable is a reference, everything Week 4 showed for arrays holds for objects
+        you design yourself. Copy the variable and you have two names for one account; pass it to a method and
+        the method can change the account through it:</p>
+        <div class="p1-console" data-lang="java" data-title="References to your own objects"><script type="text/plain" data-role="source">
+public class Runner {
+
+    public static void payInterest(BankAccount account) {
+        account.deposit(account.getBalance() * 0.1);
+    }
+
+    public static void main(String[] args) {
+        BankAccount a = new BankAccount("Linh", 100);
+        BankAccount b = a;                       // a copy of the reference
+        BankAccount c = new BankAccount("Linh", 100);
+
+        b.deposit(50);
+        payInterest(a);
+        System.out.println("a: " + a.getBalance() + "  b: " + b.getBalance() + "  c: " + c.getBalance());
+
+        System.out.println("a == b ? " + (a == b));
+        System.out.println("a == c ? " + (a == c));
+    }
+}
+
+class BankAccount {
+    private String customerName;
+    private double balance;
+
+    public BankAccount(String customerName, double startingBalance) {
+        this.customerName = customerName;
+        this.balance = startingBalance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) this.balance += amount;
+    }
+
+    public double getBalance() {
+        return this.balance;
+    }
+}
+</script></div>
+        <div class="note warn">
+          <span class="tag"><code>==</code> on objects compares references</span>
+          <p><code>a == c</code> is <code>false</code> although the two accounts started identical: they are two
+          different objects, and <code>==</code> asks &ldquo;are these the <em>same object</em>?&rdquo;. That is
+          also why two Strings are compared with <code>.equals</code> &mdash; a String is an object, and two
+          Strings with the same letters need not be the same object. Enums, in section 7, are the pleasant
+          exception.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.5</span>The pizza shop, with classes</h3>
+        <p>The Ed lesson finishes by rebuilding the pizza shop with classes, over four video parts and forkable
+        workspaces. Here is one way to do it: a <code>Pizza</code> that knows its name and price (in cents
+        &mdash; section 1.4), and an <code>Order</code> that holds pizzas and can total itself. Enter three
+        selections, then <code>0</code> to finish:</p>
+        <div class="p1-console" data-lang="java" data-title="PizzaShop with classes" data-stdin="2
+1
+2
+0"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class PizzaShop {
+
+    private static final Pizza[] MENU = {
+        new Pizza("Vegetarian", 1250),
+        new Pizza("Too Much Meat", 1590),
+        new Pizza("Scarparella", 1400)
+    };
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Hi and welcome to the social distance Pizza shop.");
+        for (int i = 0; i < MENU.length; i++) {
+            System.out.println((i + 1) + ". " + MENU[i].describe());
+        }
+
+        Order order = new Order(10);
+        System.out.println("Enter pizza numbers, then 0 to finish: ");
+        int choice = sc.nextInt();
+        while (choice != 0) {
+            if (choice >= 1 && choice <= MENU.length) {
+                order.add(MENU[choice - 1]);
+            }
+            choice = sc.nextInt();
+        }
+
+        System.out.println(order.count() + " pizzas, total " + Pizza.dollars(order.total()));
+    }
+}
+
+class Pizza {
+    private String name;
+    private int priceInCents;
+
+    public Pizza(String name, int priceInCents) {
+        this.name = name;
+        this.priceInCents = priceInCents;
+    }
+
+    public int getPrice() {
+        return this.priceInCents;
+    }
+
+    public String describe() {
+        return this.name + " (" + dollars(this.priceInCents) + ")";
+    }
+
+    public static String dollars(int cents) {
+        String c = "" + (cents % 100);
+        if (cents % 100 < 10) c = "0" + c;
+        return "$" + (cents / 100) + "." + c;
+    }
+}
+
+class Order {
+    private Pizza[] pizzas;
+    private int count;
+
+    public Order(int capacity) {
+        this.pizzas = new Pizza[capacity];
+        this.count = 0;
+    }
+
+    public void add(Pizza p) {
+        if (this.count < this.pizzas.length) {
+            this.pizzas[this.count] = p;
+            this.count++;
+        }
+    }
+
+    public int count() {
+        return this.count;
+    }
+
+    public int total() {
+        int sum = 0;
+        for (int i = 0; i < this.count; i++) {
+            sum += this.pizzas[i].getPrice();
+        }
+        return sum;
+    }
+}
+</script></div>
+        <p class="sched-note">Read <code>main</code> and notice who does what: the shop never adds prices up
+        itself &mdash; it asks the order &mdash; and never formats money itself &mdash; it asks the static
+        helper on <code>Pizza</code>. Two orders of the same pizza hold two references to one
+        <code>Pizza</code> object from the menu, which is fine: nobody changes it.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">05</span>Classes and objects in Python</h3>
+
+      <div class="concept">
+        <h3><span class="idx">5.1</span>Roughly Java&rsquo;s model</h3>
+        <p>Python&rsquo;s object model is roughly similar to Java&rsquo;s: a class is a template, objects are
+        instances of it, and the class itself is still a thing in the code, so data and functions can live on
+        the object or on the class.</p>
+        <p>And since every Python variable is already a reference (Week 4, <a href="week-4.html#s07">section
+        7.4</a>), two variables can hold references to the same object and change the same object &mdash;
+        exactly like the Java accounts in section 4.4.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.2</span>Classes and objects</h3>
+        <p>A class is defined much as you would guess: <code>class</code>, a name, a colon, and indentation.</p>
+        <div class="p1-console" data-lang="python" data-title="A class"><script type="text/plain" data-role="source">
+class Simple_Class:
+
+    value = "A variable in the class, like a data member"
+
+    def func():
+        print("This is a function in the class!")
+
+print("No longer in the class here, as the indenting changed back.")
+
+print(Simple_Class.value)
+Simple_Class.func()
+</script></div>
+        <p>Objects are created by calling the class like a function, with whatever arguments it needs &mdash;
+        <strong>no <code>new</code></strong>:</p>
+        <div class="p1-console" data-lang="python" data-title="An object"><script type="text/plain" data-role="source">
+class Foo:
+
+    def bar(self):
+        print("Printing from the object!")
+
+obj = Foo()
+obj.bar()
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.3</span>Attributes, and three kinds of method</h3>
+        <p>Python&rsquo;s general word for a class&rsquo;s data and functions is <strong>attributes</strong>,
+        reached with the dot, just as in Java. Once functions live on a class or an object they are called
+        <strong>methods</strong>, and there are three kinds:</p>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Kind</th><th>Declared</th><th>First parameter</th><th>Called as</th><th>Closest Java</th></tr></thead>
+          <tbody>
+            <tr><td><strong>static method</strong></td><td>a plain function in the class, optionally marked <code>@staticmethod</code></td><td>none</td><td class="mono">Foo.baz(x)</td><td>a static method</td></tr>
+            <tr><td><strong>class method</strong></td><td><code>@classmethod</code></td><td><code>cls</code> &mdash; the class, supplied automatically</td><td class="mono">Foo.bar()</td><td>a static method that uses static data</td></tr>
+            <tr><td><strong>instance method</strong></td><td>no marker</td><td><code>self</code> &mdash; the object, supplied automatically</td><td class="mono">obj.bar()</td><td>an ordinary method; <code>self</code> is like <code>this</code></td></tr>
+          </tbody>
+        </table></div>
+        <div class="p1-console" data-lang="python" data-title="All three kinds"><script type="text/plain" data-role="source">
+class Foo:
+
+    baz_text = "'Class attribute'"
+
+    def bar():
+        print("This is a static method.")
+
+    @staticmethod
+    def baz(thing):
+        print("This is a static method that takes a parameter: " + str(thing))
+
+    @classmethod
+    def show(cls):
+        print("This class has an attribute with value " + cls.baz_text + ".")
+
+    def hello(self):
+        print("This is an instance method, it must be called from an object.")
+
+# Static and class methods are called from the class:
+Foo.bar()
+Foo.baz("this is the parameter value as a string")
+Foo.show()          # note: no argument for cls
+
+# Instance methods need an object first:
+obj = Foo()
+obj.hello()         # note: no argument for self
+</script></div>
+        <p>Why must an instance method take <code>self</code>? Because calling a method <em>through an
+        object</em> passes that object in as the first argument. A function with no parameter has nowhere to
+        put it:</p>
+        <div class="p1-console" data-lang="python" data-title="Forgot self"><script type="text/plain" data-role="source">
+class Simple_Class:
+
+    def func():
+        print("This is a function in the class!")
+
+obj = Simple_Class()
+obj.func()
+</script></div>
+        <p class="sched-note">The word &ldquo;static&rdquo; is being used slightly differently from Java: the
+        intent is the same (no object needed), the details are not. What Java calls a static method is often
+        closer to Python&rsquo;s class method.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.4</span><code>__init__</code> and instance data</h3>
+        <p>Unlike Java, Python instance data is generally <strong>not declared in the class</strong>. It is
+        created in the <code>__init__</code> method &mdash; Python&rsquo;s equivalent of a constructor, and an
+        instance method &mdash; by assigning through <code>self</code>, and read back through <code>self</code>
+        too. Every class has an <code>__init__</code>, even if you do not write one.</p>
+        <div class="p1-console" data-lang="python" data-title="Data on the object"><script type="text/plain" data-role="source">
+class Foo:
+
+    def __init__(self):
+        self.secret = 3
+
+    def secret_mult(self, num):
+        return num * self.secret
+
+obj = Foo()
+print(obj.secret_mult(2))
+</script></div>
+        <p>With parameters, <code>__init__</code> does exactly the job of section 2.3&rsquo;s Java constructor.
+        The same bank account, in Python:</p>
+        <div class="code-card"><pre>class BankAccount:
+
+    def __init__(self, customer_name, starting_balance):
+        self.customer_name = customer_name
+        self.balance = starting_balance
+
+    def deposit(self, amount):
+        if amount &gt; 0:
+            self.balance += amount
+
+account = BankAccount("Linh", 100.0)   # no new, and no argument for self
+account.deposit(50)
+print(account.balance)                # 150.0</pre></div>
+        <p class="sched-note">Nothing stops <code>account.balance = 1000000</code> here: in Python, attributes
+        are public unless you say otherwise. Section 6.3 is what &ldquo;otherwise&rdquo; looks like.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">06</span>Dunder methods and open doors</h3>
+
+      <div class="concept">
+        <h3><span class="idx">6.1</span>&ldquo;Dunder&rdquo; methods</h3>
+        <p>Python has methods with special names, surrounded by <strong>d</strong>ouble <strong>under</strong>scores
+        &mdash; hence &ldquo;dunder&rdquo;, also called magic or special methods. They connect a class to the
+        built-in functions and operators of the language. <code>__init__</code> is one: it hooks into object
+        creation.</p>
+        <p>Another is <code>__str__</code>, the method <code>str()</code> calls &mdash; and <code>print</code>
+        too &mdash; much like Java&rsquo;s <code>toString()</code>. Each dunder has its own rules:
+        <code>__init__</code> may take extra parameters and returns nothing; <code>__str__</code> takes only
+        <code>self</code> and must return a string.</p>
+        <div class="p1-console" data-lang="python" data-title="__str__ and __add__"><script type="text/plain" data-role="source">
+class Money:
+
+    def __init__(self, cents):
+        self.cents = cents
+
+    def __str__(self):
+        return "$" + str(self.cents // 100) + "." + str(self.cents % 100).zfill(2)
+
+    def __add__(self, other):
+        return Money(self.cents + other.cents)
+
+pizza = Money(1250)
+drink = Money(305)
+
+print(pizza)                 # print calls __str__
+print(str(drink) + " extra")
+print(pizza + drink)         # + calls __add__
+</script></div>
+        <p class="sched-note">Dunders are the standard way to give your own type built-in behaviour:
+        <code>__add__</code> for <code>+</code>, <code>__lt__</code> for <code>&lt;</code>, and many more. (Java
+        has no equivalent for operators: <code>+</code> on your own class is simply a compile error.)</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.2</span>Horrible things you can do in Python</h3>
+        <p>At a simple level, a Python class&rsquo;s attributes behave like a <code>dict</code>, and access is
+        public by default &mdash; so other code can replace them, if it knows the names. Offered without further
+        comment, from the Ed lesson:</p>
+        <div class="p1-console" data-lang="python" data-title="Please do not do this"><script type="text/plain" data-role="source">
+def three():
+    return 3
+
+def four():
+    return 4
+
+class m:
+    val = 9
+
+    def f():
+        return 0
+
+    @classmethod
+    def f1(cls) -> int:
+        return cls.val
+
+print(m.f())
+m.f = three
+print(m.f())
+m.f = four
+print(m.f())
+
+print(m.f1())
+m.f1 = three
+print(m.f1())
+
+m.woo = "Woo"
+print(m.woo)
+</script></div>
+        <p class="sched-note">A method replaced from outside the class, and a brand-new attribute bolted on at
+        run time. The Java compiler would reject every one of these lines. Python lets you &mdash; which is
+        precisely why you should not.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.3</span>How to stop (some of) that</h3>
+        <p>Python gives you a way to discourage this. Unless you say otherwise an attribute is public. Start its
+        name with <strong>two underscores</strong> and code outside the class can no longer reach it by that
+        name:</p>
+        <div class="p1-console" data-lang="python" data-title="A double-underscore attribute"><script type="text/plain" data-role="source">
+class Foo:
+    __priv_data = "Secret"
+
+# This won't work:
+print(Foo.__priv_data)
+</script></div>
+        <p>It works for methods too &mdash; but <strong>not</strong> for dunder methods, even though they look
+        similar, because a dunder name also <em>ends</em> in two underscores:</p>
+        <div class="p1-console" data-lang="python" data-title="A private method, and a dunder that is not"><script type="text/plain" data-role="source">
+class Foo:
+
+    def __str__():
+        return "This is a Foo"
+
+    def __hidden():
+        return "You should not see this"
+
+print(Foo.__str__())       # fine: dunders are not hidden
+print(Foo.__hidden())      # AttributeError
+</script></div>
+        <p>Now look back at the error from the first example: Python itself suggests <code>_Foo__priv_data</code>. The two
+        underscores do not make the attribute private in Java&rsquo;s sense; inside the class, Python quietly
+        <strong>renames</strong> it (&ldquo;name mangling&rdquo;), and the new name works from anywhere:</p>
+        <div class="p1-console" data-lang="python" data-title="Not really private"><script type="text/plain" data-role="source">
+class Foo:
+    __priv_data = "Secret"
+
+print(Foo._Foo__priv_data)
+</script></div>
+        <div class="joke">
+          <p>&ldquo;Private&rdquo; instance variables that cannot be accessed except from inside an object don&rsquo;t exist in Python.</p>
+          <span class="attrib">The Python Tutorial, &sect;9.6 <em>Private Variables</em></span>
+        </div>
+        <p class="sched-note">So the double underscore is a strong &ldquo;keep out&rdquo; sign, not a lock &mdash;
+        which matches section 1.3&rsquo;s point that encapsulation is about safety, not security. A
+        <strong>single</strong> leading underscore (<code>_spam</code>) is the other convention, which the
+        tutorial describes as marking a non-public part of the code; the Ed lesson calls this
+        &ldquo;protected&rdquo; and leaves it for later. Neither stops you adding brand-new attributes at run
+        time.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">07</span>Enums</h3>
+<figure class="photo banner">
+  <img src="../media/photo-playing-cards.jpg" loading="lazy" style="object-position: center 50%" alt="Four playing cards fanned out: the five of clubs, diamonds, spades and hearts">
+  <figcaption><strong>Exactly four, and no others.</strong> Ask for the suit of a card and there are only four possible answers. A type whose values are a fixed, named, finite set is an <em>enumerated type</em> &mdash; the Ed lesson&rsquo;s own example.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3APlaying_Cards_-_number_fives.jpg" target="_blank" rel="noopener">Sudzie, 2021</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></span></figcaption>
+</figure>
+
+      <div class="concept">
+        <h3><span class="idx">7.1</span>Enumerated types</h3>
+        <p>An <strong>enumerated type</strong> is a data type with a fixed, finite set of named values. There
+        are many ways to implement one, but the goal is always the same: data of that type can only ever be one
+        of the known values. They appear in most languages descended from Algol &mdash; Pascal, C, C++, C#, Java
+        &mdash; and in Swift, Fortran, Lisp, TypeScript and every functional language with algebraic types.</p>
+        <p>The classic example: a standard deck has exactly four suits, so any question about a card&rsquo;s suit
+        must be answered with one of those four, and nothing else.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.2</span>Enums in Java</h3>
+        <div class="code-card"><pre>enum &lt;Name&gt; { [&lt;VALUE_NAME&gt; [, &lt;VALUE_NAME&gt;]*]; }</pre></div>
+        <p>The keyword <code>enum</code>, a name (capitalised like a class), then a comma-separated &mdash;
+        possibly empty &mdash; list of value names ending in a semicolon. By convention the values are in
+        capitals, like constants. An enum can be declared on its own or inside a class. A value is reached as
+        <code>Suit.HEARTS</code>, like a field, and every enum has a <code>values()</code> method that works with
+        the for-each loop:</p>
+        <div class="p1-console" data-lang="java" data-title="Four suits"><script type="text/plain" data-role="source">
+public class Cards {
+
+    enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
+
+    public static void main(String[] args) {
+        Suit trumps = Suit.SPADES;
+        System.out.println("Trumps are " + trumps);
+
+        for (Suit s : Suit.values()) {
+            System.out.println(s + (s == trumps ? " <- trumps" : ""));
+        }
+
+        System.out.println("There are " + Suit.values().length + " suits.");
+    }
+}
+</script></div>
+        <p class="sched-note">Enums arrived in Java 5. <code>? :</code> is the conditional operator from the Weeks
+        2+3 operator tables &mdash; a tiny <code>if</code>/<code>else</code> that produces a value.</p>
+        <div class="note">
+          <span class="tag">Did you know?</span>
+          <p>Before Java 5, the standard way to write an enumerated type was a row of <code>int</code>
+          constants: <code>public static final int SEASON_WINTER = 0;</code> and so on. The Java 5 release notes
+          list what was wrong with it, starting with &ldquo;Not typesafe&rdquo; &mdash; any <code>int</code> could
+          be passed where a season was expected, and two seasons could be added together. Enums fixed that by
+          making each set of values a type of its own.
+          <a href="https://docs.oracle.com/javase/1.5.0/docs/guide/language/enums.html" target="_blank" rel="noopener">Source:
+          Oracle &mdash; Enums (J2SE 5.0 guide)</a>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.3</span><code>==</code> is safe on enums</h3>
+        <p>Java enums are implemented as a special kind of <strong>class</strong>: think of a class with a fixed
+        number of pre-declared objects &mdash; the values. You cannot create more (or fewer) of them, so you never
+        need a constructor call, and there is exactly one object for each value. The Java Language Specification:
+        &ldquo;An enum class has no instances other than those defined by its enum constants.&rdquo;</p>
+        <p>So, unlike the accounts in section 4.4, comparing with <code>==</code> works as you would naively expect
+        &mdash; for enums, <code>.equals</code> gives the same answer as comparing references, because there are
+        never two copies of the same value.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.4</span>Switching on an enum</h3>
+        <p>You can <code>switch</code> on an enum value. Inside the switch, the cases are written without the
+        enum&rsquo;s name:</p>
+        <div class="p1-console" data-lang="java" data-title="A switch on Suit" data-stdin="2"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Cards {
+
+    enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Pick a suit, 0 to 3: ");
+        Suit s = Suit.values()[sc.nextInt()];
+
+        switch (s) {
+            case HEARTS:
+            case DIAMONDS:
+                System.out.println(s + " is a red suit.");
+                break;
+            case SPADES:
+            case CLUBS:
+                System.out.println(s + " is a black suit.");
+                break;
+        }
+    }
+}
+</script></div>
+        <p>This is the classic <code>switch</code> <em>statement</em> from Weeks 2+3, stacked cases and all. It
+        does not check that you covered every value. Put a <code>return</code> in every case of a method and the
+        compiler still wants one more, because as far as it is concerned the switch might match nothing:</p>
+        <div class="p1-console" data-lang="java" data-title="Four cases are not enough"><script type="text/plain" data-role="source">
+public class Cards {
+
+    enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
+
+    static String colour(Suit s) {
+        switch (s) {
+            case HEARTS:   return "red";
+            case DIAMONDS: return "red";
+            case SPADES:   return "black";
+            case CLUBS:    return "black";
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(colour(Suit.HEARTS));
+    }
+}
+</script></div>
+        <p class="sched-note">Week 4&rsquo;s <em>missing return statement</em> again. Add
+        <code>default: return "unknown";</code> to satisfy it. The newer switch <em>expressions</em> in
+        <a href="#s08">section 8</a> are checked for exhaustiveness &mdash; one of the Ed lesson&rsquo;s selling
+        points for them.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.5</span>Enums are classes, so they can have methods</h3>
+        <p>Because an enum is a class, you can add methods to it &mdash; and each value is an object, so
+        <code>this</code> inside the method is &ldquo;whichever value I am&rdquo;. Here each suit knows its own
+        symbol and colour:</p>
+        <div class="p1-console" data-lang="java" data-title="Suit, with methods"><script type="text/plain" data-role="source">
+public class Cards {
+
+    enum Suit {
+
+        HEARTS, SPADES, DIAMONDS, CLUBS;
+
+        public String symbol() {
+            switch (this) {              // what am I?
+                case HEARTS:   return "♥";
+                case SPADES:   return "♠";
+                case DIAMONDS: return "♦";
+                default:       return "♣";
+            }
+        }
+
+        public boolean isRed() {
+            return this == HEARTS || this == DIAMONDS;
+        }
+    }
+
+    public static void main(String[] args) {
+        for (Suit s : Suit.values()) {
+            System.out.println(s + " " + s.symbol() + (s.isRed() ? " red" : " black"));
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">An enum can also hold fields and constructors of its own, which the Ed lesson
+        mentions but does not go into. And one striking application: make a class an enum with a single value,
+        and the compiler itself guarantees there is exactly one instance &mdash; the <em>Singleton pattern</em>,
+        with no checking code at all.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.6</span>The deck of cards</h3>
+        <p>The Ed lesson&rsquo;s full example builds a short (Euchre) deck: two enums, a <code>record</code> for a
+        card, and switch <em>expressions</em> to print them. Records (Week 4) and switch expressions need Java 16
+        and 14, so it will not run in this page&rsquo;s Java 8 console &mdash; here is its second version, with the
+        printing moved into the enums, and its real output. Run it on Ed.</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Deck.java &mdash; Java 16+</span></div>
+          <pre>import java.util.Random;
+import java.util.Arrays;
+
+public class Deck {
+
+    // Two enums to express the possible cards. NOW WITH METHODS!!!
+    private enum Suit {
+
+        HEARTS, SPADES, DIAMONDS, CLUBS;
+
+        @Override
+        public String toString() {
+            return switch (this) { // What am I?
+                case HEARTS -&gt; "♥";
+                case SPADES -&gt; "♤";
+                case DIAMONDS -&gt; "♦";
+                case CLUBS -&gt; "♧";
+            };
+        }
+    }
+
+    private enum Value {
+
+        ACE, TEN, JACK, QUEEN, KING;
+
+        @Override
+        public String toString() {
+            return switch (this) {
+                case ACE -&gt; "A";
+                case TEN -&gt; "10";
+                case JACK -&gt; "J";
+                case QUEEN -&gt; "Q";
+                case KING -&gt; "K";
+            };
+        }
+    }
+
+    private record Card(Suit suit, Value value) {
+        @Override
+        public String toString() {
+            // Now this one is a lot simpler:
+            return this.value.toString() + this.suit.toString();
+        }
+    }
+
+    private final Random rand;
+    private final Card[] deck;
+
+    public Deck() {
+        this.rand = new Random(System.currentTimeMillis());
+        deck = new Card[Suit.values().length * Value.values().length];
+        int i = 0;
+        for (Suit s : Suit.values()) {
+            for (Value v : Value.values()) {
+                deck[i++] = new Card(s, v);
+            }
+        }
+    }
+
+    public void shuffle() {
+        for (int i = 0; i &lt; this.deck.length; i++) {
+            int randIndex = this.rand.nextInt(this.deck.length);
+            Card temp = this.deck[i];
+            this.deck[i] = this.deck[randIndex];
+            this.deck[randIndex] = temp;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(this.deck);
+    }
+
+    public static void main(String[] args) {
+        Deck deck = new Deck();
+        System.out.println("Check that all the cards are there: ");
+        System.out.println(deck);
+        deck.shuffle();
+        System.out.println("Now we can shuffle them: ");
+        System.out.println(deck);
+    }
+
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Output (the shuffled line is different every run)</span></div><pre>Check that all the cards are there:
+[A♥, 10♥, J♥, Q♥, K♥, A♤, 10♤, J♤, Q♤, K♤, A♦, 10♦, J♦, Q♦, K♦, A♧, 10♧, J♧, Q♧, K♧]
+Now we can shuffle them:
+[Q♧, J♦, A♤, Q♦, 10♧, K♥, A♥, 10♥, A♦, J♥, K♤, K♧, A♧, Q♥, J♧, K♦, 10♦, 10♤, Q♤, J♤]</pre></div>
+        <p><code>@Override</code> marks a method that replaces one the class would otherwise inherit &mdash; here,
+        the <code>toString()</code> every object has, which is what <code>+</code> and <code>println</code> call.
+        That is inheritance showing through, a lesson early. The same deck in Java 8 terms &mdash; a small
+        <code>Card</code> class instead of the record, classic switches instead of switch expressions &mdash; runs
+        right here:</p>
+        <div class="p1-console" data-lang="java" data-title="The deck, in Java 8"><script type="text/plain" data-role="source">
+import java.util.Random;
+import java.util.Arrays;
+
+public class Deck {
+
+    private enum Suit {
+        HEARTS, SPADES, DIAMONDS, CLUBS;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case HEARTS:   return "♥";
+                case SPADES:   return "♤";
+                case DIAMONDS: return "♦";
+                default:       return "♧";
+            }
+        }
+    }
+
+    private enum Value {
+        ACE, TEN, JACK, QUEEN, KING;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case ACE:   return "A";
+                case TEN:   return "10";
+                case JACK:  return "J";
+                case QUEEN: return "Q";
+                default:    return "K";
+            }
+        }
+    }
+
+    private static class Card {           // what the record did for us, by hand
+        private final Suit suit;
+        private final Value value;
+
+        Card(Suit suit, Value value) {
+            this.suit = suit;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return this.value.toString() + this.suit.toString();
+        }
+    }
+
+    private final Random rand;
+    private final Card[] deck;
+
+    public Deck() {
+        this.rand = new Random(System.currentTimeMillis());
+        deck = new Card[Suit.values().length * Value.values().length];
+        int i = 0;
+        for (Suit s : Suit.values()) {
+            for (Value v : Value.values()) {
+                deck[i++] = new Card(s, v);
+            }
+        }
+    }
+
+    public void shuffle() {
+        for (int i = 0; i < this.deck.length; i++) {
+            int randIndex = this.rand.nextInt(this.deck.length);
+            Card temp = this.deck[i];
+            this.deck[i] = this.deck[randIndex];
+            this.deck[randIndex] = temp;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(this.deck);
+    }
+
+    public static void main(String[] args) {
+        Deck deck = new Deck();
+        System.out.println("Check that all the cards are there: ");
+        System.out.println(deck);
+        deck.shuffle();
+        System.out.println("Now we can shuffle them: ");
+        System.out.println(deck);
+    }
+}
+</script></div>
+        <p class="sched-note">Run it twice: the shuffle changes, because the <code>Random</code> is seeded from the
+        clock. Compare the two versions line by line &mdash; everything the record and the arrows did is here
+        written out in full.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.7</span>Python enums (sort of)</h3>
+        <p>Python has enums too, somewhere between Java&rsquo;s approach and C&rsquo;s. You import
+        <code>Enum</code> from the <code>enum</code> module and create your enum as a class that
+        <em>extends</em> it &mdash; inheritance again, a little early &mdash; listing names with values. The
+        example the Ed lesson takes from the Python documentation, with two lines added:</p>
+        <div class="p1-console" data-lang="python" data-title="Colour"><script type="text/plain" data-role="source">
+from enum import Enum
+
+class Colour(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+c = Colour.RED
+print(c)
+print(c.name, c.value)
+print(c == Colour.RED, c == 1)
+</script></div>
+        <p>As they are classes, you can add methods &mdash; here the dunder <code>__str__</code> from section 6.1,
+        which <code>print</code> then uses:</p>
+        <div class="p1-console" data-lang="python" data-title="Colour, with __str__"><script type="text/plain" data-role="source">
+from enum import Enum
+
+class Colour(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+    def __str__(self):
+        return "This is the colour " + self.name.lower() + "."
+
+print(Colour.RED)
+print(Colour.BLUE)
+</script></div>
+        <p>The differences from Java are in the <strong>values</strong>. They can be anything &mdash; you would
+        normally see the integers 1 to <em>n</em>, but <code>RED = "red"</code>, <code>GREEN = 2</code>,
+        <code>BLUE = 3.0</code> is allowed. And nothing stops two names sharing a value, which quietly changes
+        what the names mean:</p>
+        <div class="p1-console" data-lang="python" data-title="We can really mess things up"><script type="text/plain" data-role="source">
+from enum import Enum
+
+class Colour(Enum):
+    RED = 1
+    GREEN = 1
+    BLUE = 1
+
+c = Colour.GREEN
+print(c)                      # asked for GREEN...
+print(c is Colour.RED)
+print(len(Colour), "member(s)")
+</script></div>
+        <p class="sched-note">A second name with an existing value becomes an <strong>alias</strong> for the first
+        member, so this &ldquo;three-colour&rdquo; enum has one member, <code>RED</code>, with two extra names.
+        The Ed lesson&rsquo;s conclusion stands: Python enums work well when used as intended, without the
+        guarantees of Java&rsquo;s. (The members <em>are</em> objects of the enum class, though:
+        <code>isinstance(Colour.RED, Colour)</code> is <code>True</code>, as the Python enum HOWTO shows.)</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.8</span>And in C, just numbers</h3>
+        <p>For comparison: an enum in C is a set of names for the numbers 0 to (number of values &minus; 1),
+        assigned automatically. That keeps the key property &mdash; a fixed set of distinct values &mdash; but not
+        Java&rsquo;s type safety: underneath, it is just an <code>int</code>.</p>
+        <div class="code-card"><pre>#include &lt;stdio.h&gt;
+
+enum Suit {HEARTS, SPADES, DIAMONDS, CLUBS};
+enum Suit s;   // Yeah, this syntax is weird... but you know... C...
+
+int main() {
+    s = SPADES;
+    printf("%d", s);   // Secretly it's just a number!
+    return 0;
+}</pre></div>
+        <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>1</pre></div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">08</span>Advanced <code>switch</code></h3>
+
+          <p>Weeks 2+3 taught the <code>switch</code> <em>statement</em>: equality only, fall-through, and
+          <code>break</code>. Java has since added three things: <strong>switch expressions</strong>,
+          <strong>pattern matching</strong>, and <strong><code>when</code> clauses</strong>. All three need a newer
+          Java than this page&rsquo;s console &mdash; section 8.2 shows exactly what happens if you try &mdash; so
+          most examples here are static, with their real output from a current JDK. Run them on Ed, which uses
+          Java 23.</p>
+
+      <div class="concept">
+        <h3><span class="idx">8.1</span>Stretching the old switch</h3>
+        <p>A plain switch only tests equality, but careful choice of the expression you switch on can stretch
+        it. This runs anywhere, including here:</p>
+        <div class="p1-console" data-lang="java" data-title="Switching on n % 2" data-stdin="7"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Runner {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+
+        switch (n % 2) {
+            case 0:
+                System.out.println("n is even.");
+                break;
+            default:
+                System.out.println("n is odd.");
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">But the only computation happens once, in the switch&rsquo;s own expression. The
+        newer features let each <em>case</em> do some of the work.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.2</span>Why the rest will not run on this page</h3>
+        <p>Here is a switch expression &mdash; section 8.3 explains it &mdash; in the page&rsquo;s console. Run it
+        and read the error. It is not a mistake in the program; it is the compiler telling you which version of
+        Java you need:</p>
+        <div class="p1-console" data-lang="java" data-title="Too new for this console" data-stdin="7"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Runner {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+
+        String s = "The number is " + switch (n % 2) { case 0 -> "even"; default -> "odd"; };
+        System.out.println(s);
+    }
+}
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.3</span>Switch expressions</h3>
+        <p>A switch <em>expression</em> is like a switch statement, except that each case produces a
+        <strong>value</strong>. The syntax changes to <code>case &hellip; -&gt; &lt;value&gt;;</code>: an arrow
+        where you would expect a colon, and <strong>no <code>break</code></strong>. The switch hands back the value
+        after the arrow and is finished &mdash; no fall-through, much as a <code>return</code> ends a method. And
+        because it produces a value, it can go anywhere an expression can (Weeks 2+3, section 1.2):</p>
+        <div class="code-card"><pre>String s = "The number is " + switch (n % 2) { case 0 -&gt; "even"; default -&gt; "odd"; };</pre></div>
+        <div class="code-card"><div class="bar"><span class="file">Output, with input 7</span></div><pre>Enter a number: The number is odd</pre></div>
+        <p>Switch expressions must also be <strong>exhaustive</strong>: every possible value has to be covered.
+        On an enum that means every constant &mdash; which is how the Ed deck&rsquo;s <code>toString</code> in
+        section 7.6 gets away with no <code>default</code>, and why deleting a case there is a compile error rather
+        than a silent bug. Compare section 7.4&rsquo;s old-style switch, which needed a <code>default</code> anyway.</p>
+        <div class="note">
+          <span class="tag">Did you know?</span>
+          <p>Switch expressions are older than they look. They were previewed in Java 12 and 13 and became a
+          standard feature in <strong>Java 14</strong>, in 2020 (JEP 361). The Ed lesson presents them alongside
+          newer features that they combine with.
+          <a href="https://openjdk.org/jeps/361" target="_blank" rel="noopener">Source: JEP 361 &mdash; Switch
+          Expressions</a>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.4</span>Pattern matching and <code>when</code></h3>
+        <p><strong>Pattern matching</strong> lets a case examine the <em>type and structure</em> of the value being
+        switched on, and give it a name. A <strong><code>when</code> clause</strong> then narrows a case to a
+        sub-case with any boolean condition:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Runner.java &mdash; Java 21+</span></div>
+          <pre>import java.util.Scanner;
+
+public class Runner {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a name: ");
+        Object n = sc.nextLine();
+
+        switch (n) {
+            case String s when s.length() == 0:
+                System.out.println("You didn't enter a name!");
+                break;
+            case String s:
+                System.out.println("The name you entered was " + s);
+                break;
+            default:
+                System.out.println("I don't know how I got here in this example.");
+        }
+    }
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Two runs: an empty line, then Linh</span></div><pre>Enter a name: You didn't enter a name!
+
+Enter a name: The name you entered was Linh</pre></div>
+        <p><code>case String s</code> matches if <code>n</code> is a String, and names it <code>s</code> for that
+        case; <code>when s.length() == 0</code> restricts the first case to the empty ones. Pattern matching works
+        on objects &mdash; it is why <code>n</code> is declared as <code>Object</code> here (the most general type;
+        more when inheritance arrives). Matching on primitive types is still a preview feature.</p>
+        <div class="note tip">
+          <span class="tag">You have seen this idea in Python</span>
+          <p>Python&rsquo;s <code>match</code> (Weeks 2+3, <a href="week-2-3.html#s04">section 4.3</a>) has the same
+          thing, called a <strong>guard</strong>: <code>if</code> after the pattern. And unlike the Java above, it
+          runs in this page&rsquo;s console:</p>
+        </div>
+        <div class="p1-console" data-lang="python" data-title="A guard in Python's match" data-stdin="Linh"><script type="text/plain" data-role="source">
+name = input("Enter a name: ")
+
+match name:
+    case s if len(s) == 0:
+        print("You didn't enter a name!")
+    case s:
+        print("The name you entered was " + s)
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.5</span>Record patterns, <code>_</code>, and a switch with no default</h3>
+        <p>A tantalising hint of how far this goes, using a <code>record</code> from Week 4:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Runner.java &mdash; Java 22+</span></div>
+          <pre>import java.util.Scanner;
+
+public class Runner {
+
+    record Student(String name, int mark) {}
+
+    private static String grade(Object o) {
+        return switch (o) {
+            case Student(String _, int mark) when mark &gt; 100 -&gt; "caution for cheating";
+            case Student(String _, int mark) when mark &gt;= 85 -&gt; "HD";
+            case Student(String _, int mark) when mark &gt;= 75 -&gt; "D";
+            case Student(String _, int mark) when mark &gt;= 65 -&gt; "C";
+            case Student(String _, int mark) when mark &gt;= 50 -&gt; "P";
+            case Student(String _, int _) -&gt; "Z";
+            case Object _ -&gt; "ERROR NOT A STUDENT";
+        };
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("What mark should Luke get? ");
+        int mark = sc.nextInt();
+        Student luke = new Student("Luke", mark);
+
+        System.out.println(luke.name() + " got a " + grade(luke) + ".");
+    }
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Three runs: 92, 105, 40</span></div><pre>What mark should Luke get? Luke got a HD.
+What mark should Luke get? Luke got a caution for cheating.
+What mark should Luke get? Luke got a Z.</pre></div>
+        <ul>
+          <li><strong>Deconstruction</strong>: <code>Student(String _, int mark)</code> matches a
+          <code>Student</code> and pulls its components out, straight into variables.</li>
+          <li><strong><code>_</code></strong> means &ldquo;I don&rsquo;t care about this one&rdquo; &mdash; the name
+          is never used, so it is never named.</li>
+          <li><strong>No <code>default</code></strong>: <code>case Object _</code> matches anything left, so the
+          compiler can see the switch is exhaustive.</li>
+          <li>The cases are tried <strong>in order</strong>, so 105 hits the first one before it could reach
+          <code>&gt;= 85</code> &mdash; the same ordering rule as an <code>else if</code> ladder in Weeks 2+3.</li>
+        </ul>
+        <div class="note">
+          <span class="tag">Which Java, exactly?</span>
+          <p>The Ed lesson says these became standard &ldquo;as of Java 23&rdquo;, the version Ed runs. To be
+          precise: pattern matching for <code>switch</code> and record patterns became standard in <strong>Java
+          21</strong> (JEP 441, JEP 440), and the <code>_</code> unnamed variable in <strong>Java 22</strong> (JEP
+          456). Everything here works on Ed&rsquo;s Java 23.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s09" aria-labelledby="tab-s09" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">09</span>Coding exercises</h3>
+
+          <p>Eight exercises, marked automatically against test cases &mdash; the same idea as the Ed labs,
+          but nothing here is recorded or submitted. Write your answer, press <strong>Run tests</strong>, and
+          read what comes back. A worked solution sits under each one, but try it first.</p>
+
+          <div class="note warn">
+            <span class="tag">Output must match exactly</span>
+            <p>A capital letter or a missing full stop fails the test, exactly as it would on Ed. Trailing
+            spaces and the final newline are the only things forgiven.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">The tests check output, not design</span>
+            <p>A program that prints the right thing without the class the brief asks for will pass &mdash; and
+            miss the point. Each brief names the class, its private data and its methods; write them, and use
+            them from <code>main</code>. The Java exercises put two classes in one file, like section 1.3: only the
+            one with <code>main</code> is <code>public</code>.</p>
+          </div>
+
+          <div id="exercises-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s10" aria-labelledby="tab-s10" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">10</span>Team activity</h3>
+
+          <p>Three or four people, fifteen minutes, then two minutes to report back. These run in the
+          lecture and in the lab &mdash; class activities like these count towards the participation side of
+          your mark.</p>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 1 &middot; 10 min &middot; no computers</div>
+            <h4>Nouns and verbs: design a library</h4>
+            <p>A small library lends books to members. A member can borrow at most three books; a book is either
+            on the shelf or on loan to exactly one member.</p>
+            <ol>
+              <li>Underline the nouns. Which ones deserve to be classes, and which are just data inside a class?</li>
+              <li>For each class, list its <code>private</code> data and its public methods. Which class should
+              enforce &ldquo;at most three books&rdquo;?</li>
+              <li>Is there a fixed, finite set of values anywhere in the description? Should it be an enum?</li>
+            </ol>
+            <p><strong>Report back:</strong> the rule your group moved from one class to another, and why.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 2 &middot; 10 min &middot; one laptop per group</div>
+            <h4>Break the encapsulation</h4>
+            <p>Take section 2.3&rsquo;s <code>BankAccount</code> and make <code>balance</code> <code>public</code>.</p>
+            <ol>
+              <li>Write the shortest <code>main</code> you can that leaves an account in a state the methods would
+              never allow.</li>
+              <li>Now make it <code>private</code> again. Could the same bug still happen? From where?</li>
+              <li>Do the same with section 5.4&rsquo;s Python class, then with a double-underscore name. What did
+              the underscores actually stop?</li>
+            </ol>
+            <p><strong>Report back:</strong> the worst realistic bug that <code>private</code> prevents.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 3 &middot; 10 min &middot; discussion</div>
+            <h4>int constants versus an enum</h4>
+            <p>Someone writes <code>static final int HEARTS = 0, SPADES = 1, DIAMONDS = 2, CLUBS = 3;</code> instead of
+            an enum.</p>
+            <ol>
+              <li>Write a line that compiles with the <code>int</code> version but is nonsense. Would it compile with
+              the enum?</li>
+              <li>What does <code>System.out.println</code> print for a suit in each version?</li>
+              <li>Section 7.7&rsquo;s Python enum with duplicate values: which of your problems does it share?</li>
+            </ol>
+            <p><strong>Report back:</strong> the one-sentence case for enums you would make to that someone.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Why we do this out loud</span>
+            <p>Designing classes is mostly an argument about where things belong. Having that argument with other
+            people, early and often, is the fastest way to get good at it.</p>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s11" aria-labelledby="tab-s11" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">11</span>Quiz</h3>
+
+          <p>Twenty-four questions. Answer them all, then grade. Every question explains its answer,
+          including why the wrong options are wrong. Nothing is recorded or submitted.</p>
+
+          <div class="note tip">
+            <span class="tag">Most of these are &ldquo;what does this print?&rdquo;</span>
+            <p>Work it out in your head first. If you are unsure, paste the snippet into the
+            <a href="../playground.html">Playground</a> afterwards &mdash; but guess before you run, or you
+            learn nothing about what you actually believed. (Snippets marked Java 14+ or 21+ will only run on Ed.)</p>
+          </div>
+
+          <div id="quiz-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s12" aria-labelledby="tab-s12" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">12</span>Further reading</h3>
+
+          <p>None of this is assessed. It is here for the moment a section leaves you curious, and for the
+          claims above that you should check rather than take our word for.</p>
+
+          <h3 class="read-group-title">The official word</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html">
+              <span class="kind">Tutorial &middot; sections 2&ndash;4</span>
+              <h4>Classes and objects</h4>
+              <p>Oracle's walkthrough of declaring classes, fields, constructors, <code>this</code>, and class versus instance members &mdash; the reference version of sections 2 to 4.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html">
+              <span class="kind">Tutorial &middot; section 7</span>
+              <h4>Enum types</h4>
+              <p>Enums with fields, constructors and methods &mdash; the part section 7.5 mentions but does not show, with a solar-system example.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/tutorial/classes.html">
+              <span class="kind">Tutorial &middot; sections 5, 6</span>
+              <h4>Python classes</h4>
+              <p>Chapter 9 of the Python tutorial: class and instance variables, methods, and &sect;9.6 on private variables and name mangling.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/howto/enum.html">
+              <span class="kind">HOWTO &middot; section 7.7</span>
+              <h4>Enum HOWTO</h4>
+              <p>The Python guide to enums: names and values, aliases for duplicate values, and why members are instances of their class.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">Behind the claims on this page</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://www.stroustrup.com/hopl2.pdf">
+              <span class="kind">Paper &middot; section 1.1</span>
+              <h4>A History of C++: 1979&ndash;1991</h4>
+              <p>Stroustrup on how writing a simulator in Simula for his PhD shaped C++. The first few pages are the story told in section 1.1.</p>
+              <span class="host">stroustrup.com</span>
+            </a>
+            <a class="read-card" href="https://openjdk.org/jeps/361">
+              <span class="kind">JEP &middot; section 8.3</span>
+              <h4>JEP 361 &mdash; Switch Expressions</h4>
+              <p>The design of switch expressions: the arrow form, <code>yield</code>, and exhaustiveness.</p>
+              <span class="host">openjdk.org</span>
+            </a>
+            <a class="read-card" href="https://openjdk.org/jeps/441">
+              <span class="kind">JEP &middot; section 8.4</span>
+              <h4>JEP 441 &mdash; Pattern Matching for switch</h4>
+              <p>Type patterns, guards with <code>when</code>, and the rules that make a pattern switch exhaustive.</p>
+              <span class="host">openjdk.org</span>
+            </a>
+            <a class="read-card" href="https://openjdk.org/jeps/440">
+              <span class="kind">JEP &middot; section 8.5</span>
+              <h4>JEP 440 &mdash; Record Patterns</h4>
+              <p>Deconstructing records inside a pattern, as in the grading example.</p>
+              <span class="host">openjdk.org</span>
+            </a>
+            <a class="read-card" href="https://peps.python.org/pep-0636/">
+              <span class="kind">PEP &middot; section 8.4</span>
+              <h4>PEP 636 &mdash; Pattern matching tutorial</h4>
+              <p>Python's <code>match</code>, including guards and matching on your own classes.</p>
+              <span class="host">peps.python.org</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-m01" aria-labelledby="tab-m01" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M1</span>Classes in Java and Python, side by side</h3>
+
+          <p>Reference, not reading.</p>
+
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>declare a class</td><td class="mono">public class Foo { … }</td><td class="mono">class Foo:</td></tr>
+              <tr><td>create an object</td><td class="mono">Foo f = new Foo();</td><td class="mono">f = Foo()</td></tr>
+              <tr><td>constructor</td><td>a method named after the class, no return type</td><td class="mono">def __init__(self, …):</td></tr>
+              <tr><td>none written</td><td>a default constructor is supplied &mdash; until you write one</td><td>an <code>__init__</code> always exists</td></tr>
+              <tr><td>instance data</td><td>declared as fields in the class</td><td>created in <code>__init__</code> through <code>self.</code></td></tr>
+              <tr><td>the current object</td><td><code>this</code> &mdash; implicit</td><td><code>self</code> &mdash; an explicit first parameter</td></tr>
+              <tr><td>class-level data</td><td><code>static</code> field, one copy</td><td>a variable in the class body</td></tr>
+              <tr><td>method with no object</td><td><code>static</code> method</td><td>static method, or <code>@classmethod</code> with <code>cls</code></td></tr>
+              <tr><td>hide a member</td><td><code>private</code>, checked by the compiler</td><td><code>__name</code>: renamed, not truly private</td></tr>
+              <tr><td>text form of an object</td><td><code>toString()</code></td><td><code>__str__</code></td></tr>
+              <tr><td>operators on your class</td><td>not available</td><td><code>__add__</code>, <code>__lt__</code>, &hellip;</td></tr>
+              <tr><td>add an attribute at run time</td><td>impossible</td><td>possible &mdash; and a bad idea</td></tr>
+              <tr><td>enum</td><td><code>enum Suit { HEARTS, … }</code> &mdash; a class with fixed instances</td><td><code>class Suit(Enum): HEARTS = 1</code> &mdash; values can be anything</td></tr>
+              <tr><td>same object?</td><td><code>a == b</code></td><td><code>a is b</code></td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="thisweek">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 &middot; This week</span>
+        <h2>What to actually do</h2>
+      </div>
+      <div class="concept">
+        <p>On Ed, work through the five Week 5 lessons. This order matches the sections above:</p>
+        <ol>
+          <li>Fundamentals of Object Oriented Programming &mdash; section 1</li>
+          <li>Classes and Objects in Java &mdash; sections 2 to 4, including the four pizza-shop parts and their
+          forkable workspaces</li>
+          <li>Classes and Objects in Python &mdash; sections 5 and 6</li>
+          <li>Enums in Java (and Python sort of) &mdash; section 7</li>
+          <li>Advanced switch Statements in Java &mdash; section 8</li>
+        </ol>
+        <div class="note">
+          <span class="tag">Run the new Java on Ed</span>
+          <p>Records, switch expressions, pattern matching and <code>when</code> need Java 14 to 22; this page&rsquo;s
+          console runs Java 8. Those examples are printed with their real output &mdash; paste them into Ed to run
+          them, and change them.</p>
+        </div>
+        <div class="note warn">
+          <span class="tag">Deadlines</span>
+          <p>Assessed lab exercises are due <strong>11:55pm the Monday of the following week</strong>, and you must
+          pass <em>all</em> test cases in an exercise to get its marks. <strong>Canvas &rarr; Assignments is
+          authoritative</strong> for what is due and when; where this page differs, Canvas and the announcements
+          win.</p>
+        </div>
+        <div class="note">
+          <span class="tag">If you only do one thing</span>
+          <p>Write one small class of your own from nothing &mdash; private data, a constructor, two methods &mdash;
+          and use it from a <code>main</code> in another class. Then do it again in Python. Everything from here on
+          is built out of that.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="block" id="sources" style="padding-top:1rem">
+      <div class="sec-head">
+        <span class="eyebrow">Sources</span>
+        <h2>Everything cited on this page</h2>
+        <p>The lecture content comes from the Week 5 lessons on Ed. The links below are for the claims this page
+        adds around them &mdash; checking a source yourself is a better habit than trusting any lecture slide,
+        including ours.</p>
+      </div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin-bottom:0.6rem">Specifications and documentation</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.4</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.2.3"><em>The Java Language Specification</em>, Java SE 25, &sect;4.2.3</a> &mdash; <code>float</code> is IEEE 754 binary32; the 0.0625 spacing at 1,000,000 is <code>Math.ulp(1000000f)</code>, run on JDK 26</td></tr>
+          <tr><td class="mono">3.1</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.3.1.1">JLS &sect;8.3.1.1</a> &mdash; &ldquo;exactly one incarnation of the field&rdquo;</td></tr>
+          <tr><td class="mono">4.1</td><td><a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html#jvms-2.5.4"><em>The Java Virtual Machine Specification</em>, Java SE 25, &sect;2.5.4</a> &mdash; the method area</td></tr>
+          <tr><td class="mono">4.2</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.8.9">JLS &sect;8.8.9</a> &mdash; &ldquo;If a class contains no constructor declarations, then a default constructor is implicitly declared&rdquo;</td></tr>
+          <tr><td class="mono">2&ndash;4</td><td><a href="https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html">Oracle &mdash; <em>Classes</em></a>, The Java Tutorials</td></tr>
+          <tr><td class="mono">6.3</td><td><a href="https://docs.python.org/3/tutorial/classes.html#private-variables">The Python Tutorial, &sect;9.6 <em>Private Variables</em></a> &mdash; name mangling and the <code>_spam</code> convention</td></tr>
+          <tr><td class="mono">7.2</td><td><a href="https://docs.oracle.com/javase/1.5.0/docs/guide/language/enums.html">Oracle &mdash; <em>Enums</em></a>, J2SE 5.0 language guide &mdash; the int enum pattern, &ldquo;Not typesafe&rdquo;</td></tr>
+          <tr><td class="mono">7.3</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.9">JLS &sect;8.9</a> &mdash; &ldquo;An enum class has no instances other than those defined by its enum constants.&rdquo;</td></tr>
+          <tr><td class="mono">7.7</td><td><a href="https://docs.python.org/3/howto/enum.html">Python &mdash; <em>Enum HOWTO</em></a> (aliases; <code>isinstance</code> of members); <a href="https://peps.python.org/pep-0435/">PEP 435</a> (enum added in Python 3.4)</td></tr>
+          <tr><td class="mono">8.3&ndash;8.5</td><td><a href="https://openjdk.org/jeps/361">JEP 361</a> (switch expressions, JDK 14); <a href="https://openjdk.org/jeps/441">JEP 441</a> (pattern matching for switch, JDK 21); <a href="https://openjdk.org/jeps/440">JEP 440</a> (record patterns, JDK 21); <a href="https://openjdk.org/jeps/456">JEP 456</a> (unnamed variables and patterns, JDK 22)</td></tr>
+          <tr><td class="mono">8.4</td><td><a href="https://peps.python.org/pep-0636/">PEP 636 &mdash; <em>Structural Pattern Matching: Tutorial</em></a> &mdash; guards</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Quotations</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">Every quotation on this page was checked against a
+      primary source &mdash; the original paper or documentation, not a quotation website.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.1</td><td>Bjarne Stroustrup, <a href="https://www.stroustrup.com/hopl2.pdf"><em>A History of C++: 1979&ndash;1991</em></a>, ACM HOPL-II, 1993, &sect;1 Introduction</td></tr>
+          <tr><td class="mono">1.1</td><td>2001 and 2003 Turing Award citations, as listed in <a href="https://en.wikipedia.org/wiki/Turing_Award">Wikipedia &mdash; Turing Award</a></td></tr>
+          <tr><td class="mono">6.3</td><td><a href="https://docs.python.org/3/tutorial/classes.html#private-variables">The Python Tutorial</a>, &sect;9.6 <em>Private Variables</em></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Photographs</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">From <a href="https://commons.wikimedia.org/">Wikimedia
+      Commons</a>, reused under the licence each one names. Author and licence come from the Commons API
+      rather than from anyone&rsquo;s memory &mdash; see <span class="mono">media/fetch-photo.py</span>.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Image</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">cookie-cutter</td><td><a href="https://commons.wikimedia.org/wiki/File%3AApple_Shaped_Cookies_%2814888835148%29.jpg">Apple Shaped Cookies (14888835148)</a> &mdash; Personal Creations, 2014 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+          <tr><td class="mono">playing-cards</td><td><a href="https://commons.wikimedia.org/wiki/File%3APlaying_Cards_-_number_fives.jpg">Playing Cards - number fives</a> &mdash; Sudzie, 2021 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">kristen-nygaard</td><td><a href="https://commons.wikimedia.org/wiki/File%3AKristen-Nygaard-SBLP-1997-head.png">Kristen-Nygaard-SBLP-1997-head</a> &mdash; Jorge Stolfi, 1997 &middot; public domain</td></tr>
+          <tr><td class="mono">stroustrup</td><td><a href="https://commons.wikimedia.org/wiki/File%3ABjarne_Stroustrup_%282013%29.jpg">Bjarne Stroustrup (2013)</a> &mdash; ICPCNews (photographer Victor Zavyalov), 2013 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Articles</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.1</td><td><a href="https://en.wikipedia.org/wiki/Simula">Simula</a> &mdash; Stroustrup and Gosling acknowledging Simula as a major influence</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <nav class="pagenav" aria-label="Page navigation">
+      <a href="week-4.html"><span class="dir">Previous</span>Week 4 &mdash; Methods, Functions and Records</a>
+      <!-- Placeholder: add a "Slides" link to ../slides/week-5-slides.pdf once the deck exists. -->
+      <a href="https://edstem.org/au/courses/41298/lessons"><span class="dir">Next</span>Week 5 lessons on Ed</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> &middot; Programming 1</span>
+    <p>Week 5 &middot; Classes, Objects and Enums &middot; Content from the Week 5 lessons on Ed</p>
+  </div>
+</footer>
+<script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=19d11bd5"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/w5-data.js?v=1c18978f"></script>
+<script src="../assets/w5-exercises.js?v=2963e814"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=e68aea7e"></script>
+</body>
+</html>

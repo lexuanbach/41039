@@ -753,6 +753,7 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
   background: var(--surface); border: 1px solid var(--line);
   border-radius: 12px; box-shadow: var(--shadow);
   margin: 1.2rem 0 1.6rem; overflow: hidden;
+  container-type: inline-size;
 }
 .console-head {
   display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem;
@@ -776,6 +777,16 @@ footer.site p { font-size: 0.82rem; color: var(--ink-soft); }
 }
 .lang-tabs button.java[aria-pressed="true"] { color: var(--java); }
 .lang-tabs button.python[aria-pressed="true"] { color: var(--python); }
+
+/* ── Code on the left, input/output on the right ──
+   A container query (not a viewport media query) because the same console can sit
+   full-width on the playground or squeezed into a narrow lecture-card column. */
+.console-cols { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: stretch; }
+.console-col-io { border-left: 1px solid var(--line); display: flex; flex-direction: column; }
+@container (max-width: 760px) {
+  .console-cols { grid-template-columns: 1fr; }
+  .console-col-io { border-left: 0; }
+}
 
 .console-editor, .console-stdin {
   display: block; width: 100%; resize: vertical;
@@ -981,8 +992,12 @@ body.code-fullscreen-open { overflow: hidden; }
 .code-fullscreen > * { flex: 0 0 auto; }
 .code-fullscreen > .editor-wrap { flex: 1 1 auto; min-height: 12rem; display: flex; flex-direction: column; }
 .code-fullscreen .editor-shell { flex: 1 1 auto; height: auto; min-height: 6rem; max-height: none; resize: none; }
-.console.code-fullscreen .console-out { height: 28vh; }
-.console.code-fullscreen .console-stdin { height: 4.5rem; }
+.code-fullscreen > .console-cols { flex: 1 1 auto; min-height: 0; }
+.code-fullscreen .console-col-code { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.code-fullscreen .console-col-code .editor-wrap { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.code-fullscreen .console-col-code .editor-shell { flex: 1 1 auto; height: auto; min-height: 0; max-height: none; resize: none; }
+.console.code-fullscreen .console-col-io .console-out { flex: 1 1 auto; height: auto; max-height: none; resize: none; }
+.console.code-fullscreen .console-col-io .console-stdin { height: 4.5rem; flex: 0 0 auto; }
 @media (max-width: 640px) { .code-fullscreen { inset: 0; border-radius: 0; } }
 
 /* ── Input mode switch and the interactive terminal ── */

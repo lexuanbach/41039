@@ -1,0 +1,91 @@
+Subject: Before the next lecture — revise conditionals, and read ahead on loops
+
+
+Hi everyone,
+
+Same shape as last week: the next lecture opens with a short revision, this
+time of Lecture 2, and taking part earns extra credit. Then we move on to loops.
+
+
+WE START WITH REVISION — AND THERE IS EXTRA CREDIT IN IT AGAIN
+
+The revision covers conditional statements only: how a program chooses. As
+last week, it is not a test and it is not designed to catch anyone out. I ask,
+you answer, and the credit goes to the people who join in, right answer or
+wrong. Near the end, two volunteers will write a short program at the keyboard
+(one in Java, one in Python) while the rest of the room calls out fixes. Both
+the volunteers and the people calling out earn credit.
+
+Please revise these before you come. The most useful half hour you can spend
+is on the Weeks 2 & 3 page of the subject website, sections 01 to 04:
+
+    https://lexuanbach.github.io/41039/weeks/week-2-3.html
+
+    01  Types, booleans and expressions
+    02  Choosing in Java: if, else, else if
+    03  switch and fall-through
+    04  Choosing in Python: if / elif / else, and match
+
+On Ed, these are the first two lessons:
+
+     1. Booleans and Conditional Statements — how to choose in Java
+     2. Conditional Statements in Python
+
+Then check yourself in two ways:
+
+  * Do quiz questions 1 to 8 at the bottom of that page. Those are the ones on
+    conditionals; the rest are about next week's material.
+
+  * Try exercises 1 to 3 on the same page: grade bands with else if, leap
+    year in Python, and the pizza shop with a switch.
+
+By the lecture, you should be able to do these without looking anything up:
+
+  - say what type an expression like  i > 10 && i < 20  has, and why
+    if (x = 5)  does not compile in Java
+  - explain why two separate if statements are not the same as an if-else
+  - put the conditions of an else-if ladder in the right order
+  - predict what a switch prints when a break is missing
+  - write the same choice in Python with if / elif / else and with match,
+    and say why match needs no break
+
+If you are thinking of volunteering at the keyboard, practise writing an
+else-if ladder and a match statement from a blank file, without copying from
+the slides. That is all the live coding needs.
+
+One habit to bring with you: for every condition you write, ask what happens
+when the value is exactly on the boundary. What if the mark is exactly 50?
+What if the age is exactly 65? Most conditional bugs sit on that one value.
+
+
+PRE-READING FOR THE LECTURE: LOOPS
+
+After the revision we move on to repetition: how to make a program do
+something many times without writing it out many times. The Ed lessons are:
+
+     3. Loops in Java 1 — while, for, for-each, do-while
+     4. Loops in Java 2 — nesting, break, continue
+     5. Loops in Python 2 — break, continue, loop-else
+
+The useful minimum is lesson 3. On the website, sections 05 to 07 of the same
+page cover the same material with runnable code.
+
+One question to keep in mind while reading: for every loop, what makes it stop?
+
+
+LABS AND THE FORUM
+
+Please keep submitting your lab work on time. Canvas has the authoritative
+due dates. Go through the Ed materials, and ask on the Ed forum whenever
+something is unclear. Ask publicly unless it is genuinely personal: your
+question will probably help someone else too. The forum is not monitored at
+the weekend, so ask during the week.
+
+Thank you for the participation last week. Let's keep it going.
+
+See you at the lecture, with conditionals fresh in your mind.
+
+
+Dr. Xuan-Bach Le
+Faculty of Computer Science and Engineering, HCMUT
+le.xuan.bach@hcmut.edu.vn

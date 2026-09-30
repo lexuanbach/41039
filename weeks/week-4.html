@@ -1,0 +1,1985 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 4 · Methods, Functions and Records · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="41039 Programming 1, Week 4 — methods in Java, functions in Python, what a call does in memory (the stack and the heap), passing arguments by value and by reference in both languages, and Java record classes.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=920aa91b">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="../index.html">Syllabus</a>
+        <a href="week-1.html">Week 1</a>
+        <a href="week-2-3.html">Weeks 2–3</a>
+        <a href="week-4.html" aria-current="page">Week 4</a>
+        <a href="week-5.html">Week 5</a>
+        <a href="#concepts">Lecture</a>
+        <a href="#s11">Quiz</a>
+        <a href="#thisweek">This week</a>
+        <a href="../playground.html">Playground</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Week 4 · 41039 Programming 1</span>
+        <h1>Methods, Functions and Records</h1>
+        <p class="lede">Until now every program has been one long <code>main</code>. This week you
+        break a program into <strong>named pieces</strong> &mdash; methods in Java, functions in Python
+        &mdash; and learn exactly how values travel into and out of them. Along the way: what a call
+        does in memory, why a method can change your array but not your <code>int</code>, and Java&rsquo;s
+        <strong>records</strong>, the tidy answer to the bundling problem that ended Weeks 2 and 3.</p>
+        <div class="meta-chips">
+          <span class="chip"><strong>Code comprehension 1</strong> · this week</span>
+          <span class="chip">3 Ed lessons</span>
+          <!-- Placeholder: no Week 4 deck exists yet. When slides/week-4-slides.pdf is compiled, add
+               <span class="chip"><a href="../slides/week-4-slides.pdf">Lecture slides (PDF)</a></span> -->
+          <span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span>
+        </div>
+      </div>
+      <div class="code-card" aria-hidden="true">
+        <div class="bar">
+          <span class="dot" style="background:#E5645C"></span>
+          <span class="dot" style="background:#E9B44C"></span>
+          <span class="dot" style="background:#6FCF6F"></span>
+          <span class="file">Factors.java</span>
+        </div>
+        <pre><span class="kw">public static boolean</span> <span class="fn">isFactor</span>(<span class="kw">int</span> f, <span class="kw">int</span> n) {
+    <span class="kw">return</span> n % f == 0;
+}
+
+<span class="kw">public static void</span> <span class="fn">printFactors</span>(<span class="kw">int</span> n) {
+    <span class="kw">for</span> (<span class="kw">int</span> i = 2; i &lt;= n; ++i) {
+        <span class="kw">if</span> (<span class="fn">isFactor</span>(i, n)) {
+            System.out.println(i + <span class="str">" is a factor"</span>);
+        }
+    }
+}</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="concepts">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Week 4 &middot; Interactive</span>
+        <h2>The lecture, then the practice</h2>
+        <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
+        has focus. Code blocks are live: edit them, run them, and break them on purpose. Several
+        of them are <em>meant</em> to fail &mdash; read what the compiler says before you fix them.</p>
+      </div>
+
+      <div class="lesson">
+        <div class="lesson-side">
+        <nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">
+          <button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01">
+            <span class="t-num">01</span>
+            <span class="t-text"><span class="t-title">What methods are for</span><span class="t-meta">Java &middot; 4 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02">
+            <span class="t-num">02</span>
+            <span class="t-text"><span class="t-title">Return values and return</span><span class="t-meta">Java &middot; 4 ideas &middot; 5 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03">
+            <span class="t-num">03</span>
+            <span class="t-text"><span class="t-title">Parameters, overloading, varargs</span><span class="t-meta">Java &middot; 6 ideas &middot; 5 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04">
+            <span class="t-num">04</span>
+            <span class="t-text"><span class="t-title">Functions in Python</span><span class="t-meta">Python &middot; 4 ideas &middot; 5 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05">
+            <span class="t-num">05</span>
+            <span class="t-text"><span class="t-title">Fancy things with parameters</span><span class="t-meta">Python &middot; 5 ideas &middot; 6 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06">
+            <span class="t-num">06</span>
+            <span class="t-text"><span class="t-title">The call stack and the heap</span><span class="t-meta">Java &middot; 4 ideas &middot; 3 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07">
+            <span class="t-num">07</span>
+            <span class="t-text"><span class="t-title">By value or by reference?</span><span class="t-meta">Java + Python &middot; 5 ideas &middot; 8 runnable</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08">
+            <span class="t-num">08</span>
+            <span class="t-text"><span class="t-title">Records: plain old data</span><span class="t-meta">Java &middot; 6 ideas &middot; static code</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s09" aria-controls="panel-s09" aria-selected="false" tabindex="-1" data-target="s09">
+            <span class="t-num">09</span>
+            <span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">8 tasks &middot; auto-marked</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s10" aria-controls="panel-s10" aria-selected="false" tabindex="-1" data-target="s10">
+            <span class="t-num">10</span>
+            <span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">3 activities &middot; in class</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s11" aria-controls="panel-s11" aria-selected="false" tabindex="-1" data-target="s11">
+            <span class="t-num">11</span>
+            <span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">24 questions</span></span>
+          </button>
+          <button class="lesson-tab" role="tab" id="tab-s12" aria-controls="panel-s12" aria-selected="false" tabindex="-1" data-target="s12">
+            <span class="t-num">12</span>
+            <span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">9 links</span></span>
+          </button>
+        </nav>
+
+        <nav class="lesson-nav misc" role="tablist" aria-label="Miscellaneous" aria-orientation="vertical">
+          <div class="nav-group-label">Miscellaneous</div>
+          <button class="lesson-tab" role="tab" id="tab-m01" aria-controls="panel-m01" aria-selected="false" tabindex="-1" data-target="m01">
+            <span class="t-num">M1</span>
+            <span class="t-text"><span class="t-title">Java and Python, side by side</span><span class="t-meta">reference &middot; 2 tables</span></span>
+          </button>
+        </nav>
+        </div>
+
+        <div class="lesson-content">
+        <section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">01</span>What methods are for</h3>
+
+      <div class="concept">
+        <h3><span class="idx">1.1</span>Pieces of code with well-defined inputs</h3>
+        <p>You have been <em>calling</em> methods since Week 1 &mdash; <code>System.out.println(String)</code>,
+        <code>sc.nextInt()</code> &mdash; so you already have some idea of the point. A method is a piece of
+        code that takes <strong>well-defined inputs</strong> and performs some task. You write one when you
+        spot a well-defined task your program is going to do over and over again.</p>
+        <p>That makes methods the basic unit of <strong>code reuse</strong> in Java. Because Java is
+        object-oriented, they are also how you interact with classes and objects: a class usually has
+        member variables, and methods mediate access to them. Put another way:</p>
+        <div class="note tip">
+          <span class="tag">Nouns and verbs</span>
+          <p>Data are the <strong>nouns</strong>; methods are the <strong>verbs</strong> &mdash; the
+          actions a class or object can take. And because Java is (almost) strictly object-oriented, a
+          method must be declared <strong>inside a class</strong>. It cannot float around on its own.</p>
+        </div>
+        <div class="joke with-photo">
+          <div class="quote-photos">
+            <img class="quote-photo" src="../media/portrait-kernighan.jpg" width="240" height="240" loading="lazy"
+                 alt="Portrait of Brian Kernighan">
+          </div>
+          <p>Modularize. Use subroutines.</p>
+          <span class="attrib">Brian W. Kernighan &amp; P. J. Plauger, <em>The Elements of Programming Style</em>, 2nd ed., 1978, ch. 4
+          <span class="credit">Portrait: <a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg" target="_blank" rel="noopener">Ben Lowe, 2012</a> &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></span></span>
+        </div>
+        <p class="sched-note">&ldquo;Subroutine&rdquo; is the older word for the same idea. Java calls
+        them methods, Python calls them functions, and Fortran &mdash; one of the two languages Kernighan and
+        Plauger&rsquo;s examples are written in &mdash; calls them subroutines.</p>
+        <div class="note with-media">
+          <div class="note-text">
+            <span class="tag">Did you know?</span>
+            <p>The subroutine had to be invented. Maurice Wilkes, David Wheeler and Stanley Gill, working
+            on Cambridge&rsquo;s <strong>EDSAC</strong>, are credited with inventing the <em>closed
+            subroutine</em> around 1951: one copy of the code, jumped to from anywhere, which then jumps
+            back &mdash; the jump was long called a &ldquo;Wheeler jump&rdquo;. But Alan Turing had already
+            discussed subroutines in his <strong>1945</strong> design proposal for the NPL ACE, going so far
+            as to invent a stack of return addresses &mdash; the idea behind <a href="#s06">section 6</a>.
+            <a href="https://en.wikipedia.org/wiki/Function_(computer_programming)#History" target="_blank" rel="noopener">Source:
+            Wikipedia &mdash; Function (computer programming), History</a> and
+            <a href="https://en.wikipedia.org/wiki/David_Wheeler_(computer_scientist)" target="_blank" rel="noopener">David Wheeler (computer scientist)</a>.</p>
+          </div>
+          <figure class="note-media">
+            <img src="../media/fact-edsac.jpg" width="320" height="320" loading="lazy"
+                 alt="EDSAC under construction at Cambridge: tall racks of valves and wiring">
+            <figcaption><span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AEDSAC_%2810%29.jpg" target="_blank" rel="noopener">Computer Laboratory, University of Cambridge</a>, reproduced by permission &middot; <a href="https://creativecommons.org/licenses/by/2.0" target="_blank" rel="noopener">CC BY 2.0</a></span></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.2</span>The method header, in five parts</h3>
+        <p>The syntax for declaring a method is possibly the single most complicated piece of syntax in
+        Java, mostly because several parts are optional. A minimal selection to start with &mdash; this
+        line is the method&rsquo;s <strong>header</strong> (or <strong>signature</strong>), followed by a
+        block of code in braces:</p>
+        <div class="code-card"><pre>&lt;access modifier&gt; [static] &lt;return type&gt; &lt;name&gt;(&lt;parameter list&gt;) {
+    &lt;code&gt;
+}</pre></div>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Part</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">access modifier</td><td>Who may call it. For now just two: <code>public</code> &mdash; any part of the program; <code>private</code> &mdash; only the class that contains it (and objects of that class)</td></tr>
+            <tr><td class="mono">[static]</td><td>Optional (that is what the square brackets mean). Makes the method available <strong>from the class</strong>, so it can be called without creating an object first</td></tr>
+            <tr><td class="mono">return type</td><td>The type of the value the method gives back when it is done &mdash; or <code>void</code> if it gives back nothing</td></tr>
+            <tr><td class="mono">name</td><td>Same rules and style as a variable: start lowercase, capitalise each later word, and make it say what the method does &mdash; usually a verb or a question: <code>printFactors</code>, <code>isFactor</code></td></tr>
+            <tr><td class="mono">parameter list</td><td>A comma-separated list that defines the data passed in. Each entry looks like a variable declaration &mdash; because effectively it is one</td></tr>
+          </tbody>
+        </table></div>
+        <p>A concrete example. Enter two numbers:</p>
+        <div class="p1-console" data-lang="java" data-title="A method called add" data-stdin="3 4"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Add {
+
+    private static int add(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        System.out.println(add(n, m));
+    }
+}
+</script></div>
+        <p>Read the header <code>private static int add(int a, int b)</code> against the table: private,
+        so only <code>Add</code> can use it; <code>static</code>, so <code>main</code> can call it without
+        creating an object; it returns an <code>int</code>; it is called <code>add</code>; and it takes two
+        <code>int</code>s that will be called <code>a</code> and <code>b</code> <strong>inside the
+        method</strong> &mdash; regardless of what they were called outside. Here the caller&rsquo;s
+        variables are <code>n</code> and <code>m</code>.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.3</span><code>main</code>, read the same way</h3>
+        <p>You have typed <code>public static void main(String[] args)</code> since Week 1. Now it can be
+        read part by part:</p>
+        <ol>
+          <li><code>public</code> &mdash; any part of the program can call it.</li>
+          <li><code>static</code> &mdash; it runs right at the start, when no objects exist yet, so it
+          <em>has</em> to be static.</li>
+          <li><code>void</code> &mdash; it returns nothing.</li>
+          <li><code>main</code> &mdash; its name.</li>
+          <li><code>String[] args</code> &mdash; one parameter, an array of Strings holding the command-line
+          arguments given to the program, if any.</li>
+        </ol>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">1.4</span>Without <code>static</code></h3>
+        <p>To see what <code>static</code> is buying you, take it away. The method now belongs to
+        <em>objects</em> of the class, so <code>main</code> has to make one first and call the method on
+        it &mdash; the same <code>new</code> you use for a <code>Scanner</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="add is no longer static" data-stdin="3 4"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Add {
+
+    private int add(int a, int b) { // No longer static.
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        Add adder = new Add();                 // Now we have to create an object
+        System.out.println(adder.add(n, m));   // to use the method here.
+    }
+}
+</script></div>
+        <p>Forget the object and call it the old way, and the compiler stops you. Run this one and read
+        the message:</p>
+        <div class="p1-console" data-lang="java" data-title="Calling it without an object"><script type="text/plain" data-role="source">
+public class Add {
+
+    private int add(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(add(3, 4));
+    }
+}
+</script></div>
+        <p class="sched-note">The console here says <em>Cannot make a static reference to the non-static
+        method add(int, int)</em>; Ed&rsquo;s <code>javac</code> says <em>non-static method add(int,int)
+        cannot be referenced from a static context</em>. Same complaint: <code>main</code> is static, and
+        there is no object to call <code>add</code> on. Until the classes weeks, make your methods
+        <code>static</code>.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">02</span>Return values and <code>return</code></h3>
+
+      <div class="concept">
+        <h3><span class="idx">2.1</span>Getting information out</h3>
+        <p>The return value is the primary tool for getting information <em>out</em> of a method. A method
+        <em>can</em> change values outside itself, but that is not a good way of passing information
+        around. Some methods exist precisely to change things; those typically have return type
+        <code>void</code>. Normally a Java method either returns a value <strong>or</strong> modifies
+        something &mdash; not both. There are always exceptions.</p>
+        <div class="note">
+          <span class="tag">Exactly one value</span>
+          <p>A Java method returns a <strong>single</strong> value. It may be a complicated one &mdash; an
+          array, an object holding its own data &mdash; but it comes back as one thing. If you have written
+          a method that needs to return two separate things, you may be writing the wrong method: break the
+          problem down further, or work out why the two belong together and <em>put</em> them together.
+          <a href="#s08">Section 8.5</a> shows the neatest way to do that.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.2</span>The <code>return</code> statement</h3>
+        <p>A method whose return type is not <code>void</code> must have at least one <strong>provably
+        reachable</strong> <code>return</code> statement. <code>return</code> is where the value is
+        produced, the method ends, and control &mdash; together with the value &mdash; goes back to whatever
+        code called it. The value must have the declared return type.</p>
+        <div class="p1-console" data-lang="java" data-title="Two methods, each with a job" data-stdin="12"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Factors {
+
+    public static boolean isFactor(int f, int n) {
+        return n % f == 0;
+    }
+
+    public static void printFactors(int n) {
+        for (int i = 2; i <= n; ++i) {
+            if (isFactor(i, n)) {
+                System.out.println(i + " is a factor of " + n + ".");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+        printFactors(n);
+    }
+}
+</script></div>
+        <ul>
+          <li><code>isFactor(int, int)</code> returns a <code>boolean</code>, and whatever input it is given,
+          its <code>return</code> is reached.</li>
+          <li><code>printFactors</code> and <code>main</code> are <code>void</code>, so they need no
+          <code>return</code> at all.</li>
+        </ul>
+        <p class="sched-note">Notice that <code>isFactor</code> returns the comparison itself. Weeks 2+3
+        said a whole expression has a type and can go anywhere a value of that type is expected &mdash;
+        including straight after <code>return</code>. No <code>if (…) return true; else return false;</code>
+        needed.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.3</span>Three ways to get it wrong</h3>
+        <p>Return the wrong type and you get the old <strong>incompatible types</strong> error &mdash;
+        <code>n % f</code> is an <code>int</code>, not a <code>boolean</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="Returning the wrong type"><script type="text/plain" data-role="source">
+public class Factors {
+
+    public static boolean isFactor(int f, int n) {
+        return n % f; // this attempts to return an int, rather than a boolean
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isFactor(3, 12));
+    }
+}
+</script></div>
+        <p>Forget the <code>return</code> altogether and the compiler notices:</p>
+        <div class="p1-console" data-lang="java" data-title="No return at all"><script type="text/plain" data-role="source">
+public class Factors {
+
+    public static boolean isFactor(int f, int n) {
+        // oops...
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isFactor(3, 12));
+    }
+}
+</script></div>
+        <p>The interesting one: a <code>return</code> that <em>is</em> there, but that the compiler cannot
+        guarantee is reached. The compiler does a simple <strong>flow analysis</strong> and is only happy
+        when every possible path ends in a <code>return</code>. It does not treat <code>if (true)</code>
+        as special, so as far as it is concerned there is a path that falls off the end:</p>
+        <div class="p1-console" data-lang="java" data-title="A return the compiler cannot prove"><script type="text/plain" data-role="source">
+public class Factors {
+
+    public static boolean isFactor(int f, int n) {
+        if (true) return n % f == 0; // the compiler can't tell this is always reached
+    }
+
+    public static void main(String[] args) {
+        System.out.println(isFactor(3, 12));
+    }
+}
+</script></div>
+        <p>Whereas this quite stupid code satisfies it, because both branches return:</p>
+        <div class="code-card"><pre>public static boolean isFactor(int f, int n) {
+    if (n &lt; 10) {
+        return n % f == 0;
+    }
+    else {
+        return n % f == 0;
+    }
+}</pre></div>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Mistake</th><th>This console (ECJ)</th><th>Ed (<code>javac</code>)</th></tr></thead>
+          <tbody>
+            <tr><td>wrong return type</td><td class="mono">Type mismatch: cannot convert from int to boolean</td><td class="mono">incompatible types: int cannot be converted to boolean</td></tr>
+            <tr><td>no reachable <code>return</code></td><td class="mono">This method must return a result of type boolean</td><td class="mono">missing return statement</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">2.4</span><code>return</code> in a <code>void</code> method: stopping early</h3>
+        <p>A <code>void</code> method can contain <code>return</code> too &mdash; it just cannot take a
+        value. It simply ends the method there. Enter <code>1</code>, then try <code>12</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="Stop early" data-stdin="1"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Factors {
+
+    public static boolean isFactor(int f, int n) {
+        return n % f == 0;
+    }
+
+    public static void printFactors(int n) {
+        for (int i = 2; i <= n; ++i) {
+            if (isFactor(i, n)) {
+                System.out.println(i + " is a factor of " + n + ".");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+
+        if (n < 2) return; // Stop "early"
+
+        printFactors(n);
+    }
+}
+</script></div>
+        <p>And the Ed lesson&rsquo;s last example, which is missing an access modifier <em>and</em>
+        ridiculous. It always returns a value, it has the right type, it compiles &mdash; and it is
+        still wrong. The compiler checks the <em>shape</em> of a method, never whether it does what its
+        name promises:</p>
+        <figure class="fig fig-narrow">
+          <img src="../media/xkcd-221.png" alt="xkcd comic: a method getRandomNumber that always returns 4, with the comment 'chosen by fair dice roll, guaranteed to be random'" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/221/">xkcd 221, <em>Random Number</em></a> (2007) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">03</span>Parameters, overloading, varargs</h3>
+
+      <div class="concept">
+        <h3><span class="idx">3.1</span>The parameter list</h3>
+        <p>The parameter list says what data the method expects &mdash; above all, what <em>types</em>
+        &mdash; and declares the names used for that data <strong>inside the method</strong>. It is
+        effectively a comma-separated set of variable declarations. Those variables exist only inside
+        the method (though the data may exist outside as well), and they are removed when the method
+        ends.</p>
+        <div class="note">
+          <span class="tag">Two words worth keeping apart</span>
+          <p>The variables in the header &mdash; <code>a</code> and <code>b</code> in
+          <code>add(int a, int b)</code> &mdash; are <strong>parameters</strong>. The values you hand over
+          at the call &mdash; <code>n</code> and <code>m</code> in <code>add(n, m)</code> &mdash; are
+          <strong>arguments</strong>. When the call happens, each parameter is a brand new variable,
+          initialised with the value of its argument. Section 7 is about what &ldquo;the value&rdquo;
+          means there.</p>
+        </div>
+        <p>The number, order and types are <strong>strict</strong>. The compiler only allows a call if the
+        arguments match in order, number and type; it will not fill in any blanks, and unlike several
+        other languages (Python among them &mdash; <a href="#s05">section 5</a>) Java has <strong>no default
+        values</strong> for parameters.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.2</span>Wrong type, wrong number</h3>
+        <p>Both mistakes in one program. Run it and read both errors, starting with the first:</p>
+        <div class="p1-console" data-lang="java" data-title="Arguments that do not fit"><script type="text/plain" data-role="source">
+public class Add {
+
+    private static int add(int a, int b) {
+        return a + b;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(add(1, "1"));
+        System.out.println(add(1, 2, 3));
+    }
+}
+</script></div>
+        <p class="sched-note">Here both are reported as <em>not applicable for the arguments</em>, with the
+        argument types listed so you can compare them with <code>add(int, int)</code>. On Ed,
+        <code>javac</code> calls the first one an <em>incompatible types</em> error, and the second a
+        <em>cannot be applied to given types</em> error whose <strong>reason</strong> line says it
+        plainly: <em>actual and formal argument lists differ in length</em>.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.3</span>Overloading: one name, several parameter lists</h3>
+        <p>Type, order and number are also how Java decides <em>which method to run</em> &mdash; because
+        Java does let you reuse a method name, as long as the parameter lists differ. This is
+        <strong>method overloading</strong> (or <em>ad-hoc polymorphism</em>).</p>
+        <p>You have been using it all along. <code>System.out</code> is a <code>PrintStream</code>, and
+        <code>PrintStream</code> has <strong>ten</strong> versions of <code>println</code>: one with no
+        parameters, and one each for <code>boolean</code>, <code>char</code>, <code>int</code>,
+        <code>long</code>, <code>float</code>, <code>double</code>, <code>char[]</code>,
+        <code>String</code> and <code>Object</code>. Every time you printed a different type, you called a
+        different method.</p>
+        <div class="note tip">
+          <span class="tag">Check it yourself</span>
+          <p>With a JDK installed, <code>javap java.io.PrintStream</code> lists every method of the class
+          &mdash; the ten <code>println</code>s are all there. Documentation is good; asking the actual
+          library is better.</p>
+        </div>
+        <p>Building on the factors example: a three-parameter <code>isFactor</code> and a two-parameter
+        <code>printFactors</code> to find <strong>common</strong> factors. Enter <code>2</code>, then two
+        numbers:</p>
+        <div class="p1-console" data-lang="java" data-title="Overloaded isFactor and printFactors" data-stdin="2
+12
+18"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class Factors {
+
+    // Two parameter version
+    public static boolean isFactor(int f, int n) {
+        return n % f == 0;
+    }
+
+    // Three parameter version
+    public static boolean isFactor(int f, int n, int m) {
+        return n % f == 0 && m % f == 0;
+    }
+
+    // One parameter version
+    public static void printFactors(int n) {
+        for (int i = 2; i <= n; ++i) {
+            if (isFactor(i, n)) {
+                System.out.println(i + " is a factor of " + n + ".");
+            }
+        }
+    }
+
+    // Two parameter version
+    public static void printFactors(int n, int m) {
+        for (int i = 2; i <= Math.min(n, m); ++i) {
+            if (isFactor(i, n, m)) {
+                System.out.println(i + " is a factor of " + n + " and " + m + ".");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("One number or two? ");
+        int choice = sc.nextInt();
+
+        System.out.print("Enter a number: ");
+        int n = sc.nextInt();
+
+        if (choice >= 2) {
+            System.out.print("Enter a number: ");
+            int m = sc.nextInt();
+            printFactors(n, m);
+        }
+        else {
+            printFactors(n);
+        }
+    }
+}
+</script></div>
+        <p class="sched-note">Nothing at the call site says which version you mean. <code>printFactors(n, m)</code>
+        has two <code>int</code> arguments, and exactly one <code>printFactors</code> takes two
+        <code>int</code>s &mdash; so that is the one that runs.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.4</span>Variable arguments</h3>
+        <p>Since Java 5 a method can also take a <strong>variable number</strong> of arguments. Overloading
+        handles most sensible cases, but sometimes it is useful to gather a collection of data more
+        ad hoc. The syntax is <code>&lt;type&gt;... &lt;name&gt;</code>, allowed only on the <strong>final</strong>
+        parameter; it accepts a sequence of values of that one type, of any length &mdash; including
+        zero.</p>
+        <p>Behind the scenes Java collects the values into an <strong>array</strong>, and the parameter
+        works exactly like one. You just avoid declaring and filling the array yourself:</p>
+        <div class="p1-console" data-lang="java" data-title="Varargs"><script type="text/plain" data-role="source">
+public class Sum {
+    public static int sum(int... nums) {
+        int sum = 0;
+        for (int n : nums) sum += n;
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(sum(1, 2, 3));
+        System.out.println(sum(9, 3));
+        System.out.println(sum());
+        System.out.println(sum(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2));
+    }
+}
+</script></div>
+        <p class="sched-note">Because the parameter really is an array, you can also pass an
+        <code>int[]</code> you already have: <code>sum(new int[] {4, 5})</code> gives 9.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.5</span>Functions and procedures</h3>
+        <p>Methods fall into two categories. In practice the words get mixed up all the time, but the
+        distinction is worth having in your head:</p>
+        <ol>
+          <li><strong>(Pure) functions</strong> have no side effects and no hidden inputs. They change
+          nothing outside themselves, and the same parameter values always give the same result.
+          <code>isFactor</code> is one.</li>
+          <li><strong>Procedures</strong> have side effects &mdash; that is usually their purpose &mdash;
+          and often have return type <code>void</code>, because their job is to change something.
+          Printing counts: <code>printFactors</code> is a procedure.</li>
+        </ol>
+        <p>Java has no syntax to tell them apart, so it is on you. In general, write functions, and write
+        procedures only when you are sure that is what is needed. The point is <strong>clarity of
+        intent</strong>: if you do not know what you mean a method to do, you are likely to write a bad
+        one. Here <code>getValue</code> is a function and <code>setValue</code> a procedure:</p>
+        <div class="p1-console" data-lang="java" data-title="A function and a procedure"><script type="text/plain" data-role="source">
+public class Example {
+
+    private int value;
+
+    public int getValue() {         // a function: changes nothing, returns a value
+        return value;
+    }
+
+    public void setValue(int newValue) {   // a procedure: its job is the side effect
+        value = newValue;
+    }
+
+    public static void main(String[] args) {
+        Example e = new Example();
+        System.out.println(e.getValue());
+        e.setValue(42);
+        System.out.println(e.getValue());
+    }
+}
+</script></div>
+        <p class="sched-note">Neither method is <code>static</code>: they read and change the
+        <code>value</code> belonging to one particular <code>Example</code> object, which is why
+        <code>main</code> makes one with <code>new</code> first. That is the classes weeks arriving early.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">3.6</span>The pizza shop, with methods</h3>
+        <p>The Ed lesson closes by giving the pizza shop from Weeks 2+3 some methods. Here is one way to
+        do it: a function that <em>builds</em> the menu, a procedure that <em>prints</em> it, a boolean
+        function that answers a question, and a method that keeps asking until it gets a sensible answer.
+        Enter <code>7</code> then <code>2</code>:</p>
+        <div class="p1-console" data-lang="java" data-title="PizzaShop with methods" data-stdin="7
+2"><script type="text/plain" data-role="source">
+import java.util.Scanner;
+
+public class PizzaShop {
+
+    private static final String[] pizzas = {"", "Vegetarian", "Too Much Meat", "Scarparella"};
+
+    private static String menu() {
+        String menu = "";
+        for (int i = 1; i < pizzas.length; i++) {
+            menu += i + ". " + pizzas[i] + "\n";
+        }
+        return menu;
+    }
+
+    private static void printMenu() {
+        System.out.println("What sort of pizza would you like?");
+        System.out.print(menu());
+    }
+
+    private static boolean isOnMenu(int selection) {
+        return selection >= 1 && selection < pizzas.length;
+    }
+
+    private static int readSelection(Scanner sc) {
+        System.out.println("Enter the number of your selection: ");
+        int selection = sc.nextInt();
+        while (!isOnMenu(selection)) {
+            System.out.println("That is not on the menu. Try again: ");
+            selection = sc.nextInt();
+        }
+        return selection;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Hi and welcome to the social distance Pizza shop.");
+        printMenu();
+
+        int selection = readSelection(sc);
+        System.out.println("You selected the " + pizzas[selection] + " pizza.");
+    }
+}
+</script></div>
+        <div class="note tip">
+          <span class="tag">Read main first</span>
+          <p>Four lines of <code>main</code> now tell the whole story, in the methods&rsquo; own words. The
+          array has moved out of <code>main</code> to become a <code>private static final</code> member
+          &mdash; a program constant, visible to every method of the class. Whether all this
+          &ldquo;simplifies&rdquo; a program this small is a fair question; the answer changes as the
+          program grows.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">04</span>Functions in Python</h3>
+
+      <div class="concept">
+        <h3><span class="idx">4.1</span>Functions encapsulate code</h3>
+        <p>Python has the same tool: a section of code with a clean entry point and a clean exit point,
+        reusable from anywhere in the program. In Python these are usually called
+        <strong>functions</strong>.</p>
+        <p>One significant difference: everything in Java lives inside a class, but Python allows code
+        that is not (apparently) in a class, and likewise <strong>functions that belong to no
+        class</strong>. Python does support object-oriented programming, so classes can certainly have
+        functions of their own &mdash; and Python can treat functions as <em>first-class</em> values, with
+        some of the same status as variables. Neither matters yet.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.2</span><code>def</code> and <code>return</code></h3>
+        <div class="code-card"><pre>def &lt;function name&gt;(&lt;parameter list&gt;):
+    &lt;function body&gt;</pre></div>
+        <p>The parameter list may be empty; the body may not. If you want to write a function but do not
+        know what it does yet, the do-nothing keyword <code>pass</code> is a placeholder. Returning a value
+        uses <code>return</code>, much as in Java &mdash; but notice what is missing from the header: there is
+        no return type, so <strong>nothing in the signature tells you whether the function returns anything,
+        or what</strong>.</p>
+        <div class="p1-console" data-lang="python" data-title="A simple (and largely pointless) function"><script type="text/plain" data-role="source">
+def add(a, b):
+    return a + b
+
+print(add(1, 2))
+</script></div>
+        <p>Without type checking, things get a bit odd. Nothing stops you passing strings, and
+        <code>+</code> on strings joins them:</p>
+        <div class="p1-console" data-lang="python" data-title="Same function, different types"><script type="text/plain" data-role="source">
+def add(a, b):
+    return a + b
+
+print(add('1', '2'))
+print(add([1, 2], [3]))
+</script></div>
+        <p>And problems only appear at run time, when the line actually executes:</p>
+        <div class="p1-console" data-lang="python" data-title="Only found by running it"><script type="text/plain" data-role="source">
+def add(a, b):
+    return a + b
+
+print("This line runs first.")
+print(add([1, 2, 3], {'a' : 'first'}))
+</script></div>
+        <div class="note warn">
+          <span class="tag">Documentation is the contract</span>
+          <p>In Java the header <em>is</em> the contract, and the compiler enforces it. In Python,
+          documentation is often the only practical way to know how a function is meant to be used. The
+          flip side: as long as the caller passes data that works with whatever the function does, the code
+          runs &mdash; which is occasionally useful.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.3</span>A function with no <code>return</code> returns <code>None</code></h3>
+        <p>Section 3.5&rsquo;s procedures have return type <code>void</code> in Java. Python has no such
+        keyword. A function that finishes without a <code>return</code> still hands back a value &mdash; a
+        special one called <code>None</code>, which means &ldquo;nothing here&rdquo;:</p>
+        <div class="p1-console" data-lang="python" data-title="Where did None come from?"><script type="text/plain" data-role="source">
+def greet(name):
+    print("Hello, " + name)
+
+def todo():
+    pass            # placeholder: a body that does nothing
+
+result = greet("Linh")
+print(result)
+print(todo())
+</script></div>
+        <p class="sched-note">In the words of the Python tutorial, even functions without a
+        <code>return</code> statement &ldquo;do return a value, albeit a rather boring one. This value is
+        called <code>None</code>&rdquo;. If you ever see an unexpected <code>None</code> printed, look for a
+        function that printed its answer instead of returning it.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">4.4</span>Type hints</h3>
+        <p>Python is dynamically typed, so you have no control over variable types &mdash; but for
+        readability a function can be decorated with <strong>type hints</strong>: <code>: &lt;type&gt;</code>
+        after each parameter, and <code>-&gt; &lt;type&gt;</code> after the parameter list for the return
+        type.</p>
+        <p>They are <strong>not enforced</strong> in any way. You can still pass in non-<code>int</code>
+        values and get non-<code>int</code> values back:</p>
+        <div class="p1-console" data-lang="python" data-title="Hints, not rules"><script type="text/plain" data-role="source">
+def add(a: int, b: int) -> int:
+    return a + b
+
+print(add(1, 2))
+print(add('1', '2'))   # pass in a str, get a str out: the hints aren't enforceable
+</script></div>
+        <div class="joke">
+          <p>It should also be emphasized that Python will remain a dynamically typed language, and the authors have no desire to ever make type hints mandatory, even by convention.</p>
+          <span class="attrib">Guido van Rossum, Jukka Lehtosalo &amp; &#321;ukasz Langa, <em>PEP 484 &ndash; Type Hints</em>, 2014</span>
+        </div>
+        <p class="sched-note">That is the proposal that added type hints to the language, saying in advance
+        that they will never become compulsory. Separate tools can check them for you; Python itself will
+        not.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">05</span>Fancy things with parameters</h3>
+
+          <p>Where Java is strict about arguments, Python is freer. It allows <strong>default
+          arguments</strong>, arguments matched to parameters <strong>by name</strong>, and variable-length
+          argument lists of two kinds.</p>
+
+      <div class="concept">
+        <h3><span class="idx">5.1</span>Default arguments</h3>
+        <p>A parameter can be given a default value, which lets the caller leave that argument out:</p>
+        <div class="p1-console" data-lang="python" data-title="A default for msg"><script type="text/plain" data-role="source">
+def msg(name, msg = "Hi!"):
+    print(name + ", you have a message: " + msg)
+
+msg("Luke")
+msg("Rohit", "Good Work")
+</script></div>
+        <p class="sched-note">Compare <a href="#s03">section 3.1</a>: Java has no default values, which is
+        one reason Java programmers reach for overloading instead.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.2</span>Keyword arguments</h3>
+        <p>Arguments can also be given by <strong>naming</strong> the parameter they belong to &mdash; and
+        then the order no longer matters:</p>
+        <div class="p1-console" data-lang="python" data-title="Arguments by name"><script type="text/plain" data-role="source">
+def msg(name, msg):
+    print(name + ", you have a message: " + msg)
+
+msg(msg="Hi!", name="Luke")   # the arguments are in a different
+                              # order to the parameters
+</script></div>
+        <p class="sched-note">You have already used one: <code>print("a", end="")</code> passes
+        <code>end</code> by name. <code>print</code>&rsquo;s <code>end</code> has a default of
+        <code>"\n"</code>, which is why <code>print</code> normally finishes the line.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.3</span><code>*</code>: a variable argument list</h3>
+        <p>Putting <code>*</code> before a parameter name makes a variable argument list, similar to
+        Java&rsquo;s <code>...</code> &mdash; but without the type restriction, and without having to come
+        last, <em>if</em> you name the arguments after it:</p>
+        <div class="p1-console" data-lang="python" data-title="Any number of names"><script type="text/plain" data-role="source">
+def msg(*names, msg):
+    for name in names:
+        print(msg + ", " + name)
+
+msg("Luke", "Cat", "Rohit", "Matthew", msg="Hi")
+</script></div>
+        <p>Inside the function, <code>names</code> holds every positional argument, in order &mdash; it is a
+        tuple, which is why the <code>for</code> loop works. Because <code>*names</code> swallows
+        <em>every</em> positional argument, <code>msg</code> can now only be given by name. Take the
+        <code>msg=</code> away and see:</p>
+        <div class="p1-console" data-lang="python" data-title="Forgot the msg="><script type="text/plain" data-role="source">
+def msg(*names, msg):
+    for name in names:
+        print(msg + ", " + name)
+
+msg("Luke", "Cat", "Hi")
+</script></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.4</span><code>**</code>: keyword arguments collected into a dict</h3>
+        <p>Finally, <code>**</code> before a parameter name collects any <strong>named</strong> arguments
+        that do not match a parameter, and hands them to you as a <code>dict</code>:</p>
+        <div class="p1-console" data-lang="python" data-title="**data"><script type="text/plain" data-role="source">
+def record(**data):
+    print(data)
+
+record(name="Luke", job="Lecturer", employer="UTS")
+</script></div>
+        <p class="sched-note">The names become the keys, as strings, in the order you wrote them &mdash; the
+        same insertion-ordered dict you met in Weeks 2+3.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">5.5</span>Function-ing in the pizza shop</h3>
+        <p>The Python pizza shop gets the same treatment as section 3.6. Notice <code>end=""</code> &mdash;
+        a keyword argument &mdash; stopping <code>print</code> from adding a blank line after a menu that
+        already ends in one. Enter <code>0</code> then <code>3</code>:</p>
+        <div class="p1-console" data-lang="python" data-title="Pizza shop with functions" data-stdin="0
+3"><script type="text/plain" data-role="source">
+pizzas = ["", "Vegetarian", "Too Much Meat", "Scarparella"]
+
+def menu(pizzas):
+    text = ""
+    for i in range(1, len(pizzas)):
+        text += str(i) + ". " + pizzas[i] + "\n"
+    return text
+
+def is_on_menu(pizzas, selection):
+    return selection >= 1 and selection < len(pizzas)
+
+def read_selection(pizzas):
+    selection = int(input("Enter the number of your selection: "))
+    while not is_on_menu(pizzas, selection):
+        selection = int(input("That is not on the menu. Try again: "))
+    return selection
+
+print("Hi and welcome to the social distance Pizza shop.")
+print("What sort of pizza would you like?")
+print(menu(pizzas), end="")
+
+choice = read_selection(pizzas)
+print("You selected the " + pizzas[choice] + " pizza.")
+</script></div>
+        <p class="sched-note">Each function takes the list as a parameter, also called <code>pizzas</code>.
+        Inside the function that name is a <em>parameter</em> &mdash; a local variable that happens to refer
+        to the same list. Section 7 is about exactly that.</p>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">06</span>The call stack and the heap</h3>
+<figure class="photo banner">
+  <img src="../media/photo-stack-plates.jpg" loading="lazy" style="object-position: center 55%" alt="A tall stack of identical white dinner plates on a wooden shelf">
+  <figcaption><strong>You only ever take the top plate.</strong> Each method call puts a new plate on the stack; when the method returns, its plate comes off, and the one underneath &mdash; the method that called it &mdash; is back on top, exactly where it left off.
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File%3AStack_of_dinner_plates.jpg" target="_blank" rel="noopener">Santeri Viinamäki, 2016</a> &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" rel="noopener">CC BY-SA 4.0</a></span></figcaption>
+</figure>
+
+          <p>The methods lesson on Ed stops at &ldquo;there&rsquo;s a little more to say about how parameters
+          are handled, &hellip; however it is helpful to understand a little more about how variables and
+          their data are handled in memory first&rdquo;. This section and the next are that little more.</p>
+
+      <div class="concept">
+        <h3><span class="idx">6.1</span>Every call gets a frame</h3>
+        <p>When a method is called, the JVM creates a <strong>frame</strong> for that call: a private
+        block of memory holding the method&rsquo;s <strong>parameters and local variables</strong>. Frames
+        live on the thread&rsquo;s <strong>stack</strong>. A call <em>pushes</em> a new frame on top; when
+        the method returns, its frame is <em>popped</em> and destroyed, and the caller&rsquo;s frame is on top
+        again. That is the whole mechanism behind &ldquo;parameters are removed once the method
+        terminates&rdquo; in section 3.1.</p>
+        <p>Run this and read the indentation: every extra level is one more frame on the stack.</p>
+        <div class="p1-console" data-lang="java" data-title="Watching the stack grow and shrink"><script type="text/plain" data-role="source">
+public class CallStack {
+
+    public static boolean isFactor(int f, int n) {
+        System.out.println("        isFactor(" + f + ", " + n + ") starts");
+        boolean result = n % f == 0;
+        System.out.println("        isFactor returns " + result);
+        return result;
+    }
+
+    public static void printFactors(int n) {
+        System.out.println("    printFactors(" + n + ") starts");
+        for (int i = 2; i <= n; ++i) {
+            if (isFactor(i, n)) {
+                System.out.println("    " + i + " is a factor of " + n + ".");
+            }
+        }
+        System.out.println("    printFactors returns");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("main starts");
+        int n = 4;
+        printFactors(n);
+        System.out.println("main ends");
+    }
+}
+</script></div>
+        <figure class="fig fig-wide">
+          <svg viewBox="0 0 420 270" width="420" height="270" role="img" aria-label="The call stack while isFactor(3, 4) runs: three frames. At the bottom main, holding args and n equal to 4. Above it printFactors, holding n equal to 4 and i equal to 3. On top isFactor, holding f equal to 3 and n equal to 4, which is the method running now.">
+            <defs><marker id="st-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+            <text class="fc-label" x="20" y="18">THE CALL STACK, WHILE isFactor(3, 4) RUNS</text>
+            <rect class="fc-terminal" x="20" y="30" width="250" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="52" font-weight="600">isFactor(3, 4)</text>
+            <text class="fc-label" x="258" y="52" text-anchor="end">running now</text>
+            <text class="fc-text" x="32" y="76">f = 3</text><text class="fc-text" x="140" y="76">n = 4</text>
+            <rect class="fc-process" x="20" y="102" width="250" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="124" font-weight="600">printFactors(4)</text>
+            <text class="fc-label" x="258" y="124" text-anchor="end">waiting</text>
+            <text class="fc-text" x="32" y="148">n = 4</text><text class="fc-text" x="140" y="148">i = 3</text>
+            <rect class="fc-process" x="20" y="174" width="250" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="196" font-weight="600">main(args)</text>
+            <text class="fc-label" x="258" y="196" text-anchor="end">waiting</text>
+            <text class="fc-text" x="32" y="220">args = &#8226;</text><text class="fc-text" x="140" y="220">n = 4</text>
+            <line class="fc-line" x1="10" y1="246" x2="280" y2="246"/>
+            <line class="fc-line" x1="292" y1="226" x2="292" y2="44" marker-end="url(#st-arrow-w4)"/>
+            <line class="fc-line" x1="306" y1="44" x2="306" y2="226" marker-end="url(#st-arrow-w4)"/>
+            <text class="fc-label" x="318" y="96">a call</text>
+            <text class="fc-label" x="318" y="112">pushes</text>
+            <text class="fc-label" x="318" y="128">a frame;</text>
+            <text class="fc-label" x="318" y="160">a return</text>
+            <text class="fc-label" x="318" y="176">pops it</text>
+          </svg>
+          <figcaption>Three frames, three sets of variables. There are two variables called <code>n</code>
+          down there &mdash; one in <code>main</code>, one in <code>printFactors</code> &mdash; and a third in
+          <code>isFactor</code>. Same name, different variables.</figcaption>
+        </figure>
+        <div class="note">
+          <span class="tag">Where this comes from</span>
+          <p>This is the model in <em>The Java Virtual Machine Specification</em>, &sect;2.5.2 and
+          &sect;2.6: each thread has a JVM stack that stores frames; &ldquo;a new frame is created each
+          time a method is invoked&rdquo; and destroyed when that invocation completes, and the JVM
+          &ldquo;uses local variables to pass parameters on method invocation&rdquo;. The spec deliberately
+          leaves the machine-level details to each JVM &mdash; this picture is the part every JVM agrees
+          on.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.2</span>A local variable does not outlive its frame</h3>
+        <p>So a variable declared inside a method simply does not exist anywhere else. <code>total</code>
+        below lives in <code>addUp</code>&rsquo;s frame, and that frame is gone by the time
+        <code>main</code> asks for it &mdash; in fact the compiler refuses before anything runs:</p>
+        <div class="p1-console" data-lang="java" data-title="Out of scope"><script type="text/plain" data-role="source">
+public class Scope {
+
+    public static void addUp(int n) {
+        int total = 0;
+        for (int i = 1; i <= n; i++) total += i;
+    }
+
+    public static void main(String[] args) {
+        addUp(10);
+        System.out.println(total);
+    }
+}
+</script></div>
+        <p class="sched-note">Ed&rsquo;s <code>javac</code> calls this <em>cannot find symbol</em>. The fix is
+        not to make <code>total</code> reachable from <code>main</code>; it is to <strong>return</strong> it
+        &mdash; change <code>void</code> to <code>int</code>, add <code>return total;</code>, and print
+        <code>addUp(10)</code>. Section 2.1 again: the return value is how information gets out.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.3</span>The heap: where objects and arrays live</h3>
+        <p>Frames hold parameters and local variables. They do <strong>not</strong> hold arrays or objects.
+        Arrays and objects &mdash; anything made with <code>new</code> &mdash; are allocated on the
+        <strong>heap</strong>, a separate area shared
+        by the whole program; a variable of array or object type holds only a <strong>reference</strong> to
+        it. The Java Language Specification puts it in one line: &ldquo;The reference values (often just
+        references) are pointers to these objects&rdquo;.</p>
+        <p>That is why a method can build an array and return it. The method&rsquo;s frame is destroyed, but
+        the array is not in the frame &mdash; it is on the heap, and the caller now holds a reference to it:</p>
+        <div class="p1-console" data-lang="java" data-title="The frame goes, the array stays"><script type="text/plain" data-role="source">
+public class MakeArray {
+
+    public static int[] squares(int n) {
+        int[] result = new int[n];
+        for (int i = 0; i < n; i++) {
+            result[i] = i * i;
+        }
+        return result;          // returns the reference, not a copy of the array
+    }
+
+    public static void main(String[] args) {
+        int[] sq = squares(5);
+        for (int s : sq) System.out.print(s + " ");
+        System.out.println();
+    }
+}
+</script></div>
+        <figure class="fig fig-wide">
+          <svg viewBox="0 0 440 210" width="440" height="210" role="img" aria-label="After squares returns: on the stack, the popped squares frame is drawn dashed and its variables are gone; main's frame holds sq, which points to an int array of five elements, 0, 1, 4, 9 and 16, on the heap.">
+            <defs><marker id="hp-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+            <text class="fc-label" x="20" y="18">STACK</text>
+            <text class="fc-label" x="250" y="18">HEAP</text>
+            <rect class="fc-process" x="20" y="30" width="190" height="62" rx="6" stroke-dasharray="5 4" opacity="0.55"/>
+            <text class="fc-text" x="32" y="52" font-weight="600" opacity="0.7">squares(5): popped</text>
+            <text class="fc-label" x="32" y="76">n, i, result: gone</text>
+            <rect class="fc-process" x="20" y="104" width="190" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="126" font-weight="600">main(args)</text>
+            <text class="fc-text" x="32" y="150">sq =</text>
+            <circle class="fc-arrowhead" cx="76" cy="146" r="4"/>
+            <line class="fc-line" x1="80" y1="146" x2="250" y2="146" marker-end="url(#hp-arrow-w4)"/>
+            <line class="fc-line" x1="10" y1="176" x2="220" y2="176"/>
+            <text class="fc-label" x="252" y="122">int[5]</text>
+            <rect class="fc-io" x="252" y="130" width="34" height="32"/>
+            <rect class="fc-io" x="286" y="130" width="34" height="32"/>
+            <rect class="fc-io" x="320" y="130" width="34" height="32"/>
+            <rect class="fc-io" x="354" y="130" width="34" height="32"/>
+            <rect class="fc-io" x="388" y="130" width="34" height="32"/>
+            <text class="fc-text" x="269" y="151" text-anchor="middle">0</text>
+            <text class="fc-text" x="303" y="151" text-anchor="middle">1</text>
+            <text class="fc-text" x="337" y="151" text-anchor="middle">4</text>
+            <text class="fc-text" x="371" y="151" text-anchor="middle">9</text>
+            <text class="fc-text" x="405" y="151" text-anchor="middle">16</text>
+            <text class="fc-label" x="269" y="180" text-anchor="middle">0</text>
+            <text class="fc-label" x="303" y="180" text-anchor="middle">1</text>
+            <text class="fc-label" x="337" y="180" text-anchor="middle">2</text>
+            <text class="fc-label" x="371" y="180" text-anchor="middle">3</text>
+            <text class="fc-label" x="405" y="180" text-anchor="middle">4</text>
+          </svg>
+          <figcaption>After <code>squares</code> returns: its frame, and its variable <code>result</code>, are
+          gone. The array survives on the heap because <code>main</code>&rsquo;s <code>sq</code> refers to
+          it.</figcaption>
+        </figure>
+        <div class="note tip">
+          <span class="tag">You have seen this before</span>
+          <p>Weeks 2+3, section 8.5 &mdash; &ldquo;Two variables, one array&rdquo; &mdash; ran
+          <code>int[] b = a;</code> and showed that <code>a</code> and <code>b</code> then refer to the
+          <em>same</em> array. That was your first encounter with references. With the heap in the picture it
+          stops being surprising: <code>b = a</code> copied the reference, not the array.</p>
+        </div>
+        <figure class="fig fig-narrow">
+          <img src="../media/xkcd-138.png" alt="xkcd comic: someone asks for a few pointers for a video game and is given three hexadecimal memory addresses" loading="lazy">
+          <figcaption><span class="credit"><a href="https://xkcd.com/138/">xkcd 138, <em>Pointers</em></a> (2006) &mdash; Randall Munroe, <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a></span></figcaption>
+        </figure>
+        <p class="sched-note">A reference really is a kind of address &mdash; the Ed Python lesson says
+        exactly that about Python variables. Java simply never shows you the number, and never lets you do
+        arithmetic on it. You can follow a reference; you cannot forge one.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">6.4</span>Nobody frees the heap by hand</h3>
+        <p>Frames are cleaned up automatically on return. Heap objects are cleaned up automatically too, by
+        a <strong>garbage collector</strong>: once nothing refers to an object any more, the JVM may reclaim
+        its memory. In the spec&rsquo;s words, heap storage &ldquo;is reclaimed by an automatic storage
+        management system (known as a garbage collector); objects are never explicitly
+        deallocated&rdquo;. That is why no program on this page ever says &ldquo;I am done with this
+        array&rdquo;.</p>
+        <div class="note">
+          <span class="tag">Did you know?</span>
+          <p>The stack is not unlimited. If a chain of calls needs more stack than the JVM allows, the
+          specification says the JVM &ldquo;throws a <code>StackOverflowError</code>&rdquo;. It sounds
+          exotic; you will meet it the first time you write a method that calls itself and never stops.
+          <a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html#jvms-2.5.2" target="_blank" rel="noopener">Source:
+          JVM Specification, &sect;2.5.2</a>.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">07</span>By value or by reference?</h3>
+
+          <p>Two classic ways a language can pass an argument to a parameter:</p>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Name</th><th>What the parameter gets</th><th>Can the method change the caller&rsquo;s variable?</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Call by value</strong></td><td>a <strong>copy</strong> of the argument&rsquo;s value, in a new variable</td><td>No &mdash; it only ever has the copy</td></tr>
+              <tr><td><strong>Call by reference</strong></td><td>the caller&rsquo;s <strong>variable itself</strong>, under another name</td><td>Yes &mdash; assigning to the parameter assigns to the caller&rsquo;s variable</td></tr>
+            </tbody>
+          </table></div>
+          <p>Java uses exactly one of these. Python uses something that is easiest to understand once you
+          have Java&rsquo;s straight. Section 6 is what makes both make sense.</p>
+
+      <div class="concept">
+        <h3><span class="idx">7.1</span>Java passes by value. Always.</h3>
+        <p>The Java Language Specification: when a method is invoked, &ldquo;the values of the actual
+        argument expressions initialize newly created parameter variables&rdquo;. New variables, in the new
+        frame, holding copies. So this <code>swap</code> cannot work &mdash; predict the output first:</p>
+        <div class="p1-console" data-lang="java" data-title="A swap that does not swap"><script type="text/plain" data-role="source">
+public class Swap {
+
+    public static void swap(int a, int b) {
+        int temp = a;
+        a = b;
+        b = temp;
+        System.out.println("inside swap: a = " + a + ", b = " + b);
+    }
+
+    public static void main(String[] args) {
+        int x = 1;
+        int y = 2;
+        swap(x, y);
+        System.out.println("after swap:  x = " + x + ", y = " + y);
+    }
+}
+</script></div>
+        <p><code>a</code> and <code>b</code> were swapped perfectly &mdash; inside <code>swap</code>&rsquo;s
+        frame. Then the frame was popped, and <code>x</code> and <code>y</code> in <code>main</code>&rsquo;s
+        frame were never touched. For comparison, here is a language that <em>does</em> have call by
+        reference. In C++, an <code>&amp;</code> on a parameter makes it another name for the caller&rsquo;s
+        variable, and the same swap works:</p>
+        <div class="code-card"><pre>// C++, not Java: int&amp; means "a reference to the caller's int"
+void swap(int&amp; a, int&amp; b) {
+    int temp = a;
+    a = b;
+    b = temp;
+}
+// after swap(x, y) with x = 1, y = 2:  x = 2, y = 1</pre></div>
+        <p class="sched-note">Java has no <code>&amp;</code> parameters and no way to write this. If a Java
+        method needs to produce a new value, it returns it.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.2</span>&hellip;and for arrays, the value <em>is</em> a reference</h3>
+        <p>Now pass an array. The rule has not changed &mdash; the parameter gets a copy of the
+        argument&rsquo;s value. But the value of an array variable is a <strong>reference</strong> (6.3). So
+        the method gets a copy of the <em>reference</em>, which points at the <strong>same array</strong> on
+        the heap. Change the array through it, and the caller sees the change:</p>
+        <div class="p1-console" data-lang="java" data-title="Changing the array through a parameter"><script type="text/plain" data-role="source">
+public class DoubleAll {
+
+    public static void doubleAll(int[] values) {
+        for (int i = 0; i < values.length; i++) {
+            values[i] = values[i] * 2;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] marks = {1, 2, 3};
+        doubleAll(marks);
+        System.out.println(marks[0] + " " + marks[1] + " " + marks[2]);
+    }
+}
+</script></div>
+        <figure class="fig fig-wide">
+          <svg viewBox="0 0 400 190" width="400" height="190" role="img" aria-label="During doubleAll: two stack frames. doubleAll's values and main's marks are two different variables, but both point to the same int array of three elements, 2, 4 and 6, on the heap.">
+            <defs><marker id="pv-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
+            <text class="fc-label" x="20" y="18">STACK</text>
+            <text class="fc-label" x="262" y="18">HEAP</text>
+            <rect class="fc-terminal" x="20" y="30" width="190" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="52" font-weight="600">doubleAll(values)</text>
+            <text class="fc-text" x="32" y="76">values =</text>
+            <circle class="fc-arrowhead" cx="104" cy="72" r="4"/>
+            <polyline class="fc-line" points="108,72 230,72 230,106 258,106" marker-end="url(#pv-arrow-w4)"/>
+            <rect class="fc-process" x="20" y="102" width="190" height="62" rx="6"/>
+            <text class="fc-text" x="32" y="124" font-weight="600">main(args)</text>
+            <text class="fc-text" x="32" y="148">marks =</text>
+            <circle class="fc-arrowhead" cx="96" cy="144" r="4"/>
+            <polyline class="fc-line" points="100,144 230,144 230,122 258,122" marker-end="url(#pv-arrow-w4)"/>
+            <line class="fc-line" x1="10" y1="174" x2="220" y2="174"/>
+            <text class="fc-label" x="262" y="92">int[3]</text>
+            <rect class="fc-io" x="262" y="98" width="36" height="32"/>
+            <rect class="fc-io" x="298" y="98" width="36" height="32"/>
+            <rect class="fc-io" x="334" y="98" width="36" height="32"/>
+            <text class="fc-text" x="280" y="119" text-anchor="middle">2</text>
+            <text class="fc-text" x="316" y="119" text-anchor="middle">4</text>
+            <text class="fc-text" x="352" y="119" text-anchor="middle">6</text>
+          </svg>
+          <figcaption>Two variables, one array. The reference was copied into the new frame; the array
+          was not.</figcaption>
+        </figure>
+        <p>But <strong>reassigning</strong> the parameter is a different thing entirely. It points
+        <em>the copy</em> somewhere new; the caller&rsquo;s variable still points where it always did:</p>
+        <div class="p1-console" data-lang="java" data-title="Pointing the parameter somewhere else"><script type="text/plain" data-role="source">
+public class Replace {
+
+    public static void replace(int[] values) {
+        values = new int[] {7, 8, 9};   // values now refers to a brand new array
+        values[0] = 100;                // ...so this changes the new one
+    }
+
+    public static void main(String[] args) {
+        int[] marks = {1, 2, 3};
+        replace(marks);
+        System.out.println(marks[0] + " " + marks[1] + " " + marks[2]);
+    }
+}
+</script></div>
+        <div class="note warn">
+          <span class="tag">Say it precisely</span>
+          <p>You will read &ldquo;Java passes objects by reference&rdquo;. It does not. Java passes
+          <strong>references by value</strong>. If it were true call by reference, <code>replace</code> above
+          would have changed <code>marks</code>, and section 7.1&rsquo;s swap would work. Oracle&rsquo;s own
+          tutorial says it the right way round: reference parameters &ldquo;are also passed into methods by
+          value&rdquo;.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.3</span>So what swap <em>can</em> work in Java?</h3>
+        <p>One that swaps two elements <strong>inside an array</strong>. The method still gets a copy of a
+        reference &mdash; but it only needs to <em>follow</em> that reference, never to reassign it:</p>
+        <div class="p1-console" data-lang="java" data-title="Swapping inside an array"><script type="text/plain" data-role="source">
+public class SwapElements {
+
+    public static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public static void main(String[] args) {
+        int[] pair = {1, 2};
+        swap(pair, 0, 1);
+        System.out.println(pair[0] + " " + pair[1]);
+    }
+}
+</script></div>
+        <p class="sched-note">Look back at section 3.5: <code>swap</code> and <code>doubleAll</code> are
+        procedures. Changing data through a parameter is a side effect, so a method that does it should say
+        so in its name, and should usually be <code>void</code>.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.4</span>Python: call by object reference</h3>
+        <p>The Ed lesson calls Python&rsquo;s model <strong>call-by-object</strong>, and says that in practice
+        it turns out much like Java. Every Python variable is a reference &mdash; its value is where some
+        data is, not the data itself &mdash; and calling a function assigns each argument&rsquo;s reference to
+        a new local name. What you observe then depends on the data.</p>
+        <p><strong>Immutable data</strong> &mdash; integers, floats, strings, tuples &mdash; cannot be changed
+        in place, so it behaves like pass-by-value: <code>num += 3</code> makes a <em>new</em> number and
+        points the local <code>num</code> at it.</p>
+        <div class="p1-console" data-lang="python" data-title="An int cannot be changed from inside"><script type="text/plain" data-role="source">
+def add3(num):
+    num += 3
+
+n = 0
+add3(n)     # this call doesn't change n
+print(n)
+</script></div>
+        <p><strong>Mutable data</strong>, such as a list, works like the Java array: the function can change
+        the object that both names refer to.</p>
+        <div class="p1-console" data-lang="python" data-title="A list can be"><script type="text/plain" data-role="source">
+def append3(l):
+    l.append(3)
+
+letters = ['a', 'b', 'c']
+append3(letters)   # this will change letters
+print(letters)
+</script></div>
+        <p>But <strong>assigning</strong> to the parameter only re-points the local name &mdash;
+        <code>letters</code> and <code>l</code> are two separate variables, and the caller&rsquo;s still
+        refers to the original list:</p>
+        <div class="p1-console" data-lang="python" data-title="Rebinding the parameter"><script type="text/plain" data-role="source">
+def overwrite(l):
+    l = 17
+
+letters = ['a', 'b', 'c']
+overwrite(letters)   # this won't change letters
+print(letters)
+</script></div>
+        <div class="joke">
+          <p>Actually, call by object reference would be a better description, since if a mutable object is passed, the caller will see any changes the callee makes to it (items inserted into a list).</p>
+          <span class="attrib">The Python Tutorial, &sect;4.8 <em>Defining Functions</em>, footnote 1</span>
+        </div>
+        <p class="sched-note">The tutorial&rsquo;s main text says arguments are passed &ldquo;using call by
+        value (where the value is always an object reference, not the value of the object)&rdquo;, and the
+        Python FAQ says &ldquo;arguments are passed by assignment&rdquo;. Three phrasings, one behaviour
+        &mdash; and it is the same behaviour as Java&rsquo;s arrays in 7.2. You will also see it called
+        <em>call by sharing</em>.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">7.5</span>Mutate, or rebind? The one question to ask</h3>
+        <p>In both languages, the question is never &ldquo;what type is the argument?&rdquo; but <strong>what
+        does the function do to its parameter?</strong></p>
+        <ul>
+          <li><strong>Mutate</strong> the object it refers to &mdash; <code>values[i] = …</code>,
+          <code>l.append(…)</code> &mdash; and the caller sees it.</li>
+          <li><strong>Rebind</strong> the parameter itself &mdash; <code>values = …</code>,
+          <code>l = …</code> &mdash; and the caller never finds out.</li>
+        </ul>
+        <p>Both in one function. Predict the list before you run it:</p>
+        <div class="p1-console" data-lang="python" data-title="Mutate, then rebind"><script type="text/plain" data-role="source">
+def change(items):
+    items.append(4)      # mutates the list the caller also refers to
+    items = [0]          # rebinds the local name only
+    items.append(5)      # ...so this changes the new list
+
+numbers = [1, 2, 3]
+change(numbers)
+print(numbers)
+</script></div>
+        <div class="note warn">
+          <span class="tag">One Python trap</span>
+          <p>For a list, <code>items += [4]</code> <em>mutates</em> the list in place &mdash; unlike
+          <code>num += 3</code> on an <code>int</code>, which makes a new number. Same operator, different
+          effect, because one type is mutable and the other is not. If a function should not change its
+          caller&rsquo;s list, do not use <code>+=</code> on it.</p>
+        </div>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>Inside the method / function</th><th>Java</th><th>Python</th><th>Caller sees it?</th></tr></thead>
+          <tbody>
+            <tr><td>assign to a number parameter</td><td class="mono">a = b;</td><td class="mono">num += 3</td><td>No</td></tr>
+            <tr><td>change an element / the object</td><td class="mono">values[i] = 0;</td><td class="mono">l.append(3)</td><td><strong>Yes</strong></td></tr>
+            <tr><td>assign a new array / list to the parameter</td><td class="mono">values = new int[3];</td><td class="mono">l = [0]</td><td>No</td></tr>
+            <tr><td>&ldquo;change&rdquo; a string parameter</td><td class="mono">s = s + "!";</td><td class="mono">s = s + "!"</td><td>No &mdash; strings are immutable in both</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">08</span>Records: plain old data</h3>
+
+          <div class="note warn">
+            <span class="tag">Why this section has no Run buttons</span>
+            <p>Records arrived in <strong>Java 16</strong>. The console on this site compiles for Java 8
+            (see the <a href="../playground.html">Playground</a> notes), so it cannot run them. Every example
+            below was compiled and run on a current JDK, and the output shown is the real output. To run them
+            yourself, paste them into Ed, which runs Java 23.</p>
+          </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.1</span>Is there anything Java makes easy?</h3>
+        <p>Python has convenient built-in structures for simple, common cases: <code>list</code>,
+        <code>dict</code>, <code>tuple</code>, <code>set</code>. Java, being Java, never makes anything
+        quite that simple. Which leaves the problem that ended Weeks 2+3 (section 11 there): you want a small
+        structure holding a few values of <strong>different types</strong>, without any of the fancy parts
+        a full class needs. In short, <strong>plain old data</strong>.</p>
+        <p>Weeks 2+3 answered it twice, both unsatisfactorily: <strong>parallel arrays</strong> kept in step
+        by hand, and a class with <code>public</code> fields and no methods &mdash; &ldquo;deliberately bad
+        OO&rdquo;. Records are the answer Java itself now gives. They are meant to be something like a C
+        <code>struct</code>: a set of variables bundled so they move around as one unit, without the
+        syntactic bulk of writing a class.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.2</span>Record syntax</h3>
+        <p>A record is actually a special kind of class with a standardised format &mdash; so when you meet
+        classes properly, you can match their parts to what a record does for you. A basic record is:</p>
+        <div class="code-card"><pre>&lt;access modifier&gt; record &lt;Name&gt;(&lt;type&gt; &lt;name&gt;[, &lt;type&gt; &lt;name&gt;]*) {}</pre></div>
+        <p>In English: an access modifier (usually <code>public</code>), the keyword <code>record</code>, a
+        name, then a list of variable declarations <strong>just like a method&rsquo;s parameter list</strong>
+        &mdash; same rules, except that varargs are not allowed. The <code>{}</code> at the end is, for now,
+        just a concession to the implementation; later there is more you can put there. A point in 2D, and a
+        student:</p>
+        <div class="code-card"><pre>public record Point(double x, double y) {}
+
+public record Student(String name, int studentID, int courseID) {}</pre></div>
+        <p class="sched-note">Like a public class, a public record must be in its own file with the same name
+        &mdash; <code>Point.java</code>. A non-public one can be declared inside another class, which is what
+        the examples below do so each fits in one file.</p>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.3</span>What the one line gives you</h3>
+        <div class="tbl-scroll"><table class="tbl">
+          <thead><tr><th>You get</th><th>For <code>record Point(double x, double y)</code></th></tr></thead>
+          <tbody>
+            <tr><td>a variable for each component</td><td><code>x</code> and <code>y</code>, which cannot be changed once set</td></tr>
+            <tr><td>a method for each component, with the <strong>same name</strong>, returning its value</td><td class="mono">p.x()   p.y()</td></tr>
+            <tr><td>a constructor &mdash; a special method for building one, arguments in declaration order</td><td class="mono">new Point(1.5, -3.2)</td></tr>
+            <tr><td>a readable form for printing</td><td class="mono">Point[x=1.5, y=-3.2]</td></tr>
+          </tbody>
+        </table></div>
+        <p>What you do <strong>not</strong> get is any way to change the values. That can be added, but it is
+        not the default &mdash; so a simple record is very close to a Python <strong>tuple</strong> in how you
+        use it: build it once, read it as often as you like.</p>
+        <div class="note">
+          <span class="tag">Did you know?</span>
+          <p>The JEP that finalised records describes them as classes that act as &ldquo;transparent carriers
+          for immutable data&rdquo; and adds: &ldquo;Records can be thought of as <strong>nominal
+          tuples</strong>&rdquo; &mdash; tuples whose type has a name. They took three releases to arrive: a
+          preview in JDK 14, a second preview in JDK 15, and final in <strong>JDK 16</strong>, released on
+          16 March 2021.
+          <a href="https://openjdk.org/jeps/395" target="_blank" rel="noopener">Source: JEP 395 &mdash; Records</a>
+          and <a href="https://openjdk.org/projects/jdk/16/" target="_blank" rel="noopener">JDK 16</a>.</p>
+        </div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.4</span>Making one, and reading it</h3>
+        <p>Create an instance with <code>new</code> and the values, in the order the components were
+        declared &mdash; exactly like calling a method:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">ExampleOfARecordInUse.java</span></div>
+          <pre>public class ExampleOfARecordInUse {
+
+    record Point(double x, double y) {}  // Definition of the record type
+
+    public static void main(String[] args) {
+        // Now we can create one. The syntax should be a little familiar.
+        Point p = new Point(1.5, -3.2);
+
+        System.out.println(p);
+    }
+
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>Point[x=1.5, y=-3.2]</pre></div>
+        <p>To use the values, call the method with the component&rsquo;s name. For a record with a component
+        <code>x</code>, <code>p.x()</code> returns the value of <code>x</code> for the record
+        <code>p</code>:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">ExampleOfARecordInUse.java</span></div>
+          <pre>public class ExampleOfARecordInUse {
+
+    // Point automatically gets two methods:
+    //     public double x() { return x; }
+    //     public double y() { return y; }
+    record Point(double x, double y) {}
+
+    public static void main(String[] args) {
+        Point p = new Point(1.5, -3.2);
+        Point q = new Point(5.6, 8.7);
+
+        // Square the difference of the xs, do the same for the ys,
+        // add the results and take the square root.
+        double dx = p.x() - q.x();
+        double dy = p.y() - q.y();
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        System.out.println("The distance between " + p + " and " + q + " is " + distance);
+    }
+
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>The distance between Point[x=1.5, y=-3.2] and Point[x=5.6, y=8.7] is 12.586500705120544</pre></div>
+        <p>And trying to change a component is a compile error &mdash; the variables are <code>final</code>,
+        Java&rsquo;s word for &ldquo;cannot be reassigned&rdquo;:</p>
+        <div class="code-card"><pre>Point p = new Point(1.5, -3.2);
+p.x = 10;</pre></div>
+        <div class="code-card"><div class="bar"><span class="file">javac says</span></div><pre>error: cannot assign a value to final variable x</pre></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.5</span>Weeks 2+3&rsquo;s program, with a record</h3>
+        <p>Here is the <code>Favourites</code> program from Weeks 2+3, section 11.5 &mdash; the one with the
+        &ldquo;deliberately bad&rdquo; public-field class &mdash; rewritten with a record. One array, both
+        fields, and no way to put a name with the wrong number:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Favourites.java</span></div>
+          <pre>import java.util.Scanner;
+
+public class Favourites {
+
+    record Person(String name, int num) {}
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("How many people? ");
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        Person[] people = new Person[n];      // one array, both fields
+
+        for (int i = 0; i &lt; n; i++) {
+            System.out.print("Enter a name: ");
+            String name = sc.nextLine();
+            System.out.print("Enter their favourite number: ");
+            int num = sc.nextInt();
+            sc.nextLine();
+            people[i] = new Person(name, num);   // built whole, in one step
+        }
+
+        System.out.print("All the people and their favourite numbers: ");
+        for (int i = 0; i &lt; n; i++) {
+            System.out.print("(" + people[i].name() + ", " + people[i].num() + ") ");
+        }
+        System.out.println();
+        System.out.println(people[0]);
+    }
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Terminal, with the input 2, Bach, 7, Linh, 3</span></div><pre>How many people? 2
+Enter a name: Bach
+Enter their favourite number: 7
+Enter a name: Linh
+Enter their favourite number: 3
+All the people and their favourite numbers: (Bach, 7) (Linh, 3)
+Person[name=Bach, num=7]</pre></div>
+        <p>Compare it with the class in Weeks 2+3: no <code>public</code> fields that any code could
+        overwrite, no half-built object with a name but no number yet, and printing works without writing
+        anything.</p>
+        <p>Records also answer section 2.1&rsquo;s puzzle &mdash; a method can only return one value. If a
+        method genuinely needs to produce two, a record puts them together as one:</p>
+        <div class="code-card">
+          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">MinMax.java</span></div>
+          <pre>public class MinMax {
+
+    record Range(int min, int max) {}
+
+    public static Range range(int[] values) {
+        int min = values[0];
+        int max = values[0];
+        for (int v : values) {
+            if (v &lt; min) min = v;
+            if (v &gt; max) max = v;
+        }
+        return new Range(min, max);      // two values, returned as one
+    }
+
+    public static void main(String[] args) {
+        int[] marks = {72, 55, 91, 64};
+        Range r = range(marks);
+        System.out.println("Lowest " + r.min() + ", highest " + r.max());
+        System.out.println(r);
+    }
+}</pre>
+        </div>
+        <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>Lowest 55, highest 91
+Range[min=55, max=91]</pre></div>
+      </div>
+
+      <div class="concept">
+        <h3><span class="idx">8.6</span>What else can they do?</h3>
+        <p>Records are implemented as specialised classes, so a lot more can be added: extra methods,
+        private members, interfaces, generics &mdash; almost everything an ordinary class can do. All of
+        that needs classes first, which is where the subject goes next. For now, a record is the right tool
+        whenever you would otherwise reach for parallel arrays or a tuple.</p>
+        <div class="note tip">
+          <span class="tag">And a record is an object</span>
+          <p>So everything in sections 6 and 7 applies: <code>new Point(…)</code> is allocated on the heap, a
+          <code>Point</code> variable holds a reference, and passing a <code>Point</code> to a method copies
+          the reference. Because a record&rsquo;s components cannot be reassigned, though, a method that
+          receives one cannot change them behind the caller&rsquo;s back &mdash; one less side effect to worry
+          about.</p>
+        </div>
+      </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s09" aria-labelledby="tab-s09" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">09</span>Coding exercises</h3>
+
+          <p>Eight exercises, marked automatically against test cases &mdash; the same idea as the Ed labs,
+          but nothing here is recorded or submitted. Write your answer, press <strong>Run tests</strong>, and
+          read what comes back. A worked solution sits under each one, but try it first.</p>
+
+          <div class="note warn">
+            <span class="tag">Output must match exactly</span>
+            <p>A capital letter or a missing full stop fails the test, exactly as it would on Ed. Trailing
+            spaces and the final newline are the only things forgiven.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">The tests check output, not structure</span>
+            <p>A program that prints the right thing from one long <code>main</code> will pass &mdash; and
+            miss the point. Each brief names the method or function to write; write it, and call it.</p>
+          </div>
+
+          <div id="exercises-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s10" aria-labelledby="tab-s10" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">10</span>Team activity</h3>
+
+          <p>Three or four people, fifteen minutes, then two minutes to report back. These run in the
+          lecture and in the lab &mdash; class activities like these count towards the participation side of
+          your mark.</p>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 1 &middot; 10 min &middot; no computers</div>
+            <h4>Find the verbs</h4>
+            <p>Take the parallel-arrays <code>Favourites</code> program from Weeks 2+3 (section 11.3 there),
+            which is one long <code>main</code>.</p>
+            <ol>
+              <li>Mark every block of lines that does one well-defined job. Give each a method name &mdash; a
+              verb, or a question for a <code>boolean</code>.</li>
+              <li>Write each method&rsquo;s header: <code>static</code>, return type, parameter list.</li>
+              <li>Which of them are functions and which are procedures (section 3.5)?</li>
+            </ol>
+            <p><strong>Report back:</strong> the method your group argued longest about naming, and the name
+            you settled on.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 2 &middot; 10 min &middot; paper, then one laptop</div>
+            <h4>Draw the stack</h4>
+            <p>Section 6.1&rsquo;s <code>CallStack</code> program calls <code>printFactors(4)</code>. On paper,
+            draw the stack of frames at the moment each line is printed &mdash; frame names and the value of
+            every variable in each frame.</p>
+            <ol>
+              <li>What is the largest number of frames on the stack at once?</li>
+              <li>How many separate frames for <code>isFactor</code> are created over the whole run?</li>
+              <li>Then run it. Does the indentation agree with your drawing?</li>
+            </ol>
+            <p><strong>Report back:</strong> your answer to question 2, and how you counted it.</p>
+          </div>
+
+          <div class="team-card">
+            <div class="team-meta">Activity 3 &middot; 10 min &middot; one laptop per group</div>
+            <h4>Mutate or rebind? Fool your neighbours</h4>
+            <p>Each person writes a short function, in Java or Python, that takes an array or list and does
+            something to its parameter &mdash; then calls it and prints the caller&rsquo;s data. The rest of
+            the group predicts the output <em>before</em> it is run.</p>
+            <ol>
+              <li>Which predictions were wrong, and was the mistake about mutating or rebinding?</li>
+              <li>Did anyone use <code>+=</code> on a Python list? What happened?</li>
+            </ol>
+            <p><strong>Report back:</strong> the snippet that fooled the most people.</p>
+          </div>
+
+          <div class="note tip">
+            <span class="tag">Why we do this out loud</span>
+            <p>The first code comprehension check is this week: you explain code, in person. Tracing a stack
+            and saying &ldquo;this line changes the caller&rsquo;s array, that one does not&rdquo; is exactly
+            the kind of explanation it asks for.</p>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s11" aria-labelledby="tab-s11" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">11</span>Quiz</h3>
+
+          <p>Twenty-four questions. Answer them all, then grade. Every question explains its answer,
+          including why the wrong options are wrong. Nothing is recorded or submitted.</p>
+
+          <div class="note tip">
+            <span class="tag">Most of these are &ldquo;what does this print?&rdquo;</span>
+            <p>Work it out in your head first. If you are unsure, paste the snippet into the
+            <a href="../playground.html">Playground</a> afterwards &mdash; but guess before you run, or you
+            learn nothing about what you actually believed.</p>
+          </div>
+
+          <div id="quiz-root"></div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-s12" aria-labelledby="tab-s12" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">12</span>Further reading</h3>
+
+          <p>None of this is assessed. It is here for the moment a section leaves you curious, and for the
+          claims above that you should check rather than take our word for.</p>
+
+          <h3 class="read-group-title">The official word</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html">
+              <span class="kind">Tutorial &middot; sections 1&ndash;3</span>
+              <h4>Defining methods</h4>
+              <p>Oracle's walkthrough of method declarations, naming conventions and overloading &mdash; the reference version of sections 1 to 3.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html">
+              <span class="kind">Tutorial &middot; sections 3.4, 7</span>
+              <h4>Passing information to a method</h4>
+              <p>Parameter types, varargs, and the two short paragraphs on passing primitives and references by value. Read those two twice.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions">
+              <span class="kind">Tutorial &middot; sections 4, 5, 7.4</span>
+              <h4>Defining functions, in Python</h4>
+              <p>def, return, None, default and keyword arguments, *args and **kwargs &mdash; plus a warning about mutable default values that is worth reading once you are comfortable with section 7.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://docs.oracle.com/en/java/javase/21/language/records.html">
+              <span class="kind">Guide &middot; section 8</span>
+              <h4>Record classes</h4>
+              <p>Oracle's guide to records: what is generated for you, and everything section 8.6 says you can add once you know about classes.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+          </div>
+
+          <h3 class="read-group-title">Behind the claims on this page</h3>
+          <div class="read-grid">
+            <a class="read-card" href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html#jvms-2.5">
+              <span class="kind">Specification &middot; section 6</span>
+              <h4>JVM Specification, &sect;2.5&ndash;2.6</h4>
+              <p>Run-time data areas: the JVM stack, the heap, and frames. Dense, but short, and the primary source for everything in section 6.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.1">
+              <span class="kind">Specification &middot; section 7.1</span>
+              <h4>Java Language Specification, &sect;8.4.1</h4>
+              <p>Formal parameters: the one sentence that makes Java call-by-value, and the rules for variable arity parameters.</p>
+              <span class="host">docs.oracle.com</span>
+            </a>
+            <a class="read-card" href="https://docs.python.org/3/faq/programming.html#how-do-i-write-a-function-with-output-parameters-call-by-reference">
+              <span class="kind">FAQ &middot; section 7.4</span>
+              <h4>Python FAQ: call by reference?</h4>
+              <p>The official answer to &ldquo;how do I write a function with output parameters&rdquo;: you do not, because arguments are passed by assignment &mdash; and five ways to get the effect anyway.</p>
+              <span class="host">docs.python.org</span>
+            </a>
+            <a class="read-card" href="https://peps.python.org/pep-0484/">
+              <span class="kind">PEP &middot; section 4.4</span>
+              <h4>PEP 484 &mdash; Type Hints</h4>
+              <p>The 2014 proposal that added type hints, including the promise that they will never be mandatory.</p>
+              <span class="host">peps.python.org</span>
+            </a>
+            <a class="read-card" href="https://openjdk.org/jeps/395">
+              <span class="kind">JEP &middot; section 8</span>
+              <h4>JEP 395 &mdash; Records</h4>
+              <p>Why records exist, in the words of the people who designed them: goals, non-goals, and the history through two previews.</p>
+              <span class="host">openjdk.org</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="lesson-panel" role="tabpanel" id="panel-m01" aria-labelledby="tab-m01" hidden tabindex="0">
+          <h3 class="panel-head"><span class="panel-num">M1</span>Java and Python, side by side</h3>
+
+          <p>Reference, not reading. Everything this week has an equivalent in the other language &mdash; or
+          pointedly does not.</p>
+
+          <h3 class="read-group-title">Defining and calling</h3>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>define</td><td class="mono">static int add(int a, int b) { … }</td><td class="mono">def add(a, b):</td></tr>
+              <tr><td>must live in a class?</td><td>yes</td><td>no</td></tr>
+              <tr><td>parameter types</td><td>required, checked by the compiler</td><td>optional hints, never checked: <code>a: int</code></td></tr>
+              <tr><td>return type</td><td>required; <code>void</code> for none</td><td>optional hint: <code>-&gt; int</code></td></tr>
+              <tr><td>return nothing</td><td><code>void</code> method; bare <code>return;</code> ends it early</td><td>no <code>return</code>, or bare <code>return</code>: the call gives <code>None</code></td></tr>
+              <tr><td>empty body placeholder</td><td class="mono">{ }</td><td class="mono">pass</td></tr>
+              <tr><td>wrong number of arguments</td><td>compile error</td><td><code>TypeError</code> when the call runs</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 class="read-group-title">Parameters</h3>
+          <div class="tbl-scroll"><table class="tbl">
+            <thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead>
+            <tbody>
+              <tr><td>default values</td><td>not allowed &mdash; overload instead</td><td class="mono">def msg(name, msg="Hi!"):</td></tr>
+              <tr><td>arguments by name</td><td>not allowed</td><td class="mono">msg(msg="Hi!", name="Luke")</td></tr>
+              <tr><td>same name, different parameters</td><td>overloading</td><td>not available &mdash; a second <code>def</code> replaces the first</td></tr>
+              <tr><td>any number of arguments</td><td><code>int... nums</code> &mdash; last only, one type, arrives as an array</td><td><code>*names</code> &mdash; any types, arrives as a tuple</td></tr>
+              <tr><td>any named arguments</td><td>not available</td><td><code>**data</code> &mdash; arrives as a dict</td></tr>
+              <tr><td>how arguments are passed</td><td>by value; for arrays and objects the value is a reference</td><td>by object reference (&ldquo;by assignment&rdquo;)</td></tr>
+              <tr><td>bundle a few values</td><td class="mono">record Point(double x, double y) {}</td><td class="mono">(1.5, -3.2)</td></tr>
+            </tbody>
+          </table></div>
+        </section>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="thisweek">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">03 &middot; This week</span>
+        <h2>What to actually do</h2>
+      </div>
+      <div class="concept">
+        <p>On Ed, work through the three Week 4 lessons. This order matches the sections above:</p>
+        <ol>
+          <li>Basics of Methods in Java &mdash; sections 1 to 3</li>
+          <li>Functions in Python &mdash; sections 4, 5 and 7.4</li>
+          <li>Plain Old Data in Java &mdash; Record Classes &mdash; section 8</li>
+        </ol>
+        <div class="note">
+          <span class="tag">Sections 6 and 7 go further than Ed</span>
+          <p>The Java methods lesson ends by promising more on how parameters relate to values outside the
+          method, once you know how memory is handled. Sections 6 and 7 are that material, for both languages.
+          It is not decoration: it explains every &ldquo;why did my array change?&rdquo; question you will have
+          for the rest of the subject.</p>
+        </div>
+        <div class="note warn">
+          <span class="tag">Code comprehension 1 &middot; 5%</span>
+          <p>The first code comprehension stage is scheduled for this week, timetabling permitting. You will
+          be asked to explain code, in person. <strong>Canvas &rarr; Assignments is authoritative</strong> for
+          what is due and when; where this page differs, Canvas and the announcements win. Assessed lab
+          exercises are still due <strong>11:55pm the Monday of the following week</strong>, and you must pass
+          <em>all</em> test cases in an exercise to get its marks.</p>
+        </div>
+        <div class="note">
+          <span class="tag">If you only do one thing</span>
+          <p>For every runnable block in section 7, predict the output <em>before</em> you press Run, and say
+          out loud which line mutates and which line rebinds. That habit is most of this week.</p>
+        </div>
+      </div>
+      <p class="sched-note">Coming up in <a href="week-5.html">Week 5</a>: classes, objects and enums &mdash;
+      the methods from this week finally get objects to belong to.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="block" id="sources" style="padding-top:1rem">
+      <div class="sec-head">
+        <span class="eyebrow">Sources</span>
+        <h2>Everything cited on this page</h2>
+        <p>The lecture content comes from the Week 4 lessons on Ed. Sections 6 and 7 extend them; the links
+        below are for those sections and for the claims this page adds around the lessons &mdash; checking a
+        source yourself is a better habit than trusting any lecture slide, including ours.</p>
+      </div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin-bottom:0.6rem">Specifications and documentation</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1&ndash;3</td><td><a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methods.html">Oracle &mdash; <em>Defining Methods</em></a>, The Java Tutorials</td></tr>
+          <tr><td class="mono">3.3</td><td><code>javap java.io.PrintStream</code> on JDK 26 &mdash; ten <code>println</code> overloads</td></tr>
+          <tr><td class="mono">6.1, 6.3, 6.4</td><td><a href="https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-2.html#jvms-2.5"><em>The Java Virtual Machine Specification</em>, Java SE 25</a>, &sect;2.5.2 (JVM stacks, <code>StackOverflowError</code>), &sect;2.5.3 (heap, garbage collector), &sect;2.6 and &sect;2.6.1 (frames, local variables used to pass parameters)</td></tr>
+          <tr><td class="mono">6.3</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html#jls-4.3.1"><em>The Java Language Specification</em>, Java SE 25, &sect;4.3.1</a> &mdash; &ldquo;The reference values (often just references) are pointers to these objects&rdquo;</td></tr>
+          <tr><td class="mono">7.1</td><td><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.1"><em>The Java Language Specification</em>, Java SE 25, &sect;8.4.1</a> &mdash; &ldquo;the values of the actual argument expressions initialize newly created parameter variables&rdquo;</td></tr>
+          <tr><td class="mono">7.2</td><td><a href="https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html">Oracle &mdash; <em>Passing Information to a Method or a Constructor</em></a> &mdash; reference parameters &ldquo;are also passed into methods by value&rdquo;</td></tr>
+          <tr><td class="mono">4.3, 7.4</td><td><a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions">The Python Tutorial, &sect;4.8 <em>Defining Functions</em></a> &mdash; the <code>None</code> passage, &ldquo;call by value (where the value is always an object reference &hellip;)&rdquo;, and footnote 1</td></tr>
+          <tr><td class="mono">7.4</td><td><a href="https://docs.python.org/3/faq/programming.html#how-do-i-write-a-function-with-output-parameters-call-by-reference">Python Programming FAQ &mdash; <em>How do I write a function with output parameters (call by reference)?</em></a></td></tr>
+          <tr><td class="mono">8</td><td><a href="https://docs.oracle.com/en/java/javase/21/language/records.html">Oracle &mdash; <em>Record Classes</em></a>, Java SE 21 language guide; <a href="https://openjdk.org/jeps/395">JEP 395 &mdash; <em>Records</em></a>; <a href="https://openjdk.org/projects/jdk/16/">JDK 16</a> (General Availability 16 March 2021)</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Quotations</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">Every quotation on this page was checked against a
+      primary source &mdash; the original book, proposal or documentation, not a quotation website.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.1</td><td>Brian W. Kernighan &amp; P. J. Plauger, <a href="https://archive.org/details/the-elements-of-programming-style-second-edition"><em>The Elements of Programming Style</em></a>, 2nd ed., McGraw-Hill, 1978 &mdash; &ldquo;Modularize. Use subroutines.&rdquo; (ch. 4)</td></tr>
+          <tr><td class="mono">4.4</td><td>Guido van Rossum, Jukka Lehtosalo &amp; &#321;ukasz Langa, <a href="https://peps.python.org/pep-0484/"><em>PEP 484 &ndash; Type Hints</em></a>, created 29 September 2014, section &ldquo;Non-goals&rdquo;</td></tr>
+          <tr><td class="mono">7.4</td><td><a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions">The Python Tutorial</a>, &sect;4.8 <em>Defining Functions</em>, footnote 1</td></tr>
+          <tr><td class="mono">8.3</td><td><a href="https://openjdk.org/jeps/395">JEP 395 &mdash; <em>Records</em></a>, Summary &mdash; &ldquo;transparent carriers for immutable data&rdquo;, &ldquo;nominal tuples&rdquo;</td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Comics</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">
+        All by <strong>Randall Munroe</strong>, <a href="https://xkcd.com/">xkcd.com</a>, used under
+        <a href="https://creativecommons.org/licenses/by-nc/2.5/">CC BY-NC 2.5</a>:
+        <a href="https://xkcd.com/138/">138</a> (<em>Pointers</em>, 2006) and
+        <a href="https://xkcd.com/221/">221</a> (<em>Random Number</em>, 2007 &mdash; the one the Ed methods lesson uses).
+      </p>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Photographs</h3>
+      <p style="color:var(--ink-soft);font-size:0.92rem">From <a href="https://commons.wikimedia.org/">Wikimedia
+      Commons</a>, reused under the licence each one names. Author and licence come from the Commons API
+      rather than from anyone&rsquo;s memory &mdash; see <span class="mono">media/fetch-photo.py</span>.</p>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Image</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">edsac</td><td><a href="https://commons.wikimedia.org/wiki/File%3AEDSAC_%2810%29.jpg">EDSAC (10)</a> &mdash; Computer Laboratory, University of Cambridge, reproduced by permission &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+          <tr><td class="mono">stack-plates</td><td><a href="https://commons.wikimedia.org/wiki/File%3AStack_of_dinner_plates.jpg">Stack of dinner plates</a> &mdash; Santeri Viinamäki, 2016 &middot; <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a></td></tr>
+          <tr><td class="mono">kernighan</td><td><a href="https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg">Brian Kernighan in 2012 at Bell Labs 1(cropped)</a> &mdash; Ben Lowe, 2012 &middot; <a href="https://creativecommons.org/licenses/by/2.0">CC BY 2.0</a></td></tr>
+        </tbody>
+      </table></div>
+
+      <h3 style="font-family:Archivo,sans-serif;font-size:1rem;margin:1.4rem 0 0.6rem">Articles</h3>
+      <div class="tbl-scroll"><table class="tbl">
+        <thead><tr><th>Used in</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">1.1</td><td><a href="https://en.wikipedia.org/wiki/Function_(computer_programming)#History">Function (computer programming) &mdash; History</a>: Wilkes, Wheeler and Gill and the closed subroutine; Turing&rsquo;s 1945 ACE proposal</td></tr>
+          <tr><td class="mono">1.1</td><td><a href="https://en.wikipedia.org/wiki/David_Wheeler_(computer_scientist)">David Wheeler (computer scientist)</a> &mdash; EDSAC, the closed subroutine around 1951, the &ldquo;Wheeler jump&rdquo;</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+    <nav class="pagenav" aria-label="Page navigation">
+      <a href="week-2-3.html"><span class="dir">Previous</span>Weeks 2 &amp; 3 &mdash; Choosing and Repeating</a>
+      <!-- Placeholder: add a "Slides" link to ../slides/week-4-slides.pdf once the deck exists. -->
+      <a href="week-5.html"><span class="dir">Next</span>Week 5 &mdash; Classes, Objects and Enums</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> &middot; Programming 1</span>
+    <p>Week 4 &middot; Methods, Functions and Records &middot; Content from the Week 4 lessons on Ed</p>
+  </div>
+</footer>
+<script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=19d11bd5"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/w4-data.js?v=84fbebdf"></script>
+<script src="../assets/w4-exercises.js?v=34271b0f"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=e68aea7e"></script>
+</body>
+</html>

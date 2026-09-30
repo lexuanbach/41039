@@ -82,13 +82,21 @@ window.P1Console = (function () {
       host.appendChild(presetRow);
     }
 
+    // ── two columns: code on the left, input/output on the right ──
+    var cols = el('div', 'console-cols');
+    var colCode = el('div', 'console-col-code');
+    var colIo = el('div', 'console-col-io');
+    cols.appendChild(colCode);
+    cols.appendChild(colIo);
+    host.appendChild(cols);
+
     // ── editor (shared factory: overlay + line-number gutter) ──
     var ed = P1Editor.create({
       lang: current, value: initial[current], label: 'Code editor',
       fullscreen: function () { return host; }
     });
     var editor = ed.textarea;
-    host.appendChild(ed.root);
+    colCode.appendChild(ed.root);
 
     function repaint() { ed.repaint(); }
     function syncScroll() { ed.repaint(); }
@@ -104,27 +112,40 @@ window.P1Console = (function () {
     bInter.title = 'Run first, then type each value when the program asks — like a real terminal';
     sw.appendChild(bBatch); sw.appendChild(bInter);
     ioRow.appendChild(sw);
-    host.appendChild(ioRow);
+    colIo.appendChild(ioRow);
 
     // ── stdin ──
     var stdinLabel = el('div', 'console-sub');
     stdinLabel.appendChild(el('span', null, 'Input (stdin)'));
     stdinLabel.appendChild(el('span', 'hint', 'drag the corner to resize'));
-    host.appendChild(stdinLabel);
+    colIo.appendChild(stdinLabel);
     var stdin = el('textarea', 'console-stdin');
     stdin.spellcheck = false;
     stdin.setAttribute('aria-label', 'Standard input');
     stdin.value = opts.stdin || '';
     stdin.placeholder = 'Anything the program reads with Scanner / input()';
     enableTab(stdin);
-    host.appendChild(stdin);
+    colIo.appendChild(stdin);
 
     // ── boot notice ──
     var boot = el('div', 'console-boot');
     boot.hidden = true;
-    host.appendChild(boot);
+    colIo.appendChild(boot);
 
-    // ── bar ──
+    // ── output ──
+    var outLabel = el('div', 'console-sub');
+    var outTitle = el('span', null, 'Output');
+    outLabel.appendChild(outTitle);
+    outLabel.appendChild(el('span', 'hint', 'drag the corner to resize'));
+    colIo.appendChild(outLabel);
+    var out = el('pre', 'console-out');
+    out.setAttribute('aria-live', 'polite');
+    colIo.appendChild(out);
+    var hint = el('div', 'term-hint');
+    hint.hidden = true;
+    colIo.appendChild(hint);
+
+    // ── bar (spans both columns) ──
     var bar = el('div', 'console-bar');
     var runBtn = el('button', 'btn primary', 'Run');
     runBtn.type = 'button';
@@ -135,19 +156,6 @@ window.P1Console = (function () {
     bar.appendChild(resetBtn);
     bar.appendChild(status);
     host.appendChild(bar);
-
-    // ── output ──
-    var outLabel = el('div', 'console-sub');
-    var outTitle = el('span', null, 'Output');
-    outLabel.appendChild(outTitle);
-    outLabel.appendChild(el('span', 'hint', 'drag the corner to resize'));
-    host.appendChild(outLabel);
-    var out = el('pre', 'console-out');
-    out.setAttribute('aria-live', 'polite');
-    host.appendChild(out);
-    var hint = el('div', 'term-hint');
-    hint.hidden = true;
-    host.appendChild(hint);
 
     function switchTo(l) {
       if (l === current) return;

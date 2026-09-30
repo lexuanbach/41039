@@ -1,0 +1,46 @@
+Subject: Week 3 follow-up — revise on your own, and get ready for the coding comprehensive
+
+
+Hi everyone,
+
+Thank you for another active lecture this week. It was great to see so many of
+you answering, asking questions and helping out during the revision and the
+live coding.
+
+Before next week, please take some time to revise the material on your own.
+In particular:
+
+  * conditional statements: if / else if / else, switch in Java, and match in
+    Python
+  * loops: while, for, for-each and do-while in Java; for and while in Python
+  * break and continue, and nested loops
+
+The Weeks 2 & 3 page of the subject website has everything in one place, with
+runnable code, a quiz and auto-marked coding exercises:
+
+    https://lexuanbach.github.io/41039/weeks/week-2-3.html
+
+The Ed lessons cover the same material. The best preparation is to write
+programs yourself from a blank file, without copying from the slides or the
+examples.
+
+
+CODING COMPREHENSIVE IN NEXT WEEK'S LAB
+
+Next week's lab session will include a coding comprehensive. Please come
+prepared to write and run code on your own during the session.
+
+TA Huy will post an announcement on Canvas very soon (today or tomorrow) with
+the details. Please keep an eye on Canvas and read it carefully when it comes
+out.
+
+As always, please submit your lab work on time; Canvas has the authoritative
+due dates. If anything is unclear, ask on the Ed forum. Ask publicly unless it
+is genuinely personal, since your question will probably help someone else too.
+
+Good luck with your preparation, and see you next week.
+
+
+Dr. Xuan-Bach Le
+Faculty of Computer Science and Engineering, HCMUT
+le.xuan.bach@hcmut.edu.vn
