@@ -1482,3 +1482,91 @@ body.code-fullscreen-open { overflow: hidden; }
   .misquote-body { grid-template-columns: minmax(0, 1fr); }
   .misquote-fig { max-width: 8.5rem; }
 }
+
+/* ── Explained code (assets/explain.js) ─────────────
+   A read-only example whose marked parts explain themselves on hover, tap or focus. */
+.explain {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; box-shadow: var(--shadow);
+  margin: 1.2rem 0 1.6rem; overflow: hidden;
+}
+.explain-head {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.8rem;
+  padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line);
+}
+.explain-head .title {
+  font-family: "Archivo", sans-serif; font-weight: 700;
+  font-size: 0.95rem; margin-right: auto;
+}
+.explain-hint { font-size: 0.8rem; color: var(--ink-soft); }
+.explain-hint .xk-sample {
+  text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 0.25em;
+}
+.explain-hint .when-touch { display: none; }
+@media (hover: none) {
+  .explain-hint .when-hover { display: none; }
+  .explain-hint .when-touch { display: inline; }
+}
+.explain-code {
+  margin: 0; padding: 0.9rem 1.05rem 0.9rem 0;
+  background: var(--code-bg); color: var(--code-text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: calc(0.83rem * var(--code-scale, 1)); line-height: 1.85;
+  overflow-x: auto; counter-reset: ln; tab-size: 4;
+}
+.explain-code .cl {
+  counter-increment: ln; position: relative;
+  padding-left: 3.2em; min-height: 1.85em; white-space: pre;
+}
+.explain-code .cl::before {
+  content: counter(ln); position: absolute; left: 0; width: 2.2em;
+  text-align: right; color: var(--code-cm); opacity: 0.75; user-select: none;
+}
+.explain-code .xk {
+  cursor: help; border-radius: 4px;
+  text-decoration: underline dotted color-mix(in srgb, var(--code-text) 60%, transparent);
+  text-decoration-thickness: 1.5px; text-underline-offset: 0.3em;
+  background: color-mix(in srgb, var(--code-hl-kw) 13%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--code-hl-kw) 13%, transparent);
+  transition: background-color 120ms ease, box-shadow 120ms ease;
+}
+.explain-code .xk:hover, .explain-code .xk.is-active, .explain-code .xk.is-linked {
+  background: color-mix(in srgb, var(--code-hl-kw) 32%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--code-hl-kw) 32%, transparent);
+}
+.explain-code .xk:focus { outline: none; }
+.explain-code .xk:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.explain .explain-out { height: auto; max-height: 20rem; resize: none; }
+.explain .explain-out[hidden] { display: none; }
+
+.explain-all { border-top: 1px solid var(--line); padding: 0.6rem 0.9rem; font-size: 0.9rem; }
+.explain-all summary { cursor: pointer; color: var(--ink-soft); font-weight: 600; font-size: 0.85rem; }
+.explain-all ol { margin: 0.6rem 0 0.3rem; padding-left: 1.5rem; display: grid; gap: 0.6rem; }
+.explain-all li > strong { margin-right: 0.35rem; }
+.explain-all li > div { display: inline; }
+.explain-ref {
+  display: block; font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem; color: var(--ink-soft);
+}
+
+/* one tooltip for the page, fixed to the viewport so scrolling code cannot clip it */
+.explain-tip {
+  position: fixed; top: 0; left: 0; z-index: 1000;
+  max-width: min(23rem, calc(100vw - 16px));
+  padding: 0.65rem 0.85rem; border-radius: 10px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-top: 3px solid var(--accent);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  font-size: 0.88rem; line-height: 1.5;
+}
+.explain-tip.above { border-top-width: 1px; border-bottom: 3px solid var(--accent); }
+.explain-tip[hidden] { display: none; }
+.explain-tip-title {
+  display: block; margin-bottom: 0.2rem;
+  font-family: "Archivo", sans-serif; color: var(--accent-ink);
+}
+.explain-tip-title[hidden] { display: none; }
+.explain-tip code {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.85em;
+  background: var(--paper); padding: 0.05em 0.3em; border-radius: 4px;
+}

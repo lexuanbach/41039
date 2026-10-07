@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=920aa91b">
+<link rel="stylesheet" href="../assets/style.css?v=8a058a01">
 </head>
 <body>
 <header class="topbar">
@@ -1587,6 +1587,39 @@ l[1:3] = ["wooooo"]         # elements 1 and 2 replaced by one element
 print(l)
 </script></div>
       </div>
+
+      <div class="concept">
+        <h3><span class="idx">9.5</span>A typical list program, explained</h3>
+        <p>Everything from this section in one short program: build a list, grow it, read from both
+        ends, walk it, change it, search it. Point at an underlined part to see what it does, then
+        press <strong>Run</strong>.</p>
+        <div class="p1-explain" data-lang="python" data-title="Exam marks"><script type="text/plain" data-role="source">
+marks = [72, 85, 64, 90]
+marks.append(58)
+
+print("First mark:", marks[0])
+print("Last mark:", marks[-1])
+print("How many:", len(marks))
+
+total = 0
+for m in marks:
+    total += m
+print("Average:", total / len(marks))
+
+marks[2] = 66
+print("After the fix:", marks)
+print("Anyone on 85?", 85 in marks)
+</script><ol data-role="notes">
+          <li data-line="1" data-match="[72, 85, 64, 90]" data-title="Square brackets make a list">The values go between <code>[ ]</code>, separated by commas, and stay in the order written. <code>[]</code> on its own is an empty list.</li>
+          <li data-line="2" data-match=".append(58)" data-title="Add to the end">A method of the list: it changes <code>marks</code> itself, putting 58 after 90. The list now has five elements &mdash; lists have no fixed size.</li>
+          <li data-line="4" data-match="marks[0]" data-title="Index 0 is the first element">Counting starts at 0, as with Java arrays, so this is 72. An index past the end, such as <code>marks[5]</code> here, stops the program with an <code>IndexError</code>.</li>
+          <li data-line="5" data-match="marks[-1]" data-title="Negative indices count from the end"><code>-1</code> is the last element and <code>-2</code> the one before it, so you never need the length to reach the end. Here it is 58, the value just appended.</li>
+          <li data-line="6" data-match="len(marks)" data-title="The length, with len()">A function, not a method: write <code>len(marks)</code>, never <code>marks.length</code>. Here it gives 5.</li>
+          <li data-line="9" data-match="for m in marks:" data-title="Walk the list">A for-each loop: <code>m</code> takes each element in turn, first to last. No index needed.</li>
+          <li data-line="13" data-match="marks[2] = 66" data-title="Lists can be changed">Assigning to an index replaces that element in place: 64 becomes 66. A tuple would refuse this (10.4).</li>
+          <li data-line="15" data-match="85 in marks" data-title="Is it in there?"><code>in</code> gives <code>True</code> or <code>False</code>. On a list it checks the elements one by one, from the front.</li>
+        </ol></div>
+      </div>
         </section>
 
         <section class="lesson-panel" role="tabpanel" id="panel-s10" aria-labelledby="tab-s10" hidden tabindex="0">
@@ -1686,6 +1719,38 @@ for x in luke_data.items():      # each entry as a (key, value) tuple
           get a <code>KeyError</code> naming the key you asked for. Try changing
           <code>luke_data['name']</code> above to <code>luke_data['nme']</code>.</p>
         </div>
+        <p><strong>A typical dict program.</strong> Counting is the classic job for a dict: each word
+        is a key, and its value is how many times it has turned up. Point at an underlined part to see
+        what it does.</p>
+        <div class="p1-explain" data-lang="python" data-title="Counting words"><script type="text/plain" data-role="source">
+sentence = "the cat sat on the mat with the hat"
+counts = {}
+
+for word in sentence.split():
+    if word in counts:
+        counts[word] += 1
+    else:
+        counts[word] = 1
+
+print(counts)
+print("'the' appears", counts['the'], "times")
+
+for word, n in counts.items():
+    if n > 1:
+        print(word, "is repeated")
+
+print(len(counts), "different words")
+</script><ol data-role="notes">
+          <li data-line="2" data-match="{}" data-title="An empty dict">Braces with nothing inside make an empty <strong>dict</strong>, not an empty set. It will map each word (the key) to its count (the value).</li>
+          <li data-line="4" data-match=".split()" data-title="Cut a string into words">A string method: it breaks the sentence at the spaces and returns a list, <code>['the', 'cat', 'sat', &hellip;]</code>. The loop walks that list.</li>
+          <li data-line="5" data-match="word in counts" data-title="in checks the keys">On a dict, <code>in</code> asks whether the word is already a <em>key</em>. It never looks at the values.</li>
+          <li data-line="6" data-match="counts[word] += 1" data-title="Change an existing value">The key is already there, so its count is read, increased by 1 and stored back under the same key.</li>
+          <li data-line="8" data-match="counts[word] = 1" data-title="The same syntax adds a key">Assigning to a key that does not exist yet creates it. Without the <code>if</code>, line 6 would meet a missing key and stop with a <code>KeyError</code>.</li>
+          <li data-line="11" data-match="counts['the']" data-title="Look up a value by its key">Square brackets and a key give back the value &mdash; here 3. A key that is not there, such as <code>counts['dog']</code>, raises <code>KeyError</code>.</li>
+          <li data-line="13" data-match="word, n" data-title="Unpack each pair">Two names before <code>in</code> split each entry: the key goes into <code>word</code>, the value into <code>n</code>. More on this with tuples in 10.4.</li>
+          <li data-line="13" data-match=".items()" data-title="Keys and values together">Gives every entry as a <code>(key, value)</code> tuple, in the order the keys were first added.</li>
+          <li data-line="17" data-match="len(counts)" data-title="len counts the keys">On a dict, <code>len</code> is the number of key&ndash;value pairs: 7 different words here.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1738,6 +1803,36 @@ print(type({}))
 no_repeats = {1, 1, 1, 1, 2}
 print(no_repeats)
 </script></div>
+        <p><strong>A typical set program.</strong> Sets answer &ldquo;who, without repeats?&rdquo; and
+        &ldquo;who is in both?&rdquo;. Point at an underlined part to see what it does.</p>
+        <div class="p1-explain" data-lang="python" data-title="Visitors and clubs"><script type="text/plain" data-role="source">
+visits = ['An', 'Binh', 'An', 'Chi', 'Binh', 'An']
+people = set(visits)
+print(people)
+print(len(visits), "visits from", len(people), "people")
+
+python_club = {'An', 'Chi', 'Dung'}
+java_club = {'Binh', 'Chi'}
+print("In both clubs:", python_club & java_club)
+print("In either club:", python_club | java_club)
+print("Python club only:", python_club - java_club)
+
+java_club.add('An')
+print('An' in java_club)
+
+nobody = set()
+print(len(nobody))
+</script><ol data-role="notes">
+          <li data-line="2" data-match="set(visits)" data-title="Duplicates disappear"><code>set()</code> builds a set from the list. Each name is kept once, so six visits become three people.</li>
+          <li data-line="3" data-match="print(people)" data-title="No guaranteed order">A set prints in whatever order Python keeps it, which need not be the order you wrote &mdash; and can change from one run of Python to the next.</li>
+          <li data-line="6" data-match="{'An', 'Chi', 'Dung'}" data-title="Braces without colons make a set">Values only, no <code>key: value</code> pairs &mdash; that is how Python tells a set from a dict.</li>
+          <li data-line="8" data-match="python_club &amp; java_club" data-title="Intersection: in both"><code>&amp;</code> keeps only what is in both sets: <code>{'Chi'}</code>.</li>
+          <li data-line="9" data-match="python_club | java_club" data-title="Union: in either"><code>|</code> combines the two sets. Chi is in both, but appears once &mdash; a set has no duplicates.</li>
+          <li data-line="10" data-match="python_club - java_club" data-title="Difference: in the left only"><code>-</code> keeps what is in the left set but not the right: An and Dung.</li>
+          <li data-line="12" data-match=".add('An')" data-title="Add one element">Changes the set in place. Adding something already there does nothing &mdash; no error, no duplicate. There is no index, so <code>java_club[0]</code> is a <code>TypeError</code>.</li>
+          <li data-line="13" data-match="'An' in java_club" data-title="Membership is what sets do best">Python finds the answer directly instead of checking element by element as it does for a list. Prints <code>True</code>.</li>
+          <li data-line="15" data-match="set()" data-title="The empty set"><code>{}</code> would make an empty <em>dict</em>, so an empty set has to be written <code>set()</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1764,6 +1859,38 @@ print(empty, type(empty))
         <p class="sched-note">Everything else works the way you would now expect:
         <code>primes[0]</code> for an element, <code>for p in primes:</code> to walk it. This is the
         same tuple <code>d.items()</code> handed you in 10.2.</p>
+        <p><strong>A typical tuple program.</strong> Tuples bundle a few values that belong together,
+        and unpacking takes them apart again. Point at an underlined part to see what it does &mdash;
+        and run it to the end, because the last line fails on purpose.</p>
+        <div class="p1-explain" data-lang="python" data-title="Points and pairs"><script type="text/plain" data-role="source">
+point = (3, 4)
+x, y = point
+print("x is", x, "and y is", y)
+print("Size:", len(point), "First:", point[0])
+
+moved = (x + 1, y)
+print("Moved right:", moved)
+
+scores = [('Linh', 7), ('Bach', 9), ('An', 8)]
+for name, score in scores:
+    print(name, "scored", score)
+
+a, b = 1, 2
+a, b = b, a
+print("Swapped:", a, b)
+
+point[0] = 10
+</script><ol data-role="notes">
+          <li data-line="1" data-match="(3, 4)" data-title="A tuple of two values">The comma makes the tuple; the parentheses only make it easier to read. An x and a y belong together, and a tuple keeps them together.</li>
+          <li data-line="2" data-match="x, y = point" data-title="Unpacking">One name per element: <code>x</code> gets 3 and <code>y</code> gets 4. The counts must match &mdash; <code>x, y = (1, 2, 3)</code> is a <code>ValueError</code>.</li>
+          <li data-line="4" data-match="point[0]" data-title="Read it like a list">Indexing, <code>len</code> and <code>for</code> work exactly as they do on a list. Only changing it is forbidden.</li>
+          <li data-line="6" data-match="(x + 1, y)" data-title="To change it, build a new one">You cannot move <code>point</code>, so make a new tuple from its parts. <code>point</code> itself is still <code>(3, 4)</code>.</li>
+          <li data-line="9" data-match="('Linh', 7)" data-title="A list of tuples">Each tuple bundles a name with a score. The list can grow and change; each pair inside it stays as it is.</li>
+          <li data-line="10" data-match="name, score" data-title="Unpacking in a loop">Each tuple is split as it arrives: the name into <code>name</code>, the number into <code>score</code> &mdash; the same trick as <code>for word, n in counts.items()</code> in 10.2.</li>
+          <li data-line="13" data-match="1, 2" data-title="A tuple without brackets">The right-hand side is the tuple <code>(1, 2)</code>, unpacked into <code>a</code> and <code>b</code>.</li>
+          <li data-line="14" data-match="a, b = b, a" data-title="Swap in one line">Python builds the tuple <code>(b, a)</code> from the old values first, then unpacks it. No temporary variable needed.</li>
+          <li data-line="17" data-match="point[0] = 10" data-title="Tuples cannot change">Stops the program with <code>TypeError: 'tuple' object does not support item assignment</code>. Run it and read the last line of the traceback, then delete this line.</li>
+        </ol></div>
       </div>
         </section>
 
@@ -2740,6 +2867,7 @@ Display Name and Pay</pre>
 <script src="../assets/highlight.js?v=88b90c66"></script>
 <script src="../assets/editor.js?v=0ea13585"></script>
 <script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=ad546d49"></script>
 <script src="../assets/w23-data.js?v=63b7d9f8"></script>
 <script src="../assets/w23-exercises.js?v=164a4b3e"></script>
 <script src="../assets/exercises.js?v=a455b14d"></script>

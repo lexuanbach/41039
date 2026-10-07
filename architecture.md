@@ -307,6 +307,36 @@ needed; do not add one.** The gutter widens itself past 99 and 999 lines.
 Line numbers matter here beyond polish: Week 1 teaches students to read
 `WontCompile.java:3`, and Ed's own editor has line numbers switched on in lesson 1.
 
+### Explained code (`assets/explain.js`)
+
+A read-only example whose key parts explain themselves: hover (mouse), tap (touch) or Tab
+(keyboard) to a dotted-underlined part and a tooltip says what it does. Used in Weeks 2–3 for a
+typical list (9.5), dict (end of 10.2), set (end of 10.3) and tuple (end of 10.4) program.
+
+```html
+<div class="p1-explain" data-lang="python" data-title="Exam marks" data-stdin="">
+  <script type="text/plain" data-role="source">…code…</script>
+  <ol data-role="notes">
+    <li data-line="2" data-match=".append(58)" data-title="Add to the end">Explanation, inline HTML.</li>
+  </ol>
+</div>
+```
+
+- A note marks the **exact text** `data-match` on line `data-line` (1-based, after `dedent`);
+  `data-nth` picks a later occurrence on that line. Notes must not overlap. A note whose text is
+  not found is skipped with a `console.warn` naming it — check the console after editing an
+  example. Write `&` in an attribute as `&amp;`.
+- Mark the whole expression for an operator (`python_club & java_club`, not `&`): one character
+  is too small to hover.
+- Rendering: `P1Highlight` → one `<div class="cl">` per line (CSS-counter line numbers) →
+  `wrapRanges()` inserts `<span class="xk" tabindex="0">`, closing and reopening a highlight
+  span at each edge so the nesting stays valid.
+- **One tooltip per page**, `position: fixed` on `<body>`, so the code's horizontal scroll cannot
+  clip it; placed below the token, or above when there is no room, and clamped to the viewport.
+  Hover shows it, click or tap pins it, Esc or a click elsewhere closes it.
+- *Run* goes through `P1Runtime.run` (batch, `data-stdin`), like a console. *All N explanations*
+  lists every note in order (print, screen readers); hovering an entry lights up its code.
+
 ### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
 
 Renders into `#exercises-root`. Each exercise runs the student's code **once per test case**
