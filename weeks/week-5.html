@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=c4b5d1ff">
+<link rel="stylesheet" href="../assets/style.css?v=c03abd33">
 </head>
 <body>
 <header class="topbar">
@@ -105,8 +105,10 @@
         <span class="eyebrow">Week 5 &middot; Interactive</span>
         <h2>The lecture, then the practice</h2>
         <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
-        has focus. Code blocks are live: edit them, run them, and break them on purpose. Several
-        of them are <em>meant</em> to fail &mdash; read what the compiler says before you fix them.</p>
+        has focus. Every code example explains itself: hover over an underlined part (or tap it) to
+        see what it does. <strong>Run</strong> runs it; <strong>&#9998; Edit</strong> opens it in an editor
+        to change it and break it on purpose. Several are <em>meant</em> to fail &mdash; read what the
+        compiler says before you fix them.</p>
       </div>
 
       <div class="lesson">
@@ -245,7 +247,7 @@
         large or fix someone else&rsquo;s code. This <code>BankAccount</code> (the one from lab 5)
         encapsulates two pieces of data and offers methods for controlled access to them. The balance is
         kept as a whole number of <strong>cents</strong>:</p>
-        <div class="p1-console" data-lang="java" data-title="BankAccount, storing cents"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s01-e1" data-lang="java" data-title="BankAccount, storing cents"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         BankAccount acc = new BankAccount("Linh", 100.10f);
@@ -286,14 +288,27 @@ class BankAccount {
         return this.accountName;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="new BankAccount(&quot;Linh&quot;, 100.10f)" data-title="Create an account"><code>new</code> makes a <code>BankAccount</code> object and runs its constructor (lines 20&ndash;23) with these two arguments. The <code>f</code> makes <code>100.10</code> a <code>float</code> literal; without it, it is a <code>double</code> and will not fit the <code>float</code> parameter.</li>
+  <li data-line="7" data-match="acc.currentBalance()" data-title="Ask, do not reach in"><code>main</code> learns the balance only by calling a public method, which returns it as a <code>float</code> number of dollars. Nothing in <code>main</code> reveals that the account keeps cents.</li>
+  <li data-line="10" data-match="big.deposit(0.01f)" data-title="A thousand single cents">Each call rounds <code>0.01 &times; 100</code> to exactly 1 cent, so the <code>int</code> balance grows by exactly 1000 cents, to $1,000,010. Keep this loop in mind for 1.4.</li>
+  <li data-line="15" data-match="class BankAccount" data-title="Data and code bundled">The blueprint for every account object: two pieces of data (lines 17&ndash;18) together with the only methods allowed to touch them. Binding data to the code allowed to change it is the central idea of OOP (1.1).</li>
+  <li data-line="17" data-match="private" data-title="Hidden from other classes">Only code inside <code>BankAccount</code> may use <code>accountName</code>, or <code>balance</code> on line 18, which is private too. <code>Runner</code>&rsquo;s <code>main</code> is outside, so it must go through the public methods.</li>
+  <li data-line="18" data-match="int balance;" data-title="Money as whole cents">An <code>int</code> holds whole numbers exactly, so $100.10 is kept as 10010 and adding or subtracting cents never loses anything to rounding.</li>
+  <li data-line="20" data-match="public BankAccount(String accountName, float initialBalance)" data-title="The constructor">Same name as the class and no return type, not even <code>void</code>. It runs once, when <code>new</code> creates the object, and gives the fields their first values.</li>
+  <li data-line="21" data-match="this.accountName = accountName;" data-title="this picks the field">The parameter has the same name as the field, so plain <code>accountName</code> means the parameter. <code>this.accountName</code> is the field of the object being built.</li>
+  <li data-line="22" data-match="Math.round(initialBalance * 100)" data-title="Dollars to cents">Multiply to get cents, still a <code>float</code>, then round to the nearest whole number. Given a <code>float</code>, <code>Math.round</code> returns an <code>int</code>, so the result goes into <code>balance</code> with no cast.</li>
+  <li data-line="26" data-match="(float) this.balance / 100" data-title="Cast first, then divide">The cast applies to <code>this.balance</code> alone, so the division is done in <code>float</code> and keeps the cents: 11919 becomes 119.19. Without the cast, <code>int</code> division would give 119.</li>
+  <li data-line="30" data-match="balance -= Math.round(amount * 100);" data-title="Controlled change">The amount is turned into whole cents before it is subtracted. No parameter is called <code>balance</code>, so the plain name means the field; <code>this.</code> is optional here.</li>
+  <li data-line="37" data-match="public String accountName()" data-title="Read-only from outside">A method may share a field&rsquo;s name; the brackets tell Java which is meant. It hands out the name, and no method changes it, so outside code can read the name but never alter it.</li>
+        </ol></div>
         <p class="sched-note">Two classes in one file: only one may be <code>public</code>, and the file is
         named after it &mdash; the Week 1 rule. <code>BankAccount</code> has no access modifier, which is
         what lets it share the file.</p>
         <p><code>accountName</code> and <code>balance</code> are <code>private</code>, so code outside the
         class cannot interfere with them except through the methods. Try it: this <code>main</code> reaches
         for the balance directly.</p>
-        <div class="p1-console" data-lang="java" data-title="Reaching past the methods"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s01-e2" data-lang="java" data-title="Reaching past the methods"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         BankAccount acc = new BankAccount("Linh", 100.10f);
@@ -310,7 +325,13 @@ class BankAccount {
         this.balance = Math.round(initialBalance * 100);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="new BankAccount(&quot;Linh&quot;, 100.10f)" data-title="This line is allowed">The constructor is <code>public</code>, so any class may create an account. But a compile error stops the whole file, so not even this line runs.</li>
+  <li data-line="4" data-match="acc.balance" data-title="The error line"><code>main</code> is in <code>Runner</code>, and <code>balance</code> is private to <code>BankAccount</code>, so the compiler refuses the assignment (<em>javac:</em> <em>balance has private access in BankAccount</em>). Sharing a file does not help: <code>private</code> means this class only.</li>
+  <li data-line="8" data-match="class BankAccount" data-title="No way in at all">This cut-down class has only a constructor. With no public methods, code outside the class cannot read or change <code>balance</code> at all.</li>
+  <li data-line="10" data-match="private" data-title="What blocks it">Access to <code>balance</code> is limited to code written inside <code>BankAccount</code>&rsquo;s braces. Remove this word and line 4 compiles &mdash; and <code>main</code> can set any balance it likes.</li>
+  <li data-line="14" data-match="this.balance = Math.round(initialBalance * 100);" data-title="Inside the class: allowed">The constructor belongs to <code>BankAccount</code>, so it may assign <code>balance</code> freely. The same field is out of bounds in <code>main</code>.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">Safety, not security</span>
           <p><code>private</code> is there to stop <em>accidental</em> interference, not a determined
@@ -330,7 +351,7 @@ class BankAccount {
         cents, and says the lab program could &ldquo;probably (I haven&rsquo;t tested it)&rdquo; use it
         unchanged. So test it. Same <code>main</code>, word for word; only the inside of
         <code>BankAccount</code> differs:</p>
-        <div class="p1-console" data-lang="java" data-title="Same interface, float inside"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s01-e3" data-lang="java" data-title="Same interface, float inside"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         BankAccount acc = new BankAccount("Linh", 100.10f);
@@ -371,7 +392,16 @@ class BankAccount {
         return this.accountName;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="7" data-match="acc.currentBalance()" data-title="The interface is unchanged"><code>main</code> depends only on the names, parameters and return types of the constructor and the four public methods. Those are identical, so <code>main</code> compiles without a change.</li>
+  <li data-line="10" data-match="big.deposit(0.01f)" data-title="Same calls, different result">In the cents version this loop added exactly 1000 cents. Here each call does a <code>float</code> addition that changes nothing (line 34), so Bach&rsquo;s balance never moves from 1000000.0.</li>
+  <li data-line="18" data-match="private float balance;" data-title="Only the inside changed">The field now holds dollars directly, as a <code>float</code>. Because it is private, no code outside the class could depend on it &mdash; which is why the swap is invisible to <code>main</code>.</li>
+  <li data-line="22" data-match="this.balance = initialBalance;" data-title="Stored as given">No conversion to cents. But <code>100.10f</code> cannot be held exactly: the nearest <code>float</code> is 100.09999847&hellip;, which <code>currentBalance</code> later rounds back to the cent.</li>
+  <li data-line="26" data-match="Math.round(balance * 100)" data-title="Round to whole cents">Turns dollars into cents and rounds to the nearest whole number. Given a <code>float</code>, <code>Math.round</code> returns an <code>int</code>.</li>
+  <li data-line="26" data-match="(float)" data-title="Cast before dividing">The cast applies to the <code>int</code> from <code>Math.round</code>, so <code>/ 100</code> divides in <code>float</code> and keeps the cents. Without it, <code>int</code> division would drop them.</li>
+  <li data-line="30" data-match="balance -= amount;" data-title="Every float sum is rounded">Each subtraction and addition rounds its result to the nearest <code>float</code>. Near Linh&rsquo;s 100 dollars those errors are far below a cent, and <code>currentBalance</code> rounds them away.</li>
+  <li data-line="34" data-match="balance += amount;" data-title="Where the cents vanish">Near 1,000,000 the nearest <code>float</code>s are 1000000.0 and 1000000.0625. The exact sum, about 1000000.01, is much closer to the first, so the result rounds back to the old balance.</li>
+        </ol></div>
         <p>Linh&rsquo;s account agrees with the cents version, to the cent. Bach&rsquo;s does not: a thousand
         one-cent deposits into a million-dollar account simply vanish. A Java <code>float</code> is an IEEE
         754 32-bit number with only about seven significant digits, and near 1,000,000 the gap between one
@@ -449,7 +479,7 @@ class BankAccount {
         </ul>
         <p>An empty class is perfectly legal, and occasionally handy as a placeholder to fill in later.
         <code>Empty</code> here has no access modifier at all:</p>
-        <div class="p1-console" data-lang="java" data-title="The empty class"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s02-e1" data-lang="java" data-title="The empty class"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         Empty empty = new Empty();
@@ -460,7 +490,12 @@ public class Runner {
 class Empty {
 
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="public class Runner" data-title="The one public class">Only one class per file may be <code>public</code>, and the file must be named after it &mdash; <code>Runner.java</code>. It holds <code>main</code>, so this is where the program starts.</li>
+  <li data-line="3" data-match="Empty empty" data-title="A class is a type">The variable&rsquo;s type is the class <code>Empty</code>. Java is case-sensitive, so <code>Empty</code> and <code>empty</code> are different names; by convention only the class starts with a capital.</li>
+  <li data-line="3" data-match="new Empty()" data-title="Making an object">The class is only the template; <code>new</code> makes an actual object from it and gives back a reference, stored in <code>empty</code>. It works although <code>Empty</code> declares no constructor, because Java supplies a default one (section 4.2).</li>
+  <li data-line="8" data-match="class Empty" data-title="No modifier, no members">With no <code>public</code>, <code>Empty</code> can share <code>Runner</code>&rsquo;s file. Its body holds no data and no methods, yet the class is legal and usable as a type.</li>
+        </ol></div>
         <div class="note tip">
           <span class="tag">One class, one purpose</span>
           <p>A class should have a single clear purpose: it models <strong>one entity</strong> in the system.
@@ -474,7 +509,7 @@ class Empty {
         <h3><span class="idx">2.3</span>A class with data and methods</h3>
         <p>A bank account should know whose it is and how much is in it, and offer ways to read and change
         that. Both the data and the methods are <strong>members</strong> of the class:</p>
-        <div class="p1-console" data-lang="java" data-title="BankAccount, with rules" data-stdin="50
+        <div class="p1-explain" data-eid="w5-s02-e2" data-lang="java" data-title="BankAccount, with rules" data-stdin="50
 500"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
@@ -522,7 +557,19 @@ class BankAccount {
         return this.balance;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="6" data-match="new BankAccount(&quot;Linh&quot;, 100.0)" data-title="Making an account"><code>new</code> creates a fresh <code>BankAccount</code> object and runs its constructor (line 22) with these two arguments. The reference that comes back is stored in <code>acc</code>.</li>
+  <li data-line="9" data-match="acc.deposit(sc.nextDouble())" data-title="Dot, then call">The inner call runs first: <code>nextDouble()</code> reads 50 and returns it as a <code>double</code>. Then the dot follows <code>acc</code> to its object and runs that object&rsquo;s <code>deposit</code> with 50.0 as <code>amount</code>.</li>
+  <li data-line="11" data-match="acc.withdraw(sc.nextDouble())" data-title="Asking, not taking"><code>main</code> can only <em>ask</em> the account for 500; <code>withdraw</code> decides. The balance is 150.0, so the request is refused and nothing tells the caller.</li>
+  <li data-line="13" data-match="acc.getCustomerName()" data-title="Reading through a getter">The fields are private, so <code>main</code> cannot write <code>acc.customerName</code>; it calls a method that returns the value instead. A method used like this is often called a <em>getter</em>.</li>
+  <li data-line="17" data-match="class BankAccount" data-title="A template, not a program">No <code>main</code> and nothing <code>static</code>: the class only describes what every account holds and can do. Nothing happens until another class makes an object from it.</li>
+  <li data-line="19" data-match="private String customerName;" data-title="Data members">Every <code>BankAccount</code> object gets its own <code>customerName</code> and <code>balance</code>. <code>private</code> means only code inside this class can use them by name.</li>
+  <li data-line="22" data-match="BankAccount(String customerName, double startingBalance)" data-title="The constructor">Named after the class, with no return type &mdash; not even <code>void</code>. It runs once, when <code>new</code> makes the object, to give the fields their starting values; section 4.2 covers it fully.</li>
+  <li data-line="23" data-match="this.customerName = customerName;" data-title="this: the object itself"><code>this.customerName</code> is the object&rsquo;s field; plain <code>customerName</code> is the parameter of the same name. The parameter&rsquo;s value is copied into the field (more in section 4.3).</li>
+  <li data-line="31" data-match="void withdraw" data-title="Changes, returns nothing">A <code>void</code> method that modifies the object instead of returning a value &mdash; Week 4&rsquo;s rule that a method normally does one or the other.</li>
+  <li data-line="32" data-match="this.balance &gt;= amount &amp;&amp; amount &gt; 0" data-title="The rule lives inside">Both must hold: enough money, and a positive amount. Because <code>balance</code> is private, this method is the only way to reduce it, so no caller can skip the check.</li>
+  <li data-line="44" data-match="return this.balance;" data-title="Returns, changes nothing">The other half of that rule: <code>getBalance</code> hands back the current balance and leaves it alone. Line 13 joins it onto the string, giving <code>Linh has 150.0</code>.</li>
+        </ol></div>
         <p>With 50 then 500, the withdrawal is quietly refused &mdash; the rule lives <em>inside</em> the
         class, so no caller can forget it. The class has all the fundamental elements:</p>
         <ul>
@@ -547,13 +594,18 @@ class BankAccount {
         <p>A class is not only a template: it is a <strong>type</strong>. A variable&rsquo;s type can be a
         class, and so can the element type of an array, the return type of a method and the type of a
         parameter. That buys real confidence:</p>
-        <div class="code-card"><pre>BankAccount[] accounts = new BankAccount[numberOfAccounts];</pre></div>
+        <div class="p1-explain" data-eid="w5-s02-e3" data-lang="java" data-title="An array of objects" data-run="none"><script type="text/plain" data-role="source">
+BankAccount[] accounts = new BankAccount[numberOfAccounts];
+</script><ol data-role="notes">
+  <li data-line="1" data-match="BankAccount[]" data-title="A class as element type">The class name is used just like <code>int</code> in <code>int[]</code>: every element of <code>accounts</code> must be a reference to a <code>BankAccount</code> (or <code>null</code>).</li>
+  <li data-line="1" data-match="new BankAccount[numberOfAccounts]" data-title="Slots, not accounts">This makes the array only &mdash; no <code>BankAccount</code> objects. Every slot starts as <code>null</code> until an account made with <code>new BankAccount(&hellip;)</code> is stored in it.</li>
+        </ol></div>
         <p>Nothing that is not a <code>BankAccount</code> can get into <code>accounts</code> &mdash; the
         compiler (or, failing that, the runtime) stops it. And because an object can be handed to a method,
         you can pass in <em>functionality</em>, not just data: below, <code>countSameOwner</code> does not pull
         the names out and compare them itself; it <strong>asks the account</strong>, because the account knows
         what &ldquo;same owner&rdquo; means.</p>
-        <div class="p1-console" data-lang="java" data-title="Ask the object"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s02-e4" data-lang="java" data-title="Ask the object"><script type="text/plain" data-role="source">
 public class Runner {
 
     public static int countSameOwner(BankAccount account, BankAccount[] all) {
@@ -589,14 +641,24 @@ class BankAccount {
         return this.customerName.equals(other.customerName);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="BankAccount account, BankAccount[] all" data-title="Classes as parameter types">One account and an array of them. Only <code>BankAccount</code>s can be passed in, so the compiler knows each one offers a <code>hasSameOwner</code> method.</li>
+  <li data-line="5" data-match="for (BankAccount candidate : all)" data-title="For-each over objects"><code>candidate</code> refers to each account in the array in turn &mdash; the objects themselves, not copies, since the array holds references.</li>
+  <li data-line="6" data-match="account.hasSameOwner(candidate)" data-title="Ask the object">The method does not pull the names out (it could not: they are private). It asks <code>account</code>, passing the candidate, and the <code>boolean</code> it gets back is the condition.</li>
+  <li data-line="14" data-match="new BankAccount[3]" data-title="Three empty slots">Three <code>null</code> references until lines 15&ndash;17 store an account in each.</li>
+  <li data-line="15" data-match="new BankAccount(&quot;Linh&quot;, 100)" data-title="Building each element">Each <code>new</code> makes a separate account, and its reference goes into one slot. The <code>int</code> 100 is widened to the constructor&rsquo;s <code>double</code> automatically.</li>
+  <li data-line="19" data-match="countSameOwner(accounts[0], accounts)" data-title="Passing objects in">Both arguments are references (Week 4, section 7), so the method works on the very same account and array. The first account is in the array too and matches itself, so the count is 2.</li>
+  <li data-line="32" data-match="boolean hasSameOwner(BankAccount other)" data-title="The account knows">A method of the account itself: <code>this</code> is the account it was called on (<code>account</code> on line 6) and <code>other</code> is the one passed in.</li>
+  <li data-line="33" data-match="this.customerName.equals" data-title="Strings compare with equals"><code>equals</code> compares the characters and returns a <code>boolean</code>; <code>==</code> only asks whether both are the same String object (section 4.4). Here <code>==</code> would happen to work, as identical literals share one object &mdash; names read from input would not.</li>
+  <li data-line="33" data-match="other.customerName" data-title="Private to the class, not the object">Reading another account&rsquo;s private field is allowed, because this code is inside <code>BankAccount</code>. The same expression in <code>Runner</code> would not compile.</li>
+        </ol></div>
         <p class="sched-note">Two details: <code>hasSameOwner</code> may read <code>other.customerName</code>
         even though it is private, because <code>private</code> means &ldquo;only code in this class&rdquo;,
         not &ldquo;only this object&rdquo;. And Strings are compared with <code>.equals</code>, not
         <code>==</code> &mdash; section 4.4 shows why. The Ed lesson&rsquo;s own version of this method returns
         a <code>List</code>, which you have not met in Java yet; it is the same idea.</p>
         <p>Now try to put something else in the array:</p>
-        <div class="p1-console" data-lang="java" data-title="The type system says no"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s02-e5" data-lang="java" data-title="The type system says no"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         BankAccount[] accounts = new BankAccount[2];
@@ -607,7 +669,12 @@ public class Runner {
 
 class BankAccount {
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="BankAccount[] accounts" data-title="The element type is fixed">Every slot of <code>accounts</code> may hold only a <code>BankAccount</code> reference (or <code>null</code>), and the compiler checks each assignment into it before anything runs.</li>
+  <li data-line="4" data-match="new BankAccount()" data-title="This one fits">A <code>BankAccount</code> into a <code>BankAccount</code> slot. The class writes no constructor, so Java&rsquo;s default one, with no parameters, is used (section 4.2).</li>
+  <li data-line="5" data-match="&quot;Linh's account&quot;" data-title="A String is not a BankAccount">The compiler checks the right-hand side against the element type and refuses. ECJ: <em>Type mismatch: cannot convert from String to BankAccount</em>; Ed&rsquo;s <code>javac</code>: <em>incompatible types: String cannot be converted to BankAccount</em>.</li>
+  <li data-line="9" data-match="class BankAccount" data-title="Empty, but still a type">No fields and no methods, yet <code>BankAccount</code> is a type the compiler enforces as strictly as <code>int</code> or <code>String</code>. Because of line 5, nothing runs &mdash; not even line 4.</li>
+        </ol></div>
       </div>
         </section>
 
@@ -620,7 +687,7 @@ class BankAccount {
         own right. Anything marked <code>static</code> lives on the <strong>class</strong>: it exists without
         any objects, and it is <em>not</em> copied into objects at all. Reach a static variable through an
         object and you get the one class-level copy that every object shares:</p>
-        <div class="p1-console" data-lang="java" data-title="Silly, but instructive"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s03-e1" data-lang="java" data-title="Silly, but instructive"><script type="text/plain" data-role="source">
 public class Silly {
     private static int value = 10;
 
@@ -635,7 +702,14 @@ public class Silly {
         System.out.println(Silly.value);  // access it from the class itself
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="2" data-match="static" data-title="One copy, on the class">The variable belongs to the class <code>Silly</code> itself. It is created and set to 10 before <code>main</code> even starts, with no object in existence, and it is never copied into objects.</li>
+  <li data-line="6" data-match="new Silly()" data-title="An object with nothing inside"><code>a</code> and <code>b</code> refer to two separate objects, but <code>Silly</code> has no instance variables, so neither object holds a <code>value</code> of its own.</li>
+  <li data-line="9" data-match="a.value" data-title="Reached through an object">The compiler uses only the <em>type</em> of <code>a</code>, <code>Silly</code>, to find the field &mdash; the one class-level <code>value</code>, still 10. The object itself plays no part.</li>
+  <li data-line="10" data-match="b.value = 30" data-title="Changed through another object">There is no &ldquo;<code>b</code>&rsquo;s value&rdquo; to change: this assigns 30 to the single shared copy, exactly as <code>Silly.value = 30</code> would.</li>
+  <li data-line="11" data-match="a.value" data-title="Same variable, new value">Now 30, although nothing was done to <code>a</code>: <code>a.value</code> and <code>b.value</code> are two names for one variable.</li>
+  <li data-line="12" data-match="Silly.value" data-title="The honest way to write it"><code>ClassName.member</code> says plainly that the variable is static. It needs no object at all: <code>Silly.value</code> works even in a program that never says <code>new Silly()</code>.</li>
+        </ol></div>
         <p>The Java Language Specification: for a <code>static</code> field &ldquo;there exists exactly one
         incarnation of the field, no matter how many instances (possibly zero) of the class may eventually
         be created&rdquo;. If every object of a class should share one value, this is how; it is also how to
@@ -653,7 +727,7 @@ public class Silly {
         <p>The class also provides all the <code>static</code> methods. <code>main</code> is the obvious one
         &mdash; it runs first, before any object exists. But any method that needs nothing beyond its
         parameters (and other static data) can be static and used without creating an object:</p>
-        <div class="p1-console" data-lang="java" data-title="A class that is useful without objects"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s03-e2" data-lang="java" data-title="A class that is useful without objects"><script type="text/plain" data-role="source">
 public class Circle {
 
     private double x, y, radius;
@@ -678,7 +752,15 @@ public class Circle {
         System.out.println("The area of a circle of radius 5 is " + area(5) + ".");
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="double x, y, radius" data-title="Instance variables">No <code>static</code>, so every <code>Circle</code> object gets its own <code>x</code>, <code>y</code> and <code>radius</code> (three declared in one statement). They have no memory until an object is made.</li>
+  <li data-line="5" data-match="public static final double PI" data-title="A public class constant"><code>static</code>: one copy, on the class; <code>final</code>: it can never change; <code>public</code>: other classes may read it as <code>Circle.PI</code>. Capitals are the naming convention for constants.</li>
+  <li data-line="7" data-match="public Circle(double x, double y, double radius)" data-title="The constructor, unused here">It would run once for each <code>new Circle(&hellip;)</code>, copying its arguments into that object&rsquo;s variables. <code>main</code> never creates a <code>Circle</code>, so it never runs in this program.</li>
+  <li data-line="13" data-match="public double area()" data-title="An instance method">No <code>static</code>: it runs <em>for</em> one particular circle, so it can read that circle&rsquo;s <code>radius</code>. It would be called on an object, as <code>c.area()</code>.</li>
+  <li data-line="14" data-match="area(radius)" data-title="Instance code calling static code">An instance method may call a static one freely. One <code>double</code> argument matches <code>area(double)</code> on line 17, not this method itself: overloading again.</li>
+  <li data-line="17" data-match="static" data-title="Needs only its parameter">The static <code>area</code> uses nothing but its parameter and the static <code>PI</code>, so it needs no object. Its <code>radius</code> is the parameter, a new local variable, not any circle&rsquo;s field.</li>
+  <li data-line="22" data-match="area(5)" data-title="Called with no object at all"><code>main</code> is static too, so it calls the static <code>area</code> directly. The <code>int</code> 5 is widened to <code>5.0</code> to fit <code>double radius</code>; <code>area()</code> takes no arguments, so it is not a candidate.</li>
+        </ol></div>
         <p><code>x</code>, <code>y</code> and <code>radius</code> need an object before they have any memory or
         value, but the static constant <code>PI</code> and the static <code>area(double)</code> can be used with
         no <code>Circle</code> in existence. The instance method <code>area()</code> simply hands its own radius
@@ -692,7 +774,7 @@ public class Circle {
         <h3><span class="idx">3.3</span>What a static method cannot see</h3>
         <p>A static method runs on the class, with no particular object &mdash; so there is no
         <code>radius</code> for it to read. The compiler says so:</p>
-        <div class="p1-console" data-lang="java" data-title="Static code, instance data"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s03-e3" data-lang="java" data-title="Static code, instance data"><script type="text/plain" data-role="source">
 public class Circle {
 
     private double radius;
@@ -709,7 +791,13 @@ public class Circle {
         System.out.println(area());
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="private double radius;" data-title="One radius per object">An instance variable: it exists only inside a <code>Circle</code> object, one copy per object, and only once that object has been created.</li>
+  <li data-line="5" data-match="public Circle(double radius)" data-title="No object is ever made">The constructor would give one circle its <code>radius</code>, but <code>main</code> never calls <code>new Circle(&hellip;)</code>. Even if the compiler allowed line 10, there would be no radius to read.</li>
+  <li data-line="9" data-match="static" data-title="A method with no object">A static method runs on the class itself, not for any particular circle, so there is no <code>this</code> &mdash; and no object whose variables it could read.</li>
+  <li data-line="10" data-match="radius * radius" data-title="The error: whose radius?">Static code naming an instance variable. The compiler rejects each use of <code>radius</code> on this line: this console says <em>Cannot make a static reference to the non-static field radius</em>; <em>javac</em> says <em>non-static variable radius cannot be referenced from a static context</em>.</li>
+  <li data-line="14" data-match="area()" data-title="Two ways to fix it">Calling a static method from <code>main</code> is fine; the trouble is inside <code>area</code>. Either drop <code>static</code> and call <code>new Circle(5).area()</code>, or give <code>area</code> a parameter, like the static <code>area(double radius)</code> in the previous example.</li>
+        </ol></div>
         <div class="tbl-scroll"><table class="tbl">
           <thead><tr><th>Member</th><th>Lives on</th><th>Needs an object?</th><th>Can use</th></tr></thead>
           <tbody>
@@ -779,7 +867,13 @@ public class Circle {
       <div class="concept">
         <h3><span class="idx">4.2</span><code>new</code> and constructors</h3>
         <p>You have written this line in every program that reads input:</p>
-        <div class="code-card"><pre>Scanner sc = new Scanner(System.in);</pre></div>
+        <div class="p1-explain" data-eid="w5-s04-e1" data-lang="java" data-title="A constructor you already know" data-run="none"><script type="text/plain" data-role="source">
+Scanner sc = new Scanner(System.in);
+</script><ol data-role="notes">
+  <li data-line="1" data-match="Scanner sc" data-title="A reference variable">The type is the class <code>Scanner</code> and the name is <code>sc</code>. The variable will hold a <em>reference</em> to a Scanner object on the heap, not the object itself.</li>
+  <li data-line="1" data-match="new" data-title="Make a new object"><code>new</code> asks the JVM for enough heap memory for one <code>Scanner</code>, then runs a constructor on it. The whole expression&rsquo;s value is the reference to the new object, which is stored in <code>sc</code>.</li>
+  <li data-line="1" data-match="Scanner(System.in)" data-title="Which constructor runs">The class name with an argument list chooses the constructor. <code>System.in</code> is the program&rsquo;s standard input stream, so this is the Scanner constructor that takes an input stream, and the new object is set up to read from it.</li>
+        </ol></div>
         <p>Type, variable name, then an initialisation that creates an object on the spot.
         <code>new</code> tells the JVM to allocate the right amount of heap memory for a <code>Scanner</code> and
         run a special method called a <strong>constructor</strong> &mdash; here the one that takes
@@ -804,7 +898,7 @@ public class Circle {
           <code>new Empty()</code> worked in section 2.2.</li>
         </ul>
         <p>The catch in that last rule: <em>no</em> constructor. Write one of your own and the free one is gone:</p>
-        <div class="p1-console" data-lang="java" data-title="Where did Point() go?"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s04-e2" data-lang="java" data-title="Where did Point() go?"><script type="text/plain" data-role="source">
 public class Runner {
     public static void main(String[] args) {
         Point p = new Point();
@@ -819,7 +913,12 @@ class Point {
         this.y = y;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="new Point()" data-title="No constructor matches">The error line. <code>new Point()</code> asks for a constructor with no parameters, but <code>Point</code> declares only <code>Point(int, int)</code>, so the program does not compile (this console: <em>The constructor Point() is undefined</em>). Either pass two ints, as in <code>new Point(0, 0)</code>, or declare a <code>Point()</code> yourself.</li>
+  <li data-line="8" data-match="private int x, y;" data-title="Two private fields">Declares two <code>int</code> data members in one line. Each <code>Point</code> object gets its own <code>x</code> and <code>y</code>, and only code inside <code>Point</code> can reach them.</li>
+  <li data-line="10" data-match="public Point(int x, int y)" data-title="A constructor of your own">Named after the class, with no return type &mdash; not even <code>void</code>. Because the class now declares a constructor, Java no longer supplies the free default <code>Point()</code>, and that is what breaks line 3.</li>
+  <li data-line="11" data-match="this.x = x;" data-title="this.x is the field">Inside the constructor, a plain <code>x</code> means the parameter, which hides the field of the same name. <code>this.x</code> is the field of the object being built, so this line copies the argument into it (section 4.3).</li>
+        </ol></div>
         <p class="sched-note">Ed&rsquo;s <code>javac</code> words it as <em>constructor Point in class Point cannot
         be applied to given types</em>. The fix is to declare a <code>Point()</code> yourself, if a point with no
         coordinates makes sense &mdash; which is where the next section&rsquo;s trick comes in.</p>
@@ -837,7 +936,7 @@ class Point {
           constructor of the same class. It must be the <strong>first line</strong> of the calling constructor.
           This lets a short constructor fill in defaults without repeating code.</li>
         </ol>
-        <div class="p1-console" data-lang="java" data-title="Circle, with a chain of constructors"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s04-e3" data-lang="java" data-title="Circle, with a chain of constructors"><script type="text/plain" data-role="source">
 public class Circle {
 
     public static final double PI = 3.141529;   // an approximation of Pi
@@ -887,7 +986,19 @@ public class Circle {
         System.out.println("d is at (" + d.getX() + ", " + d.getY() + ") with radius " + d.getRadius() + ".");
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="public static final double PI = 3.141529;" data-title="One shared constant"><code>static</code>: a single copy, stored with the class rather than in each object. <code>final</code>: it can never be changed. The value is a poor &pi; &mdash; <code>Math.PI</code> is the one to use.</li>
+  <li data-line="5" data-match="private double x;" data-title="Each object&rsquo;s own data">Lines 5&ndash;8 are not <code>static</code>, so every <code>Circle</code> gets its own four variables on the heap. Until a constructor sets them, the numbers are <code>0.0</code> and <code>colour</code> is <code>null</code>.</li>
+  <li data-line="11" data-match="public Circle()" data-title="A no-parameter constructor">The class&rsquo;s name and no return type make it a constructor. The comment calls it the default constructor, but strictly that name belongs to the one Java supplies when you write none (4.2); this one is written by hand.</li>
+  <li data-line="12" data-match="this(0, 0, 0);" data-title="Calling another constructor"><code>this(&hellip;)</code> runs the constructor of this class whose parameters fit the arguments &mdash; three numbers, so line 16 &mdash; with the <code>int</code> zeros widened to <code>double</code>. It must be the first statement in the constructor.</li>
+  <li data-line="17" data-match="this(x, y, radius, &quot;Colourless&quot;);" data-title="Filling in a default">Passes its own three parameters on, adding a default colour, to the four-parameter constructor. Writing the default here means no caller has to supply it.</li>
+  <li data-line="22" data-match="this.x = x;" data-title="Field or parameter?">The parameter <code>x</code> hides the field <code>x</code>, so <code>this.x</code> is needed to reach the object&rsquo;s field. Written as <code>x = x;</code>, the parameter would be assigned to itself and the field would stay <code>0.0</code>.</li>
+  <li data-line="29" data-match="area(radius)" data-title="Instance method, static helper">The instance method passes <em>this object&rsquo;s</em> <code>radius</code> to the static <code>area(double)</code>. The two <code>area</code>s are overloads, told apart by their parameter lists (Week 4, 3.3).</li>
+  <li data-line="36" data-match="this.x" data-title="this is optional here">A getter: a public method that lets other code read a private field. No parameter is called <code>x</code>, so <code>return x;</code> would mean exactly the same; the <code>this.</code> only makes it explicit.</li>
+  <li data-line="42" data-match="new Circle(6, 7, 3)" data-title="Three arguments, three parameters">Picks the constructor on line 16, which passes everything on to line 21 with <code>"Colourless"</code>. The <code>int</code> arguments are widened to <code>double</code>, so the object holds 6.0, 7.0 and 3.0.</li>
+  <li data-line="43" data-match="c.area()" data-title="Ask the object">Runs <code>area()</code> on the object <code>c</code> refers to, using its radius of 3.0. The result, 3.141529 &times; 9, prints as <code>28.273760999999997</code> because a <code>double</code> cannot hold most decimals exactly.</li>
+  <li data-line="46" data-match="new Circle()" data-title="Follow the chain">Line 11 calls line 16 with zeros, which calls line 21 with <code>"Colourless"</code>. Only line 21 sets fields, so <code>d</code> ends up at (0.0, 0.0) with radius 0.0 &mdash; one place to get it right.</li>
+        </ol></div>
         <p class="sched-note">Follow <code>new Circle()</code>: it calls the three-parameter constructor with
         zeros, which calls the four-parameter one with <code>"Colourless"</code>. Only one constructor actually
         sets fields, so there is one place to get it right. (This <code>PI</code>, 3.141529, is the Ed
@@ -900,7 +1011,7 @@ public class Circle {
         <p>Because an object variable is a reference, everything Week 4 showed for arrays holds for objects
         you design yourself. Copy the variable and you have two names for one account; pass it to a method and
         the method can change the account through it:</p>
-        <div class="p1-console" data-lang="java" data-title="References to your own objects"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s04-e4" data-lang="java" data-title="References to your own objects"><script type="text/plain" data-role="source">
 public class Runner {
 
     public static void payInterest(BankAccount account) {
@@ -938,7 +1049,16 @@ class BankAccount {
         return this.balance;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="BankAccount account" data-title="A parameter of your own type">A class is a type (2.4), so it can be a parameter&rsquo;s type. The call copies the <em>reference</em> into <code>account</code>, so it refers to the caller&rsquo;s object; the account itself is never copied.</li>
+  <li data-line="4" data-match="account.deposit(account.getBalance() * 0.1)" data-title="Changing the caller&rsquo;s object">The inner call runs first: <code>getBalance()</code> returns the balance, and 10% of it goes to <code>deposit</code>. That changes the object <code>account</code> refers to &mdash; the same object as <code>main</code>&rsquo;s <code>a</code>.</li>
+  <li data-line="8" data-match="new BankAccount(&quot;Linh&quot;, 100)" data-title="Create and initialise"><code>new</code> makes the object on the heap and the constructor on line 25 sets its two fields; the <code>int</code> 100 is widened to <code>100.0</code>. <code>a</code> receives a reference to it.</li>
+  <li data-line="9" data-match="BankAccount b = a;" data-title="Copy the reference, not the object">No <code>new</code>, so no new account: <code>b</code> now refers to the very object <code>a</code> refers to &mdash; Week 4&rsquo;s &ldquo;backup&rdquo; array again.</li>
+  <li data-line="10" data-match="BankAccount c = new BankAccount(&quot;Linh&quot;, 100);" data-title="An identical twin">A second <code>new</code> makes a separate object with the same starting data. Nothing done through <code>a</code> or <code>b</code> can reach it, so it keeps its <code>100.0</code>.</li>
+  <li data-line="12" data-match="b.deposit(50)" data-title="Through b, into the shared account">Deposits into the one object that <code>a</code> and <code>b</code> share, so it holds 150.0. Line 13&rsquo;s interest adds 15.0 more, and line 14 shows 165.0 for both names.</li>
+  <li data-line="16" data-match="a == b" data-title="Same object? Yes"><code>==</code> on object variables compares the references, not the contents. <code>a</code> and <code>b</code> refer to the same object, so it is <code>true</code>.</li>
+  <li data-line="17" data-match="a == c" data-title="Same object? No">Both accounts began as Linh with 100.0, but they are two objects in two places on the heap, so <code>==</code> gives <code>false</code>. Comparing contents would need a method written for the job.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag"><code>==</code> on objects compares references</span>
           <p><code>a == c</code> is <code>false</code> although the two accounts started identical: they are two
@@ -955,7 +1075,7 @@ class BankAccount {
         workspaces. Here is one way to do it: a <code>Pizza</code> that knows its name and price (in cents
         &mdash; section 1.4), and an <code>Order</code> that holds pizzas and can total itself. Enter three
         selections, then <code>0</code> to finish:</p>
-        <div class="p1-console" data-lang="java" data-title="PizzaShop with classes" data-stdin="2
+        <div class="p1-explain" data-eid="w5-s04-e5" data-lang="java" data-title="PizzaShop with classes" data-stdin="2
 1
 2
 0"><script type="text/plain" data-role="source">
@@ -1042,7 +1162,20 @@ class Order {
         return sum;
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="5" data-match="private static final Pizza[] MENU" data-title="An array of objects, shared">One menu for the whole class (<code>static</code>), assigned once (<code>final</code>). Its element type is the class <code>Pizza</code>, so each element is a reference to a Pizza object.</li>
+  <li data-line="6" data-match="new Pizza(&quot;Vegetarian&quot;, 1250)" data-title="Building the menu">Each <code>new</code> runs <code>Pizza</code>&rsquo;s constructor (line 36). A static variable is initialised along with its class, so the three pizzas exist before <code>main</code> starts. Prices are whole cents (section 1.4).</li>
+  <li data-line="15" data-match="MENU[i].describe()" data-title="Ask the pizza to describe itself"><code>MENU[i]</code> is a reference to one Pizza; the dot follows it and calls that object&rsquo;s <code>describe()</code>, which returns its name and price as one String.</li>
+  <li data-line="18" data-match="new Order(10)" data-title="An order with room for ten">Runs <code>Order</code>&rsquo;s constructor (line 60) with capacity 10, which sets up an empty array for the pizzas and a count of 0.</li>
+  <li data-line="23" data-match="order.add(MENU[choice - 1])" data-title="Add a reference, not a copy">Choices 1&ndash;3 become indices 0&ndash;2. <code>add</code> stores the reference to the menu&rsquo;s Pizza, so choosing 2 twice puts two references to the <em>same</em> object in the order.</li>
+  <li data-line="28" data-match="Pizza.dollars(order.total())" data-title="Ask, don&rsquo;t compute"><code>order.total()</code> returns the sum in cents, and <code>Pizza.dollars</code> formats it. <code>dollars</code> is <code>static</code>, so it is called on the class name, with no Pizza object involved.</li>
+  <li data-line="37" data-match="this.name = name;" data-title="Field from parameter">The parameter has the field&rsquo;s name, so <code>this.name</code> means the new object&rsquo;s field and plain <code>name</code> the argument passed to the constructor.</li>
+  <li data-line="46" data-match="dollars(this.priceInCents)" data-title="Instance code may use static code">Inside the class the static <code>dollars</code> needs no class name. An instance method can call a static one freely; the reverse needs an object (3.3).</li>
+  <li data-line="50" data-match="&quot;&quot; + (cents % 100)" data-title="The cents part, as a String"><code>%</code> gives the remainder after dividing by 100 &mdash; the cents &mdash; and adding it to <code>""</code> turns the number into a String. Line 52&rsquo;s <code>cents / 100</code> is integer division, giving the whole dollars.</li>
+  <li data-line="51" data-match="if (cents % 100 &lt; 10) c = &quot;0&quot; + c;" data-title="Always two digits">Pads a single-digit cents value with a leading zero, so 1205 shows as <code>$12.05</code> rather than the misleading <code>$12.5</code>.</li>
+  <li data-line="61" data-match="new Pizza[capacity]" data-title="References, but no pizzas yet">Makes an array of 10 <code>Pizza</code> references, every one <code>null</code>. No Pizza object is created here; <code>add</code> fills the slots later.</li>
+  <li data-line="79" data-match="this.pizzas[i].getPrice()" data-title="Ask each pizza its price">The loop stops at <code>count</code>, not <code>pizzas.length</code>: the unused slots are still <code>null</code>, and calling <code>getPrice()</code> on <code>null</code> would throw a <code>NullPointerException</code>.</li>
+        </ol></div>
         <p class="sched-note">Read <code>main</code> and notice who does what: the shop never adds prices up
         itself &mdash; it asks the order &mdash; and never formats money itself &mdash; it asks the static
         helper on <code>Pizza</code>. Two orders of the same pizza hold two references to one
@@ -1066,7 +1199,7 @@ class Order {
       <div class="concept">
         <h3><span class="idx">5.2</span>Classes and objects</h3>
         <p>A class is defined much as you would guess: <code>class</code>, a name, a colon, and indentation.</p>
-        <div class="p1-console" data-lang="python" data-title="A class"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s05-e1" data-lang="python" data-title="A class"><script type="text/plain" data-role="source">
 class Simple_Class:
 
     value = "A variable in the class, like a data member"
@@ -1078,10 +1211,17 @@ print("No longer in the class here, as the indenting changed back.")
 
 print(Simple_Class.value)
 Simple_Class.func()
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="class Simple_Class:" data-title="A class statement"><code>class</code>, a name and a colon; every indented line below belongs to the class. There are no braces and no <code>public</code>, and Python does not tie the class to a file name as Java does.</li>
+  <li data-line="3" data-match="value = &quot;A variable in the class, like a data member&quot;" data-title="A class attribute">An assignment directly in the class body creates a variable on the class itself &mdash; one copy, like a Java <code>static</code> field (3.1), not one per object.</li>
+  <li data-line="5" data-match="def func():" data-title="A function in the class">Written like any function, but indented inside the class, so it belongs to it. With no parameters it can only be called through the class, as on line 11 &mdash; a static method, in 5.3&rsquo;s terms.</li>
+  <li data-line="8" data-match="print(&quot;No longer in the class here, as the indenting changed back.&quot;)" data-title="Indentation ends the class">Back at the left margin, so this line is outside the class &mdash; and it is the first to print, because running the <code>class</code> statement only made the class, without calling <code>func</code>.</li>
+  <li data-line="10" data-match="Simple_Class.value" data-title="Read through the class">The dot reaches an attribute of the class directly, with no object made &mdash; like Java&rsquo;s <code>Silly.value</code> in 3.1.</li>
+  <li data-line="11" data-match="Simple_Class.func()" data-title="Call through the class">Calls <code>func</code> with no arguments, matching its empty parameter list. Calling it through an object instead fails &mdash; that is the &ldquo;Forgot self&rdquo; example below.</li>
+        </ol></div>
         <p>Objects are created by calling the class like a function, with whatever arguments it needs &mdash;
         <strong>no <code>new</code></strong>:</p>
-        <div class="p1-console" data-lang="python" data-title="An object"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s05-e2" data-lang="python" data-title="An object"><script type="text/plain" data-role="source">
 class Foo:
 
     def bar(self):
@@ -1089,7 +1229,11 @@ class Foo:
 
 obj = Foo()
 obj.bar()
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="self" data-title="The object itself">An instance method&rsquo;s first parameter receives the object the method was called on. It plays the part of Java&rsquo;s <code>this</code>, but is written out in the parameter list; the name <code>self</code> is only a convention, though a universal one.</li>
+  <li data-line="6" data-match="Foo()" data-title="Call the class to make an object">Calling the class like a function creates a new <code>Foo</code> object and returns a reference to it, which <code>obj</code> then holds &mdash; no <code>new</code>. No arguments are needed, because <code>Foo</code> has no <code>__init__</code> asking for any (5.4).</li>
+  <li data-line="7" data-match="obj.bar()" data-title="No argument for self">The brackets are empty, yet <code>bar</code> has one parameter: Python passes <code>obj</code> in as <code>self</code>, so this does the same as <code>Foo.bar(obj)</code>. Without an object, <code>Foo.bar()</code> fails: <code>TypeError: Foo.bar() missing 1 required positional argument: 'self'</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1105,7 +1249,7 @@ obj.bar()
             <tr><td><strong>instance method</strong></td><td>no marker</td><td><code>self</code> &mdash; the object, supplied automatically</td><td class="mono">obj.bar()</td><td>an ordinary method; <code>self</code> is like <code>this</code></td></tr>
           </tbody>
         </table></div>
-        <div class="p1-console" data-lang="python" data-title="All three kinds"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s05-e3" data-lang="python" data-title="All three kinds"><script type="text/plain" data-role="source">
 class Foo:
 
     baz_text = "'Class attribute'"
@@ -1132,11 +1276,21 @@ Foo.show()          # note: no argument for cls
 # Instance methods need an object first:
 obj = Foo()
 obj.hello()         # note: no argument for self
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="baz_text = &quot;'Class attribute'&quot;" data-title="A class attribute">One copy, on the class, which line 14 reads through <code>cls</code>. The double quotes delimit the string; the single quotes are part of its text, so they show in the output.</li>
+  <li data-line="5" data-match="def bar():" data-title="A plain function in the class">No marker and no parameters, so it works as a static method when called through the class, as on line 20. Through an object, <code>obj.bar()</code> would fail, because Python would pass the object in with nowhere to put it.</li>
+  <li data-line="8" data-match="@staticmethod" data-title="A decorator">A line starting with <code>@</code> modifies the <code>def</code> below it. <code>@staticmethod</code> tells Python never to pass in the object or the class, so <code>baz</code> can safely be called either way: <code>obj.baz(5)</code> works too.</li>
+  <li data-line="10" data-match="str(thing)" data-title="Any type of argument"><code>thing</code> has no type, so the caller may pass anything; <code>str</code> turns it into text before <code>+</code> joins it. Without it, <code>Foo.baz(42)</code> would raise a <code>TypeError</code>.</li>
+  <li data-line="12" data-match="@classmethod" data-title="Pass in the class">With <code>@classmethod</code>, Python passes the class itself as the first argument, named <code>cls</code> by convention &mdash; whether the call goes through the class or through an object.</li>
+  <li data-line="14" data-match="cls.baz_text" data-title="Class data through cls">Here <code>cls</code> is <code>Foo</code>, so this reads the attribute from line 3. Reaching the class&rsquo;s data through <code>cls</code> is what a class method is for &mdash; the table&rsquo;s &ldquo;static method that uses static data&rdquo;.</li>
+  <li data-line="16" data-match="self" data-title="An instance method">No marker, and a first parameter that receives the object. It is the only one of the three kinds that needs an object: through the class, <code>Foo.hello()</code> fails with <code>TypeError: Foo.hello() missing 1 required positional argument: 'self'</code>.</li>
+  <li data-line="22" data-match="Foo.show()" data-title="cls is supplied">No argument is written, yet <code>show</code> has one parameter: Python fills <code>cls</code> with <code>Foo</code>, the class before the dot.</li>
+  <li data-line="26" data-match="obj.hello()" data-title="self is supplied">In the same way, Python fills <code>self</code> with <code>obj</code>, the object before the dot. Line 25 had to create that object first, by calling the class.</li>
+        </ol></div>
         <p>Why must an instance method take <code>self</code>? Because calling a method <em>through an
         object</em> passes that object in as the first argument. A function with no parameter has nowhere to
         put it:</p>
-        <div class="p1-console" data-lang="python" data-title="Forgot self"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s05-e4" data-lang="python" data-title="Forgot self"><script type="text/plain" data-role="source">
 class Simple_Class:
 
     def func():
@@ -1144,7 +1298,11 @@ class Simple_Class:
 
 obj = Simple_Class()
 obj.func()
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="def func():" data-title="No room for the object">An empty parameter list: <code>func</code> can accept no arguments at all. Called through the class, <code>Simple_Class.func()</code>, it works as in 5.2; to call it through an object it needs <code>def func(self):</code>.</li>
+  <li data-line="6" data-match="Simple_Class()" data-title="The object is fine">Creating the object works; nothing goes wrong until a method is called through it. Python only finds the problem at run time, on line 7.</li>
+  <li data-line="7" data-match="obj.func()" data-title="The hidden argument">Calling through an object passes <code>obj</code> in as the first argument, so <code>func</code> receives one argument though the brackets are empty. Python stops with <code>TypeError: Simple_Class.func() takes 0 positional arguments but 1 was given</code> &mdash; the 1 is <code>obj</code>.</li>
+        </ol></div>
         <p class="sched-note">The word &ldquo;static&rdquo; is being used slightly differently from Java: the
         intent is the same (no object needed), the details are not. What Java calls a static method is often
         closer to Python&rsquo;s class method.</p>
@@ -1156,7 +1314,7 @@ obj.func()
         created in the <code>__init__</code> method &mdash; Python&rsquo;s equivalent of a constructor, and an
         instance method &mdash; by assigning through <code>self</code>, and read back through <code>self</code>
         too. Every class has an <code>__init__</code>, even if you do not write one.</p>
-        <div class="p1-console" data-lang="python" data-title="Data on the object"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s05-e5" data-lang="python" data-title="Data on the object"><script type="text/plain" data-role="source">
 class Foo:
 
     def __init__(self):
@@ -1167,22 +1325,39 @@ class Foo:
 
 obj = Foo()
 print(obj.secret_mult(2))
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="__init__" data-title="Python&rsquo;s constructor">Python calls <code>__init__</code> automatically on each new object, straight after creating it, with the object as <code>self</code>. You do not call it yourself: <code>Foo()</code> on line 9 does.</li>
+  <li data-line="4" data-match="self.secret = 3" data-title="Creating instance data">Assigning through <code>self</code> creates an attribute on this object &mdash; there is no declaration anywhere else. Each <code>Foo</code> object gets its own <code>secret</code>, unlike a class attribute.</li>
+  <li data-line="6" data-match="(self, num)" data-title="self, then the real parameters"><code>self</code> always comes first; the caller&rsquo;s arguments fill the parameters after it, so line 10&rsquo;s single argument goes to <code>num</code>.</li>
+  <li data-line="7" data-match="self.secret" data-title="Read back through self">The object&rsquo;s data is reached only through <code>self</code>: Java&rsquo;s <code>this.</code> is optional, Python&rsquo;s <code>self.</code> is not. A bare <code>secret</code> here gives <code>NameError: name 'secret' is not defined</code>.</li>
+  <li data-line="9" data-match="Foo()" data-title="Making the object runs __init__">The new object is passed to <code>__init__</code> as <code>self</code>, which gives it its <code>secret</code>. No argument is written because <code>__init__</code> has no parameter besides <code>self</code>.</li>
+  <li data-line="10" data-match="obj.secret_mult(2)" data-title="One argument written, two passed"><code>obj</code> goes in as <code>self</code> and <code>2</code> as <code>num</code>; the method returns <code>2 * 3</code>, and <code>print</code> shows that value.</li>
+        </ol></div>
         <p>With parameters, <code>__init__</code> does exactly the job of section 2.3&rsquo;s Java constructor.
         The same bank account, in Python:</p>
-        <div class="code-card"><pre>class BankAccount:
+        <div class="p1-explain" data-eid="w5-s05-e6" data-lang="python" data-title="BankAccount in Python" data-run="none"><script type="text/plain" data-role="source">
+class BankAccount:
 
     def __init__(self, customer_name, starting_balance):
         self.customer_name = customer_name
         self.balance = starting_balance
 
     def deposit(self, amount):
-        if amount &gt; 0:
+        if amount > 0:
             self.balance += amount
 
 account = BankAccount("Linh", 100.0)   # no new, and no argument for self
 account.deposit(50)
-print(account.balance)                # 150.0</pre></div>
+print(account.balance)                # 150.0
+</script><ol data-role="notes">
+  <li data-line="3" data-match="__init__(self, customer_name, starting_balance)" data-title="A constructor with parameters">The job of Java&rsquo;s <code>BankAccount(String customerName, double startingBalance)</code>, with <code>self</code> added at the front and no types. Callers supply only the two after <code>self</code>.</li>
+  <li data-line="4" data-match="self.customer_name = customer_name" data-title="Attribute from parameter">The same move as Java&rsquo;s <code>this.customerName = customerName;</code>: the left side is the object&rsquo;s attribute, the right side the parameter. Here <code>self.</code> cannot be left out &mdash; <code>customer_name = customer_name</code> would only assign the parameter to itself.</li>
+  <li data-line="5" data-match="self.balance = starting_balance" data-title="Declared by assignment">Java declared <code>private double balance;</code> at the top of the class; in Python this assignment is what creates the attribute, and nothing makes it private.</li>
+  <li data-line="9" data-match="self.balance += amount" data-title="Change this object&rsquo;s balance">Line 8 lets only positive amounts through, as in Java&rsquo;s <code>deposit</code>. <code>self</code> is whichever account the method was called on, so only that object&rsquo;s balance changes.</li>
+  <li data-line="11" data-match="BankAccount(&quot;Linh&quot;, 100.0)" data-title="Three parameters, two arguments">Calling the class makes the object and runs <code>__init__</code>: the new object goes in as <code>self</code>, then <code>"Linh"</code> and <code>100.0</code> fill <code>customer_name</code> and <code>starting_balance</code>.</li>
+  <li data-line="12" data-match="account.deposit(50)" data-title="self is account"><code>account</code> goes in as <code>self</code> and <code>50</code> as <code>amount</code>. An <code>int</code> added to the <code>float</code> 100.0 gives a <code>float</code>, which is why the balance shows as <code>150.0</code>.</li>
+  <li data-line="13" data-match="account.balance" data-title="No getter needed">Python attributes are public, so code outside the class reads <code>balance</code> directly, where Java&rsquo;s <code>private</code> field needed <code>getBalance()</code>. Writing it is just as open, as the note below says.</li>
+        </ol></div>
         <p class="sched-note">Nothing stops <code>account.balance = 1000000</code> here: in Python, attributes
         are public unless you say otherwise. Section 6.3 is what &ldquo;otherwise&rdquo; looks like.</p>
       </div>
@@ -1201,7 +1376,7 @@ print(account.balance)                # 150.0</pre></div>
         too &mdash; much like Java&rsquo;s <code>toString()</code>. Each dunder has its own rules:
         <code>__init__</code> may take extra parameters and returns nothing; <code>__str__</code> takes only
         <code>self</code> and must return a string.</p>
-        <div class="p1-console" data-lang="python" data-title="__str__ and __add__"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s06-e1" data-lang="python" data-title="__str__ and __add__"><script type="text/plain" data-role="source">
 class Money:
 
     def __init__(self, cents):
@@ -1219,7 +1394,16 @@ drink = Money(305)
 print(pizza)                 # print calls __str__
 print(str(drink) + " extra")
 print(pizza + drink)         # + calls __add__
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="__init__" data-title="Hooks into creation"><code>Money(1250)</code> makes a new object and calls <code>__init__</code> on it, with <code>self</code> as the new object and <code>cents</code> as 1250. Keeping whole cents in an <code>int</code> avoids floating-point rounding.</li>
+  <li data-line="6" data-match="def __str__(self):" data-title="Only self, returns a string">Called by <code>str()</code>, and so by <code>print</code>, whenever a <code>Money</code> must become text. It takes no parameter but <code>self</code> and must return a <code>str</code>.</li>
+  <li data-line="7" data-match="self.cents // 100" data-title="Whole dollars"><code>//</code> is floor division, so 1250 <code>//</code> 100 is 12. <code>str()</code> turns the <code>int</code> into a string so <code>+</code> can join it to the others.</li>
+  <li data-line="7" data-match="str(self.cents % 100).zfill(2)" data-title="Always two cent digits"><code>%</code> gives the cents left over (5 for 305), and the string method <code>zfill(2)</code> pads with leading zeros to two characters, giving <code>05</code> rather than <code>5</code>.</li>
+  <li data-line="9" data-match="def __add__(self, other):" data-title="The method behind +">For <code>a + b</code> Python calls <code>a.__add__(b)</code>: <code>self</code> is the left operand, <code>other</code> the right. It returns a brand-new <code>Money</code>, leaving both operands unchanged.</li>
+  <li data-line="15" data-match="print(pizza)" data-title="print uses __str__"><code>print</code> converts its argument with <code>str()</code>, which calls <code>Money.__str__</code>. Without a <code>__str__</code> you would see something like <code>&lt;__main__.Money object at 0x&hellip;&gt;</code>.</li>
+  <li data-line="16" data-match="str(drink)" data-title="str() calls __str__ too">Gives a real string, so <code>+</code> here is string concatenation. Without <code>str()</code>, <code>drink + &quot; extra&quot;</code> would call <code>__add__</code> with a string, which has no <code>cents</code>.</li>
+  <li data-line="17" data-match="pizza + drink" data-title="+ on your own type">Becomes <code>pizza.__add__(drink)</code>, which returns <code>Money(1555)</code>; <code>print</code> then shows it through <code>__str__</code>.</li>
+        </ol></div>
         <p class="sched-note">Dunders are the standard way to give your own type built-in behaviour:
         <code>__add__</code> for <code>+</code>, <code>__lt__</code> for <code>&lt;</code>, and many more. (Java
         has no equivalent for operators: <code>+</code> on your own class is simply a compile error.)</p>
@@ -1230,7 +1414,7 @@ print(pizza + drink)         # + calls __add__
         <p>At a simple level, a Python class&rsquo;s attributes behave like a <code>dict</code>, and access is
         public by default &mdash; so other code can replace them, if it knows the names. Offered without further
         comment, from the Ed lesson:</p>
-        <div class="p1-console" data-lang="python" data-title="Please do not do this"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s06-e2" data-lang="python" data-title="Please do not do this"><script type="text/plain" data-role="source">
 def three():
     return 3
 
@@ -1259,7 +1443,15 @@ print(m.f1())
 
 m.woo = "Woo"
 print(m.woo)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="8" data-match="val = 9" data-title="A class attribute">Assigned in the class body, so it belongs to the class <code>m</code> itself, not to any object, and is reached as <code>m.val</code> or <code>cls.val</code>.</li>
+  <li data-line="10" data-match="def f():" data-title="A static method">No <code>self</code> and no <code>cls</code>, so in section 5.3&rsquo;s terms this is a static method: <code>m.f()</code> works, but calling it through an object would fail, since there is no parameter for the object.</li>
+  <li data-line="13" data-match="@classmethod" data-title="A class method">The decorator makes Python pass the class itself as the first argument, <code>cls</code>, so <code>m.f1()</code> returns <code>m.val</code> &mdash; 9 &mdash; without needing an object.</li>
+  <li data-line="14" data-match="-&gt; int" data-title="A type hint">An annotation saying the method returns an <code>int</code>. It documents intent only: Python does not check it.</li>
+  <li data-line="18" data-match="m.f = three" data-title="Replacing a method">Methods are just attributes of the class, so this assignment rebinds the name <code>f</code> to the function <code>three</code>. The original <code>f</code> is gone, and <code>m.f()</code> now runs <code>three</code>.</li>
+  <li data-line="24" data-match="m.f1 = three" data-title="Even a class method">The class method is replaced by a plain function, so the <code>@classmethod</code> behaviour goes too: <code>m.f1()</code> now calls <code>three</code> with no arguments.</li>
+  <li data-line="27" data-match="m.woo = &quot;Woo&quot;" data-title="A brand-new attribute">Assigning to a name the class never had simply creates it, at run time. In Java, using an undeclared field like this is a compile error.</li>
+        </ol></div>
         <p class="sched-note">A method replaced from outside the class, and a brand-new attribute bolted on at
         run time. The Java compiler would reject every one of these lines. Python lets you &mdash; which is
         precisely why you should not.</p>
@@ -1270,16 +1462,19 @@ print(m.woo)
         <p>Python gives you a way to discourage this. Unless you say otherwise an attribute is public. Start its
         name with <strong>two underscores</strong> and code outside the class can no longer reach it by that
         name:</p>
-        <div class="p1-console" data-lang="python" data-title="A double-underscore attribute"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s06-e3" data-lang="python" data-title="A double-underscore attribute"><script type="text/plain" data-role="source">
 class Foo:
     __priv_data = "Secret"
 
 # This won't work:
 print(Foo.__priv_data)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="2" data-match="__priv_data" data-title="Two leading underscores">A class attribute whose name starts with two underscores (and does not end with two). Inside the class body Python stores it under another name &mdash; the last example in this section shows which.</li>
+  <li data-line="5" data-match="Foo.__priv_data" data-title="AttributeError outside">Outside the class nothing is renamed, so Python looks for an attribute literally called <code>__priv_data</code>, finds none, and stops with an <code>AttributeError</code>.</li>
+        </ol></div>
         <p>It works for methods too &mdash; but <strong>not</strong> for dunder methods, even though they look
         similar, because a dunder name also <em>ends</em> in two underscores:</p>
-        <div class="p1-console" data-lang="python" data-title="A private method, and a dunder that is not"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s06-e4" data-lang="python" data-title="A private method, and a dunder that is not"><script type="text/plain" data-role="source">
 class Foo:
 
     def __str__():
@@ -1290,16 +1485,24 @@ class Foo:
 
 print(Foo.__str__())       # fine: dunders are not hidden
 print(Foo.__hidden())      # AttributeError
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="def __str__():" data-title="A dunder keeps its name">The name ends in two underscores as well, so Python does not rename it. It also breaks the <code>__str__</code> rule by having no <code>self</code>: <code>print(Foo())</code> would fail with a <code>TypeError</code>.</li>
+  <li data-line="6" data-match="__hidden" data-title="This one is renamed">Two leading underscores but not two trailing ones, so inside the class Python stores this method as <code>_Foo__hidden</code>.</li>
+  <li data-line="9" data-match="Foo.__str__()" data-title="Called through the class">Looks up <code>__str__</code> on the class and calls it with no arguments, which suits a method with no parameters.</li>
+  <li data-line="10" data-match="Foo.__hidden" data-title="No such name outside">The lookup itself fails, before any call: the class has no attribute called <code>__hidden</code>, so Python raises an <code>AttributeError</code>.</li>
+        </ol></div>
         <p>Now look back at the error from the first example: Python itself suggests <code>_Foo__priv_data</code>. The two
         underscores do not make the attribute private in Java&rsquo;s sense; inside the class, Python quietly
         <strong>renames</strong> it (&ldquo;name mangling&rdquo;), and the new name works from anywhere:</p>
-        <div class="p1-console" data-lang="python" data-title="Not really private"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s06-e5" data-lang="python" data-title="Not really private"><script type="text/plain" data-role="source">
 class Foo:
     __priv_data = "Secret"
 
 print(Foo._Foo__priv_data)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="2" data-match="__priv_data" data-title="Name mangling">Inside class <code>Foo</code>, Python rewrites <code>__priv_data</code> as <code>_Foo__priv_data</code>: one underscore, the class name, then the original name.</li>
+  <li data-line="4" data-match="Foo._Foo__priv_data" data-title="Keep out, not locked">The mangled name is an ordinary attribute name, so any code can use it. The renaming exists to avoid clashes with names in subclasses, not to stop access.</li>
+        </ol></div>
         <div class="joke">
           <p>&ldquo;Private&rdquo; instance variables that cannot be accessed except from inside an object don&rsquo;t exist in Python.</p>
           <span class="attrib">The Python Tutorial, &sect;9.6 <em>Private Variables</em></span>
@@ -1339,7 +1542,7 @@ print(Foo._Foo__priv_data)
         capitals, like constants. An enum can be declared on its own or inside a class. A value is reached as
         <code>Suit.HEARTS</code>, like a field, and every enum has a <code>values()</code> method that works with
         the for-each loop:</p>
-        <div class="p1-console" data-lang="java" data-title="Four suits"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e1" data-lang="java" data-title="Four suits"><script type="text/plain" data-role="source">
 public class Cards {
 
     enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
@@ -1355,7 +1558,16 @@ public class Cards {
         System.out.println("There are " + Suit.values().length + " suits.");
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="enum Suit" data-title="A type with four values">The keyword <code>enum</code> declares a new type, <code>Suit</code>, whose values are exactly the ones listed. Declared inside <code>Cards</code>, it can be used anywhere in the class, like any other type.</li>
+  <li data-line="3" data-match="HEARTS, SPADES, DIAMONDS, CLUBS;" data-title="The values, in order">Capitals by convention, as for constants, with a semicolon after the list. The order written here is the order <code>values()</code> hands them back in.</li>
+  <li data-line="6" data-match="Suit trumps = Suit.SPADES;" data-title="A variable of an enum type">Declared like an <code>int</code> or <code>String</code> variable, but it can hold only a <code>Suit</code>. The value is reached through the type&rsquo;s name, like a field; <code>trumps = 3;</code> would not compile.</li>
+  <li data-line="7" data-match="&quot;Trumps are &quot; + trumps" data-title="An enum value as text">Joining a value to a string calls its <code>toString()</code>, which by default gives the value&rsquo;s name exactly as declared, <code>SPADES</code>.</li>
+  <li data-line="9" data-match="Suit.values()" data-title="Every value, as an array">Every enum has a <code>values()</code> method that returns a <code>Suit[]</code> holding all its values in declaration order &mdash; just what the for-each loop needs.</li>
+  <li data-line="10" data-match="s == trumps" data-title="== is safe here">There is only ever one <code>SPADES</code> object, so comparing references with <code>==</code> correctly answers &ldquo;is this the same suit?&rdquo; (section 7.3).</li>
+  <li data-line="10" data-match="? &quot; &lt;- trumps&quot; : &quot;&quot;" data-title="The conditional operator">If the comparison is true, the bracket&rsquo;s value is <code>" &lt;- trumps"</code>; otherwise it is the empty string, so only the trumps line gets the arrow.</li>
+  <li data-line="13" data-match="Suit.values().length" data-title="How many values">Because <code>values()</code> returns an array, <code>.length</code> &mdash; no brackets, it is not a method &mdash; gives the number of values, 4.</li>
+        </ol></div>
         <p class="sched-note">Enums arrived in Java 5. <code>? :</code> is the conditional operator from the Weeks
         2+3 operator tables &mdash; a tiny <code>if</code>/<code>else</code> that produces a value.</p>
         <div class="note">
@@ -1385,7 +1597,7 @@ public class Cards {
         <h3><span class="idx">7.4</span>Switching on an enum</h3>
         <p>You can <code>switch</code> on an enum value. Inside the switch, the cases are written without the
         enum&rsquo;s name:</p>
-        <div class="p1-console" data-lang="java" data-title="A switch on Suit" data-stdin="2"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e2" data-lang="java" data-title="A switch on Suit" data-stdin="2"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Cards {
@@ -1409,11 +1621,17 @@ public class Cards {
         }
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="10" data-match="Suit.values()[sc.nextInt()]" data-title="From a number to a suit">The number read becomes an index into the array of values, in declaration order, so 2 gives <code>DIAMONDS</code>. A number outside 0&ndash;3 throws an <code>ArrayIndexOutOfBoundsException</code>.</li>
+  <li data-line="12" data-match="switch (s)" data-title="Switching on an enum">Allowed since Java 5. This classic switch statement jumps to the case matching the value of <code>s</code>, and it does not check that every suit has a case: leave one out and it still compiles.</li>
+  <li data-line="13" data-match="case HEARTS:" data-title="Just the value&rsquo;s name">The switch already knows <code>s</code> is a <code>Suit</code>, so the case label is the bare name <code>HEARTS</code>, without the enum&rsquo;s name in front.</li>
+  <li data-line="14" data-match="case DIAMONDS:" data-title="Stacked cases"><code>case HEARTS:</code> has no statements of its own, so it runs straight on into this label: hearts and diamonds share the same <code>println</code>.</li>
+  <li data-line="16" data-match="break;" data-title="Leave the switch">Jumps out of the switch. Without it, a red suit would fall through into the black cases and print both lines.</li>
+        </ol></div>
         <p>This is the classic <code>switch</code> <em>statement</em> from Weeks 2+3, stacked cases and all. It
         does not check that you covered every value. Put a <code>return</code> in every case of a method and the
         compiler still wants one more, because as far as it is concerned the switch might match nothing:</p>
-        <div class="p1-console" data-lang="java" data-title="Four cases are not enough"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e3" data-lang="java" data-title="Four cases are not enough"><script type="text/plain" data-role="source">
 public class Cards {
 
     enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
@@ -1431,7 +1649,13 @@ public class Cards {
         System.out.println(colour(Suit.HEARTS));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="5" data-match="static String colour(Suit s)" data-title="A promise to return a String">The return type <code>String</code> means every way through the method must end in a <code>return</code> of a <code>String</code>. This page&rsquo;s console flags the error on this line: the method must return a result of type <code>String</code>.</li>
+  <li data-line="6" data-match="switch (s)" data-title="Not checked for completeness">A classic switch statement with no <code>default</code> is treated as possibly matching nothing &mdash; the compiler does not count the cases against the four values of <code>Suit</code>.</li>
+  <li data-line="7" data-match="return &quot;red&quot;;" data-title="return, not break">A <code>return</code> leaves the whole method at once, so these cases need no <code>break</code>.</li>
+  <li data-line="12" data-match="}" data-title="The error: missing return">As far as the compiler knows, the method could reach this closing brace without returning. <em>javac</em> reports <code>missing return statement</code> at this brace. Adding <code>default: return "unknown";</code> fixes it.</li>
+  <li data-line="15" data-match="colour(Suit.HEARTS)" data-title="Never reached">This call would match <code>HEARTS</code> perfectly well, but a compile error anywhere stops the whole program, so nothing runs.</li>
+        </ol></div>
         <p class="sched-note">Week 4&rsquo;s <em>missing return statement</em> again. Add
         <code>default: return "unknown";</code> to satisfy it. The newer switch <em>expressions</em> in
         <a href="#s08">section 8</a> are checked for exhaustiveness &mdash; one of the Ed lesson&rsquo;s selling
@@ -1443,7 +1667,7 @@ public class Cards {
         <p>Because an enum is a class, you can add methods to it &mdash; and each value is an object, so
         <code>this</code> inside the method is &ldquo;whichever value I am&rdquo;. Here each suit knows its own
         symbol and colour:</p>
-        <div class="p1-console" data-lang="java" data-title="Suit, with methods"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e4" data-lang="java" data-title="Suit, with methods"><script type="text/plain" data-role="source">
 public class Cards {
 
     enum Suit {
@@ -1470,7 +1694,16 @@ public class Cards {
         }
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="enum Suit" data-title="An enum with a body">Now the braces hold more than a list of values: after the values come ordinary method declarations, just as in a class.</li>
+  <li data-line="5" data-match="HEARTS, SPADES, DIAMONDS, CLUBS;" data-title="Values first, then a semicolon">The values must come first. With methods following, the semicolon after them is required: it separates the values from the rest of the body.</li>
+  <li data-line="7" data-match="public String symbol()" data-title="An instance method">No <code>static</code>, so the method belongs to each value: it is called on one, as <code>s.symbol()</code>, and works with that value.</li>
+  <li data-line="8" data-match="switch (this)" data-title="What am I?">Inside the method, <code>this</code> is the value it was called on, so switching on <code>this</code> picks the symbol for whichever suit is asking.</li>
+  <li data-line="12" data-match="default:" data-title="default keeps the compiler happy">The last suit is caught by <code>default</code> rather than <code>case CLUBS</code>, so every path ends in a <code>return</code> and there is no <em>missing return statement</em> as in 7.4.</li>
+  <li data-line="17" data-match="this == HEARTS || this == DIAMONDS" data-title="A boolean answer"><code>true</code> when this value is one of the two red suits. Inside the enum the values need no <code>Suit.</code> in front, and <code>==</code> is safe because each exists exactly once.</li>
+  <li data-line="23" data-match="s.symbol()" data-title="Calling the method on a value">Dot notation, as with any object: <code>symbol()</code> runs with <code>this</code> set to <code>s</code> and returns that suit&rsquo;s character.</li>
+  <li data-line="23" data-match="(s.isRed() ? &quot; red&quot; : &quot; black&quot;)" data-title="Choose a word">The <code>boolean</code> from <code>isRed()</code> picks the word. The brackets matter: without them the whole joined string to the left would become the condition, and a <code>String</code> is not a <code>boolean</code>, so it would not compile.</li>
+        </ol></div>
         <p class="sched-note">An enum can also hold fields and constructors of its own, which the Ed lesson
         mentions but does not go into. And one striking application: make a class an enum with a single value,
         and the compiler itself guarantees there is exactly one instance &mdash; the <em>Singleton pattern</em>,
@@ -1483,9 +1716,8 @@ public class Cards {
         card, and switch <em>expressions</em> to print them. Records (Week 4) and switch expressions need Java 16
         and 14, so it will not run in this page&rsquo;s Java 8 console &mdash; here is its second version, with the
         printing moved into the enums, and its real output. Run it on Ed.</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Deck.java &mdash; Java 16+</span></div>
-          <pre>import java.util.Random;
+        <div class="p1-explain" data-eid="w5-s07-e5" data-lang="java" data-title="Deck.java &mdash; Java 16+" data-run="none"><script type="text/plain" data-role="source">
+import java.util.Random;
 import java.util.Arrays;
 
 public class Deck {
@@ -1498,10 +1730,10 @@ public class Deck {
         @Override
         public String toString() {
             return switch (this) { // What am I?
-                case HEARTS -&gt; "♥";
-                case SPADES -&gt; "♤";
-                case DIAMONDS -&gt; "♦";
-                case CLUBS -&gt; "♧";
+                case HEARTS -> "♥";
+                case SPADES -> "♤";
+                case DIAMONDS -> "♦";
+                case CLUBS -> "♧";
             };
         }
     }
@@ -1513,11 +1745,11 @@ public class Deck {
         @Override
         public String toString() {
             return switch (this) {
-                case ACE -&gt; "A";
-                case TEN -&gt; "10";
-                case JACK -&gt; "J";
-                case QUEEN -&gt; "Q";
-                case KING -&gt; "K";
+                case ACE -> "A";
+                case TEN -> "10";
+                case JACK -> "J";
+                case QUEEN -> "Q";
+                case KING -> "K";
             };
         }
     }
@@ -1545,7 +1777,7 @@ public class Deck {
     }
 
     public void shuffle() {
-        for (int i = 0; i &lt; this.deck.length; i++) {
+        for (int i = 0; i < this.deck.length; i++) {
             int randIndex = this.rand.nextInt(this.deck.length);
             Card temp = this.deck[i];
             this.deck[i] = this.deck[randIndex];
@@ -1567,8 +1799,21 @@ public class Deck {
         System.out.println(deck);
     }
 
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="11" data-match="@Override" data-title="Replacing an inherited method">An <em>annotation</em>: this <code>toString()</code> replaces the one every object inherits. The compiler checks the claim, so a misspelt <code>tostring()</code> would be an error rather than a silent new method.</li>
+  <li data-line="13" data-match="return switch (this)" data-title="A switch that gives a value">A switch <em>expression</em> (Java 14, section 8): the whole switch works out to one value, which is returned. That is why it ends with <code>};</code> on line 18.</li>
+  <li data-line="14" data-match="case HEARTS -&gt; &quot;♥&quot;;" data-title="Arrow cases">After the <code>-&gt;</code> comes the value the switch produces for <code>HEARTS</code>. Arrow cases never fall through, so there is no <code>break</code>.</li>
+  <li data-line="17" data-match="case CLUBS -&gt; &quot;♧&quot;;" data-title="No default needed">A switch expression must cover every possible value. These four cases cover all of <code>Suit</code>, so the compiler accepts it without a <code>default</code> &mdash; unlike the switch statement in 7.4. Leave a suit out and it will not compile.</li>
+  <li data-line="24" data-match="ACE, TEN, JACK, QUEEN, KING;" data-title="Five values">Five values times four suits makes a 20-card deck. This order is the order <code>values()</code> returns, so each suit prints as A, 10, J, Q, K.</li>
+  <li data-line="38" data-match="private record Card(Suit suit, Value value)" data-title="A record of two enums">A card is a suit and a value, held together in a Week 4 record. Because the components are enum types, a <code>Card</code> can only ever hold a real suit and a real value.</li>
+  <li data-line="42" data-match="this.value.toString() + this.suit.toString()" data-title="Each enum prints itself">Calls the two enums&rsquo; <code>toString()</code> methods, value first, so a card prints as <code>A♥</code>. Without this override the record&rsquo;s own form, <code>Card[suit=♥, value=A]</code>, would be used.</li>
+  <li data-line="50" data-match="new Random(System.currentTimeMillis())" data-title="A random-number generator">Seeded from the clock (milliseconds since 1970), so each run gets a different sequence of random numbers, and so a different shuffle.</li>
+  <li data-line="51" data-match="Suit.values().length * Value.values().length" data-title="Size from the enums">4 suits &times; 5 values = 20 slots. Because it is worked out from the enums, adding a value to either would resize the deck automatically.</li>
+  <li data-line="55" data-match="deck[i++] = new Card(s, v);" data-title="One card per pair">The nested for-each loops visit every suit-and-value pair. <code>i++</code> uses <code>i</code> as the index and then adds 1, so the cards fill slots 0 to 19 in order.</li>
+  <li data-line="62" data-match="this.rand.nextInt(this.deck.length)" data-title="A random index">Returns a random <code>int</code> from 0 up to, but not including, 20 &mdash; always a valid index. Each card in turn is swapped with the one at this random position.</li>
+  <li data-line="77" data-match="System.out.println(deck)" data-title="println calls toString">Printing an object calls its <code>toString()</code>: here <code>Deck</code>&rsquo;s, whose <code>Arrays.toString</code> builds the square-bracketed list from each card&rsquo;s <code>toString()</code>, which in turn uses the enums&rsquo;.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output (the shuffled line is different every run)</span></div><pre>Check that all the cards are there:
 [A♥, 10♥, J♥, Q♥, K♥, A♤, 10♤, J♤, Q♤, K♤, A♦, 10♦, J♦, Q♦, K♦, A♧, 10♧, J♧, Q♧, K♧]
 Now we can shuffle them:
@@ -1578,7 +1823,7 @@ Now we can shuffle them:
         That is inheritance showing through, a lesson early. The same deck in Java 8 terms &mdash; a small
         <code>Card</code> class instead of the record, classic switches instead of switch expressions &mdash; runs
         right here:</p>
-        <div class="p1-console" data-lang="java" data-title="The deck, in Java 8"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e6" data-lang="java" data-title="The deck, in Java 8"><script type="text/plain" data-role="source">
 import java.util.Random;
 import java.util.Arrays;
 
@@ -1665,7 +1910,18 @@ public class Deck {
         System.out.println(deck);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="11" data-match="switch (this)" data-title="A classic switch instead">A switch <em>statement</em>, which Java 8 understands: each case <code>return</code>s its symbol, so no <code>break</code> is needed.</li>
+  <li data-line="15" data-match="default:" data-title="default, not case CLUBS">A switch statement is not checked for completeness, so with four <code>case</code>s the compiler would still report a missing return (7.4). Catching the last suit with <code>default</code> guarantees every path returns.</li>
+  <li data-line="35" data-match="private static class Card" data-title="A class in place of the record">A small class nested inside <code>Deck</code>. <code>static</code> means a <code>Card</code> does not belong to any particular <code>Deck</code> object &mdash; a nested record is like that automatically.</li>
+  <li data-line="36" data-match="private final Suit suit;" data-title="The components, as fields">Each record component becomes a field written out by hand: <code>private</code> so only this code can see it, <code>final</code> so it is set once and never changed.</li>
+  <li data-line="39" data-match="Card(Suit suit, Value value)" data-title="The constructor, by hand">The record wrote this for us. It is named after the class, has no return type, and runs when <code>new Card(s, v)</code> is called.</li>
+  <li data-line="40" data-match="this.suit = suit;" data-title="Field from parameter">The parameter has the same name as the field: <code>this.suit</code> is the field of the card being built, <code>suit</code> the value passed in.</li>
+  <li data-line="46" data-match="this.value.toString() + this.suit.toString()" data-title="Still needed">A plain class has no readable printed form of its own: without this method a card would print as something like <code>Deck$Card@1b6d3586</code>. The enums&rsquo; own <code>toString()</code> methods supply <code>A</code> and <code>♥</code>.</li>
+  <li data-line="54" data-match="new Random(System.currentTimeMillis())" data-title="Seeded from the clock">The seed is the current time in milliseconds, so every run produces a different shuffle &mdash; run it twice and compare.</li>
+  <li data-line="59" data-match="deck[i++] = new Card(s, v);" data-title="Fill the deck in order">Exactly as in the record version: the nested loops make each suit-and-value pair once, and <code>i++</code> moves on to the next slot after each card.</li>
+  <li data-line="67" data-match="Card temp = this.deck[i];" data-title="Swap through a temporary">Holds card <code>i</code> while its slot is overwritten with the random card; line 69 then puts it in the random slot. Without <code>temp</code>, one of the two cards would be lost.</li>
+        </ol></div>
         <p class="sched-note">Run it twice: the shuffle changes, because the <code>Random</code> is seeded from the
         clock. Compare the two versions line by line &mdash; everything the record and the arrows did is here
         written out in full.</p>
@@ -1677,7 +1933,7 @@ public class Deck {
         <code>Enum</code> from the <code>enum</code> module and create your enum as a class that
         <em>extends</em> it &mdash; inheritance again, a little early &mdash; listing names with values. The
         example the Ed lesson takes from the Python documentation, with two lines added:</p>
-        <div class="p1-console" data-lang="python" data-title="Colour"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e7" data-lang="python" data-title="Colour"><script type="text/plain" data-role="source">
 from enum import Enum
 
 class Colour(Enum):
@@ -1689,10 +1945,19 @@ c = Colour.RED
 print(c)
 print(c.name, c.value)
 print(c == Colour.RED, c == 1)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="from enum import Enum" data-title="Import the base class">Brings the class <code>Enum</code> in from the standard library&rsquo;s <code>enum</code> module; without it, <code>Enum</code> on line 3 would be an undefined name.</li>
+  <li data-line="3" data-match="class Colour(Enum)" data-title="An enum is a class">The base class in brackets means <code>Colour</code> <em>extends</em> <code>Enum</code>, which turns the names in the class body into enum members rather than ordinary class variables.</li>
+  <li data-line="4" data-match="RED = 1" data-title="Name and value">Each <code>NAME = value</code> line makes one member. Unlike Java, you choose the value and it can be anything; 1 to <em>n</em> is just the usual habit.</li>
+  <li data-line="8" data-match="Colour.RED" data-title="A member, not a number">Reached through the class, like an attribute. <code>c</code> now refers to the member object <code>Colour.RED</code>, not to the integer 1.</li>
+  <li data-line="9" data-match="print(c)" data-title="The default text form"><code>print</code> uses the member&rsquo;s string form, which by default is the class name and member name, <code>Colour.RED</code>, not the value. The next example replaces it.</li>
+  <li data-line="10" data-match="c.name, c.value" data-title="Name and value back">Every member carries both: <code>.name</code> is the string <code>'RED'</code>, and <code>.value</code> is whatever it was given in the class, here the integer 1.</li>
+  <li data-line="11" data-match="c == Colour.RED" data-title="The same member">There is only one <code>Colour.RED</code> object, so this is <code>True</code>; <code>c is Colour.RED</code> would be <code>True</code> as well.</li>
+  <li data-line="11" data-match="c == 1" data-title="Not equal to its value">A member is not equal to its value, so this is <code>False</code>. Compare with <code>c.value</code> instead, or go from the number to the member with <code>Colour(1)</code>.</li>
+        </ol></div>
         <p>As they are classes, you can add methods &mdash; here the dunder <code>__str__</code> from section 6.1,
         which <code>print</code> then uses:</p>
-        <div class="p1-console" data-lang="python" data-title="Colour, with __str__"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e8" data-lang="python" data-title="Colour, with __str__"><script type="text/plain" data-role="source">
 from enum import Enum
 
 class Colour(Enum):
@@ -1705,12 +1970,17 @@ class Colour(Enum):
 
 print(Colour.RED)
 print(Colour.BLUE)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="8" data-match="def __str__" data-title="A method, not a member">Names given values become members, but a <code>def</code> in the body is an ordinary method. <code>__str__</code> is the dunder that <code>print</code> and <code>str()</code> use for the text form, so this replaces the default <code>Colour.RED</code>.</li>
+  <li data-line="8" data-match="self" data-title="Which member?">The member the method was called on &mdash; Python&rsquo;s version of Java&rsquo;s <code>this</code> in section 7.5.</li>
+  <li data-line="9" data-match="self.name.lower()" data-title="The name, in lower case"><code>self.name</code> is the member&rsquo;s name, such as <code>'RED'</code>; the string method <code>lower()</code> returns a new lower-case copy, <code>'red'</code>, leaving the name itself unchanged.</li>
+  <li data-line="11" data-match="print(Colour.RED)" data-title="print uses __str__"><code>print</code> asks the member for its string form, which now runs our <code>__str__</code> with <code>self</code> set to <code>Colour.RED</code>.</li>
+        </ol></div>
         <p>The differences from Java are in the <strong>values</strong>. They can be anything &mdash; you would
         normally see the integers 1 to <em>n</em>, but <code>RED = "red"</code>, <code>GREEN = 2</code>,
         <code>BLUE = 3.0</code> is allowed. And nothing stops two names sharing a value, which quietly changes
         what the names mean:</p>
-        <div class="p1-console" data-lang="python" data-title="We can really mess things up"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s07-e9" data-lang="python" data-title="We can really mess things up"><script type="text/plain" data-role="source">
 from enum import Enum
 
 class Colour(Enum):
@@ -1722,7 +1992,14 @@ c = Colour.GREEN
 print(c)                      # asked for GREEN...
 print(c is Colour.RED)
 print(len(Colour), "member(s)")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="4" data-match="RED = 1" data-title="The one real member">The first name with the value 1 creates a member, <code>RED</code>.</li>
+  <li data-line="5" data-match="GREEN = 1" data-title="An alias, not a member">The value 1 is taken, so no new member is made: <code>GREEN</code> becomes a second name for <code>RED</code>. Python raises no error unless the class is marked with the <code>@unique</code> decorator from <code>enum</code>.</li>
+  <li data-line="8" data-match="Colour.GREEN" data-title="Looking up an alias">Gives back the member the alias stands for, <code>RED</code>, so <code>c</code> refers to <code>Colour.RED</code>.</li>
+  <li data-line="9" data-match="print(c)" data-title="The real name shows">The printed form uses the member&rsquo;s own name, so it shows <code>Colour.RED</code> even though we asked for <code>GREEN</code>; <code>c.name</code> is <code>'RED'</code> too.</li>
+  <li data-line="10" data-match="c is Colour.RED" data-title="The very same object"><code>is</code> is <code>True</code> only when both sides are the same object &mdash; and they are, because <code>GREEN</code> and <code>RED</code> name one member.</li>
+  <li data-line="11" data-match="len(Colour)" data-title="Counting members"><code>len</code> counts members, and aliases do not count, so the &ldquo;three-colour&rdquo; enum has length 1. A <code>for</code> loop over <code>Colour</code> would likewise visit only <code>RED</code>.</li>
+        </ol></div>
         <p class="sched-note">A second name with an existing value becomes an <strong>alias</strong> for the first
         member, so this &ldquo;three-colour&rdquo; enum has one member, <code>RED</code>, with two extra names.
         The Ed lesson&rsquo;s conclusion stands: Python enums work well when used as intended, without the
@@ -1735,7 +2012,8 @@ print(len(Colour), "member(s)")
         <p>For comparison: an enum in C is a set of names for the numbers 0 to (number of values &minus; 1),
         assigned automatically. That keeps the key property &mdash; a fixed set of distinct values &mdash; but not
         Java&rsquo;s type safety: underneath, it is just an <code>int</code>.</p>
-        <div class="code-card"><pre>#include &lt;stdio.h&gt;
+        <div class="p1-explain" data-eid="w5-s07-e10" data-lang="c" data-title="An enum in C" data-run="none"><script type="text/plain" data-role="source">
+#include <stdio.h>
 
 enum Suit {HEARTS, SPADES, DIAMONDS, CLUBS};
 enum Suit s;   // Yeah, this syntax is weird... but you know... C...
@@ -1744,7 +2022,13 @@ int main() {
     s = SPADES;
     printf("%d", s);   // Secretly it's just a number!
     return 0;
-}</pre></div>
+}
+</script><ol data-role="notes">
+  <li data-line="3" data-match="{HEARTS, SPADES, DIAMONDS, CLUBS}" data-title="Names for 0 to 3">C numbers the names automatically, in order: <code>HEARTS</code> is 0, <code>SPADES</code> 1, <code>DIAMONDS</code> 2, <code>CLUBS</code> 3. They are plain <code>int</code> constants, used with no <code>Suit</code> in front.</li>
+  <li data-line="4" data-match="enum Suit s;" data-title="A two-word type name">In C the type is called <code>enum Suit</code>, both words, every time it is used. Declared outside any function, <code>s</code> is a global variable, which C starts at 0.</li>
+  <li data-line="7" data-match="s = SPADES;" data-title="Just storing a 1"><code>SPADES</code> is the number 1. C would accept <code>s = 42;</code> just as happily &mdash; nothing ties <code>s</code> to the four suits, which is the type safety Java&rsquo;s enums add.</li>
+  <li data-line="8" data-match="printf(&quot;%d&quot;, s)" data-title="Printed as a number"><code>%d</code> prints an <code>int</code> in decimal, and <code>s</code> is one underneath, so out comes its number rather than a name. C has no built-in way to turn an enum value back into its name.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>1</pre></div>
       </div>
         </section>
@@ -1763,7 +2047,7 @@ int main() {
         <h3><span class="idx">8.1</span>Stretching the old switch</h3>
         <p>A plain switch only tests equality, but careful choice of the expression you switch on can stretch
         it. This runs anywhere, including here:</p>
-        <div class="p1-console" data-lang="java" data-title="Switching on n % 2" data-stdin="7"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s08-e1" data-lang="java" data-title="Switching on n % 2" data-stdin="7"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Runner {
@@ -1781,7 +2065,14 @@ public class Runner {
         }
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="7" data-match="sc.nextInt()" data-title="Reading a whole number">The <code>Scanner</code> method <code>nextInt</code> reads the next whole number typed and returns it as an <code>int</code>, ready to switch on.</li>
+  <li data-line="9" data-match="switch" data-title="The switch statement">Works out the expression in brackets <strong>once</strong>, then jumps to the case whose value is equal to it. That single calculation is the only work done before choosing.</li>
+  <li data-line="9" data-match="n % 2" data-title="Stretching with the remainder"><code>%</code> gives the remainder after dividing by 2, which is 0 for every even number. Switching on it turns &ldquo;is <code>n</code> even?&rdquo; into an equality test, the only test a plain switch can do.</li>
+  <li data-line="10" data-match="case 0:" data-title="An equality test">Matches only when <code>n % 2</code> equals 0 exactly. A plain case label must be a constant, so a condition such as <code>case n &gt; 0:</code> is not allowed.</li>
+  <li data-line="12" data-match="break;" data-title="Leave the switch">Jumps out of the switch. Without it an even number would fall through into the <code>default</code> code and print both lines (Weeks 2+3, section 3).</li>
+  <li data-line="13" data-match="default:" data-title="Everything else">Runs when no case matched. It is better than <code>case 1:</code> here: for a negative odd number, <code>n % 2</code> is &minus;1 in Java, and <code>default</code> catches that too.</li>
+        </ol></div>
         <p class="sched-note">But the only computation happens once, in the switch&rsquo;s own expression. The
         newer features let each <em>case</em> do some of the work.</p>
       </div>
@@ -1791,7 +2082,7 @@ public class Runner {
         <p>Here is a switch expression &mdash; section 8.3 explains it &mdash; in the page&rsquo;s console. Run it
         and read the error. It is not a mistake in the program; it is the compiler telling you which version of
         Java you need:</p>
-        <div class="p1-console" data-lang="java" data-title="Too new for this console" data-stdin="7"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s08-e2" data-lang="java" data-title="Too new for this console" data-stdin="7"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Runner {
@@ -1804,7 +2095,13 @@ public class Runner {
         System.out.println(s);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="9" data-match="&quot;The number is &quot; +" data-title="A switch as an operand">Joining a switch to a string with <code>+</code> works only because a switch expression has a value, here <code>&quot;even&quot;</code> or <code>&quot;odd&quot;</code>. Section 8.3 explains how.</li>
+  <li data-line="9" data-match="switch (n % 2)" data-title="Error 1: a switch expression">ECJ, this console&rsquo;s compiler, is set to Java 8 and underlines the whole switch: <code>Switch Expressions are supported from Java 14 onwards only</code>. Nothing is wrong with the program itself.</li>
+  <li data-line="9" data-match="case 0 -&gt;" data-title="Error 2: an arrow case">The arrow form <code>case &hellip; -&gt;</code> belongs to the same Java 14 feature, so ECJ flags it separately: <code>Arrow in case statement supported from Java 14 onwards only</code>.</li>
+  <li data-line="9" data-match="default -&gt;" data-title="Error 3: the same again">The same error for the second arrow &mdash; three errors in all, each naming the Java version needed rather than a mistake to fix.</li>
+  <li data-line="10" data-match="System.out.println(s)" data-title="Never reached">A compile error means nothing runs, not even the prompt on line 6. On Java 14 or later, such as Ed&rsquo;s Java 23, the input 7 makes this line print <code>The number is odd</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1814,7 +2111,13 @@ public class Runner {
         where you would expect a colon, and <strong>no <code>break</code></strong>. The switch hands back the value
         after the arrow and is finished &mdash; no fall-through, much as a <code>return</code> ends a method. And
         because it produces a value, it can go anywhere an expression can (Weeks 2+3, section 1.2):</p>
-        <div class="code-card"><pre>String s = "The number is " + switch (n % 2) { case 0 -&gt; "even"; default -&gt; "odd"; };</pre></div>
+        <div class="p1-explain" data-eid="w5-s08-e3" data-lang="java" data-title="A switch expression &mdash; Java 14+" data-run="none"><script type="text/plain" data-role="source">
+String s = "The number is " + switch (n % 2) { case 0 -> "even"; default -> "odd"; };
+</script><ol data-role="notes">
+  <li data-line="1" data-match="switch (n % 2)" data-title="A switch that is a value">Here the switch is an operand of <code>+</code>: it produces a <code>String</code>, which is joined to <code>&quot;The number is &quot;</code>. A switch <em>statement</em> could never stand in this spot.</li>
+  <li data-line="1" data-match="case 0 -&gt; &quot;even&quot;;" data-title="Arrow, value, done">If <code>n % 2</code> is 0, the whole switch has the value <code>&quot;even&quot;</code> and is finished: no <code>break</code>, and no fall-through into the next case.</li>
+  <li data-line="1" data-match="default -&gt; &quot;odd&quot;;" data-title="Every value covered">A switch expression must be exhaustive, and an <code>int</code> has far more values than 0, so <code>default</code> is required. Replace it with <code>case 1</code> and javac reports that the switch expression does not cover all possible input values.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output, with input 7</span></div><pre>Enter a number: The number is odd</pre></div>
         <p>Switch expressions must also be <strong>exhaustive</strong>: every possible value has to be covered.
         On an enum that means every constant &mdash; which is how the Ed deck&rsquo;s <code>toString</code> in
@@ -1835,9 +2138,8 @@ public class Runner {
         <p><strong>Pattern matching</strong> lets a case examine the <em>type and structure</em> of the value being
         switched on, and give it a name. A <strong><code>when</code> clause</strong> then narrows a case to a
         sub-case with any boolean condition:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Runner.java &mdash; Java 21+</span></div>
-          <pre>import java.util.Scanner;
+        <div class="p1-explain" data-eid="w5-s08-e4" data-lang="java" data-title="Runner.java &mdash; Java 21+" data-run="none"><script type="text/plain" data-role="source">
+import java.util.Scanner;
 
 public class Runner {
     public static void main(String[] args) {
@@ -1856,8 +2158,16 @@ public class Runner {
                 System.out.println("I don't know how I got here in this example.");
         }
     }
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="7" data-match="Object n" data-title="The most general type"><code>nextLine</code> returns a <code>String</code>, which an <code>Object</code> variable can hold. Declared as <code>Object</code>, <code>n</code> could in principle be anything, so the switch has to find out what it is.</li>
+  <li data-line="9" data-match="switch (n)" data-title="Switching on any object">The old switch accepted only a few types, such as <code>int</code>, <code>char</code>, <code>String</code> and enums. With pattern matching (Java 21) it can switch on any object.</li>
+  <li data-line="10" data-match="String s" data-title="A type pattern">Matches if <code>n</code> is a <code>String</code> and, if so, names it <code>s</code>, with type <code>String</code>, for this case only &mdash; so String methods can be called on it.</li>
+  <li data-line="10" data-match="when s.length() == 0" data-title="A when clause">Narrows the case: it matches only if the boolean condition after <code>when</code> is also true. <code>length()</code> returns the number of characters, 0 for an empty line.</li>
+  <li data-line="12" data-match="break;" data-title="Still a statement switch">Colon cases still fall through, so the breaks stay. Leaving this one out is a compile error: javac will not let execution fall through into a case that declares a pattern variable like <code>s</code>.</li>
+  <li data-line="13" data-match="case String s:" data-title="Order matters">Every String the first case did not take lands here. Put this case first and javac refuses the program, since the guarded case could never match: <code>this case label is dominated by a preceding case label</code>.</li>
+  <li data-line="16" data-match="default:" data-title="Required, though never used">A switch that uses patterns must cover every possible value, and <code>n</code> could be any <code>Object</code>. Remove the <code>default</code> and javac says the switch statement does not cover all possible input values.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Two runs: an empty line, then Linh</span></div><pre>Enter a name: You didn't enter a name!
 
 Enter a name: The name you entered was Linh</pre></div>
@@ -1871,7 +2181,7 @@ Enter a name: The name you entered was Linh</pre></div>
           thing, called a <strong>guard</strong>: <code>if</code> after the pattern. And unlike the Java above, it
           runs in this page&rsquo;s console:</p>
         </div>
-        <div class="p1-console" data-lang="python" data-title="A guard in Python's match" data-stdin="Linh"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w5-s08-e5" data-lang="python" data-title="A guard in Python's match" data-stdin="Linh"><script type="text/plain" data-role="source">
 name = input("Enter a name: ")
 
 match name:
@@ -1879,15 +2189,20 @@ match name:
         print("You didn't enter a name!")
     case s:
         print("The name you entered was " + s)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="input(&quot;Enter a name: &quot;)" data-title="input returns a str">Shows the prompt, waits for a line and returns what was typed as a <code>str</code>, without the newline. Pressing Enter alone gives the empty string <code>''</code>.</li>
+  <li data-line="3" data-match="match name:" data-title="Python&rsquo;s match">Tries each <code>case</code> pattern against <code>name</code>, top to bottom, and runs only the first that matches. There is no fall-through and no <code>break</code>.</li>
+  <li data-line="4" data-match="case s" data-title="A capture pattern">A bare name matches any value and binds it to <code>s</code> &mdash; like Java&rsquo;s <code>case String s</code>, but with no type check.</li>
+  <li data-line="4" data-match="if len(s) == 0" data-title="A guard">Python&rsquo;s version of <code>when</code>: the case matches only if this condition is also true. <code>len</code> gives the number of characters, 0 for an empty line.</li>
+  <li data-line="6" data-match="case s:" data-title="Catches everything else">With no guard this pattern matches anything, so it must be the last case &mdash; Python rejects any case after it with a <code>SyntaxError</code>. It does the job of Java&rsquo;s <code>default</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
         <h3><span class="idx">8.5</span>Record patterns, <code>_</code>, and a switch with no default</h3>
         <p>A tantalising hint of how far this goes, using a <code>record</code> from Week 4:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Runner.java &mdash; Java 22+</span></div>
-          <pre>import java.util.Scanner;
+        <div class="p1-explain" data-eid="w5-s08-e6" data-lang="java" data-title="Runner.java &mdash; Java 22+" data-run="none"><script type="text/plain" data-role="source">
+import java.util.Scanner;
 
 public class Runner {
 
@@ -1895,13 +2210,13 @@ public class Runner {
 
     private static String grade(Object o) {
         return switch (o) {
-            case Student(String _, int mark) when mark &gt; 100 -&gt; "caution for cheating";
-            case Student(String _, int mark) when mark &gt;= 85 -&gt; "HD";
-            case Student(String _, int mark) when mark &gt;= 75 -&gt; "D";
-            case Student(String _, int mark) when mark &gt;= 65 -&gt; "C";
-            case Student(String _, int mark) when mark &gt;= 50 -&gt; "P";
-            case Student(String _, int _) -&gt; "Z";
-            case Object _ -&gt; "ERROR NOT A STUDENT";
+            case Student(String _, int mark) when mark > 100 -> "caution for cheating";
+            case Student(String _, int mark) when mark >= 85 -> "HD";
+            case Student(String _, int mark) when mark >= 75 -> "D";
+            case Student(String _, int mark) when mark >= 65 -> "C";
+            case Student(String _, int mark) when mark >= 50 -> "P";
+            case Student(String _, int _) -> "Z";
+            case Object _ -> "ERROR NOT A STUDENT";
         };
     }
 
@@ -1913,8 +2228,18 @@ public class Runner {
 
         System.out.println(luke.name() + " got a " + grade(luke) + ".");
     }
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="5" data-match="record Student(String name, int mark) {}" data-title="The record from Week 4">A name and a mark, with a constructor and component methods written for you. Because its components are known, a pattern can take it apart again.</li>
+  <li data-line="7" data-match="Object o" data-title="Any object at all">The parameter is an <code>Object</code>, so <code>grade</code> accepts a <code>Student</code> or anything else; the switch works out which it got. Line 25 passes it <code>luke</code>.</li>
+  <li data-line="8" data-match="return switch (o)" data-title="Returning a switch expression">The switch produces a <code>String</code>, and <code>return</code> hands it straight back. The <code>;</code> after its closing brace on line 16 ends the <code>return</code> statement.</li>
+  <li data-line="9" data-match="Student(String _, int mark)" data-title="A record pattern">Matches if <code>o</code> is a <code>Student</code> and <strong>deconstructs</strong> it: the mark component goes straight into a new variable <code>mark</code>, with no need to write <code>mark()</code>.</li>
+  <li data-line="9" data-match="when mark &gt; 100" data-title="Checked first">Cases are tried in order, so a mark over 100 is caught here, before <code>mark &gt;= 85</code> on the next line could claim it.</li>
+  <li data-line="10" data-match="String _" data-title="_ means &ldquo;don&rsquo;t care&rdquo;">The name component must be listed to match a <code>Student</code>&rsquo;s shape, but grading never uses it, so it gets the unnamed variable <code>_</code> (Java 22) instead of a name.</li>
+  <li data-line="11" data-match="when mark &gt;= 75" data-title="Guards rely on the ones above">Reaching this case means the mark is neither over 100 nor 85 or more, so <code>&gt;= 75</code> here really means 75 to 84 &mdash; just like an <code>else if</code> ladder.</li>
+  <li data-line="14" data-match="case Student(String _, int _)" data-title="Every other student">No <code>when</code>, so it matches any <code>Student</code> still left: by now, any mark below 50, negative ones included.</li>
+  <li data-line="15" data-match="case Object _" data-title="Instead of default">Matches any object at all, so together the cases cover every possible value of <code>o</code>. The switch is exhaustive, as a switch expression must be, with no <code>default</code>.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Three runs: 92, 105, 40</span></div><pre>What mark should Luke get? Luke got a HD.
 What mark should Luke get? Luke got a caution for cheating.
 What mark should Luke get? Luke got a Z.</pre></div>
@@ -2253,6 +2578,7 @@ What mark should Luke get? Luke got a Z.</pre></div>
 <script src="../assets/highlight.js?v=88b90c66"></script>
 <script src="../assets/editor.js?v=0ea13585"></script>
 <script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
 <script src="../assets/w5-data.js?v=1c18978f"></script>
 <script src="../assets/w5-exercises.js?v=2963e814"></script>
 <script src="../assets/exercises.js?v=a455b14d"></script>

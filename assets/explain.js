@@ -31,7 +31,9 @@
 window.P1Explain = (function () {
   'use strict';
 
-  var LANG_LABEL = { java: 'Java', python: 'Python' };
+  var LANG_LABEL = { java: 'Java', python: 'Python', cpp: 'C++', c: 'C' };
+  // C and C++ appear only as read-only comparisons; the Java rules colour them well enough.
+  function hlLang(lang) { return lang === 'cpp' || lang === 'c' ? 'java' : lang; }
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -184,7 +186,7 @@ window.P1Explain = (function () {
     host.appendChild(body);
 
     // code, one block per line, with the notes marked
-    var html = splitLines(window.P1Highlight ? P1Highlight.toHtml(source, lang) : esc(source));
+    var html = splitLines(window.P1Highlight ? P1Highlight.toHtml(source, hlLang(lang)) : esc(source));
     var tokens = [];
     var pre = el('pre', 'explain-code');
     pre.innerHTML = html.map(function (lineHtml, i) {

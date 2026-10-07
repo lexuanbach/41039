@@ -1577,3 +1577,5 @@ body.code-fullscreen-open { overflow: hidden; }
   font-family: "IBM Plex Mono", monospace; font-size: 0.85em;
   background: var(--paper); padding: 0.05em 0.3em; border-radius: 4px;
 }
+/* code quoted in a note keeps its spaces (output such as "after swap:  x = 1") */
+.explain-tip code, .explain-all code { white-space: pre-wrap; }

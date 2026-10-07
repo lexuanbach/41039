@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=c4b5d1ff">
+<link rel="stylesheet" href="../assets/style.css?v=c03abd33">
 </head>
 <body>
 <header class="topbar">
@@ -102,8 +102,10 @@
         <span class="eyebrow">Week 4 &middot; Interactive</span>
         <h2>The lecture, then the practice</h2>
         <p>Choose a section from the list to open it &mdash; or use the arrow keys once the list
-        has focus. Code blocks are live: edit them, run them, and break them on purpose. Several
-        of them are <em>meant</em> to fail &mdash; read what the compiler says before you fix them.</p>
+        has focus. Every code example explains itself: hover over an underlined part (or tap it) to
+        see what it does. <strong>Run</strong> runs it; <strong>&#9998; Edit</strong> opens it in an editor
+        to change it and break it on purpose. Several are <em>meant</em> to fail &mdash; read what the
+        compiler says before you fix them.</p>
       </div>
 
       <div class="lesson">
@@ -240,7 +242,7 @@
           </tbody>
         </table></div>
         <p>A concrete example. Enter two numbers:</p>
-        <div class="p1-console" data-lang="java" data-title="A method called add" data-stdin="3 4"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s01-e1" data-lang="java" data-title="A method called add" data-stdin="3 4"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Add {
@@ -257,7 +259,16 @@ public class Add {
         System.out.println(add(n, m));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="class Add" data-title="Methods live inside a class">Both <code>add</code> and <code>main</code> are declared between the braces of <code>Add</code>. Java has no free-standing functions: every method belongs to some class.</li>
+  <li data-line="5" data-match="private" data-title="Access modifier">The first part of the header. <code>private</code> lets only code inside <code>Add</code> call the method; <code>main</code> is inside <code>Add</code>, so it may.</li>
+  <li data-line="5" data-match="static" data-title="Belongs to the class">The method can be called with no object in existence. <code>main</code> is static and runs before any object exists, which is why it can simply write <code>add(n, m)</code>.</li>
+  <li data-line="5" data-match="int" data-title="The return type">Every call to <code>add</code> produces an <code>int</code>, so a call can be used anywhere an <code>int</code> value can &mdash; here, as the argument to <code>println</code>.</li>
+  <li data-line="5" data-match="(int a, int b)" data-title="The parameter list">Two parameters, each declared like a variable. <code>a</code> and <code>b</code> exist only inside <code>add</code>, and are created afresh on every call with the values the caller passes in.</li>
+  <li data-line="6" data-match="return a + b;" data-title="Hand the answer back"><code>return</code> ends the method and gives the value of <code>a + b</code> to the caller. That value is an <code>int</code>, as the header promised.</li>
+  <li data-line="11" data-match="sc.nextInt()" data-title="A method you already call"><code>nextInt</code> reads the next whole number typed in and <em>returns</em> it as an <code>int</code>, which is stored in <code>n</code>. With the input <code>3 4</code>, <code>n</code> gets 3 and <code>m</code> gets 4.</li>
+  <li data-line="14" data-match="add(n, m)" data-title="The call">The arguments are matched to the parameters by position: the value of <code>n</code> is copied into <code>a</code>, <code>m</code> into <code>b</code>. Java runs this inner call first, and <code>println</code> receives the <code>int</code> it returns.</li>
+        </ol></div>
         <p>Read the header <code>private static int add(int a, int b)</code> against the table: private,
         so only <code>Add</code> can use it; <code>static</code>, so <code>main</code> can call it without
         creating an object; it returns an <code>int</code>; it is called <code>add</code>; and it takes two
@@ -286,7 +297,7 @@ public class Add {
         <p>To see what <code>static</code> is buying you, take it away. The method now belongs to
         <em>objects</em> of the class, so <code>main</code> has to make one first and call the method on
         it &mdash; the same <code>new</code> you use for a <code>Scanner</code>:</p>
-        <div class="p1-console" data-lang="java" data-title="add is no longer static" data-stdin="3 4"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s01-e2" data-lang="java" data-title="add is no longer static" data-stdin="3 4"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Add {
@@ -304,10 +315,17 @@ public class Add {
         System.out.println(adder.add(n, m));   // to use the method here.
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="5" data-match="private int add(int a, int b)" data-title="Now an instance method">The same header without <code>static</code>. The method now belongs to each <em>object</em> of class <code>Add</code>, so it can only be called on an object.</li>
+  <li data-line="9" data-match="static" data-title="main is still static"><code>main</code> runs when no object exists yet, so it has no object to call <code>add</code> on. It must make one before it can use the method.</li>
+  <li data-line="11" data-match="sc.nextInt()" data-title="The same pattern as Scanner"><code>nextInt</code> is a non-static method of <code>Scanner</code>, which is why you have always called it on an object, <code>sc</code>, rather than on its own.</li>
+  <li data-line="14" data-match="Add adder" data-title="A class is a type">The class <code>Add</code> can be the type of a variable, just as <code>Scanner</code> is the type of <code>sc</code>. <code>adder</code> will refer to an <code>Add</code> object.</li>
+  <li data-line="14" data-match="new Add()" data-title="Create the object"><code>new</code> builds an object of class <code>Add</code> and gives back a reference to it. <code>Add</code> has no member variables, so this object holds no data; it exists only so that <code>add</code> can be called on it.</li>
+  <li data-line="15" data-match="adder.add(n, m)" data-title="Call the method on the object">The <code>object.method(arguments)</code> form, as in <code>sc.nextInt()</code>. The parameters and the returned <code>int</code> work exactly as in the static version, so the program prints the same sum.</li>
+        </ol></div>
         <p>Forget the object and call it the old way, and the compiler stops you. Run this one and read
         the message:</p>
-        <div class="p1-console" data-lang="java" data-title="Calling it without an object"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s01-e3" data-lang="java" data-title="Calling it without an object"><script type="text/plain" data-role="source">
 public class Add {
 
     private int add(int a, int b) {
@@ -318,7 +336,12 @@ public class Add {
         System.out.println(add(3, 4));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="private int add(int a, int b)" data-title="Declared without static">The instance method from 1.4: it belongs to objects of <code>Add</code>, so every call needs an object to be called on.</li>
+  <li data-line="4" data-match="return a + b;" data-title="The method itself is fine">Nothing in the body of <code>add</code> is wrong. The compiler objects only to the way <code>main</code> calls it.</li>
+  <li data-line="7" data-match="static" data-title="A static context">Inside a static method there is no current object. <code>main</code> belongs to the class and runs before any <code>Add</code> object has been created.</li>
+  <li data-line="8" data-match="add(3, 4)" data-title="The error line">A bare call to a non-static method from static <code>main</code>: there is no object to call it on, so the program does not compile. Fix it by putting <code>static</code> back on line 3 (as in 1.2), or by calling <code>new Add().add(3, 4)</code> (as in 1.4).</li>
+        </ol></div>
         <p class="sched-note">The console here says <em>Cannot make a static reference to the non-static
         method add(int, int)</em>; Ed&rsquo;s <code>javac</code> says <em>non-static method add(int,int)
         cannot be referenced from a static context</em>. Same complaint: <code>main</code> is static, and
@@ -400,7 +423,7 @@ public class Flat {
         reachable</strong> <code>return</code> statement. <code>return</code> is where the value is
         produced, the method ends, and control &mdash; together with the value &mdash; goes back to whatever
         code called it. The value must have the declared return type.</p>
-        <div class="p1-console" data-lang="java" data-title="Two methods, each with a job" data-stdin="12"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s02-e1" data-lang="java" data-title="Two methods, each with a job" data-stdin="12"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Factors {
@@ -424,7 +447,14 @@ public class Factors {
         printFactors(n);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="5" data-match="boolean isFactor" data-title="The return type">The type written before the method name is what every call hands back: here exactly one <code>boolean</code>, <code>true</code> or <code>false</code>. Any type can go there, or <code>void</code> for none.</li>
+  <li data-line="6" data-match="return n % f == 0;" data-title="Return the comparison itself"><code>n % f</code> is the remainder when <code>n</code> is divided by <code>f</code>, which is 0 exactly when <code>f</code> divides <code>n</code>. <code>%</code> is worked out before <code>==</code>, so the whole expression is a <code>boolean</code> &mdash; the declared type &mdash; and <code>return</code> sends it back to the caller.</li>
+  <li data-line="9" data-match="void printFactors" data-title="void: no value comes back">This method&rsquo;s job is to print, not to work something out, so it returns nothing. It needs no <code>return</code>: it simply ends at its closing brace and control goes back to the caller.</li>
+  <li data-line="11" data-match="isFactor(i, n)" data-title="The call becomes its value">Arguments are matched by position: <code>i</code> becomes <code>f</code> and <code>n</code> becomes <code>n</code>. The <code>boolean</code> that <code>isFactor</code> returns takes the call&rsquo;s place as the <code>if</code> condition.</li>
+  <li data-line="20" data-match="sc.nextInt()" data-title="A library method that returns"><code>nextInt()</code> has return type <code>int</code>: it reads the next whole number typed and hands it back, and <code>=</code> stores that value in <code>n</code>.</li>
+  <li data-line="21" data-match="printFactors(n);" data-title="A void call stands alone">With no value returned, the call can only be a statement on its own. For 12 the loop tries every <code>i</code> from 2 to 12 and prints the five that divide it, 12 itself included.</li>
+        </ol></div>
         <ul>
           <li><code>isFactor(int, int)</code> returns a <code>boolean</code>, and whatever input it is given,
           its <code>return</code> is reached.</li>
@@ -441,7 +471,7 @@ public class Factors {
         <h3><span class="idx">2.3</span>Three ways to get it wrong</h3>
         <p>Return the wrong type and you get the old <strong>incompatible types</strong> error &mdash;
         <code>n % f</code> is an <code>int</code>, not a <code>boolean</code>:</p>
-        <div class="p1-console" data-lang="java" data-title="Returning the wrong type"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s02-e2" data-lang="java" data-title="Returning the wrong type"><script type="text/plain" data-role="source">
 public class Factors {
 
     public static boolean isFactor(int f, int n) {
@@ -452,9 +482,14 @@ public class Factors {
         System.out.println(isFactor(3, 12));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="boolean" data-title="The promise in the header">The return type says every call hands back a <code>boolean</code>, so the compiler checks each <code>return</code> in the body against it.</li>
+  <li data-line="4" data-match="return" data-title="Checked against the header">The value after <code>return</code> must have the declared type, or one Java converts to it automatically &mdash; an <code>int</code> would do in a <code>double</code> method. No number converts to <code>boolean</code>.</li>
+  <li data-line="4" data-match="n % f" data-title="An int, not a boolean: the error">The remainder of two <code>int</code>s is an <code>int</code>, and Java never treats a number as true or false. ECJ reports <em>Type mismatch: cannot convert from int to boolean</em>; Ed&rsquo;s <code>javac</code> says <em>incompatible types: int cannot be converted to boolean</em>.</li>
+  <li data-line="8" data-match="isFactor(3, 12)" data-title="So nothing runs">A compile error stops the whole program, so this call never happens. Write <code>return n % f == 0;</code> and the method compiles, returning <code>true</code> for 3 and 12.</li>
+        </ol></div>
         <p>Forget the <code>return</code> altogether and the compiler notices:</p>
-        <div class="p1-console" data-lang="java" data-title="No return at all"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s02-e3" data-lang="java" data-title="No return at all"><script type="text/plain" data-role="source">
 public class Factors {
 
     public static boolean isFactor(int f, int n) {
@@ -465,12 +500,17 @@ public class Factors {
         System.out.println(isFactor(3, 12));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="boolean" data-title="A value is owed">The return type is not <code>void</code>, so every way through the method must end at a <code>return</code> carrying a <code>boolean</code>.</li>
+  <li data-line="4" data-match="// oops..." data-title="A comment is not code">The compiler ignores comments, so this body is empty and contains no <code>return</code> at all.</li>
+  <li data-line="5" data-match="}" data-title="Falling off the end">Control would reach this closing brace with no value to hand back, and the compiler rejects that. ECJ underlines the method&rsquo;s name: <em>This method must return a result of type boolean</em>; Ed&rsquo;s <code>javac</code> points at this brace: <em>missing return statement</em>.</li>
+  <li data-line="8" data-match="isFactor(3, 12)" data-title="The caller is waiting for a value"><code>println</code> needs the value this call returns, and there would be none &mdash; which is why the check happens before anything runs. A <code>void</code> method needs no <code>return</code>, but then it could not be used here at all.</li>
+        </ol></div>
         <p>The interesting one: a <code>return</code> that <em>is</em> there, but that the compiler cannot
         guarantee is reached. The compiler does a simple <strong>flow analysis</strong> and is only happy
         when every possible path ends in a <code>return</code>. It does not treat <code>if (true)</code>
         as special, so as far as it is concerned there is a path that falls off the end:</p>
-        <div class="p1-console" data-lang="java" data-title="A return the compiler cannot prove"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s02-e4" data-lang="java" data-title="A return the compiler cannot prove"><script type="text/plain" data-role="source">
 public class Factors {
 
     public static boolean isFactor(int f, int n) {
@@ -481,16 +521,28 @@ public class Factors {
         System.out.println(isFactor(3, 12));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="4" data-match="if (true)" data-title="The condition is not read">The flow analysis never looks at an <code>if</code> condition&rsquo;s value, not even the literal <code>true</code>: an <code>if</code> with no <code>else</code> is always assumed to be skippable.</li>
+  <li data-line="4" data-match="return n % f == 0;" data-title="Only one path returns">This <code>return</code> is correct and has the right type, but it sits inside the <code>if</code>, so it covers only the path where the condition holds.</li>
+  <li data-line="5" data-match="}" data-title="The path that falls off the end">The path that skips the <code>if</code> arrives here without a value, so the compiler gives the same error as for no <code>return</code> at all (ECJ, at the method&rsquo;s name: <em>This method must return a result of type boolean</em>; <code>javac</code>, at this brace: <em>missing return statement</em>).</li>
+  <li data-line="8" data-match="isFactor(3, 12)" data-title="Two ways to fix it">Nothing runs until the method compiles. Drop the pointless <code>if</code>, or give it an <code>else</code> that also returns, as in the next example.</li>
+        </ol></div>
         <p>Whereas this quite stupid code satisfies it, because both branches return:</p>
-        <div class="code-card"><pre>public static boolean isFactor(int f, int n) {
-    if (n &lt; 10) {
+        <div class="p1-explain" data-eid="w4-s02-e5" data-lang="java" data-title="Two returns, one method" data-run="none"><script type="text/plain" data-role="source">
+public static boolean isFactor(int f, int n) {
+    if (n < 10) {
         return n % f == 0;
     }
     else {
         return n % f == 0;
     }
-}</pre></div>
+}
+</script><ol data-role="notes">
+  <li data-line="2" data-match="if (n &lt; 10)" data-title="Either branch could run">The test depends on <code>n</code>, so the compiler cannot know which way it goes &mdash; and does not need to, as long as each branch ends in a <code>return</code>.</li>
+  <li data-line="3" data-match="return n % f == 0;" data-title="Path one returns">When <code>n</code> is below 10, the method ends here and hands back the comparison.</li>
+  <li data-line="5" data-match="else" data-title="No path left over">With an <code>else</code>, exactly one of the two blocks always runs, so no path can skip both. Without it the <code>if</code> could be skipped, as in the last example.</li>
+  <li data-line="6" data-match="return n % f == 0;" data-title="Path two returns">Every path now ends in a <code>return</code>, so the method compiles. Both branches return the same thing, which is what makes it &ldquo;quite stupid&rdquo;: a single <code>return n % f == 0;</code> would do.</li>
+        </ol></div>
         <div class="tbl-scroll"><table class="tbl">
           <thead><tr><th>Mistake</th><th>This console (ECJ)</th><th>Ed (<code>javac</code>)</th></tr></thead>
           <tbody>
@@ -504,7 +556,7 @@ public class Factors {
         <h3><span class="idx">2.4</span><code>return</code> in a <code>void</code> method: stopping early</h3>
         <p>A <code>void</code> method can contain <code>return</code> too &mdash; it just cannot take a
         value. It simply ends the method there. Enter <code>1</code>, then try <code>12</code>:</p>
-        <div class="p1-console" data-lang="java" data-title="Stop early" data-stdin="1"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s02-e6" data-lang="java" data-title="Stop early" data-stdin="1"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
 public class Factors {
@@ -531,7 +583,13 @@ public class Factors {
         printFactors(n);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="6" data-match="return n % f == 0;" data-title="return with a value">In a method with a return type, <code>return</code> must carry a value of that type. Compare the bare <code>return;</code> in <code>main</code> below.</li>
+  <li data-line="17" data-match="void" data-title="main returns nothing"><code>main</code> is a <code>void</code> method like any other, so it may contain <code>return</code> &mdash; but only without a value.</li>
+  <li data-line="22" data-match="n &lt; 2" data-title="The guard">Numbers below 2 have no factors from 2 upwards, so there is nothing to do. <code>printFactors</code> would print nothing for them anyway (its loop test fails at once), but the guard states the rule plainly at the top.</li>
+  <li data-line="22" data-match="return;" data-title="A bare return stops early">No value after <code>return</code>: it ends the method on the spot, and leaving <code>main</code> ends the program. <code>return 0;</code> here would not compile: <em>Void methods cannot return a value</em> (Ed: <em>incompatible types: unexpected return value</em>).</li>
+  <li data-line="24" data-match="printFactors(n);" data-title="Reached only for 2 and up">With input 1 the early <code>return</code> fires, this line is skipped and only the prompt appears. With 12 it runs and lists the factors 2, 3, 4, 6 and 12.</li>
+        </ol></div>
         <p>And the Ed lesson&rsquo;s last example, which is missing an access modifier <em>and</em>
         ridiculous. It always returns a value, it has the right type, it compiles &mdash; and it is
         still wrong. The compiler checks the <em>shape</em> of a method, never whether it does what its
@@ -619,7 +677,7 @@ public class Factors {
       <div class="concept">
         <h3><span class="idx">3.2</span>Wrong type, wrong number</h3>
         <p>Both mistakes in one program. Run it and read both errors, starting with the first:</p>
-        <div class="p1-console" data-lang="java" data-title="Arguments that do not fit"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s03-e1" data-lang="java" data-title="Arguments that do not fit"><script type="text/plain" data-role="source">
 public class Add {
 
     private static int add(int a, int b) {
@@ -631,7 +689,13 @@ public class Add {
         System.out.println(add(1, 2, 3));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int a, int b" data-title="The parameter list">Two variable declarations separated by a comma. Every call must supply exactly two values, in this order, each an <code>int</code> &mdash; or a smaller whole-number type such as <code>short</code>, which Java widens to <code>int</code> automatically.</li>
+  <li data-line="4" data-match="a + b" data-title="Parameters are ordinary variables">Inside the method, <code>a</code> and <code>b</code> behave like any local variable, already holding the arguments&rsquo; values. They are created afresh at each call and removed when <code>add</code> returns.</li>
+  <li data-line="7" data-match="public static void main(String[] args)" data-title="Nothing runs at all">The compiler checks the whole class before anything runs and reports both errors together. With a compile error there is no program, so <code>main</code> never starts and neither line prints.</li>
+  <li data-line="8" data-match="&quot;1&quot;" data-title="Text is not a number">The quotes make this a <code>String</code>, and Java never turns a <code>String</code> into an <code>int</code> for you. The argument types are <code>(int, String)</code>, which do not match <code>add(int, int)</code>.</li>
+  <li data-line="9" data-match="add(1, 2, 3)" data-title="One argument too many"><code>add</code> declares two parameters, and Java will not drop the extra argument &mdash; nor, having no default values, fill in a missing one: <code>add(1)</code> is rejected for the same reason.</li>
+        </ol></div>
         <p class="sched-note">Here both are reported as <em>not applicable for the arguments</em>, with the
         argument types listed so you can compare them with <code>add(int, int)</code>. On Ed,
         <code>javac</code> calls the first one an <em>incompatible types</em> error, and the second a
@@ -659,7 +723,7 @@ public class Add {
         <p>Building on the factors example: a three-parameter <code>isFactor</code> and a two-parameter
         <code>printFactors</code> to find <strong>common</strong> factors. Enter <code>2</code>, then two
         numbers:</p>
-        <div class="p1-console" data-lang="java" data-title="Overloaded isFactor and printFactors" data-stdin="2
+        <div class="p1-explain" data-eid="w4-s03-e2" data-lang="java" data-title="Overloaded isFactor and printFactors" data-stdin="2
 12
 18"><script type="text/plain" data-role="source">
 import java.util.Scanner;
@@ -712,7 +776,16 @@ public class Factors {
         }
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="11" data-match="isFactor(int f, int n, int m)" data-title="Same name, three parameters">Overloading: allowed because three <code>int</code>s differ from line 6&rsquo;s two. Java tells the versions apart only by the number, order and types of the parameters &mdash; never by their names or the return type.</li>
+  <li data-line="12" data-match="n % f == 0 &amp;&amp; m % f == 0" data-title="A common factor"><code>%</code> gives the remainder, so each comparison asks &ldquo;does <code>f</code> divide this exactly?&rdquo;. <code>&amp;&amp;</code> is true only if both are, and skips the right-hand side when the left is already false.</li>
+  <li data-line="18" data-match="isFactor(i, n)" data-title="Two arguments: line 6">Two <code>int</code> arguments match only the two-parameter <code>isFactor</code>, so the one-number <code>printFactors</code> always uses that version.</li>
+  <li data-line="26" data-match="Math.min(n, m)" data-title="The Math.min method">A static method of the <code>Math</code> class that returns the smaller of its two arguments. No common factor can be larger than the smaller number, so the loop stops there. <code>Math.min</code> is itself overloaded, for <code>int</code>, <code>long</code>, <code>float</code> and <code>double</code>.</li>
+  <li data-line="27" data-match="isFactor(i, n, m)" data-title="Three arguments: line 11">Three <code>int</code>s, so Java picks the three-parameter version, which checks <code>i</code> against both numbers at once.</li>
+  <li data-line="36" data-match="sc.nextInt()" data-title="Reading a whole number">The Scanner method <code>nextInt</code> reads the next number typed in and returns it as an <code>int</code>. Typing <code>2</code> here leads to the two-number branch.</li>
+  <li data-line="44" data-match="printFactors(n, m)" data-title="A variable only this branch needs"><code>m</code> was declared inside the <code>if</code> block, so it exists only there &mdash; which is all this call needs. With 12 and 18, the common factors found are 2, 3 and 6.</li>
+  <li data-line="47" data-match="printFactors(n)" data-title="One argument: line 16">The same name as line 44, but one <code>int</code> argument selects the one-parameter <code>printFactors</code>, which lists every factor of <code>n</code> from 2 up.</li>
+        </ol></div>
         <p class="sched-note">Nothing at the call site says which version you mean. <code>printFactors(n, m)</code>
         has two <code>int</code> arguments, and exactly one <code>printFactors</code> takes two
         <code>int</code>s &mdash; so that is the one that runs.</p>
@@ -727,7 +800,7 @@ public class Factors {
         zero.</p>
         <p>Behind the scenes Java collects the values into an <strong>array</strong>, and the parameter
         works exactly like one. You just avoid declaring and filling the array yourself:</p>
-        <div class="p1-console" data-lang="java" data-title="Varargs"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s03-e3" data-lang="java" data-title="Varargs"><script type="text/plain" data-role="source">
 public class Sum {
     public static int sum(int... nums) {
         int sum = 0;
@@ -742,7 +815,15 @@ public class Sum {
         System.out.println(sum(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2));
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="2" data-match="int... nums" data-title="A varargs parameter">The three dots mean &ldquo;any number of <code>int</code>s, including none&rdquo;. Java gathers them into an <code>int[]</code> named <code>nums</code>. Only the last parameter may be written this way.</li>
+  <li data-line="3" data-match="int sum = 0" data-title="A variable named like its method">Legal: Java keeps method names and variable names apart, and a method call always has brackets after it. The total starts at 0, ready to be added to.</li>
+  <li data-line="4" data-match="for (int n : nums)" data-title="Walk the array">Because <code>nums</code> really is an array, a for-each loop visits each value in the order the caller wrote them; <code>nums.length</code> would work too.</li>
+  <li data-line="4" data-match="sum += n" data-title="The running total">Adds each value to <code>sum</code>. A one-statement loop body may go on the same line without braces.</li>
+  <li data-line="9" data-match="sum(1, 2, 3)" data-title="Three values, one array">Java builds the array <code>{1, 2, 3}</code> behind the scenes and passes it as <code>nums</code>, so the method returns 6.</li>
+  <li data-line="11" data-match="sum()" data-title="Zero arguments is fine"><code>nums</code> is then an array of length 0 (not <code>null</code>), so the loop body never runs and <code>sum</code> returns 0.</li>
+  <li data-line="12" data-match="sum(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2)" data-title="Any length, one method">Twelve arguments, and no new code was needed. With overloading alone you would have to write a separate <code>sum</code> for every count you wanted to allow.</li>
+        </ol></div>
         <p class="sched-note">Because the parameter really is an array, you can also pass an
         <code>int[]</code> you already have: <code>sum(new int[] {4, 5})</code> gives 9.</p>
       </div>
@@ -763,7 +844,7 @@ public class Sum {
         procedures only when you are sure that is what is needed. The point is <strong>clarity of
         intent</strong>: if you do not know what you mean a method to do, you are likely to write a bad
         one. Here <code>getValue</code> is a function and <code>setValue</code> a procedure:</p>
-        <div class="p1-console" data-lang="java" data-title="A function and a procedure"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s03-e4" data-lang="java" data-title="A function and a procedure"><script type="text/plain" data-role="source">
 public class Example {
 
     private int value;
@@ -783,7 +864,15 @@ public class Example {
         System.out.println(e.getValue());
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="private int value;" data-title="A field of each object">Declared in the class but outside every method, and without <code>static</code>, so each <code>Example</code> object has its own <code>value</code>. Unlike a local variable, a field starts with a default: 0 for an <code>int</code>.</li>
+  <li data-line="5" data-match="public int getValue()" data-title="A function">Return type <code>int</code>, no parameters and no side effects: it only reads <code>value</code> and hands it back. Calling it changes nothing.</li>
+  <li data-line="9" data-match="void" data-title="A procedure">Nothing comes back from <code>setValue</code>; it is called for what it changes. That is why it suits <code>void</code>, while <code>getValue</code> needs a return type.</li>
+  <li data-line="10" data-match="value = newValue" data-title="The side effect">Copies the parameter into the object&rsquo;s field. The parameter <code>newValue</code> is removed when the method ends, but the change to <code>value</code> stays.</li>
+  <li data-line="14" data-match="new Example()" data-title="Make an object first">The methods are not <code>static</code>, so they must run for a particular object. <code>new</code> creates one, with <code>value</code> at its default 0, and <code>e</code> refers to it.</li>
+  <li data-line="15" data-match="e.getValue()" data-title="Calling a method on an object">The dot runs <code>getValue</code> for the object <code>e</code>, reading that object&rsquo;s <code>value</code> &mdash; still 0, as nothing has set it.</li>
+  <li data-line="16" data-match="e.setValue(42)" data-title="A call used as a statement">A <code>void</code> call stands alone: there is no result to print or store. Line 17 then gets 42 from the very same <code>getValue</code> call, because the procedure changed the field in between.</li>
+        </ol></div>
         <p class="sched-note">Neither method is <code>static</code>: they read and change the
         <code>value</code> belonging to one particular <code>Example</code> object, which is why
         <code>main</code> makes one with <code>new</code> first. That is the classes weeks arriving early.</p>
@@ -795,7 +884,7 @@ public class Example {
         do it: a function that <em>builds</em> the menu, a procedure that <em>prints</em> it, a boolean
         function that answers a question, and a method that keeps asking until it gets a sensible answer.
         Enter <code>7</code> then <code>2</code>:</p>
-        <div class="p1-console" data-lang="java" data-title="PizzaShop with methods" data-stdin="7
+        <div class="p1-explain" data-eid="w4-s03-e5" data-lang="java" data-title="PizzaShop with methods" data-stdin="7
 2"><script type="text/plain" data-role="source">
 import java.util.Scanner;
 
@@ -839,7 +928,17 @@ public class PizzaShop {
         System.out.println("You selected the " + pizzas[selection] + " pizza.");
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="5" data-match="private static final" data-title="A constant for the whole class">Declared outside every method, so all of them can see it. <code>static</code> puts it on the class, so the static methods can use it with no object; <code>final</code> means <code>pizzas</code> can never be assigned a different array.</li>
+  <li data-line="5" data-match="&quot;&quot;" data-title="A filler at index 0">The empty string takes up index 0 so that menu numbers 1 to 3 are also the array indices &mdash; no <code>- 1</code> needed when looking a choice up.</li>
+  <li data-line="7" data-match="private static String menu()" data-title="A function that builds">Return type <code>String</code>: it builds the menu text and returns it, printing nothing. Whoever calls it decides what to do with the text.</li>
+  <li data-line="10" data-match="menu += i + &quot;. &quot; + pizzas[i] + &quot;\n&quot;" data-title="Building a string">Once one side of <code>+</code> is a <code>String</code>, the number <code>i</code> is turned into text and joined; <code>&quot;\n&quot;</code> is a newline. <code>+=</code> adds each line to the end of <code>menu</code>.</li>
+  <li data-line="17" data-match="System.out.print(menu())" data-title="A procedure uses a function"><code>menu()</code> runs first, and the <code>String</code> it returns is what <code>print</code> receives. <code>print</code>, not <code>println</code>, because the text already ends with a newline.</li>
+  <li data-line="21" data-match="selection &gt;= 1 &amp;&amp; selection &lt; pizzas.length" data-title="A boolean function">Answers a yes/no question. <code>pizzas.length</code> is 4, so only 1, 2 and 3 count as on the menu; the filler at index 0 is deliberately left out.</li>
+  <li data-line="24" data-match="Scanner sc" data-title="The Scanner as a parameter">Any type can be a parameter. <code>main</code> passes in its own <code>Scanner</code>, so this method reads the same input instead of making a second <code>Scanner</code> on <code>System.in</code>.</li>
+  <li data-line="27" data-match="while (!isOnMenu(selection))" data-title="Keep asking"><code>!</code> turns the answer round: the loop repeats while the choice is <em>not</em> on the menu. The input 7 fails once, then 2 passes, and only a valid number is returned.</li>
+  <li data-line="40" data-match="pizzas[selection]" data-title="A safe index"><code>readSelection</code> only ever returns 1 to 3, so this index is always in range; for 2 it is <code>&quot;Too Much Meat&quot;</code>.</li>
+        </ol></div>
         <div class="note tip">
           <span class="tag">Read main first</span>
           <p>Four lines of <code>main</code> now tell the whole story, in the methods&rsquo; own words. The
@@ -923,29 +1022,45 @@ public class FloorPlan {
         uses <code>return</code>, much as in Java &mdash; but notice what is missing from the header: there is
         no return type, so <strong>nothing in the signature tells you whether the function returns anything,
         or what</strong>.</p>
-        <div class="p1-console" data-lang="python" data-title="A simple (and largely pointless) function"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s04-e1" data-lang="python" data-title="A simple (and largely pointless) function"><script type="text/plain" data-role="source">
 def add(a, b):
     return a + b
 
 print(add(1, 2))
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def" data-title="The def keyword">Starts a function definition: <code>def</code>, the function&rsquo;s name, the parameters in brackets, then a colon. The indented line below is the body.</li>
+  <li data-line="1" data-match="(a, b)" data-title="Parameters with no types">Just two names. There is no type for either one and no return type before the name, so the header alone cannot tell you what goes in or whether anything comes out.</li>
+  <li data-line="2" data-match="return a + b" data-title="Hand back a value"><code>return</code> works out <code>a + b</code>, ends the function and gives that value to the caller, much as in Java.</li>
+  <li data-line="4" data-match="add(1, 2)" data-title="Calling the function">The arguments are given to the parameters in order, so <code>a</code> is 1 and <code>b</code> is 2. The call is replaced by the returned value, 3, and <code>print</code> receives that. The <code>def</code> must already have run, which is why it comes first.</li>
+        </ol></div>
         <p>Without type checking, things get a bit odd. Nothing stops you passing strings, and
         <code>+</code> on strings joins them:</p>
-        <div class="p1-console" data-lang="python" data-title="Same function, different types"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s04-e2" data-lang="python" data-title="Same function, different types"><script type="text/plain" data-role="source">
 def add(a, b):
     return a + b
 
 print(add('1', '2'))
 print(add([1, 2], [3]))
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def add(a, b):" data-title="Nothing says numbers">The same header as before. With no types to check, Python accepts any two arguments; whether they work is decided only when line 2 runs.</li>
+  <li data-line="2" data-match="a + b" data-title="+ depends on the values">Python chooses what <code>+</code> means at run time, from the types of the values it meets: adding for numbers, joining for strings and for lists. One line of code, three different jobs.</li>
+  <li data-line="4" data-match="add('1', '2')" data-title="Two strings are joined">Both arguments are <code>str</code>, so <code>+</code> joins them and the function returns the string <code>'12'</code>, not the number 3. <code>print</code> shows a string without its quotes.</li>
+  <li data-line="5" data-match="add([1, 2], [3])" data-title="Two lists are joined too"><code>+</code> on two lists builds a <em>new</em> list holding the elements of both, <code>[1, 2, 3]</code>; neither argument is changed.</li>
+        </ol></div>
         <p>And problems only appear at run time, when the line actually executes:</p>
-        <div class="p1-console" data-lang="python" data-title="Only found by running it"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s04-e3" data-lang="python" data-title="Only found by running it"><script type="text/plain" data-role="source">
 def add(a, b):
     return a + b
 
 print("This line runs first.")
 print(add([1, 2, 3], {'a' : 'first'}))
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def add(a, b):" data-title="Accepted without question">Running a <code>def</code> only creates the function. Nothing is checked about the types <code>a</code> and <code>b</code> will have, so no problem can show up yet.</li>
+  <li data-line="2" data-match="a + b" data-title="Where it actually fails">A list can only be joined to another list, so <code>+</code> raises <code>TypeError: can only concatenate list (not "dict") to list</code>. The traceback names line 5, where the call was made, and then this line, where the error happened.</li>
+  <li data-line="4" data-match="print(&quot;This line runs first.&quot;)" data-title="Proof that it started">This line runs and prints before anything goes wrong: the program was never rejected in advance. Java&rsquo;s compiler would refuse a call like line 5&rsquo;s, and nothing at all would run.</li>
+  <li data-line="5" data-match="{'a' : 'first'}" data-title="A dict, not a list">Curly braces with <code>key : value</code> pairs make a dictionary (Week 2&ndash;3, 10.2). Passing it is allowed &mdash; there is no type to check &mdash; and the mistake surfaces only inside <code>add</code>.</li>
+  <li data-line="5" data-match="print" data-title="Never gets its value">Python works out the argument first, and the call to <code>add</code> raises the error, so this <code>print</code> never runs and the program stops here.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">Documentation is the contract</span>
           <p>In Java the header <em>is</em> the contract, and the compiler enforces it. In Python,
@@ -960,7 +1075,7 @@ print(add([1, 2, 3], {'a' : 'first'}))
         <p>Section 3.5&rsquo;s procedures have return type <code>void</code> in Java. Python has no such
         keyword. A function that finishes without a <code>return</code> still hands back a value &mdash; a
         special one called <code>None</code>, which means &ldquo;nothing here&rdquo;:</p>
-        <div class="p1-console" data-lang="python" data-title="Where did None come from?"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s04-e4" data-lang="python" data-title="Where did None come from?"><script type="text/plain" data-role="source">
 def greet(name):
     print("Hello, " + name)
 
@@ -970,7 +1085,14 @@ def todo():
 result = greet("Linh")
 print(result)
 print(todo())
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def greet(name):" data-title="No sign of what it returns">A function with no <code>return</code> &mdash; Java would call it a <code>void</code> procedure (3.5). Python has no <code>void</code>, and the header looks exactly like that of a function that does return a value.</li>
+  <li data-line="2" data-match="print(&quot;Hello, &quot; + name)" data-title="Printing is not returning"><code>print</code> writes the text to the console; it hands nothing back to the caller. After this line the function simply reaches its end.</li>
+  <li data-line="5" data-match="pass" data-title="A do-nothing placeholder">A body may not be empty, so <code>pass</code> fills the gap: a statement that does nothing. <code>todo</code> can be called, but it has no work to do.</li>
+  <li data-line="7" data-match="result = greet(&quot;Linh&quot;)" data-title="Keeping a result that isn&rsquo;t there">The call runs <code>greet</code>, which prints the greeting. It ends without <code>return</code>, so the value stored in <code>result</code> is <code>None</code>. Java would not compile an assignment from a <code>void</code> method.</li>
+  <li data-line="8" data-match="print(result)" data-title="None is a real value"><code>None</code> means &ldquo;nothing here&rdquo;, but it is still a value (of type <code>NoneType</code>), so <code>print</code> shows it as the word <code>None</code>.</li>
+  <li data-line="9" data-match="todo()" data-title="pass gives back None too">Doing nothing and falling off the end is still finishing without <code>return</code>, so this call is also <code>None</code>, and that is what <code>print</code> receives.</li>
+        </ol></div>
         <p class="sched-note">In the words of the Python tutorial, even functions without a
         <code>return</code> statement &ldquo;do return a value, albeit a rather boring one. This value is
         called <code>None</code>&rdquo;. If you ever see an unexpected <code>None</code> printed, look for a
@@ -985,13 +1107,18 @@ print(todo())
         type.</p>
         <p>They are <strong>not enforced</strong> in any way. You can still pass in non-<code>int</code>
         values and get non-<code>int</code> values back:</p>
-        <div class="p1-console" data-lang="python" data-title="Hints, not rules"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s04-e5" data-lang="python" data-title="Hints, not rules"><script type="text/plain" data-role="source">
 def add(a: int, b: int) -> int:
     return a + b
 
 print(add(1, 2))
 print(add('1', '2'))   # pass in a str, get a str out: the hints aren't enforceable
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="a: int, b: int" data-title="Hints on the parameters"><code>: int</code> after each name documents that the argument should be an <code>int</code>. Python records the hint but never checks it.</li>
+  <li data-line="1" data-match="-&gt; int" data-title="A hint for the result">Placed after the parameter list, before the colon: it says the function hands back an <code>int</code>. A note for the reader, not a promise Python keeps.</li>
+  <li data-line="4" data-match="add(1, 2)" data-title="Used as the hints say">Two <code>int</code>s go in and <code>+</code> adds them, so the result is the <code>int</code> 3, just as the header describes.</li>
+  <li data-line="5" data-match="add('1', '2')" data-title="Hints ignored, no error">Two strings go in and nothing objects &mdash; not the call, not the <code>return</code>. <code>+</code> joins them and the string <code>'12'</code> comes out. A separate checker such as mypy would flag this line; Python itself does not.</li>
+        </ol></div>
         <div class="joke">
           <p>It should also be emphasized that Python will remain a dynamically typed language, and the authors have no desire to ever make type hints mandatory, even by convention.</p>
           <span class="attrib">Guido van Rossum, Jukka Lehtosalo &amp; &#321;ukasz Langa, <em>PEP 484 &ndash; Type Hints</em>, 2014</span>
@@ -1056,13 +1183,18 @@ print("certificate gave back:", certificate("Ana"))
       <div class="concept">
         <h3><span class="idx">5.1</span>Default arguments</h3>
         <p>A parameter can be given a default value, which lets the caller leave that argument out:</p>
-        <div class="p1-console" data-lang="python" data-title="A default for msg"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s05-e1" data-lang="python" data-title="A default for msg"><script type="text/plain" data-role="source">
 def msg(name, msg = "Hi!"):
     print(name + ", you have a message: " + msg)
 
 msg("Luke")
 msg("Rohit", "Good Work")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="msg = &quot;Hi!&quot;" data-title="A default value">The <code>= "Hi!"</code> makes this parameter optional: a call that leaves it out gets <code>"Hi!"</code>. A parameter without a default may not follow one that has one, so <code>def msg(msg = "Hi!", name):</code> is <code>SyntaxError: parameter without a default follows parameter with a default</code>.</li>
+  <li data-line="2" data-match="name + &quot;, you have a message: &quot; + msg" data-title="The parameter, not the function">Inside the body, <code>msg</code> means the parameter &mdash; a string &mdash; which hides the function of the same name. Its value is whatever the call passed, or else the default.</li>
+  <li data-line="4" data-match="msg(&quot;Luke&quot;)" data-title="An argument left out">One argument for two parameters: <code>"Luke"</code> goes to <code>name</code> by position, and <code>msg</code> falls back on its default. In Java this call would need a second, overloaded method with one parameter (3.3).</li>
+  <li data-line="5" data-match="msg(&quot;Rohit&quot;, &quot;Good Work&quot;)" data-title="The default replaced">With a second argument given, <code>"Good Work"</code> replaces the default &mdash; for this call only. The default itself never changes, so the next call that leaves <code>msg</code> out gets <code>"Hi!"</code> again.</li>
+        </ol></div>
         <p class="sched-note">Compare <a href="#s03">section 3.1</a>: Java has no default values, which is
         one reason Java programmers reach for overloading instead.</p>
       </div>
@@ -1071,13 +1203,18 @@ msg("Rohit", "Good Work")
         <h3><span class="idx">5.2</span>Keyword arguments</h3>
         <p>Arguments can also be given by <strong>naming</strong> the parameter they belong to &mdash; and
         then the order no longer matters:</p>
-        <div class="p1-console" data-lang="python" data-title="Arguments by name"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s05-e2" data-lang="python" data-title="Arguments by name"><script type="text/plain" data-role="source">
 def msg(name, msg):
     print(name + ", you have a message: " + msg)
 
 msg(msg="Hi!", name="Luke")   # the arguments are in a different
                               # order to the parameters
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="(name, msg)" data-title="Names a caller can use">Neither parameter has a default, so every call must supply both. Because a call may now use these names, renaming a parameter can break its callers &mdash; Java matches arguments by position only.</li>
+  <li data-line="2" data-match="name + &quot;, you have a message: &quot; + msg" data-title="The body cannot tell">Inside the function, <code>name</code> and <code>msg</code> are ordinary parameters; nothing shows whether the call passed them by position or by name.</li>
+  <li data-line="4" data-match="msg=&quot;Hi!&quot;" data-title="A keyword argument"><code>msg=</code> sends <code>"Hi!"</code> to the parameter called <code>msg</code>, wherever it sits in the list. The name must exist: <code>text="Hi!"</code> stops with <code>TypeError: msg() got an unexpected keyword argument 'text'</code>.</li>
+  <li data-line="4" data-match="name=&quot;Luke&quot;" data-title="Order no longer matters"><code>name</code> comes first in the header but last here; matching by name makes that irrelevant, so this call does exactly what <code>msg("Luke", "Hi!")</code> does.</li>
+        </ol></div>
         <p class="sched-note">You have already used one: <code>print("a", end="")</code> passes
         <code>end</code> by name. <code>print</code>&rsquo;s <code>end</code> has a default of
         <code>"\n"</code>, which is why <code>print</code> normally finishes the line.</p>
@@ -1088,36 +1225,50 @@ msg(msg="Hi!", name="Luke")   # the arguments are in a different
         <p>Putting <code>*</code> before a parameter name makes a variable argument list, similar to
         Java&rsquo;s <code>...</code> &mdash; but without the type restriction, and without having to come
         last, <em>if</em> you name the arguments after it:</p>
-        <div class="p1-console" data-lang="python" data-title="Any number of names"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s05-e3" data-lang="python" data-title="Any number of names"><script type="text/plain" data-role="source">
 def msg(*names, msg):
     for name in names:
         print(msg + ", " + name)
 
 msg("Luke", "Cat", "Rohit", "Matthew", msg="Hi")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="*names" data-title="Collect the positional arguments">The <code>*</code> gathers every positional argument into one tuple called <code>names</code> &mdash; here <code>('Luke', 'Cat', 'Rohit', 'Matthew')</code>. Like Java&rsquo;s <code>String... names</code>, but the values need not share a type, and no arguments at all gives an empty tuple.</li>
+  <li data-line="1" data-match="msg" data-nth="2" data-title="A keyword-only parameter">Any parameter after <code>*names</code> is <strong>keyword-only</strong>: the positional arguments all go into the tuple, so <code>msg</code> can be reached only by name. That is the price of the <code>*</code> not coming last, as Java&rsquo;s <code>...</code> must.</li>
+  <li data-line="2" data-match="for name in names:" data-title="Walking the tuple">A tuple is a sequence, like a list, so <code>for</code> visits its items in order &mdash; the order the call wrote them. <code>len(names)</code> and <code>names[0]</code> work too.</li>
+  <li data-line="3" data-match="msg + &quot;, &quot; + name" data-title="One greeting per name"><code>msg</code> here is the keyword-only parameter, the same <code>"Hi"</code> on every pass; only <code>name</code> changes, so the line runs once for each of the four names.</li>
+  <li data-line="5" data-match="msg=&quot;Hi&quot;" data-title="Named, so not collected">Because it is named, <code>"Hi"</code> goes to <code>msg</code> instead of into the tuple. The four strings before it are positional, so <code>*names</code> takes them all.</li>
+        </ol></div>
         <p>Inside the function, <code>names</code> holds every positional argument, in order &mdash; it is a
         tuple, which is why the <code>for</code> loop works. Because <code>*names</code> swallows
         <em>every</em> positional argument, <code>msg</code> can now only be given by name. Take the
         <code>msg=</code> away and see:</p>
-        <div class="p1-console" data-lang="python" data-title="Forgot the msg="><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s05-e4" data-lang="python" data-title="Forgot the msg="><script type="text/plain" data-role="source">
 def msg(*names, msg):
     for name in names:
         print(msg + ", " + name)
 
 msg("Luke", "Cat", "Hi")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="msg" data-nth="2" data-title="Required and keyword-only"><code>msg</code> has no default, so every call must supply it, and after <code>*names</code> the only way is by name. A default, <code>msg="Hi"</code>, would let line 5 run &mdash; but it would greet <code>Hi</code> as a third person.</li>
+  <li data-line="2" data-match="for name in names:" data-title="Never reached">Arguments are matched to parameters before the body starts, and here that matching fails, so the loop never runs and nothing is printed.</li>
+  <li data-line="5" data-match="msg(&quot;Luke&quot;, &quot;Cat&quot;, &quot;Hi&quot;)" data-title="&ldquo;Hi&rdquo; becomes a name">Without <code>msg=</code>, <code>"Hi"</code> is just a third positional argument, so <code>*names</code> takes it too and nothing is left for <code>msg</code>. Python stops here with <code>TypeError: msg() missing 1 required keyword-only argument: 'msg'</code>; the fix is <code>msg("Luke", "Cat", msg="Hi")</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
         <h3><span class="idx">5.4</span><code>**</code>: keyword arguments collected into a dict</h3>
         <p>Finally, <code>**</code> before a parameter name collects any <strong>named</strong> arguments
         that do not match a parameter, and hands them to you as a <code>dict</code>:</p>
-        <div class="p1-console" data-lang="python" data-title="**data"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s05-e5" data-lang="python" data-title="**data"><script type="text/plain" data-role="source">
 def record(**data):
     print(data)
 
 record(name="Luke", job="Lecturer", employer="UTS")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="**data" data-title="Collect the named extras">The <code>**</code> gathers every keyword argument that matches no other parameter into a new <code>dict</code> called <code>data</code>. <code>record</code> has no other parameters, so every named argument lands here; a call with none gives an empty dict, <code>{}</code>.</li>
+  <li data-line="2" data-match="print(data)" data-title="An ordinary dict"><code>data</code> is a plain <code>dict</code>, so everything from Weeks 2+3 works on it: <code>data["job"]</code> is <code>'Lecturer'</code>, and <code>data.items()</code> walks the pairs, as 5.6 does.</li>
+  <li data-line="4" data-match="name=&quot;Luke&quot;, job=&quot;Lecturer&quot;, employer=&quot;UTS&quot;" data-title="Names the caller invents">No parameter called <code>name</code>, <code>job</code> or <code>employer</code> exists: the caller makes the names up, and each becomes a key. Only named arguments are collected &mdash; <code>record("Luke")</code> gives <code>TypeError: record() takes 0 positional arguments but 1 was given</code>.</li>
+        </ol></div>
         <p class="sched-note">The names become the keys, as strings, in the order you wrote them &mdash; the
         same insertion-ordered dict you met in Weeks 2+3.</p>
       </div>
@@ -1127,7 +1278,7 @@ record(name="Luke", job="Lecturer", employer="UTS")
         <p>The Python pizza shop gets the same treatment as section 3.6. Notice <code>end=""</code> &mdash;
         a keyword argument &mdash; stopping <code>print</code> from adding a blank line after a menu that
         already ends in one. Enter <code>0</code> then <code>3</code>:</p>
-        <div class="p1-console" data-lang="python" data-title="Pizza shop with functions" data-stdin="0
+        <div class="p1-explain" data-eid="w4-s05-e6" data-lang="python" data-title="Pizza shop with functions" data-stdin="0
 3"><script type="text/plain" data-role="source">
 pizzas = ["", "Vegetarian", "Too Much Meat", "Scarparella"]
 
@@ -1152,7 +1303,17 @@ print(menu(pizzas), end="")
 
 choice = read_selection(pizzas)
 print("You selected the " + pizzas[choice] + " pizza.")
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="&quot;&quot;" data-title="A blank slot 0">The empty string fills index 0, so each pizza&rsquo;s number on the menu is also its index in the list. That is why the loop on line 5 starts at 1, and why 0 is not on the menu.</li>
+  <li data-line="3" data-match="def menu(pizzas):" data-title="Builds the menu, does not print it"><code>menu</code> returns the text and leaves printing to its caller &mdash; a function, in 3.5&rsquo;s sense. Java&rsquo;s <code>menu()</code> needed no parameter because the array was a class member; here the list comes in as an argument.</li>
+  <li data-line="5" data-match="range(1, len(pizzas))" data-title="Every real pizza"><code>len(pizzas)</code> is 4, and <code>range(1, 4)</code> gives 1, 2, 3: the start is included, the end is not. It is Java&rsquo;s <code>for (int i = 1; i &lt; pizzas.length; i++)</code>.</li>
+  <li data-line="6" data-match="str(i)" data-title="Number to text first">Python&rsquo;s <code>+</code> will not join an <code>int</code> to a string &mdash; <code>i + ". "</code> raises <code>TypeError: unsupported operand type(s) for +: 'int' and 'str'</code> &mdash; so <code>str(i)</code> converts it. Java&rsquo;s <code>+</code> does that conversion for you.</li>
+  <li data-line="10" data-match="return selection &gt;= 1 and selection &lt; len(pizzas)" data-title="Return the test itself">The <code>and</code> expression is already <code>True</code> or <code>False</code>, so it is returned directly, like Java&rsquo;s <code>isOnMenu</code> with <code>&amp;&amp;</code>. For 0 the left side is <code>False</code>, so <code>and</code> never looks at the right.</li>
+  <li data-line="13" data-match="int(input(&quot;Enter the number of your selection: &quot;))" data-title="Prompt, read, convert"><code>input</code> shows the prompt, waits, and returns the typed line as a string, without the newline; <code>int</code> turns it into a number. Typing something like <code>two</code> would stop the program with a <code>ValueError</code>.</li>
+  <li data-line="14" data-match="while not is_on_menu(pizzas, selection):" data-title="Ask until it is valid"><code>not</code> flips the boolean the call returns, so the loop body runs only while the choice is off the menu &mdash; once for the 0, and then the 3 ends it. Whatever the function returns is always a real pizza&rsquo;s number.</li>
+  <li data-line="20" data-match="end=&quot;&quot;" data-title="A keyword argument to print"><code>end</code> is one of <code>print</code>&rsquo;s parameters, with the default <code>"\n"</code> (5.1), given here by name (5.2). <code>menu</code>&rsquo;s text already ends in a newline, so replacing the default with <code>""</code> avoids a blank line.</li>
+  <li data-line="23" data-match="pizzas[choice]" data-title="A safe index"><code>read_selection</code> only returns numbers that passed <code>is_on_menu</code>, so <code>choice</code> is 1, 2 or 3 and this index can never be out of range. Here <code>pizzas</code> is the global list, not a parameter.</li>
+        </ol></div>
         <p class="sched-note">Each function takes the list as a parameter, also called <code>pizzas</code>.
         Inside the function that name is a <em>parameter</em> &mdash; a local variable that happens to refer
         to the same list. Section 7 is about exactly that.</p>
@@ -1222,7 +1383,7 @@ record(name="Luke", job="Lecturer", employer="UTS")
         again. That is the whole mechanism behind &ldquo;parameters are removed once the method
         terminates&rdquo; in section 3.1.</p>
         <p>Run this and read the indentation: every extra level is one more frame on the stack.</p>
-        <div class="p1-console" data-lang="java" data-title="Watching the stack grow and shrink"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s06-e1" data-lang="java" data-title="Watching the stack grow and shrink"><script type="text/plain" data-role="source">
 public class CallStack {
 
     public static boolean isFactor(int f, int n) {
@@ -1249,7 +1410,16 @@ public class CallStack {
         System.out.println("main ends");
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int f, int n" data-title="Parameters fill the new frame">Each call to <code>isFactor</code> pushes a fresh frame holding <code>f</code>, <code>n</code> and, a line later, <code>result</code>. The parameters start as copies of the values passed in the call.</li>
+  <li data-line="4" data-match="&quot;        isFactor(&quot;" data-title="Spaces show the depth">The leading spaces are just part of the string. Each method indents by four more than its caller, so the output&rsquo;s indentation shows how many frames are on the stack: <code>main</code> at none, <code>printFactors</code> at four, <code>isFactor</code> at eight.</li>
+  <li data-line="5" data-match="n % f == 0" data-title="% before ==">The remainder <code>n % f</code> is worked out first, because <code>%</code> binds tighter than <code>==</code>; the comparison is <code>true</code> exactly when <code>f</code> divides <code>n</code>. The answer goes into <code>result</code>, a local variable in this frame.</li>
+  <li data-line="7" data-match="return result;" data-title="A return pops the frame">The frame of <code>isFactor</code>, with its <code>f</code>, <code>n</code> and <code>result</code>, is destroyed. Only the <code>boolean</code> value travels back to the call on line 13, where <code>printFactors</code> carries on.</li>
+  <li data-line="10" data-match="int n" data-title="Another variable called n">A parameter of <code>printFactors</code>, living in its own frame. It has the same name as <code>main</code>&rsquo;s <code>n</code> on line 22 and receives a copy of its value, 4, but it is a separate variable.</li>
+  <li data-line="13" data-match="isFactor(i, n)" data-title="A call pushes a frame"><code>printFactors</code> pauses here, its <code>n</code> and loop variable <code>i</code> intact, while a frame for <code>isFactor</code> goes on top. The <code>boolean</code> it returns becomes the <code>if</code> condition; the loop makes three such calls, each frame pushed and popped in turn.</li>
+  <li data-line="20" data-match="main(String[] args)" data-title="The bottom frame"><code>main</code> is the first method called, so its frame sits at the bottom of the stack for the whole run. When it returns, the program ends.</li>
+  <li data-line="23" data-match="printFactors(n)" data-title="main waits here">Pushes a frame for <code>printFactors</code>, passing the value of <code>main</code>&rsquo;s <code>n</code>. Line 24 runs only once that frame &mdash; and every <code>isFactor</code> frame above it &mdash; has been popped.</li>
+        </ol></div>
         <figure class="fig fig-wide">
           <svg viewBox="0 0 420 270" width="420" height="270" role="img" aria-label="The call stack while isFactor(3, 4) runs: three frames. At the bottom main, holding args and n equal to 4. Above it printFactors, holding n equal to 4 and i equal to 3. On top isFactor, holding f equal to 3 and n equal to 4, which is the method running now.">
             <defs><marker id="st-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
@@ -1295,7 +1465,7 @@ public class CallStack {
         <p>So a variable declared inside a method simply does not exist anywhere else. <code>total</code>
         below lives in <code>addUp</code>&rsquo;s frame, and that frame is gone by the time
         <code>main</code> asks for it &mdash; in fact the compiler refuses before anything runs:</p>
-        <div class="p1-console" data-lang="java" data-title="Out of scope"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s06-e2" data-lang="java" data-title="Out of scope"><script type="text/plain" data-role="source">
 public class Scope {
 
     public static void addUp(int n) {
@@ -1308,7 +1478,13 @@ public class Scope {
         System.out.println(total);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="void" data-title="Nothing comes back"><code>addUp</code> is <code>void</code>, so it hands no value to its caller. Whatever it computes is thrown away with its frame &mdash; which is the real bug here.</li>
+  <li data-line="4" data-match="int total = 0;" data-title="Local to addUp">Declared inside <code>addUp</code>, so <code>total</code> lives in <code>addUp</code>&rsquo;s frame. Its scope ends at the closing brace on line 6; no other method can name it.</li>
+  <li data-line="5" data-match="total += i" data-title="Adding up 1 to n"><code>+=</code> adds <code>i</code> to <code>total</code> on each pass of the loop, so for <code>n</code> = 10 it would reach 55 &mdash; and then vanish when the method returns.</li>
+  <li data-line="9" data-match="addUp(10);" data-title="The result is lost">The call pushes a frame, the loop runs, and the frame is popped again. Because <code>addUp</code> returns nothing, this statement has nothing to keep.</li>
+  <li data-line="10" data-match="total" data-title="Not in scope here">The compile error. <code>main</code> declares no <code>total</code>, and the one in <code>addUp</code> is out of scope, so the compiler refuses before anything runs: Ed&rsquo;s <code>javac</code> says <em>cannot find symbol</em>; this site&rsquo;s console words it differently.</li>
+        </ol></div>
         <p class="sched-note">Ed&rsquo;s <code>javac</code> calls this <em>cannot find symbol</em>. The fix is
         not to make <code>total</code> reachable from <code>main</code>; it is to <strong>return</strong> it
         &mdash; change <code>void</code> to <code>int</code>, add <code>return total;</code>, and print
@@ -1325,7 +1501,7 @@ public class Scope {
         references) are pointers to these objects&rdquo;.</p>
         <p>That is why a method can build an array and return it. The method&rsquo;s frame is destroyed, but
         the array is not in the frame &mdash; it is on the heap, and the caller now holds a reference to it:</p>
-        <div class="p1-console" data-lang="java" data-title="The frame goes, the array stays"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s06-e3" data-lang="java" data-title="The frame goes, the array stays"><script type="text/plain" data-role="source">
 public class MakeArray {
 
     public static int[] squares(int n) {
@@ -1342,7 +1518,16 @@ public class MakeArray {
         System.out.println();
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int[]" data-title="Returns a reference">The return type <code>int[]</code> means <code>squares</code> hands back a reference to an array of <code>int</code>s, not the elements themselves.</li>
+  <li data-line="4" data-match="int[] result" data-title="A local reference variable"><code>result</code> is a local variable in the frame of <code>squares</code>, so it dies when the method returns. It holds only a reference to the array.</li>
+  <li data-line="4" data-match="new int[n]" data-title="Made on the heap"><code>new</code> allocates an array of <code>n</code> <code>int</code>s on the heap, every element starting at 0. The heap is not part of any frame, so the array can outlive this call.</li>
+  <li data-line="6" data-match="result[i] = i * i;" data-title="Writing through the reference">Follows the reference in <code>result</code> to the heap array and stores <code>i * i</code> in element <code>i</code>.</li>
+  <li data-line="8" data-match="return result;" data-title="The frame goes, the array stays">The frame of <code>squares</code> is popped, taking <code>n</code>, <code>i</code> and <code>result</code> with it. The array stays on the heap, and the caller receives the reference to it.</li>
+  <li data-line="12" data-match="int[] sq = squares(5)" data-title="main now holds the reference"><code>sq</code>, in <code>main</code>&rsquo;s frame, now refers to the very array <code>result</code> referred to. No elements were copied &mdash; only the reference.</li>
+  <li data-line="13" data-match="for (int s : sq)" data-title="Enhanced for over the array">Visits every element of the array in order, with <code>s</code> holding a copy of each value; <code>print</code> keeps them all on one line.</li>
+  <li data-line="14" data-match="System.out.println();" data-title="Just a line break">With no argument, <code>println</code> prints only a line break, ending the line the loop built.</li>
+        </ol></div>
         <figure class="fig fig-wide">
           <svg viewBox="0 0 440 210" width="440" height="210" role="img" aria-label="After squares returns: on the stack, the popped squares frame is drawn dashed and its variables are gone; main's frame holds sq, which points to an int array of five elements, 0, 1, 4, 9 and 16, on the heap.">
             <defs><marker id="hp-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
@@ -1481,7 +1666,7 @@ public class Temperatures {
         <p>The Java Language Specification: when a method is invoked, &ldquo;the values of the actual
         argument expressions initialize newly created parameter variables&rdquo;. New variables, in the new
         frame, holding copies. So this <code>swap</code> cannot work &mdash; predict the output first:</p>
-        <div class="p1-console" data-lang="java" data-title="A swap that does not swap"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e1" data-lang="java" data-title="A swap that does not swap"><script type="text/plain" data-role="source">
 public class Swap {
 
     public static void swap(int a, int b) {
@@ -1498,19 +1683,32 @@ public class Swap {
         System.out.println("after swap:  x = " + x + ", y = " + y);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int a, int b" data-title="New parameter variables"><code>a</code> and <code>b</code> are brand-new variables in <code>swap</code>&rsquo;s frame. On each call they are initialised with <em>copies</em> of the argument values &mdash; here 1 and 2.</li>
+  <li data-line="4" data-match="int temp = a;" data-title="The classic three-step swap"><code>temp</code> keeps <code>a</code>&rsquo;s old value so it is not lost when the next line overwrites <code>a</code>. The swap logic is correct; the problem is which variables it works on.</li>
+  <li data-line="5" data-match="a = b;" data-title="Assigns only the copy">Assigning to a parameter changes <code>swap</code>&rsquo;s own variable. Nothing connects <code>a</code> back to <code>x</code>, so <code>x</code> cannot be affected.</li>
+  <li data-line="7" data-match="&quot;inside swap: a = &quot; + a + &quot;, b = &quot; + b" data-title="Swapped, but only in here">Inside <code>swap</code>&rsquo;s frame the exchange really happened, so this prints <code>inside swap: a = 2, b = 1</code>.</li>
+  <li data-line="13" data-match="swap(x, y)" data-title="Values go in, nothing comes out">Java evaluates <code>x</code> and <code>y</code> to 1 and 2 and copies those values into <code>a</code> and <code>b</code>. <code>swap</code> is <code>void</code>, so no new value comes back either.</li>
+  <li data-line="14" data-match="&quot;after swap:  x = &quot; + x + &quot;, y = &quot; + y" data-title="main&rsquo;s variables untouched"><code>swap</code>&rsquo;s frame has been popped and <code>x</code> and <code>y</code> were never changed, so this prints <code>after swap:  x = 1, y = 2</code>.</li>
+        </ol></div>
         <p><code>a</code> and <code>b</code> were swapped perfectly &mdash; inside <code>swap</code>&rsquo;s
         frame. Then the frame was popped, and <code>x</code> and <code>y</code> in <code>main</code>&rsquo;s
         frame were never touched. For comparison, here is a language that <em>does</em> have call by
         reference. In C++, an <code>&amp;</code> on a parameter makes it another name for the caller&rsquo;s
         variable, and the same swap works:</p>
-        <div class="code-card"><pre>// C++, not Java: int&amp; means "a reference to the caller's int"
-void swap(int&amp; a, int&amp; b) {
+        <div class="p1-explain" data-eid="w4-s07-e2" data-lang="cpp" data-title="The same swap in C++" data-run="none"><script type="text/plain" data-role="source">
+// C++, not Java: int& means "a reference to the caller's int"
+void swap(int& a, int& b) {
     int temp = a;
     a = b;
     b = temp;
 }
-// after swap(x, y) with x = 1, y = 2:  x = 2, y = 1</pre></div>
+// after swap(x, y) with x = 1, y = 2:  x = 2, y = 1
+</script><ol data-role="notes">
+  <li data-line="2" data-match="int&amp; a, int&amp; b" data-title="Reference parameters">The <code>&amp;</code> after the type makes <code>a</code> and <code>b</code> other names for the caller&rsquo;s variables, not new variables holding copies. This is true call by reference.</li>
+  <li data-line="4" data-match="a = b;" data-title="Writes to the caller&rsquo;s variable">Because <code>a</code> <em>is</em> the caller&rsquo;s <code>x</code> under another name, this assignment changes <code>x</code> itself &mdash; the same line as in Java&rsquo;s swap, with the opposite effect.</li>
+  <li data-line="7" data-match="swap(x, y)" data-title="The call looks identical">The call is written exactly as in Java. Only the parameter declarations decide whether <code>swap</code> gets copies of <code>x</code> and <code>y</code> or the variables themselves.</li>
+        </ol></div>
         <p class="sched-note">Java has no <code>&amp;</code> parameters and no way to write this. If a Java
         method needs to produce a new value, it returns it.</p>
       </div>
@@ -1521,7 +1719,7 @@ void swap(int&amp; a, int&amp; b) {
         argument&rsquo;s value. But the value of an array variable is a <strong>reference</strong> (6.3). So
         the method gets a copy of the <em>reference</em>, which points at the <strong>same array</strong> on
         the heap. Change the array through it, and the caller sees the change:</p>
-        <div class="p1-console" data-lang="java" data-title="Changing the array through a parameter"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e3" data-lang="java" data-title="Changing the array through a parameter"><script type="text/plain" data-role="source">
 public class DoubleAll {
 
     public static void doubleAll(int[] values) {
@@ -1536,7 +1734,13 @@ public class DoubleAll {
         System.out.println(marks[0] + " " + marks[1] + " " + marks[2]);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int[] values" data-title="A copy of a reference">As always, the parameter is a new variable holding a copy &mdash; but what is copied is the value of <code>marks</code>, a reference. So <code>values</code> and <code>marks</code> point at the same array on the heap.</li>
+  <li data-line="4" data-match="values.length" data-title="Length of the shared array">Follows the reference and reads the array&rsquo;s size, 3. <code>length</code> is a field of the array, not a method, so it has no brackets.</li>
+  <li data-line="5" data-match="values[i] = values[i] * 2;" data-title="Mutating through the reference">Assigning to an element changes the array itself, not the variable <code>values</code>. Since <code>marks</code> refers to the same array, <code>main</code> will see every doubled element.</li>
+  <li data-line="11" data-match="doubleAll(marks)" data-title="Copies the reference, not the array">Only the reference stored in <code>marks</code> is copied into <code>values</code>. The three <code>int</code>s are not copied: there is still just one array.</li>
+  <li data-line="12" data-match="marks[0] + &quot; &quot; + marks[1] + &quot; &quot; + marks[2]" data-title="main sees the change"><code>marks</code> still points at the array <code>doubleAll</code> changed, so this prints <code>2 4 6</code>. The <code>" "</code> strings make each <code>+</code> join text rather than add numbers.</li>
+        </ol></div>
         <figure class="fig fig-wide">
           <svg viewBox="0 0 400 190" width="400" height="190" role="img" aria-label="During doubleAll: two stack frames. doubleAll's values and main's marks are two different variables, but both point to the same int array of three elements, 2, 4 and 6, on the heap.">
             <defs><marker id="pv-arrow-w4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fc-arrowhead"/></marker></defs>
@@ -1566,7 +1770,7 @@ public class DoubleAll {
         </figure>
         <p>But <strong>reassigning</strong> the parameter is a different thing entirely. It points
         <em>the copy</em> somewhere new; the caller&rsquo;s variable still points where it always did:</p>
-        <div class="p1-console" data-lang="java" data-title="Pointing the parameter somewhere else"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e4" data-lang="java" data-title="Pointing the parameter somewhere else"><script type="text/plain" data-role="source">
 public class Replace {
 
     public static void replace(int[] values) {
@@ -1580,7 +1784,13 @@ public class Replace {
         System.out.println(marks[0] + " " + marks[1] + " " + marks[2]);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="4" data-match="values =" data-title="Rebinding the parameter">Assigning to <code>values</code> itself overwrites <code>replace</code>&rsquo;s copy of the reference. <code>main</code>&rsquo;s <code>marks</code> is a separate variable, so it still points at the old array.</li>
+  <li data-line="4" data-match="new int[] {7, 8, 9}" data-title="A brand-new array"><code>new</code> creates a second array on the heap and gives back a reference to it. Outside a declaration the braces need <code>new int[]</code> in front: <code>values = {7, 8, 9};</code> does not compile.</li>
+  <li data-line="5" data-match="values[0] = 100;" data-title="Changes the new array">This follows <code>values</code>, which now leads to the new array, making it <code>{100, 8, 9}</code>. Nothing else refers to that array, so it is lost when <code>replace</code> returns.</li>
+  <li data-line="10" data-match="replace(marks)" data-title="A copy of the reference"><code>values</code> starts out as a copy of the reference in <code>marks</code>, pointing at <code>{1, 2, 3}</code> &mdash; exactly as in <code>doubleAll</code>.</li>
+  <li data-line="11" data-match="marks[0] + &quot; &quot; + marks[1] + &quot; &quot; + marks[2]" data-title="The original, untouched">Prints <code>1 2 3</code>: neither line of <code>replace</code> touched the array <code>marks</code> refers to. Under true call by reference, line 4 would have re-pointed <code>marks</code> itself.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">Say it precisely</span>
           <p>You will read &ldquo;Java passes objects by reference&rdquo;. It does not. Java passes
@@ -1595,7 +1805,7 @@ public class Replace {
         <h3><span class="idx">7.3</span>So what swap <em>can</em> work in Java?</h3>
         <p>One that swaps two elements <strong>inside an array</strong>. The method still gets a copy of a
         reference &mdash; but it only needs to <em>follow</em> that reference, never to reassign it:</p>
-        <div class="p1-console" data-lang="java" data-title="Swapping inside an array"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e5" data-lang="java" data-title="Swapping inside an array"><script type="text/plain" data-role="source">
 public class SwapElements {
 
     public static void swap(int[] a, int i, int j) {
@@ -1610,7 +1820,14 @@ public class SwapElements {
         System.out.println(pair[0] + " " + pair[1]);
     }
 }
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="3" data-match="int[] a" data-title="Only follows the reference"><code>a</code> gets a copy of <code>pair</code>&rsquo;s reference, so it leads to the same two-element array. The method never assigns to <code>a</code> itself, so the copy is all it needs.</li>
+  <li data-line="3" data-match="int i, int j" data-title="Which positions to swap">Two <code>int</code>s, copied in like any others: the indexes of the elements to exchange. One method can swap any two positions of any <code>int</code> array.</li>
+  <li data-line="4" data-match="int temp = a[i];" data-title="Save one element">Copies the <code>int</code> at index <code>i</code> into a local so it is not lost when the next line overwrites <code>a[i]</code>. The same three steps as 7.1&rsquo;s swap &mdash; only the targets differ.</li>
+  <li data-line="5" data-match="a[i] = a[j];" data-title="An element, not the parameter">The left-hand side is an element of the shared array, so the assignment follows the reference and changes the array <code>main</code> sees. 7.1&rsquo;s swap assigned to its parameters themselves.</li>
+  <li data-line="11" data-match="swap(pair, 0, 1)" data-title="Still all by value">Everything is passed by value, as always: the reference in <code>pair</code> is copied into <code>a</code>, and the numbers 0 and 1 into <code>i</code> and <code>j</code>.</li>
+  <li data-line="12" data-match="pair[0] + &quot; &quot; + pair[1]" data-title="Swapped where main can see">Prints <code>2 1</code>: the two elements of the one shared array were exchanged, while <code>pair</code> itself still points at the same array.</li>
+        </ol></div>
         <p class="sched-note">Look back at section 3.5: <code>swap</code> and <code>doubleAll</code> are
         procedures. Changing data through a parameter is a side effect, so a method that does it should say
         so in its name, and should usually be <code>void</code>.</p>
@@ -1625,35 +1842,49 @@ public class SwapElements {
         <p><strong>Immutable data</strong> &mdash; integers, floats, strings, tuples &mdash; cannot be changed
         in place, so it behaves like pass-by-value: <code>num += 3</code> makes a <em>new</em> number and
         points the local <code>num</code> at it.</p>
-        <div class="p1-console" data-lang="python" data-title="An int cannot be changed from inside"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e6" data-lang="python" data-title="An int cannot be changed from inside"><script type="text/plain" data-role="source">
 def add3(num):
     num += 3
 
 n = 0
 add3(n)     # this call doesn't change n
 print(n)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def add3(num):" data-title="A new local name">Calling <code>add3</code> binds the local name <code>num</code> to the same <code>int</code> object that <code>n</code> refers to &mdash; as if <code>num = n</code> ran at the start of the call.</li>
+  <li data-line="2" data-match="num += 3" data-title="Makes a new number">An <code>int</code> cannot be changed in place, so here <code>+=</code> means <code>num = num + 3</code>: it creates a new <code>int</code>, 3, and re-points <code>num</code> at it. The 0 that <code>n</code> refers to is untouched.</li>
+  <li data-line="5" data-match="add3(n)" data-title="Nothing comes back"><code>add3</code> has no <code>return</code> statement, so it returns <code>None</code>, and the call stands alone as a statement. No assignment to <code>n</code> happens anywhere.</li>
+  <li data-line="6" data-match="print(n)" data-title="Still 0 &mdash; return instead"><code>n</code> was never rebound, so this prints 0. To get a new value out, return it: <code>return num + 3</code> in the function and <code>n = add3(n)</code> in the caller &mdash; the same fix as in Java.</li>
+        </ol></div>
         <p><strong>Mutable data</strong>, such as a list, works like the Java array: the function can change
         the object that both names refer to.</p>
-        <div class="p1-console" data-lang="python" data-title="A list can be"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e7" data-lang="python" data-title="A list can be"><script type="text/plain" data-role="source">
 def append3(l):
     l.append(3)
 
 letters = ['a', 'b', 'c']
 append3(letters)   # this will change letters
 print(letters)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def append3(l):" data-title="Two names, one list">When <code>append3</code> is called, <code>l</code> is bound to the very list <code>letters</code> refers to. Only the reference is assigned; the list is not copied.</li>
+  <li data-line="2" data-match="l.append(3)" data-title="A mutating method"><code>append</code> adds its argument to the end of the list in place and returns <code>None</code>. It changes the object <code>l</code> refers to, not the name <code>l</code>, so <code>letters</code> sees it too.</li>
+  <li data-line="5" data-match="append3(letters)" data-title="A side effect, no result"><code>append3</code> returns <code>None</code>; its whole effect is the change to the list, which is why the call stands alone as a statement.</li>
+  <li data-line="6" data-match="print(letters)" data-title="The caller sees the change"><code>letters</code> still refers to the same list, which now holds four items: <code>['a', 'b', 'c', 3]</code>. A list may mix types, such as strings and an <code>int</code>.</li>
+        </ol></div>
         <p>But <strong>assigning</strong> to the parameter only re-points the local name &mdash;
         <code>letters</code> and <code>l</code> are two separate variables, and the caller&rsquo;s still
         refers to the original list:</p>
-        <div class="p1-console" data-lang="python" data-title="Rebinding the parameter"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e8" data-lang="python" data-title="Rebinding the parameter"><script type="text/plain" data-role="source">
 def overwrite(l):
     l = 17
 
 letters = ['a', 'b', 'c']
 overwrite(letters)   # this won't change letters
 print(letters)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="1" data-match="def overwrite(l):" data-title="Starts off sharing">At the start of the call, <code>l</code> refers to the same list as <code>letters</code>, exactly as in <code>append3</code>.</li>
+  <li data-line="2" data-match="l = 17" data-title="Rebinding a local name">Assignment re-points the local <code>l</code> at the <code>int</code> 17 &mdash; Python lets a name switch to any type. The list is untouched, and <code>letters</code>, a separate variable, still refers to it.</li>
+  <li data-line="6" data-match="print(letters)" data-title="Java&rsquo;s replace, in Python">Prints <code>['a', 'b', 'c']</code> unchanged. This is 7.2&rsquo;s <code>replace</code> again: re-pointing the parameter never reaches the caller&rsquo;s variable.</li>
+        </ol></div>
         <div class="joke">
           <p>Actually, call by object reference would be a better description, since if a mutable object is passed, the caller will see any changes the callee makes to it (items inserted into a list).</p>
           <span class="attrib">The Python Tutorial, &sect;4.8 <em>Defining Functions</em>, footnote 1</span>
@@ -1676,7 +1907,7 @@ print(letters)
           <code>l = …</code> &mdash; and the caller never finds out.</li>
         </ul>
         <p>Both in one function. Predict the list before you run it:</p>
-        <div class="p1-console" data-lang="python" data-title="Mutate, then rebind"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-eid="w4-s07-e9" data-lang="python" data-title="Mutate, then rebind"><script type="text/plain" data-role="source">
 def change(items):
     items.append(4)      # mutates the list the caller also refers to
     items = [0]          # rebinds the local name only
@@ -1685,7 +1916,13 @@ def change(items):
 numbers = [1, 2, 3]
 change(numbers)
 print(numbers)
-</script></div>
+</script><ol data-role="notes">
+  <li data-line="2" data-match="items.append(4)" data-title="Mutate: the caller sees it"><code>items</code> still refers to the list <code>numbers</code> refers to, so <code>append</code> adds 4 to that one shared list.</li>
+  <li data-line="3" data-match="items = [0]" data-title="Rebind: the link is cut">The list display <code>[0]</code> builds a new one-item list and the local name <code>items</code> is pointed at it. <code>numbers</code> is unaffected, and from here on the function cannot reach the caller&rsquo;s list.</li>
+  <li data-line="4" data-match="items.append(5)" data-title="Changes the new list">5 goes into the new list, making it <code>[0, 5]</code>. Nothing outside the function refers to that list, so it is lost when <code>change</code> returns.</li>
+  <li data-line="7" data-match="change(numbers)" data-title="Order matters">Only what happens before the rebind reaches the caller. Swap lines 2 and 3 and <code>numbers</code> would not change at all.</li>
+  <li data-line="8" data-match="print(numbers)" data-title="The 4 stuck, the 5 did not">Prints <code>[1, 2, 3, 4]</code>: the shared list gained the 4 at line 2, while the 5 went into the new list made at line 3.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">One Python trap</span>
           <p>For a list, <code>items += [4]</code> <em>mutates</em> the list in place &mdash; unlike
@@ -1788,9 +2025,16 @@ public class Moderation {
         &mdash; same rules, except that varargs are not allowed. The <code>{}</code> at the end is, for now,
         just a concession to the implementation; later there is more you can put there. A point in 2D, and a
         student:</p>
-        <div class="code-card"><pre>public record Point(double x, double y) {}
+        <div class="p1-explain" data-eid="w4-s08-e1" data-lang="java" data-title="Point.java &mdash; Java 16+" data-run="none"><script type="text/plain" data-role="source">
+public record Point(double x, double y) {}
 
-public record Student(String name, int studentID, int courseID) {}</pre></div>
+public record Student(String name, int studentID, int courseID) {}
+</script><ol data-role="notes">
+  <li data-line="1" data-match="public record Point" data-title="A record called Point">An access modifier, the keyword <code>record</code>, then the name of the new type, capitalised like a class name. Because it is <code>public</code>, it must be saved in its own file, <code>Point.java</code>.</li>
+  <li data-line="1" data-match="(double x, double y)" data-title="The components">Written exactly like a method&rsquo;s parameter list: a type and a name for each value, separated by commas. Every <code>Point</code> carries its own <code>x</code> and <code>y</code>, which cannot be changed once set.</li>
+  <li data-line="1" data-match="{}" data-title="An empty body">Needed even when there is nothing in it &mdash; for now just a concession to how records are implemented. Extra methods can go between the braces once classes have been covered.</li>
+  <li data-line="3" data-match="String name, int studentID, int courseID" data-title="Different types, one unit">A <code>String</code> and two <code>int</code>s bundled together &mdash; values of different types that Weeks 2+3 had to keep in parallel arrays. Being <code>public</code> too, <code>Student</code> needs a file of its own, <code>Student.java</code>; the two lines are shown together only to compare them.</li>
+        </ol></div>
         <p class="sched-note">Like a public class, a public record must be in its own file with the same name
         &mdash; <code>Point.java</code>. A non-public one can be declared inside another class, which is what
         the examples below do so each fits in one file.</p>
@@ -1826,9 +2070,8 @@ public record Student(String name, int studentID, int courseID) {}</pre></div>
         <h3><span class="idx">8.4</span>Making one, and reading it</h3>
         <p>Create an instance with <code>new</code> and the values, in the order the components were
         declared &mdash; exactly like calling a method:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">ExampleOfARecordInUse.java</span></div>
-          <pre>public class ExampleOfARecordInUse {
+        <div class="p1-explain" data-eid="w4-s08-e2" data-lang="java" data-title="ExampleOfARecordInUse.java &mdash; making a Point" data-run="none"><script type="text/plain" data-role="source">
+public class ExampleOfARecordInUse {
 
     record Point(double x, double y) {}  // Definition of the record type
 
@@ -1839,15 +2082,19 @@ public record Student(String name, int studentID, int courseID) {}</pre></div>
         System.out.println(p);
     }
 
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="3" data-match="record Point(double x, double y) {}" data-title="A record inside a class">No <code>public</code>, and declared inside <code>ExampleOfARecordInUse</code>, so it can share this file. From here on <code>Point</code> is a type the whole class can use, just like <code>String</code>.</li>
+  <li data-line="7" data-match="Point p" data-title="A variable of record type">The record&rsquo;s name is used as a type. As with arrays in sections 6 and 7, <code>p</code> holds a <strong>reference</strong> to the record, which itself lives on the heap.</li>
+  <li data-line="7" data-match="new Point(1.5, -3.2)" data-title="Calling the constructor"><code>new</code> and the record&rsquo;s name call the constructor the record wrote for you. The arguments go in declaration order, like a method call: <code>1.5</code> becomes <code>x</code> and <code>-3.2</code> becomes <code>y</code>.</li>
+  <li data-line="9" data-match="System.out.println(p)" data-title="Printing comes free">Given a whole record, <code>println</code> uses the readable form the record wrote: the type&rsquo;s name, then each component as <code>name=value</code> in square brackets, <code>Point[x=1.5, y=-3.2]</code>.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>Point[x=1.5, y=-3.2]</pre></div>
         <p>To use the values, call the method with the component&rsquo;s name. For a record with a component
         <code>x</code>, <code>p.x()</code> returns the value of <code>x</code> for the record
         <code>p</code>:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">ExampleOfARecordInUse.java</span></div>
-          <pre>public class ExampleOfARecordInUse {
+        <div class="p1-explain" data-eid="w4-s08-e3" data-lang="java" data-title="ExampleOfARecordInUse.java &mdash; reading the components" data-run="none"><script type="text/plain" data-role="source">
+public class ExampleOfARecordInUse {
 
     // Point automatically gets two methods:
     //     public double x() { return x; }
@@ -1867,13 +2114,25 @@ public record Student(String name, int studentID, int courseID) {}</pre></div>
         System.out.println("The distance between " + p + " and " + q + " is " + distance);
     }
 
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="4" data-match="public double x() { return x; }" data-title="A method you never write">This is what the record generates for the component <code>x</code>: a method with the <strong>same name</strong>, no parameters, returning the value. It is only a comment here because Java writes it for you.</li>
+  <li data-line="10" data-match="new Point(5.6, 8.7)" data-title="A second, separate Point">Each <code>new</code> builds a separate record with its own <code>x</code> and <code>y</code>, so <code>p</code> and <code>q</code> refer to two different objects.</li>
+  <li data-line="14" data-match="p.x()" data-title="Reading a component">Calls <code>p</code>&rsquo;s <code>x</code> method, which returns the <code>double</code> 1.5. The brackets are part of it: it is a method call, as the comment on line 4 shows.</li>
+  <li data-line="14" data-match="q.x()" data-title="Same method, different record">The same method called on <code>q</code> returns <em>its</em> <code>x</code>, 5.6. Both calls give <code>double</code>s, so <code>dx</code> is ordinary arithmetic: 1.5 &minus; 5.6 is &minus;4.1.</li>
+  <li data-line="16" data-match="Math.sqrt(dx * dx + dy * dy)" data-title="The Math.sqrt method">A <code>static</code> method of the built-in <code>Math</code> class: it takes a <code>double</code> and returns its square root as a <code>double</code>. Squaring <code>dx</code> and <code>dy</code> and adding them is Pythagoras.</li>
+  <li data-line="18" data-match="&quot;The distance between &quot; + p" data-title="A record joined to a string">Joining a record to a string with <code>+</code> uses the same readable form as printing it, so <code>p</code> appears as <code>Point[x=1.5, y=-3.2]</code> in the middle of the sentence.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>The distance between Point[x=1.5, y=-3.2] and Point[x=5.6, y=8.7] is 12.586500705120544</pre></div>
         <p>And trying to change a component is a compile error &mdash; the variables are <code>final</code>,
         Java&rsquo;s word for &ldquo;cannot be reassigned&rdquo;:</p>
-        <div class="code-card"><pre>Point p = new Point(1.5, -3.2);
-p.x = 10;</pre></div>
+        <div class="p1-explain" data-eid="w4-s08-e4" data-lang="java" data-title="Trying to change a record" data-run="none"><script type="text/plain" data-role="source">
+Point p = new Point(1.5, -3.2);
+p.x = 10;
+</script><ol data-role="notes">
+  <li data-line="1" data-match="new Point(1.5, -3.2)" data-title="Set once, by the constructor">The constructor is the only place the components get their values. To &ldquo;move&rdquo; the point, build a new one instead: <code>p = new Point(10, p.y());</code>.</li>
+  <li data-line="2" data-match="p.x = 10;" data-title="Components are final">Each component is a <code>final</code> variable, so javac rejects this line: <code>cannot assign a value to final variable x</code>. (That is its wording when <code>Point</code> is declared inside the same class, as in 8.4; with <code>Point</code> in its own file it says <code>x has private access in Point</code>.)</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">javac says</span></div><pre>error: cannot assign a value to final variable x</pre></div>
       </div>
 
@@ -1882,9 +2141,8 @@ p.x = 10;</pre></div>
         <p>Here is the <code>Favourites</code> program from Weeks 2+3, section 11.5 &mdash; the one with the
         &ldquo;deliberately bad&rdquo; public-field class &mdash; rewritten with a record. One array, both
         fields, and no way to put a name with the wrong number:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">Favourites.java</span></div>
-          <pre>import java.util.Scanner;
+        <div class="p1-explain" data-eid="w4-s08-e5" data-lang="java" data-title="Favourites.java" data-run="none"><script type="text/plain" data-role="source">
+import java.util.Scanner;
 
 public class Favourites {
 
@@ -1898,7 +2156,7 @@ public class Favourites {
 
         Person[] people = new Person[n];      // one array, both fields
 
-        for (int i = 0; i &lt; n; i++) {
+        for (int i = 0; i < n; i++) {
             System.out.print("Enter a name: ");
             String name = sc.nextLine();
             System.out.print("Enter their favourite number: ");
@@ -1908,14 +2166,22 @@ public class Favourites {
         }
 
         System.out.print("All the people and their favourite numbers: ");
-        for (int i = 0; i &lt; n; i++) {
+        for (int i = 0; i < n; i++) {
             System.out.print("(" + people[i].name() + ", " + people[i].num() + ") ");
         }
         System.out.println();
         System.out.println(people[0]);
     }
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="5" data-match="record Person(String name, int num) {}" data-title="Name and number together">A <code>String</code> and an <code>int</code> in one type, replacing Weeks 2+3&rsquo;s class with <code>public</code> fields. Neither component can be reassigned once set, so no other code can overwrite them.</li>
+  <li data-line="11" data-match="sc.nextLine();" data-title="Clearing the leftover newline"><code>nextInt</code> reads the number but leaves the Enter key&rsquo;s newline waiting. This <code>nextLine</code> call reads and discards it, so the <code>nextLine</code> on line 17 gets the name rather than an empty string.</li>
+  <li data-line="13" data-match="new Person[n]" data-title="An array of records">Room for <code>n</code> references to <code>Person</code>, each starting as <code>null</code>: no <code>Person</code> exists until the loop builds one. Weeks 2+3 needed two parallel arrays for this.</li>
+  <li data-line="21" data-match="new Person(name, num)" data-title="Built whole, in one step">The constructor takes both values at once, in declaration order, so there is never a <code>Person</code> with a name but no number. Swap them, <code>new Person(num, name)</code>, and javac says <code>incompatible types: int cannot be converted to String</code>.</li>
+  <li data-line="26" data-match="people[i].name()" data-title="Index, then component"><code>people[i]</code> picks one <code>Person</code> out of the array, then <code>.name()</code> calls its generated method, which returns the <code>String</code> stored in it.</li>
+  <li data-line="26" data-match="people[i].num()" data-title="An int, joined as text">Returns the <code>int</code> component. Joined to a string with <code>+</code> it becomes text, like any <code>int</code>, giving <code>(Bach, 7)</code>.</li>
+  <li data-line="29" data-match="System.out.println(people[0])" data-title="Printing a whole record">Passes the record itself, not its parts, so <code>println</code> uses its readable form: <code>Person[name=Bach, num=7]</code>. If <code>n</code> were 0, <code>people[0]</code> would throw <code>ArrayIndexOutOfBoundsException</code>.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Terminal, with the input 2, Bach, 7, Linh, 3</span></div><pre>How many people? 2
 Enter a name: Bach
 Enter their favourite number: 7
@@ -1928,9 +2194,8 @@ Person[name=Bach, num=7]</pre></div>
         anything.</p>
         <p>Records also answer section 2.1&rsquo;s puzzle &mdash; a method can only return one value. If a
         method genuinely needs to produce two, a record puts them together as one:</p>
-        <div class="code-card">
-          <div class="bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="file">MinMax.java</span></div>
-          <pre>public class MinMax {
+        <div class="p1-explain" data-eid="w4-s08-e6" data-lang="java" data-title="MinMax.java" data-run="none"><script type="text/plain" data-role="source">
+public class MinMax {
 
     record Range(int min, int max) {}
 
@@ -1938,8 +2203,8 @@ Person[name=Bach, num=7]</pre></div>
         int min = values[0];
         int max = values[0];
         for (int v : values) {
-            if (v &lt; min) min = v;
-            if (v &gt; max) max = v;
+            if (v < min) min = v;
+            if (v > max) max = v;
         }
         return new Range(min, max);      // two values, returned as one
     }
@@ -1950,8 +2215,18 @@ Person[name=Bach, num=7]</pre></div>
         System.out.println("Lowest " + r.min() + ", highest " + r.max());
         System.out.println(r);
     }
-}</pre>
-        </div>
+}
+</script><ol data-role="notes">
+  <li data-line="3" data-match="record Range(int min, int max) {}" data-title="A record to carry two results">Both components are <code>int</code>s: the point here is not mixing types but bundling two answers, so that a method can hand them back together.</li>
+  <li data-line="5" data-match="public static Range" data-title="A record as the return type">The method promises to return a <code>Range</code> &mdash; still one value, as section 2.1 requires, but one that holds two numbers.</li>
+  <li data-line="5" data-match="range(int[] values)" data-title="range is not Range">Java is case-sensitive, so the method <code>range</code> and the record type <code>Range</code> are different names. Naming a method after what it returns is common.</li>
+  <li data-line="6" data-match="values[0]" data-title="Start from the first element">Both <code>min</code> and <code>max</code> begin as the first mark, so every comparison in the loop has a real value to beat. An empty array would throw <code>ArrayIndexOutOfBoundsException</code> here.</li>
+  <li data-line="8" data-match="for (int v : values)" data-title="The for-each loop"><code>v</code> takes each element in turn, and the two <code>if</code>s keep the smallest and largest seen so far. No index is needed.</li>
+  <li data-line="12" data-match="new Range(min, max)" data-title="Two values, returned as one">Builds a <code>Range</code> from the two local variables, <code>min</code> first as declared, and returns a reference to it. The locals only share their names with the components; they are separate variables.</li>
+  <li data-line="17" data-match="Range r = range(marks);" data-title="One variable receives both">The call hands back a single <code>Range</code>, so one variable holds both results &mdash; no parallel arrays or extra methods needed.</li>
+  <li data-line="18" data-match="r.min()" data-title="Taking the results out"><code>r.min()</code> and <code>r.max()</code> are the methods the record wrote; they return the two <code>int</code>s, 55 and 91, which <code>+</code> joins into the sentence.</li>
+  <li data-line="19" data-match="System.out.println(r)" data-title="The names come from the declaration">The printed form, <code>Range[min=55, max=91]</code>, uses the component names from line 3, so a well-named record explains its own output.</li>
+        </ol></div>
         <div class="code-card"><div class="bar"><span class="file">Output</span></div><pre>Lowest 55, highest 91
 Range[min=55, max=91]</pre></div>
       </div>
@@ -2353,7 +2628,7 @@ Student[name=Bach, mark=55] became Student[name=Bach, mark=65]</pre></div>
 <script src="../assets/highlight.js?v=88b90c66"></script>
 <script src="../assets/editor.js?v=0ea13585"></script>
 <script src="../assets/console-ui.js?v=6c39ad9b"></script>
-<script src="../assets/explain.js?v=ad07fc2a"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
 <script src="../assets/w4-data.js?v=84fbebdf"></script>
 <script src="../assets/w4-exercises.js?v=34271b0f"></script>
 <script src="../assets/exercises.js?v=a455b14d"></script>

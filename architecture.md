@@ -311,8 +311,11 @@ Line numbers matter here beyond polish: Week 1 teaches students to read
 
 A read-only example whose key parts explain themselves: hover (mouse), tap (touch) or Tab
 (keyboard) to a dotted-underlined part and a tooltip says what it does. Every example in Weeks 2–3
-sections 9–10 (lists, dicts, sets, tuples) is one, and each Week 4 section 01–08 ends with
-"N.K A typical … program, explained".
+sections 9–10 (lists, dicts, sets, tuples) and **every example in Weeks 4 and 5** is one (the
+former consoles, plus the static code cards that held real code — records, Java 14+/21+ `switch`,
+the C and C++ comparisons); each Week 4 section 01–08 also ends with "N.K A typical … program,
+explained". Output panels, compiler messages and syntax templates stay plain `code-card`s.
+`data-lang` may also be `cpp` or `c` (badge only; coloured with the Java rules).
 
 ```html
 <div class="p1-explain" data-lang="python" data-title="Exam marks" data-stdin="">
