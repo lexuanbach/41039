@@ -267,10 +267,23 @@ holding a `.editor-bar` toolbar above the `.editor-shell`:
   `.code-fullscreen-open`; Esc leaves.
 
 **Automatic indentation.** Enter carries the current line's leading whitespace forward. It adds
-four spaces after a Java opening brace or a Python suite colon; comments and strings are ignored,
-and a Python colon inside unmatched brackets (for example, a dictionary entry) does not open a
-suite. Pressing Enter between Java `{}` expands the pair to three lines and aligns the closing
-brace. Each automatic edit is one undo step.
+four spaces after an opening bracket, a Python suite colon or a Java `case …:` / `default:` label
+inside a switch, and removes four after a Python `return`, `raise`, `pass`, `break` or `continue`.
+Comments and strings are ignored, only code on the caret's own line can open a level (so a second
+Enter after `{` stays at the same depth), and a Python colon inside unmatched brackets (for
+example, a dictionary entry) does not open a suite. Pressing Enter between `{}`, `()` or `[]`
+expands the pair to three lines and aligns the closer; leaving a line that holds only
+indentation drops those spaces.
+
+Re-indent as you type (`retypedEdit()`, run from the `input` event so it also works with
+on-screen keyboards): a `}` `)` `]` typed as the first thing on a line moves under the line that
+opened it; a Python `else:` / `elif …:` / `except …:` / `finally:` moves under the nearest
+less-indented line if that is a matching `if` / `for` / `while` / `try` / `except` (otherwise it
+is left alone); a Java `case …:` / `default:` moves one level inside its `switch` brace.
+Backspace inside spaces-only indentation deletes back to the previous multiple of four. Tab
+inserts spaces to the next multiple of four; with a multi-line selection, Tab and Shift+Tab
+(`shiftLines()`) indent or unindent every touched line and keep the selection. Each automatic
+edit is one undo step.
 
 **Soft wrap.** The highlight layer renders **one `<div class="cl">` per logical line**
 (`splitLines()` closes and reopens a highlight `<span>` that runs across a line break — block

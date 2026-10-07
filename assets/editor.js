@@ -15,9 +15,15 @@
  *   ed.setValue(v)   — replaces the text; undoable (Reset, presets, Open…)
  *   ed.load(v)       — replaces the text and starts a fresh undo history (switching language)
  *
- * Enter keeps the current line's indentation and adds four spaces after a Java
- * opening brace or a Python suite colon. In Java, pressing Enter between { and }
- * also puts the closing brace on its own, correctly aligned line.
+ * Automatic indentation, as in an IDE:
+ *   Enter      keeps the line's indentation; adds a level after an opening bracket, a Python
+ *              suite colon or a Java case label; drops one after Python return / pass /
+ *              break / continue / raise. Between {} () [] the closer gets its own line.
+ *   typing     } ) ] at the start of a line — lines up under the line that opened it;
+ *              Python else: elif: except: finally: — under the matching if / for / try;
+ *              Java case …: default: — one level inside the switch.
+ *   Backspace  in indentation removes a whole level.
+ *   Tab / Shift+Tab  indent / unindent the line, or every line of a selection.
  *
  * Toolbar, left:  A− / A+ (program font size) · Wrap · code colour theme. These are
  *   site-wide preferences kept in localStorage; every toolbar repaints on 'p1-view'.
@@ -125,12 +131,16 @@ window.P1Editor = (function () {
 
   /* Find the last real code character before the caret. Comments and string contents
      must not make `// {`, `"{"` or `# note:` open a block. For Python, keep bracket
-     depth too: a colon at the end of a dictionary entry is not a suite colon. */
+     depth too: a colon at the end of a dictionary entry is not a suite colon.
+     `open` is the stack of unclosed brackets, each with the indentation and text of the
+     line it sits on, so a closing bracket can line up with its partner. */
+  var PAIRS = { '(': ')', '[': ']', '{': '}' };
   function codeState(source, lang) {
-    var last = '', round = 0, square = 0, curly = 0;
+    var last = '', lastAt = -1, open = [], lineStart = 0;
     var quote = '', triple = false, escaped = false, lineComment = false, blockComment = false;
     for (var i = 0; i < source.length; i++) {
       var c = source[i], next = source[i + 1], three = source.slice(i, i + 3);
+      if (i > 0 && source[i - 1] === '\n') lineStart = i;
       if (lineComment) {
         if (c === '\n') lineComment = false;
         continue;
@@ -155,33 +165,68 @@ window.P1Editor = (function () {
       if (lang === 'java' && c === '/' && next === '*') { blockComment = true; i++; continue; }
       if (lang === 'python' && c === '#') { lineComment = true; continue; }
       if ((c === '"' || c === "'") && lang === 'python' && three === c + c + c) {
-        quote = c; triple = true; last = 'string'; i += 2; continue;
+        quote = c; triple = true; last = 'string'; lastAt = i; i += 2; continue;
       }
-      if (c === '"' || c === "'") { quote = c; last = 'string'; continue; }
+      if (c === '"' || c === "'") { quote = c; last = 'string'; lastAt = i; continue; }
       if (/\s/.test(c)) continue;
-      last = c;
-      if (c === '(') round++;
-      else if (c === ')') round = Math.max(0, round - 1);
-      else if (c === '[') square++;
-      else if (c === ']') square = Math.max(0, square - 1);
-      else if (c === '{') curly++;
-      else if (c === '}') curly = Math.max(0, curly - 1);
+      last = c; lastAt = i;
+      if (PAIRS[c]) {
+        var head = source.slice(lineStart, i);
+        open.push({ ch: c, indent: head.match(/^[ \t]*/)[0], head: head });
+      } else if (c === ')' || c === ']' || c === '}') {
+        open.pop();
+      }
     }
-    return { last: last, nested: round + square + curly > 0 };
+    return { last: last, lastAt: lastAt, nested: open.length > 0, open: open,
+             inCode: !quote && !lineComment && !blockComment, inString: !!quote };
+  }
+
+  var INDENT = '    ';
+  function leading(s) { return s.match(/^[ \t]*/)[0]; }
+  function outdent(ws) { return /\t$/.test(ws) ? ws.slice(0, -1) : ws.slice(0, Math.max(0, ws.length - 4)); }
+  function lineAt(value, pos) {
+    var from = value.lastIndexOf('\n', pos - 1) + 1, to = value.indexOf('\n', pos);
+    return { from: from, to: to < 0 ? value.length : to };
+  }
+
+  /* Java: the brace a `case` label sits in belongs to a switch. The switch keyword is
+     usually on the brace's own line; with the brace on a line of its own, look one up. */
+  function switchBrace(open, before) {
+    var b = open[open.length - 1];
+    if (!b || b.ch !== '{') return false;
+    if (/\S/.test(b.head)) return /\bswitch\b/.test(b.head);
+    var lines = before.split('\n');
+    for (var i = lines.length - 2; i >= 0; i--) if (/\S/.test(lines[i])) return /\bswitch\b/.test(lines[i]);
+    return false;
   }
 
   function newlineEdit(value, start, end, lang) {
     var before = value.slice(0, start), after = value.slice(end);
     var line = before.slice(before.lastIndexOf('\n') + 1);
-    var base = (line.match(/^[ \t]*/) || [''])[0];
+    var rest = after.slice(0, (after + '\n').indexOf('\n'));
+    var base = leading(line);
     var state = codeState(before, lang);
-    var opens = lang === 'java' ? state.last === '{'
-              : lang === 'python' && state.last === ':' && !state.nested;
-    var indent = base + (opens ? '    ' : '');
+    var code = line.trim();
+    var own = state.inCode && state.lastAt >= before.length - line.length;   // the last code is on this line
+    var bracket = own && PAIRS[state.last] ? state.last : '';
+    var opens = !!bracket ||
+      (own && state.last === ':' && (
+        (lang === 'python' && !state.nested) ||
+        (lang === 'java' && /^(case\b.*|default\s*):$/.test(code) && switchBrace(state.open, before))));
+    var indent = opens ? base + INDENT : base;
 
-    // The common `{|}` case becomes three lines, with the caret on the middle one.
-    if (lang === 'java' && opens && /^[ \t]*}/.test(after)) {
-      after = after.replace(/^[ \t]*(?=})/, '');
+    // Python: a line that ends its block sends the next line back one level.
+    if (lang === 'python' && !opens && !state.nested && !state.inString &&
+        /^(return|raise)\b|^(pass|break|continue)\s*(#.*)?$/.test(code)) {
+      indent = outdent(base);
+    }
+
+    // Leaving a line that holds only indentation: drop the dangling spaces.
+    if (start === end && line && !code) before = before.slice(0, before.length - line.length);
+
+    // `{|}`, `(|)` and `[|]` become three lines, with the caret on the middle one.
+    if (bracket && new RegExp('^[ \\t]*\\' + PAIRS[bracket]).test(rest)) {
+      after = after.replace(/^[ \t]*/, '');
       return {
         value: before + '\n' + indent + '\n' + base + after,
         caret: before.length + 1 + indent.length
@@ -191,6 +236,85 @@ window.P1Editor = (function () {
       value: before + '\n' + indent + after,
       caret: before.length + 1 + indent.length
     };
+  }
+
+  /* Python: which block headers each continuation clause can follow. */
+  var CLAUSE_OF = {
+    'else': /^(if|elif|for|while|try|except)\b/,
+    'elif': /^(if|elif)\b/,
+    'except': /^(try|except)\b/,
+    'finally': /^(try|except|else)\b/
+  };
+
+  /* After a character is typed, put the current line where it belongs:
+       `}` `)` `]` as the first thing on a line — under the line that opened the bracket;
+       Python `else:` `elif …:` `except …:` `finally:` — under the matching if / for / try;
+       Java `case …:` `default:` — one level inside the switch.
+     Returns { value, caret } or null when the line is already right. */
+  function retypedEdit(value, caret, typed, lang) {
+    var span = lineAt(value, caret);
+    var head = value.slice(span.from, caret), tail = value.slice(caret, span.to);
+    var ws = leading(head), want = null;
+
+    if (')]}'.indexOf(typed) >= 0 && head === ws + typed) {
+      var stack = codeState(value.slice(0, span.from) + ws, lang).open;
+      var partner = stack[stack.length - 1];
+      if (partner && PAIRS[partner.ch] === typed) want = partner.indent;
+    } else if (typed === ':' && !/\S/.test(tail)) {
+      var state = codeState(value.slice(0, caret), lang);
+      if (state.last !== ':' || !state.inCode) return null;
+      var code = head.trim();
+      if (lang === 'python' && !state.nested) {
+        var kw = (/^(else|finally)\s*:$|^(elif|except)\b.*:$/.exec(code) || [])[0];
+        if (!kw) return null;
+        var clause = CLAUSE_OF[kw.match(/^\w+/)[0]];
+        var lines = value.slice(0, span.from).split('\n');
+        for (var i = lines.length - 1; i >= 0; i--) {
+          var t = lines[i].trim();
+          if (!t || t[0] === '#') continue;
+          var lw = leading(lines[i]);
+          if (lw.length >= ws.length) continue;
+          if (clause.test(t)) want = lw;          // nearest less-indented line only
+          break;
+        }
+      } else if (lang === 'java' && /^(case\b.*|default\s*):$/.test(code)) {
+        var before = value.slice(0, span.from);
+        var open = codeState(before, lang).open;
+        if (switchBrace(open, before)) want = open[open.length - 1].indent + INDENT;
+      }
+    }
+    if (want === null || want === ws) return null;
+    return {
+      value: value.slice(0, span.from) + want + value.slice(span.from + ws.length),
+      caret: caret - ws.length + want.length
+    };
+  }
+
+  /* Tab / Shift+Tab over every line a selection touches. */
+  function shiftLines(value, start, end, out) {
+    var from = value.lastIndexOf('\n', start - 1) + 1;
+    var stop = end > start && value[end - 1] === '\n' ? end - 1 : end;   // a selection ending at column 0 stops above
+    var to = lineAt(value, stop).to;
+    var pos = from, made = from, moves = [];
+    var shifted = value.slice(from, to).split('\n').map(function (l, i, all) {
+      var cut = out ? leading(l).length - outdent(leading(l)).length : 0;
+      var add = !out && (l.trim() || all.length === 1) ? INDENT : '';
+      moves.push({ pos: pos, len: l.length, cut: cut, add: add.length, made: made });
+      pos += l.length + 1;
+      made += add.length + l.length - cut + 1;
+      return add + l.slice(cut);
+    });
+    // Each selection end keeps its place in the text; one at the start of a line stays
+    // there, and one inside removed indentation lands where the line's text now begins.
+    function map(p) {
+      for (var i = 0; i < moves.length; i++) {
+        var m = moves[i];
+        if (p === m.pos) return m.made;
+        if (p <= m.pos + m.len) return m.made + m.add + Math.max(0, p - m.pos - m.cut);
+      }
+      return p + made - pos;
+    }
+    return { value: value.slice(0, from) + shifted.join('\n') + value.slice(to), start: map(start), end: map(end) };
   }
 
   function create(opts) {
@@ -419,7 +543,20 @@ window.P1Editor = (function () {
     function setValue(v) { ta.value = v; repaint(); record(false); }
     function load(v) { ta.value = v; repaint(); freshHistory(); }
 
+    function apply(value, s, e) {
+      ta.value = value;
+      ta.setSelectionRange(s, e === undefined ? s : e);
+      repaint(); record(false);
+    }
+
     ta.addEventListener('input', function (ev) {
+      // A closing bracket, or the colon of else / elif / except / finally / case,
+      // moves its line to the right depth as it is typed.
+      var c = ta.selectionStart;
+      if (ev.inputType === 'insertText' && ev.data && ev.data.length === 1 && c === ta.selectionEnd) {
+        var edit = retypedEdit(ta.value, c, ev.data, lang);
+        if (edit) { ta.value = edit.value; ta.setSelectionRange(edit.caret, edit.caret); }
+      }
       repaint();
       record(ev.inputType === 'insertText' || ev.inputType === 'deleteContentBackward' || ev.inputType === 'deleteContentForward');
     });
@@ -427,21 +564,35 @@ window.P1Editor = (function () {
     ta.addEventListener('keyup', sync);
     ta.addEventListener('click', sync);
     ta.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter') {
+      if (ev.isComposing) return;
+      var s = ta.selectionStart, e = ta.selectionEnd, v = ta.value, edit;
+      var plain = !(ev.ctrlKey || ev.metaKey || ev.altKey);
+      if (ev.key === 'Enter' && plain) {
         ev.preventDefault();
-        var edit = newlineEdit(ta.value, ta.selectionStart, ta.selectionEnd, lang);
-        ta.value = edit.value;
-        ta.selectionStart = ta.selectionEnd = edit.caret;
-        repaint(); record(false);
+        edit = newlineEdit(v, s, e, lang);
+        apply(edit.value, edit.caret);
         return;
       }
-      if (ev.key === 'Tab') {                 // Tab indents rather than moving focus — this is an editor.
+      if (ev.key === 'Tab' && plain) {        // Tab indents rather than moving focus — this is an editor.
         ev.preventDefault();
-        var s = ta.selectionStart, e = ta.selectionEnd;
-        ta.value = ta.value.slice(0, s) + '    ' + ta.value.slice(e);
-        ta.selectionStart = ta.selectionEnd = s + 4;
-        repaint(); record(false);
+        if (ev.shiftKey || v.slice(s, e).indexOf('\n') >= 0) {
+          edit = shiftLines(v, s, e, ev.shiftKey);
+          if (edit.value !== v) apply(edit.value, edit.start, edit.end);
+        } else {                              // spaces up to the next multiple of four
+          var pad = INDENT.slice((s - v.lastIndexOf('\n', s - 1) - 1) % 4);
+          apply(v.slice(0, s) + pad + v.slice(e), s + pad.length);
+        }
         return;
+      }
+      // Backspace inside indentation removes a whole level, as it was added.
+      if (ev.key === 'Backspace' && plain && !ev.shiftKey && s === e) {
+        var lead = v.slice(v.lastIndexOf('\n', s - 1) + 1, s);
+        if (/^ +$/.test(lead) && lead.length > 1) {
+          ev.preventDefault();
+          var n = lead.length % 4 || 4;
+          apply(v.slice(0, s - n) + v.slice(s), s - n);
+          return;
+        }
       }
       if (!(ev.ctrlKey || ev.metaKey) || ev.altKey) return;
       var k = ev.key.toLowerCase();
