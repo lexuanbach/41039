@@ -1496,8 +1496,15 @@ body.code-fullscreen-open { overflow: hidden; }
 }
 .explain-head .title {
   font-family: "Archivo", sans-serif; font-weight: 700;
-  font-size: 0.95rem; margin-right: auto;
+  font-size: 0.95rem;
 }
+.explain-head .lang { margin-right: auto; font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.explain > [hidden] { display: none !important; }
+.explain.is-editing { border: 0; background: none; box-shadow: none; overflow: visible; }
+.explain.is-editing > .console { margin: 0; }
+.explain-stdin { margin-left: auto; font-size: 0.78rem; color: var(--ink-soft); }
+.explain-stdin code { font-family: "IBM Plex Mono", monospace; }
+.explain-fixed-label { padding-bottom: 0.5rem; }
 .explain-hint { font-size: 0.8rem; color: var(--ink-soft); }
 .explain-hint .xk-sample {
   text-decoration: underline dotted; text-decoration-thickness: 1.5px; text-underline-offset: 0.25em;

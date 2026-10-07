@@ -310,8 +310,9 @@ Line numbers matter here beyond polish: Week 1 teaches students to read
 ### Explained code (`assets/explain.js`)
 
 A read-only example whose key parts explain themselves: hover (mouse), tap (touch) or Tab
-(keyboard) to a dotted-underlined part and a tooltip says what it does. Used in Weeks 2–3 for a
-typical list (9.5), dict (end of 10.2), set (end of 10.3) and tuple (end of 10.4) program.
+(keyboard) to a dotted-underlined part and a tooltip says what it does. Every example in Weeks 2–3
+sections 9–10 (lists, dicts, sets, tuples) is one, and each Week 4 section 01–08 ends with
+"N.K A typical … program, explained".
 
 ```html
 <div class="p1-explain" data-lang="python" data-title="Exam marks" data-stdin="">
@@ -334,8 +335,18 @@ typical list (9.5), dict (end of 10.2), set (end of 10.3) and tuple (end of 10.4
 - **One tooltip per page**, `position: fixed` on `<body>`, so the code's horizontal scroll cannot
   clip it; placed below the token, or above when there is no room, and clamped to the viewport.
   Hover shows it, click or tap pins it, Esc or a click elsewhere closes it.
-- *Run* goes through `P1Runtime.run` (batch, `data-stdin`), like a console. *All N explanations*
-  lists every note in order (print, screen readers); hovering an entry lights up its code.
+- *Run* goes through `P1Runtime.run` (batch, `data-stdin`, shown beside Run as `Input: 13 ⏎`),
+  like a console. *All N explanations* lists every note in order (print, screen readers); hovering
+  an entry lights up its code. The head carries a Java/Python badge — Week 4 mixes both.
+- **✎ Edit** mounts a full `P1Console` (editor, input box, interactive terminal)
+  in place, with the same code and input; *↩ Back to the explanations* returns. The console is
+  kept, so the edited copy is still there next time (the button then reads *Your edited
+  copy*); the explained view always shows the original. So a page can tell students to change an
+  example ("press ✎ Edit and change …") without giving up the notes.
+- Code the browser cannot run — Java **records** need Java 16, the runtime is Java 8 — takes
+  `data-run="none"` (no Run, no Edit) plus the real output, shown as given:
+  `<pre data-role="output" data-label="Output (Java 16 or later — …)">…</pre>` after the `</ol>`.
+  Work that output out with a real JDK; nothing here checks it.
 
 ### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
 

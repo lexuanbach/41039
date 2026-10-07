@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
-<link rel="stylesheet" href="../assets/style.css?v=8a058a01">
+<link rel="stylesheet" href="../assets/style.css?v=c4b5d1ff">
 </head>
 <body>
 <header class="topbar">
@@ -137,11 +137,11 @@
           </button>
           <button class="lesson-tab" role="tab" id="tab-s09" aria-controls="panel-s09" aria-selected="false" tabindex="-1" data-target="s09">
             <span class="t-num">09</span>
-            <span class="t-text"><span class="t-title">Lists in Python</span><span class="t-meta">Python &middot; 4 ideas &middot; 4 runnable</span></span>
+            <span class="t-text"><span class="t-title">Lists in Python</span><span class="t-meta">Python &middot; 5 ideas &middot; 5 runnable</span></span>
           </button>
           <button class="lesson-tab" role="tab" id="tab-s10" aria-controls="panel-s10" aria-selected="false" tabindex="-1" data-target="s10">
             <span class="t-num">10</span>
-            <span class="t-text"><span class="t-title">Dictionaries, sets and tuples</span><span class="t-meta">Python &middot; 4 ideas &middot; 5 runnable</span></span>
+            <span class="t-text"><span class="t-title">Dictionaries, sets and tuples</span><span class="t-meta">Python &middot; 4 ideas &middot; 8 runnable</span></span>
           </button>
           <button class="lesson-tab" role="tab" id="tab-s11" aria-controls="panel-s11" aria-selected="false" tabindex="-1" data-target="s11">
             <span class="t-num">11</span>
@@ -1512,7 +1512,7 @@ public class ArrayError {
           <li>They have <strong>no fixed size</strong>.</li>
           <li>Their elements may have <strong>different types</strong>.</li>
         </ul>
-        <div class="p1-console" data-lang="python" data-title="Square brackets make a list"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Square brackets make a list"><script type="text/plain" data-role="source">
 l = []                      # an empty list
 ll = [1, 2, 3]              # three elements
 mixed = [1, "Hi", 16.2, (2, 4)]
@@ -1523,7 +1523,14 @@ print(mixed)
 
 letters = ['a', 'b', 'c']
 print(letters[2] + letters[0] + letters[1])
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="[]" data-title="The empty list">Square brackets with nothing inside make a list of length 0, ready to grow &mdash; a list has no fixed size.</li>
+          <li data-line="2" data-match="[1, 2, 3]" data-title="A list literal">Values between <code>[ ]</code>, separated by commas, kept in the order written. Index 0 holds 1, index 2 holds 3.</li>
+          <li data-line="3" data-match="[1, &quot;Hi&quot;, 16.2, (2, 4)]" data-title="Mixed types are allowed">An int, a str, a float and a tuple in one list. Python&rsquo;s dynamic types allow it; a Java array holds one type only.</li>
+          <li data-line="5" data-match="print" data-title="The print function">Writes a value and then a newline. A list is shown the way you would type it, with Python&rsquo;s own quotes: line 7 prints <code>[1, 'Hi', 16.2, (2, 4)]</code>.</li>
+          <li data-line="10" data-match="letters[2]" data-title="Indexing from 0">Square brackets after a list pick one element by position. Index 2 is the <em>third</em>, <code>'c'</code>; <code>letters[3]</code> is an <code>IndexError</code>.</li>
+          <li data-line="10" data-match="letters[0] + letters[1]" data-title="Elements are ordinary values">Each element here is a string, so <code>+</code> joins them like any strings. The whole line prints <code>cab</code>.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">len(l), not l.length</span>
           <p>Lists are objects, but they offer no length field or method of their own. Python uses the
@@ -1537,7 +1544,7 @@ print(letters[2] + letters[0] + letters[1])
         <h3><span class="idx">9.2</span>Changing the length</h3>
         <p><code>append(elem)</code> adds to the end. <code>insert(pos, elem)</code> puts one at
         <code>pos</code>, moving what was there &mdash; and everything after it &mdash; up one place.</p>
-        <div class="p1-console" data-lang="python" data-title="append and insert"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="append and insert"><script type="text/plain" data-role="source">
 l = []
 l.append(1)
 l.append(2.0)
@@ -1548,14 +1555,21 @@ print(len(l))
 names = ["Mad", "dangerous to know"]
 names.insert(1, "bad")
 print(names)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="[]" data-title="Start empty">An empty list to fill as the program runs &mdash; the usual start when the values are not known in advance.</li>
+          <li data-line="2" data-match="l.append(1)" data-title="Calling a method">The dot calls a method that belongs to the list: <code>list.method(arguments)</code>. <code>append</code> adds its argument to the end, changing <code>l</code> itself. It returns <code>None</code>, so <code>l = l.append(1)</code> throws the list away.</li>
+          <li data-line="4" data-match="'tree'" data-title="Any type can go in">After three appends the list is <code>[1, 2.0, 'tree']</code>: an int, a float and a string.</li>
+          <li data-line="6" data-match="print" data-title="A call inside a call">Python runs the inner call first: <code>len(l)</code> gives 3, and that value is what <code>print</code> receives.</li>
+          <li data-line="6" data-match="len(l)" data-title="len is a function, not a method">The list goes inside the brackets &mdash; <code>len(l)</code>, never <code>l.len()</code> or <code>l.length</code>. The same <code>len</code> works on strings, dicts and sets.</li>
+          <li data-line="9" data-match='names.insert(1, "bad")' data-title="The insert method">Puts <code>"bad"</code> at index 1. What was there, and everything after it, moves up one place: <code>['Mad', 'bad', 'dangerous to know']</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
         <h3><span class="idx">9.3</span>Joining lists together</h3>
         <p><code>+</code> builds a new list, <code>+=</code> and <code>extend</code> add to the end of
         an existing one:</p>
-        <div class="p1-console" data-lang="python" data-title="Three ways to join"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Three ways to join"><script type="text/plain" data-role="source">
 l1 = [1, 2, 3]
 l2 = [4, 5, 6]
 
@@ -1567,7 +1581,13 @@ print(l3)
 
 l3 += [10]
 print(l3)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="4" data-match="l1 + l2" data-title="+ builds a new list">A third list, <code>[1, 2, 3, 4, 5, 6]</code>. <code>l1</code> and <code>l2</code> are left unchanged.</li>
+          <li data-line="7" data-match=".extend" data-title="The extend method">Adds every element of its argument to the end of <code>l3</code>, changing <code>l3</code> itself rather than making a new list.</li>
+          <li data-line="7" data-match="[7, 8, 9]" data-title="The argument is a collection"><code>extend</code> takes the numbers out one by one. <code>append([7, 8, 9])</code> would instead add <em>one</em> element &mdash; the whole list, nested inside.</li>
+          <li data-line="10" data-match="l3 += [10]" data-title="+= extends in place">On a list, <code>+=</code> works like <code>extend</code>. The right side must be a collection: <code>l3 += 10</code> is a <code>TypeError</code>.</li>
+          <li data-line="11" data-match="print(l3)" data-title="New list or the same list?">Prints <code>[1, 2, &hellip;, 10]</code>, yet <code>l1</code> is still <code>[1, 2, 3]</code>: <code>+</code> made a new list, while <code>extend</code> and <code>+=</code> changed <code>l3</code> in place.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1577,7 +1597,7 @@ print(l3)
         <code>m</code>. Both indices mean &ldquo;just before that position&rdquo;.</p>
         <p>Which gives a neat trick: a slice of <strong>zero width</strong>, like <code>l[1:1]</code>,
         covers nothing, so nothing is removed and <code>m</code> is simply squeezed in at that point.</p>
-        <div class="p1-console" data-lang="python" data-title="Squeeze in, and replace"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Squeeze in, and replace"><script type="text/plain" data-role="source">
 l = [1, 2, 3]
 
 l[1:1] = ['a', 'b', 'c']    # squeezed between elements 0 and 1
@@ -1585,7 +1605,12 @@ print(l)
 
 l[1:3] = ["wooooo"]         # elements 1 and 2 replaced by one element
 print(l)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="3" data-match="l[1:1]" data-title="A zero-width slice"><code>l[a:b]</code> covers index <code>a</code> up to, but not including, <code>b</code>. From 1 to 1 covers nothing, so nothing is removed and the new elements go in before index 1.</li>
+          <li data-line="3" data-match="['a', 'b', 'c']" data-title="Slice assignment">Assigning to a slice replaces what it covers with the <em>elements</em> of the right side, one by one: <code>[1, 'a', 'b', 'c', 2, 3]</code>.</li>
+          <li data-line="6" data-match="l[1:3]" data-title="A slice two wide">Indices 1 and 2 &mdash; here <code>'a'</code> and <code>'b'</code>. The end index, 3, is not included.</li>
+          <li data-line="6" data-match='["wooooo"]' data-title="Two out, one in">The two covered elements are removed and this one takes their place, so the list shrinks by one: <code>[1, 'wooooo', 'c', 2, 3]</code>.</li>
+        </ol></div>
       </div>
 
       <div class="concept">
@@ -1616,6 +1641,8 @@ print("Anyone on 85?", 85 in marks)
           <li data-line="5" data-match="marks[-1]" data-title="Negative indices count from the end"><code>-1</code> is the last element and <code>-2</code> the one before it, so you never need the length to reach the end. Here it is 58, the value just appended.</li>
           <li data-line="6" data-match="len(marks)" data-title="The length, with len()">A function, not a method: write <code>len(marks)</code>, never <code>marks.length</code>. Here it gives 5.</li>
           <li data-line="9" data-match="for m in marks:" data-title="Walk the list">A for-each loop: <code>m</code> takes each element in turn, first to last. No index needed.</li>
+          <li data-line="10" data-match="total += m" data-title="The accumulator">A running total: it starts at 0 before the loop (line 8) and each element is added inside it. After the loop it holds 369.</li>
+          <li data-line="11" data-match="total / len(marks)" data-title="/ always gives a float">369 / 5 is <code>73.8</code>. Even when it divides exactly, <code>/</code> gives a float (<code>10 / 5</code> is <code>2.0</code>); <code>//</code> divides and rounds down to a whole number.</li>
           <li data-line="13" data-match="marks[2] = 66" data-title="Lists can be changed">Assigning to an index replaces that element in place: 64 becomes 66. A tuple would refuse this (10.4).</li>
           <li data-line="15" data-match="85 in marks" data-title="Is it in there?"><code>in</code> gives <code>True</code> or <code>False</code>. On a list it checks the elements one by one, from the front.</li>
         </ol></div>
@@ -1665,7 +1692,7 @@ print("Anyone on 85?", 85 in marks)
         <p>A dict (hash-map, associative array, hash-table &mdash; same idea, many names) stores
         <strong>key&ndash;value pairs</strong>. You get at a value with square brackets and its key,
         exactly as you would with a list index.</p>
-        <div class="p1-console" data-lang="python" data-title="Reading, changing, adding, deleting"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Reading, changing, adding, deleting"><script type="text/plain" data-role="source">
 luke_data = {'name' : 'Luke', 'job' : 'Lecturer', 'subject' : '41039'}
 
 print("Luke's name is " + luke_data['name'])   # read
@@ -1678,7 +1705,14 @@ print(luke_data)
 
 del luke_data['subject']                       # del removes an entry
 print(luke_data)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="'name' : 'Luke'" data-title="One key&ndash;value pair">The key before the colon, its value after. Each key appears at most once in a dict.</li>
+          <li data-line="3" data-match="luke_data['name']" data-title="Read a value by its key">Like a list index, but with a name instead of a number. Gives <code>'Luke'</code>.</li>
+          <li data-line="5" data-match="luke_data['subject'] = '41052'" data-title="Change an existing value">The key <code>'subject'</code> already exists, so its value is replaced. Still three entries.</li>
+          <li data-line="8" data-match="luke_data['favourite tea'] = 'Earl Grey'" data-title="The same syntax adds a key">This key does not exist yet, so assigning to it creates a new entry. A key may contain spaces &mdash; it is just a string.</li>
+          <li data-line="9" data-match="print(luke_data)" data-title="Printing a dict">Every <code>key: value</code> pair in braces, in the order the keys were added.</li>
+          <li data-line="11" data-match="del luke_data['subject']" data-title="Remove an entry"><code>del</code> deletes the key and its value. Deleting a key that is not there raises <code>KeyError</code>.</li>
+        </ol></div>
         <p>Iterating takes a moment&rsquo;s thought, because every entry has two halves. Plain
         <code>for k in d:</code> gives you the <strong>keys</strong>:</p>
         <div class="note">
@@ -1692,7 +1726,7 @@ print(luke_data)
           <a href="https://docs.python.org/3/whatsnew/3.7.html" target="_blank" rel="noopener">Source:
           What&rsquo;s New In Python 3.7</a>.</p>
         </div>
-        <div class="p1-console" data-lang="python" data-title="Four ways to iterate"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Four ways to iterate"><script type="text/plain" data-role="source">
 luke_data = {'name' : 'Luke', 'job' : 'Lecturer', 'subject' : '41039'}
 
 for k in luke_data:              # keys — the default
@@ -1712,12 +1746,19 @@ print('-------------')
 
 for x in luke_data.items():      # each entry as a (key, value) tuple
     print(x)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="3" data-match="for k in luke_data:" data-title="A dict loop gives keys">Plain <code>for &hellip; in</code> on a dict hands you each <em>key</em> in turn: name, job, subject.</li>
+          <li data-line="9" data-match="luke_data[k]" data-title="Look each value up"><code>k</code> holds a key, so this is its value: Luke, Lecturer, 41039.</li>
+          <li data-line="13" data-match=".values()" data-title="Just the values">The values without their keys &mdash; use it when you never need the key.</li>
+          <li data-line="18" data-match=".items()" data-title="Both halves at once">Each entry as a <code>(key, value)</code> tuple.</li>
+          <li data-line="19" data-match="print(x)" data-title="A tuple per entry">Prints <code>('name', 'Luke')</code> and so on. To give the halves their own names, write <code>for k, v in luke_data.items():</code>, as the counting example below does.</li>
+        </ol></div>
         <div class="note warn">
           <span class="tag">KeyError</span>
           <p>The main dict error. Ask for a key that is not there &mdash; usually a typo &mdash; and you
-          get a <code>KeyError</code> naming the key you asked for. Try changing
-          <code>luke_data['name']</code> above to <code>luke_data['nme']</code>.</p>
+          get a <code>KeyError</code> naming the key you asked for. Press <strong>&#9998; Edit</strong> on the
+          first example above and change <code>luke_data['name']</code> to
+          <code>luke_data['nme']</code>.</p>
         </div>
         <p><strong>A typical dict program.</strong> Counting is the classic job for a dict: each word
         is a key, and its value is how many times it has turned up. Point at an underlined part to see
@@ -1760,7 +1801,7 @@ print(len(counts), "different words")
         <p>You cannot pull an element out by position &mdash; if you could, it would be a list, and
         Python already has one of those. What you can do is ask whether something is
         <strong>in</strong> it, and combine sets with the usual operations:</p>
-        <div class="p1-console" data-lang="python" data-title="Membership, and set operations" data-stdin="13"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Membership, and set operations" data-stdin="13"><script type="text/plain" data-role="source">
 primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
 
 n = int(input("Enter a number: "))
@@ -1778,7 +1819,16 @@ print(set1, "union", set3, "is", set1 | set3)
 print(set1, "intersection", set2, "is", set1 & set2)
 print(set1, "minus", set2, "is", set1 - set2)
 print(set1, "symmetric minus", set3, "is", set1 ^ set3)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="{2, 3, 5, 7, 11, 13, 17, 19, 23, 29}" data-title="A set literal">Braces with values only, no colons: the primes below 30, each once.</li>
+          <li data-line="3" data-match='int(input("Enter a number: "))' data-title="Read a number"><code>input</code> returns text; <code>int</code> turns it into a number. Without it, <code>"13" in primes</code> is <code>False</code>: the set holds ints, not strings.</li>
+          <li data-line="4" data-match="n in primes" data-title="Membership">Is the value in the set? The question sets answer fastest. The input here is 13.</li>
+          <li data-line="13" data-match="set2 &lt;= set1" data-title="Subset"><code>True</code> when every element on the left is also on the right. <code>&lt;</code> also needs the sets to differ: a proper subset.</li>
+          <li data-line="14" data-match="set1 | set3" data-title="Union">Everything in either set: <code>{1, 2, 3, 5, 6}</code>.</li>
+          <li data-line="15" data-match="set1 &amp; set2" data-title="Intersection">Only what is in both: <code>{1, 2}</code>.</li>
+          <li data-line="16" data-match="set1 - set2" data-title="Difference">In the left set but not the right: <code>{3}</code>.</li>
+          <li data-line="17" data-match="set1 ^ set3" data-title="Symmetric difference">In exactly one of the two. These two share nothing, so it equals their union.</li>
+        </ol></div>
         <div class="tbl-scroll"><table class="tbl">
           <thead><tr><th>Operator</th><th>On sets, means</th></tr></thead>
           <tbody>
@@ -1796,13 +1846,19 @@ print(set1, "symmetric minus", set3, "is", set1 ^ set3)
           went to <code>dict</code>. So <code>{}</code> is an <strong>empty dict</strong>, and an empty
           set has to be written <code>set()</code>.</p>
         </div>
-        <div class="p1-console" data-lang="python" data-title="Prove it"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Prove it"><script type="text/plain" data-role="source">
 print(type(set()))
 print(type({}))
 
 no_repeats = {1, 1, 1, 1, 2}
 print(no_repeats)
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="set()" data-title="The empty set">Call <code>set</code> with nothing &mdash; the only way to write an empty set. Prints <code>&lt;class 'set'&gt;</code>.</li>
+          <li data-line="2" data-match="type" data-title="What kind of value?"><code>type(x)</code> names the class of any value &mdash; handy whenever you are unsure what you are holding.</li>
+          <li data-line="2" data-match="{}" data-title="Empty braces are a dict">Dict claimed <code>{}</code> first, so this prints <code>&lt;class 'dict'&gt;</code>.</li>
+          <li data-line="4" data-match="{1, 1, 1, 1, 2}" data-title="Duplicates are dropped">Writing a value several times is allowed, but a set keeps one of each.</li>
+          <li data-line="5" data-match="print(no_repeats)" data-title="Two left">Prints <code>{1, 2}</code>.</li>
+        </ol></div>
         <p><strong>A typical set program.</strong> Sets answer &ldquo;who, without repeats?&rdquo; and
         &ldquo;who is in both?&rdquo;. Point at an underlined part to see what it does.</p>
         <div class="p1-explain" data-lang="python" data-title="Visitors and clubs"><script type="text/plain" data-role="source">
@@ -1843,7 +1899,7 @@ print(len(nobody))
         <strong>bundle a few values together</strong>.</p>
         <p>It is the <strong>comma</strong> that makes a tuple, not the parentheses &mdash; the brackets
         just look nicer. Which leads to one genuinely odd edge case:</p>
-        <div class="p1-console" data-lang="python" data-title="Yay edge cases"><script type="text/plain" data-role="source">
+        <div class="p1-explain" data-lang="python" data-title="Yay edge cases"><script type="text/plain" data-role="source">
 t = 1, 'a', 5.4
 print(t)                 # prints with parentheses anyway
 
@@ -1855,7 +1911,14 @@ print(type(singleton))
 
 empty = ()
 print(empty, type(empty))
-</script></div>
+</script><ol data-role="notes">
+          <li data-line="1" data-match="1, 'a', 5.4" data-title="Commas make a tuple">No brackets needed: values separated by commas are already a tuple.</li>
+          <li data-line="2" data-match="print(t)" data-title="Shown with brackets">A tuple always prints in round brackets: <code>(1, 'a', 5.4)</code>.</li>
+          <li data-line="4" data-match="(1)" data-title="Not a tuple">Brackets round one value only group it, as in <code>(2 + 3) * 4</code>. This is just the int 1.</li>
+          <li data-line="5" data-match="type(not_a_tuple)" data-title="Proof">Prints <code>&lt;class 'int'&gt;</code>.</li>
+          <li data-line="7" data-match="(1,)" data-title="The trailing comma">One value plus a comma is a one-element tuple. Easy to add by accident, too: <code>x = 5,</code> makes <code>x</code> a tuple.</li>
+          <li data-line="10" data-match="()" data-title="The empty tuple">Empty brackets: the one tuple written without a comma.</li>
+        </ol></div>
         <p class="sched-note">Everything else works the way you would now expect:
         <code>primes[0]</code> for an element, <code>for p in primes:</code> to walk it. This is the
         same tuple <code>d.items()</code> handed you in 10.2.</p>
@@ -2867,7 +2930,7 @@ Display Name and Pay</pre>
 <script src="../assets/highlight.js?v=88b90c66"></script>
 <script src="../assets/editor.js?v=0ea13585"></script>
 <script src="../assets/console-ui.js?v=6c39ad9b"></script>
-<script src="../assets/explain.js?v=ad546d49"></script>
+<script src="../assets/explain.js?v=ad07fc2a"></script>
 <script src="../assets/w23-data.js?v=63b7d9f8"></script>
 <script src="../assets/w23-exercises.js?v=164a4b3e"></script>
 <script src="../assets/exercises.js?v=a455b14d"></script>

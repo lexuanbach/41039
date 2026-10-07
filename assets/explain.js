@@ -17,11 +17,21 @@
  * Keyboard: Tab to a marked part. Esc or a click elsewhere closes it. The same notes are also
  * listed, in order, under "All explanations", for print and for screen readers.
  *
- * Run sends the source to P1Runtime (assets/runtime.js), as the consoles do.
- * Depends on assets/highlight.js; assets/console-ui.js is optional (used for dedent).
+ * Run sends the source to P1Runtime (assets/runtime.js), as the consoles do, with
+ * `data-stdin` as the input. "✎ Edit" swaps the example for a full console
+ * (assets/console-ui.js) holding the same code and input; "Back to the explanations" returns,
+ * and the edited copy is kept for the next visit.
+ *
+ * Code the browser cannot run (Java records need Java 16; the runtime is Java 8): set
+ * data-run="none" and give the real output, shown as it is, with
+ *     <pre data-role="output" data-label="Output (Java 16 or later)">…</pre>
+ *
+ * Depends on assets/highlight.js; assets/console-ui.js is optional (Edit, and dedent).
  */
 window.P1Explain = (function () {
   'use strict';
+
+  var LANG_LABEL = { java: 'Java', python: 'Python' };
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -144,18 +154,34 @@ window.P1Explain = (function () {
                    title: li.dataset.title || '', html: li.innerHTML.trim() });
     });
     notes.sort(function (a, b) { return a.line - b.line || a.start - b.start; });
+    var title = host.dataset.title || 'Explained example';
+    var runnable = host.dataset.run !== 'none';
+    var stdinText = host.dataset.stdin || '';
+    var outNode = host.querySelector('[data-role="output"]');
+    var fixedOut = outNode ? { text: dedent(outNode.textContent), label: outNode.dataset.label || 'Output' } : null;
 
     host.classList.add('explain');
     host.textContent = '';
 
     // head
     var head = el('div', 'explain-head');
-    head.appendChild(el('span', 'title', host.dataset.title || 'Explained example'));
+    head.appendChild(el('span', 'title', title));
+    head.appendChild(el('span', 'lang ' + lang, LANG_LABEL[lang] || lang));
     var hint = el('span', 'explain-hint');
-    hint.innerHTML = '<span class="xk-sample">Underlined</span> parts explain themselves &mdash; ' +
-      '<span class="when-hover">hover over one</span><span class="when-touch">tap one</span>.';
+    hint.innerHTML = '<span class="when-hover">Hover</span><span class="when-touch">Tap</span> the ' +
+      '<span class="xk-sample">underlined</span> parts.';
     head.appendChild(hint);
+    var editBtn = null;
+    if (runnable && window.P1Console) {
+      editBtn = el('button', 'btn ghost small explain-edit', '✎ Edit');
+      editBtn.type = 'button';
+      editBtn.title = 'Open this program in an editor: change it, run it, break it';
+      editBtn.addEventListener('click', function () { setEditing(true); });
+      head.appendChild(editBtn);
+    }
     host.appendChild(head);
+    var body = el('div', 'explain-body');
+    host.appendChild(body);
 
     // code, one block per line, with the notes marked
     var html = splitLines(window.P1Highlight ? P1Highlight.toHtml(source, lang) : esc(source));
@@ -169,7 +195,7 @@ window.P1Explain = (function () {
       });
       return '<div class="cl">' + (mine.length ? wrapRanges(lineHtml, mine) : lineHtml) + '</div>';
     }).join('');
-    host.appendChild(pre);
+    body.appendChild(pre);
     pre.querySelectorAll('.xk').forEach(function (t) {
       t._note = notes[+t.dataset.note];
       tokens[+t.dataset.note] = t;
@@ -183,20 +209,32 @@ window.P1Explain = (function () {
       });
     });
 
-    // run
+    // run — or, for code the browser cannot run, the real output as given
     var bar = el('div', 'console-bar');
     var runBtn = el('button', 'btn primary', 'Run');
     runBtn.type = 'button';
     var status = el('span', 'console-status');
-    bar.appendChild(runBtn);
-    bar.appendChild(status);
-    host.appendChild(bar);
     var boot = el('div', 'console-boot');
     boot.hidden = true;
     var out = el('pre', 'console-out explain-out');
     out.hidden = true;
-    host.appendChild(boot);
-    host.appendChild(out);
+    if (runnable) {
+      bar.appendChild(runBtn);
+      bar.appendChild(status);
+      if (stdinText) {
+        var given = el('span', 'explain-stdin');
+        given.appendChild(document.createTextNode('Input: '));
+        given.appendChild(el('code', null, stdinText.replace(/\n$/, '').split('\n').join(' ⏎ ') + ' ⏎'));
+        given.title = 'What the program reads, as if typed. Press ✎ Edit to change it.';
+        bar.appendChild(given);
+      }
+      body.appendChild(bar);
+      body.appendChild(boot);
+      body.appendChild(out);
+    } else if (fixedOut) {
+      body.appendChild(el('div', 'console-sub explain-fixed-label', fixedOut.label));
+      body.appendChild(el('pre', 'console-out explain-out', fixedOut.text));
+    }
     runBtn.addEventListener('click', function () {
       if (!window.P1Runtime) { status.textContent = 'The runtime is not loaded on this page.'; return; }
       runBtn.disabled = true;
@@ -205,7 +243,7 @@ window.P1Explain = (function () {
       status.textContent = 'Running…';
       var started = Date.now();
       function write(t, isErr) { out.appendChild(isErr ? el('span', 'err', t) : document.createTextNode(t)); }
-      P1Runtime.run(lang, source, host.dataset.stdin || '', {
+      P1Runtime.run(lang, source, stdinText, {
         onBoot: function (msg) { boot.hidden = !msg; if (msg) boot.textContent = msg; },
         onOut: function (t) { write(t, false); },
         onErr: function (t) { write(t, true); }
@@ -237,7 +275,33 @@ window.P1Explain = (function () {
       ol.appendChild(li);
     });
     all.appendChild(ol);
-    host.appendChild(all);
+    body.appendChild(all);
+
+    // edit mode: the same program in a full console; the edited copy survives a trip back
+    var consoleBox = null;
+    function setEditing(on) {
+      hide(true);
+      if (on && !consoleBox) {
+        consoleBox = el('div');
+        host.appendChild(consoleBox);
+        var sources = {};
+        sources[lang] = source;
+        P1Console.mount(consoleBox, { lang: lang, langs: [lang], title: title, sources: sources, stdin: stdinText });
+        var back = el('button', 'btn ghost small', '↩ Back to the explanations');
+        back.type = 'button';
+        back.addEventListener('click', function () { setEditing(false); });
+        consoleBox.querySelector('.console-head').appendChild(back);
+      }
+      host.classList.toggle('is-editing', on);
+      head.hidden = body.hidden = on;
+      if (consoleBox) consoleBox.hidden = !on;
+      if (on) {
+        consoleBox.querySelector('textarea.code-edit').focus();
+      } else {
+        editBtn.textContent = '✎ Your edited copy';
+        editBtn.focus();
+      }
+    }
   }
 
   function mountAll(root) {
