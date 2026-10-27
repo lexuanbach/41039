@@ -265,6 +265,97 @@ window.WEEK_DATA = {
     {
       q: 'What does this print?',
       lang: 'python',
+      code: 'l = [1, 2]\nl.append([3, 4])\nprint(len(l))\nprint(l)',
+      opts: [
+        '<code>4</code> then <code>[1, 2, 3, 4]</code>, because <code>append</code> adds each item it is given',
+        '<code>3</code> then <code>[1, 2, [3, 4]]</code>',
+        '<code>2</code> then <code>[1, 2]</code>, because <code>append</code> returns a new list and leaves <code>l</code> alone',
+        'A <code>TypeError</code>, because a list cannot be put inside another list'
+      ],
+      a: 1,
+      why: '<code>append</code> adds exactly <em>one</em> element to the end, whatever that element is. Here it is a whole list, so it goes in as a single item and the length becomes 3. To add 3 and 4 as two separate elements, use <code>l.extend([3, 4])</code> or <code>l += [3, 4]</code>. <code>append</code> changes <code>l</code> itself rather than building a new list, and a list may hold anything, other lists included.'
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: 'l1 = [1, 2, 3]\nl2 = l1 + [4]\nl1 += [5]\nprint(l1)\nprint(l2)',
+      opts: [
+        '<code>[1, 2, 3, 4, 5]</code> twice, because <code>l2</code> and <code>l1</code> are the same list',
+        '<code>[1, 2, 3, 5]</code> then <code>[1, 2, 3, 4, 5]</code>, because <code>+=</code> also updates <code>l2</code>',
+        '<code>[1, 2, 3, 5]</code> then <code>[1, 2, 3, 4]</code>',
+        '<code>[1, 2, 3]</code> then <code>[1, 2, 3, 4]</code>, because <code>+=</code> builds a new list that is thrown away'
+      ],
+      a: 2,
+      why: '<code>+</code> builds a brand-new list from the two it joins, so <code>l2</code> is its own list from the moment it is made. <code>+=</code>, like <code>extend</code>, adds to the end of the list that already exists, so only <code>l1</code> gains the 5. Nothing links the two lists afterwards, so neither change shows up in the other.'
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: "l = [1, 2, 3, 4]\nl[1:3] = ['x']\nprint(l)\nprint(len(l))",
+      opts: [
+        "<code>[1, 'x', 3, 4]</code> then <code>4</code>, because only the first element of the slice is replaced",
+        "<code>[1, 'x', 'x', 4]</code> then <code>4</code>, because the value is repeated to fill the slice",
+        'A <code>ValueError</code>, because the slice covers two elements but the new list has only one',
+        "<code>[1, 'x', 4]</code> then <code>3</code>"
+      ],
+      a: 3,
+      why: 'The slice <code>l[1:3]</code> covers indices 1 and 2 (from just before 1 to just before 3), and the whole slice is swapped for the contents of the right-hand list, however long that is. Two elements out, one in, so the list shrinks to 3. Python never repeats a value to fill a slice, and the lengths do not have to match. That is also what makes the zero-width <code>l[1:1]</code> insert work.'
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: "d = {'a': 1, 'b': 2}\nd['b'] = 20\nd['c'] = 3\nprint(len(d))\nprint(d)",
+      opts: [
+        "<code>3</code> then <code>{'a': 1, 'b': 20, 'c': 3}</code>",
+        "<code>4</code> then <code>{'a': 1, 'b': 2, 'b': 20, 'c': 3}</code>, since every assignment adds a new entry",
+        "A <code>KeyError</code> on line 3, because <code>'c'</code> is not yet a key in the dictionary",
+        "<code>3</code> then <code>{'a': 1, 'c': 3, 'b': 20}</code>, because a changed key moves to the end"
+      ],
+      a: 0,
+      why: "Square brackets on the left of <code>=</code> do two jobs with one syntax. If the key exists, its value is replaced: <code>'b'</code> becomes 20 and is still one entry, because keys are unique. If the key does not exist, a new entry is added. A <code>KeyError</code> comes only from <em>reading</em> a missing key. Changing a value does not move its key either: since Python 3.7 a dict keeps the order in which its keys were first inserted."
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: "ages = {'An': 19, 'Binh': 21}\nfor x in ages:\n    print(x)",
+      opts: [
+        '<code>19</code> then <code>21</code>, because looping over a dict walks through its values',
+        '<code>An</code> then <code>Binh</code>',
+        "<code>('An', 19)</code> then <code>('Binh', 21)</code>, one tuple for each entry",
+        'A <code>TypeError</code>, because a dict has no positions for <code>for</code> to step through'
+      ],
+      a: 1,
+      why: 'A plain <code>for</code> over a dict gives you its <strong>keys</strong>. For the values, ask for them: <code>ages.values()</code>, or <code>ages[x]</code> inside the loop. For <code>(key, value)</code> tuples, use <code>ages.items()</code>. Having no index positions does not stop a dict being looped over, and the keys come out in the order they were inserted.'
+    },
+    {
+      q: 'What happens when this runs?',
+      lang: 'python',
+      code: "counts = {}\nfor w in ['a', 'b', 'a']:\n    counts[w] += 1\nprint(counts)",
+      opts: [
+        "It prints <code>{'a': 2, 'b': 1}</code>, because a missing key starts out at 0",
+        "It prints <code>{'a': 1, 'b': 1}</code>, because a key can only be added to a dict once",
+        'It prints <code>{}</code>, because <code>+=</code> on a missing key is silently skipped',
+        "It stops with <code>KeyError: 'a'</code> on the very first pass"
+      ],
+      a: 3,
+      why: "<code>counts[w] += 1</code> means <code>counts[w] = counts[w] + 1</code>, and the right-hand side has to <em>read</em> <code>counts['a']</code> before anything is stored. There is no such key yet, so Python raises <code>KeyError</code> straight away. A dict has no default value for a missing key and never skips the line quietly. That is why the word-counting program in 10.2 checks <code>if word in counts:</code> first and writes <code>counts[word] = 1</code> for a new word."
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: "d = {'name': 'Luke', 'job': 'Lecturer'}\nprint('Luke' in d)\nprint('name' in d)",
+      opts: [
+        '<code>True</code> then <code>True</code>, because <code>in</code> searches the keys and the values alike',
+        '<code>True</code> then <code>False</code>, because <code>in</code> looks through the values of a dict',
+        '<code>False</code> then <code>True</code>',
+        '<code>False</code> then <code>False</code>, because <code>in</code> only works on lists and on sets'
+      ],
+      a: 2,
+      why: "<code>in</code> on a dict asks about the <strong>keys</strong> only, the same thing a plain <code>for</code> over it gives you. <code>'Luke'</code> is a value, not a key, so the first test is <code>False</code>. To search the values, write <code>'Luke' in d.values()</code>. Membership works on dicts as well as on lists and sets: it is how the counting program in 10.2 tells a new word from one it has already seen."
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
       code: 'print(type(set()))\nprint(type({}))',
       opts: [
         "<code>&lt;class 'set'&gt;</code> then <code>&lt;class 'dict'&gt;</code>",
@@ -287,6 +378,45 @@ window.WEEK_DATA = {
       ],
       a: 0,
       why: 'It is the comma, not the parentheses, that makes a tuple — <code>(1)</code> is just the number 1 in brackets. So a one-element tuple needs that slightly odd-looking trailing comma: <code>(1,)</code>.'
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: 'a, b = 1, 2\na, b = b, a\nprint(a, b)',
+      opts: [
+        '<code>2 2</code>, because <code>a</code> is overwritten before <code>b</code> gets to read it',
+        '<code>1 1</code>, because <code>b</code> is set first and its new value copied into <code>a</code>',
+        '<code>2 1</code>',
+        'A <code>TypeError</code>, because a tuple cannot be assigned to once it has been built'
+      ],
+      a: 2,
+      why: 'The right-hand side is evaluated completely first: <code>b, a</code> builds the tuple <code>(2, 1)</code> from the <em>old</em> values. Only then is it unpacked into <code>a</code> and <code>b</code>, so neither name is overwritten before it is read. Nothing is assigned <em>into</em> a tuple here. The tuple is taken apart into two ordinary variables, which is why this is the one-line Python swap.'
+    },
+    {
+      q: 'What happens when this runs?',
+      lang: 'python',
+      code: "scores = [('Linh', 7), ('Bach', 9)]\nscores[0] = ('Linh', 8)\nprint(scores)\nscores[1][1] = 10\nprint(scores)",
+      opts: [
+        'Line 2 raises a <code>TypeError</code> before anything prints, because the list is made of tuples',
+        "It prints <code>[('Linh', 8), ('Bach', 9)]</code>, then line 4 raises a <code>TypeError</code>",
+        "Both changes work, and the last line prints <code>[('Linh', 8), ('Bach', 10)]</code>",
+        'Both changes work, but the second one quietly builds a new tuple in place of the old one'
+      ],
+      a: 1,
+      why: "A tuple cannot be changed, but the <em>list</em> holding it can. Line 2 does not touch the old tuple: it puts a brand-new tuple into slot 0 of the list, which is allowed. Line 4 reaches inside the tuple in slot 1 and tries to assign to one of its elements, which is the one thing a tuple forbids: <code>TypeError: 'tuple' object does not support item assignment</code>. Python never quietly builds a replacement tuple for you."
+    },
+    {
+      q: 'What does this print?',
+      lang: 'python',
+      code: "d = {'a': 1, 'b': 2}\nfor x in d.items():\n    print(x, type(x))",
+      opts: [
+        "<code>('a', 1) &lt;class 'tuple'&gt;</code>, then the same for <code>('b', 2)</code>",
+        "<code>a &lt;class 'str'&gt;</code> then <code>b &lt;class 'str'&gt;</code>, because looping over a dict gives its keys",
+        "<code>['a', 1] &lt;class 'list'&gt;</code>, then the same for <code>['b', 2]</code>, one list per entry",
+        "<code>{'a': 1} &lt;class 'dict'&gt;</code>, then the same for <code>{'b': 2}</code>, one small dict per entry"
+      ],
+      a: 0,
+      why: '<code>items()</code> hands back each entry as a <code>(key, value)</code> <strong>tuple</strong>: the two halves belong together and nobody needs to change them, which is exactly what tuples are for. The keys alone are what a plain <code>for x in d:</code> gives you. That tuple is also why <code>for k, v in d.items():</code> works: each one is unpacked into two variables, just like <code>x, y = point</code>.'
     },
     {
       q: 'What does this print?',

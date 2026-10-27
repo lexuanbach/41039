@@ -136,6 +136,12 @@ inside a dark or light block without a `:root` default.**
   becomes a horizontally scrolling strip above the content**, because a 17rem sidebar and a
   code editor cannot share a phone screen. Each panel ends with previous/next buttons, so the
   lecture can be read straight through without returning to the rail.
+- **Course navigation** (`aside.side` inside `.layout`) — every week page also links to
+  all other weeks. At 1280px and above this is a sticky course rail, with the lecture
+  section rail reduced to 14rem to retain reading space. On smaller screens it is a
+  keyboard-accessible `details` disclosure labelled “Course weeks”, initially closed.
+  The current week uses `aria-current="page"` and a teal border/tint. New Part 2
+  materials cards use `.mat-card.later` for the same teal part colour.
 - **Photograph** (`.photo`) — a real photograph, framed edge to edge in a card with its
   caption and `.credit` on a bar underneath. This is a different object from `.fig`: a comic is
   line art that needs a white pad, a photograph fills its frame. Variants: `.banner` (a 21:8

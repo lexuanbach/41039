@@ -41,7 +41,7 @@ UTS-Programming-I-Website/
 ├── selftest.html           # Unlisted: verifies both runtimes on a live deployment
 ├── weeks/
 │   ├── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
-│   ├── week-2-3.html       # Weeks 2+3: conditionals, loops, arrays/lists/dicts, 26-question quiz
+│   ├── week-2-3.html       # Weeks 2+3: conditionals, loops, arrays/lists/dicts, 36-question quiz
 │   ├── week-4.html         # Week 4: methods, functions, stack/heap, by value vs by reference, records, 24-question quiz
 │   └── week-5.html         # Week 5: OOP, classes/objects (Java + Python), static, constructors, enums, advanced switch, 24-question quiz
 ├── slides/
@@ -126,8 +126,9 @@ console.log(bad+' flagged');"
 Require **0 flagged** after every edit to quiz data.
 
 **Answer position.** `initQuiz()` does **not** shuffle options, so the position of the correct
-option is visible to anyone who notices a pattern. `w1-data.js` and `w23-data.js` put every
-correct answer at `a: 0` (always "A"); `w4-data.js` and `w5-data.js` spread them across A–D. Either vary `a` in
+option is visible to anyone who notices a pattern. `w1-data.js` and the original 26 questions
+of `w23-data.js` put every correct answer at `a: 0` (always "A"); the ten Python list, dict and
+tuple questions added to `w23-data.js` later, `w4-data.js` and `w5-data.js` spread them across A–D. Either vary `a` in
 the data, or add a shuffle to `initQuiz()` (remapping `a`) before relying on the older quizzes.
 
 ### The interactive console (`assets/runtime.js` + `assets/console-ui.js`)
@@ -585,6 +586,26 @@ against the hosting origin, so the ECJ jar path is only exercised properly once 
 Python passing locally tells you nothing about whether Java will.
 
 ## 6. Extending
+
+### Weeks 6–12 extension (October 2026)
+
+Seven later week pages now exist, each with four lecture panels, six auto-marked
+exercises, two team activities, twelve quiz questions and source/reference links.
+They reuse the existing explained-code, editor, console, exercise and quiz engines.
+
+- `content/weeks-6-12.json` holds the editable teaching material and verified outputs.
+- `scripts/build_week_pages.py` renders static HTML and `w6` through `w12` data files.
+- `scripts/check_week_content.py` executes all examples and solution/test pairs with
+  the browser's ECJ compiler and CPython; `--refresh` regenerates output expectations.
+- All week pages have a course rail (`aside.side` in `.layout`), which becomes a
+  disclosure on narrow screens. `initCourseNav()` opens it by default on wide screens.
+- The homepage links every new week in both the schedule and materials grid. Week 6
+  consolidates classes introduced in this site's Week 5; subsequent topics follow
+  Canvas's sequence. See `content/README.md` for source mapping and date limitations.
+
+The earlier expansion instructions below describe the original four-page baseline;
+for changes to Weeks 6–12, edit the content JSON, run its checker/renderer, and stamp
+assets with `bump.py`. Never overwrite unrelated uncommitted work on earlier weeks.
 
 1. **Weeks 6–12.** Copy `weeks/week-5.html` (or `week-4.html`), write `assets/wN-data.js` and
    `assets/wN-exercises.js`, add a `.mat-card` on the homepage, and link the topic title in that

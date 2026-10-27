@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 9 · Exceptions and Reading Text · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Handle expected failures deliberately, follow exceptions through method calls, and read tokens or lines without losing data. Connect in-memory readers to real file input in Java and Python.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html" aria-current="page"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 9 · 41039 Programming 1</span><h1>Exceptions and Reading Text</h1><p class="lede">Handle expected failures deliberately, follow exceptions through method calls, and read tokens or lines without losing data. Connect in-memory readers to real file input in Java and Python.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">7 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">Catching exactly the invalid conversion</span></div><pre>public class Demo {
+    public static void main(String[] args) {
+        String[] values={&quot;12&quot;,&quot;bad&quot;,&quot;7&quot;};
+        for(String text:values) {
+            try { System.out.println(Integer.parseInt(text)+1); }
+            catch(NumberFormatException e) { System.out.println(&quot;Invalid: &quot;+text); }
+        }
+    }
+}</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 9 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Expected failures and specific handlers</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">Propagation, checked exceptions and cleanup</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Tokens, lines and end of input</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Readers, resource scope and real files</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Expected failures and specific handlers</h3><div class="concept"><h3><span class="idx">1.1</span>A failure changes control flow</h3><p>An exception is an object reporting a failed operation. When it is thrown or raised, the current path stops and control searches for a matching handler. Statements after the failing operation in the try block are skipped. A syntax error is different: the program must first be valid code before normal exception handling can run.</p></div><div class="concept"><h3><span class="idx">1.2</span>Catch what you can explain</h3><p>Catch NumberFormatException around integer conversion in Java, or ValueError in Python. A broad catch that silently ignores everything can hide bugs outside the expected failure. Python's else suite separates successful parsing from work that should not be covered by the conversion handler.</p></div><div class="p1-explain" data-lang="java" data-title="Catching exactly the invalid conversion" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        String[] values={"12","bad","7"};
+        for(String text:values) {
+            try { System.out.println(Integer.parseInt(text)+1); }
+            catch(NumberFormatException e) { System.out.println("Invalid: "+text); }
+        }
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="5" data-match="Integer.parseInt(text)" data-title="Integer.parseInt(text)">Parsing can fail before the addition or println occurs.</li><li data-line="6" data-match="catch(NumberFormatException e)" data-title="catch(NumberFormatException e)">Handle this conversion error and then continue with the next input value.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Conversion errors in Python" data-stdin="">
+<script type="text/plain" data-role="source">for text in ["12", "bad", "7"]:
+    try:
+        value = int(text)
+    except ValueError:
+        print("Invalid:", text)
+    else:
+        print(value + 1)
+</script>
+<ol data-role="notes"><li data-line="4" data-match="except ValueError" data-title="except ValueError">Catch the expected conversion failure rather than every possible failure.</li><li data-line="6" data-match="else:" data-title="else:">Run this suite when the try suite completed without raising an exception.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Replace bad with 0. Then move the output after the conversion and explain which statements can run when conversion fails.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>Propagation, checked exceptions and cleanup</h3><div class="concept"><h3><span class="idx">2.1</span>Throw here, handle at the right level</h3><p>A Java checked exception must be caught or declared with throws. RuntimeException and its subclasses are unchecked. The declaration tells a caller what may propagate; it does not catch the exception. In Python, raise reports a failure and except handles it; there is no equivalent compile-time checked-exception obligation.</p></div><div class="concept"><h3><span class="idx">2.2</span>Cleanup is separate from success</h3><p>finally runs when leaving the try/catch construct during ordinary execution and exception propagation. It does not imply success, and it is not an absolute guarantee if the process terminates. For closeable resources, prefer Java try-with-resources and Python with instead of hand-writing a fragile sequence of closes.</p></div><div class="p1-explain" data-lang="java" data-title="Propagation and cleanup" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    static void parse() { Integer.parseInt("x"); }
+    public static void main(String[] args) {
+        try {
+            parse();
+            System.out.println("after parse");
+        } catch(NumberFormatException e) {
+            System.out.println("caught");
+        } finally {
+            System.out.println("cleanup");
+        }
+        System.out.println("done");
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="5" data-match="parse();" data-title="parse();">An exception in the called method propagates back to this try block.</li><li data-line="9" data-match="finally" data-title="finally">Run cleanup on this normal exception-handling path, after the catch.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Raise at the point a rule is broken" data-stdin="">
+<script type="text/plain" data-role="source">def mark(text):
+    value = int(text)
+    if not 0 <= value <= 100:
+        raise ValueError("mark out of range")
+    return value
+
+try:
+    print(mark("120"))
+except ValueError as error:
+    print(error)
+finally:
+    print("checked")
+</script>
+<ol data-role="notes"><li data-line="4" data-match="raise ValueError" data-title="raise ValueError">Reject a parsed but invalid value using an informative exception.</li><li data-line="11" data-match="finally:" data-title="finally:">This cleanup/check message runs whether the attempted operation succeeded or raised.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change 120 to 80. Predict how the successful result differs while the finally message stays present. Explain where validation belongs if several callers share mark().</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Tokens, lines and end of input</h3><div class="concept"><h3><span class="idx">3.1</span>Choose a reading contract</h3><p>A Scanner token read skips delimiters. A line reader preserves the distinction between an empty line and no line. Decide whether your input is a token stream, line records or free text before choosing an API. The line boundary may carry meaning that tokenisation discards.</p></div><div class="concept"><h3><span class="idx">3.2</span>Do not confuse a blank line with EOF</h3><p>BufferedReader.readLine returns null at end of input. Python file iteration simply ends. Python readline returns an empty string at EOF but returns a newline character for a blank line. Use the exact EOF contract of the chosen API. The Python method is spelled <code>readline()</code>, not readLine.</p></div><div class="p1-explain" data-lang="java" data-title="Token input with Scanner" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.Scanner;
+
+public class Demo {
+    public static void main(String[] args) {
+        try(Scanner reader=new Scanner("10 20\n30")) {
+            int total=0;
+            while(reader.hasNextInt()) total+=reader.nextInt();
+            System.out.println(total);
+        }
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="5" data-match="new Scanner(&quot;10 20\n30&quot;)" data-title="new Scanner(&quot;10 20\n30&quot;)">Use a string source so the token-reading example runs without an external file.</li><li data-line="7" data-match="reader.hasNextInt()" data-title="reader.hasNextInt()">Check for a valid integer token before consuming it.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Line input has a different contract" data-stdin="">
+<script type="text/plain" data-role="source">from io import StringIO
+
+with StringIO("tea\n\ncoffee\n") as source:
+    for line_number, line in enumerate(source, 1):
+        print(f"{line_number}: {line.rstrip(chr(10))}")
+</script>
+<ol data-role="notes"><li data-line="1" data-match="StringIO" data-title="StringIO">An in-memory text stream supports the same line-iteration idea as a file.</li><li data-line="4" data-match="enumerate(source, 1)" data-title="enumerate(source, 1)">Count every line, including an empty line, starting at 1.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a blank line at the end of the string source, then count the records. Compare that with adding spaces to the Scanner input.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Readers, resource scope and real files</h3><div class="concept"><h3><span class="idx">4.1</span>Read until the reader reports EOF</h3><p>BufferedReader.ready reports whether a read can proceed without blocking; it is not an EOF test. Loop on readLine() != null instead. The StringReader below keeps the example runnable in the browser. On Ed, the corresponding reader can be new BufferedReader(new FileReader("marks.txt")) with a prepared file.</p></div><div class="concept"><h3><span class="idx">4.2</span>File paths and text encoding</h3><p>Relative paths are resolved from a program's working directory, not from your assumption about where its source lives. A missing file is an expected input failure to handle or report. Specify UTF-8 for portable text. The real-file Python example creates its own temporary fixture; run it on Ed or in Python. It does not read files from your computer through this website.</p></div><div class="p1-explain" data-lang="java" data-title="BufferedReader stops at null, not ready()" data-stdin="">
+<script type="text/plain" data-role="source">import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        try(BufferedReader reader=new BufferedReader(new StringReader("tea\n\ncoffee"))) {
+            String line;
+            int count=0;
+            while((line=reader.readLine())!=null) {
+                count++;
+                System.out.println(count+": "+line);
+            }
+        } catch(IOException e) { System.out.println("Read failed"); }
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="8" data-match="reader.readLine()" data-title="reader.readLine()">Read one line without its line terminator; null signals end of input.</li><li data-line="8" data-match="!=null" data-title="!=null">An empty string is a valid blank line and must not be mistaken for EOF.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Read an actual UTF-8 file on Ed" data-stdin="" data-run="none">
+<script type="text/plain" data-role="source">from pathlib import Path
+from tempfile import TemporaryDirectory
+
+with TemporaryDirectory() as folder:
+    path = Path(folder) / "marks.txt"
+    path.write_text("Linh,85\nAn,49\n", encoding="utf-8")
+    with path.open("r", encoding="utf-8") as source:
+        for line in source:
+            name, mark = line.rstrip("\n").split(",")
+            print(name, int(mark) >= 50)
+</script>
+<ol data-role="notes"><li data-line="6" data-match="encoding=&quot;utf-8&quot;" data-title="encoding=&quot;utf-8&quot;">Use an explicit character encoding for both writing and reading.</li><li data-line="7" data-match="with path.open" data-title="with path.open">Close the file when this block ends, including on an exception.</li></ol><pre data-role="output" data-label="Verified output · run this file example on Ed">Linh True
+An False
+</pre></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Use a final line with no trailing newline and verify it is still read. Explain why a test that checks only the line count would miss incorrectly parsed marks.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Build a failure table</h4><p>List outcomes for a missing file, an empty file, a blank record, a non-numeric mark and an out-of-range mark. Choose which layer should report each failure. Do not treat an empty file as a missing one.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Prove the last line survives</h4><p>Prepare three small text inputs: a trailing newline, no trailing newline, and a blank middle line. Trace the loop condition and each returned line. Explain why ready() is not the right test for EOF.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118768"><span class="kind">Course source / reference</span><h4>Exceptions</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118769"><span class="kind">Course source / reference</span><h4>Basic File I/O in Java</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118770"><span class="kind">Course source / reference</span><h4>Basic File I/O in Python</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/io/BufferedReader.html"><span class="kind">Course source / reference</span><h4>BufferedReader contract</h4><p>readLine, EOF and the distinction between readiness and remaining data.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/errors.html"><span class="kind">Course source / reference</span><h4>Python errors and exceptions</h4><p>Handling, raising, else and finally.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files"><span class="kind">Course source / reference</span><h4>Python text I/O</h4><p>Reading, writing, encoding and with statements.</p><span class="host">docs.python.org</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Read Exceptions and the input sections of the Java and Python I/O lessons. Practise parsing a bad record without silently losing the next good record.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118768">Exceptions</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118769">Basic File I/O in Java</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118770">Basic File I/O in Python</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-8.html"><span class="dir">Previous</span>Week 8</a><a href="week-10.html"><span class="dir">Next</span>Week 10</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 9 · Exceptions and Reading Text</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w9-data.js?v=cb9dfb20"></script>
+<script src="../assets/w9-exercises.js?v=c05ba879"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

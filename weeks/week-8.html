@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 8 · Inheritance, Interfaces and Polymorphism · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Describe a shared contract, implement it in several classes, and trace which method runs. Compare Java inheritance and interfaces with Python inheritance, abstract base classes and duck typing.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html" aria-current="page"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 8 · 41039 Programming 1</span><h1>Inheritance, Interfaces and Polymorphism</h1><p class="lede">Describe a shared contract, implement it in several classes, and trace which method runs. Compare Java inheritance and interfaces with Python inheritance, abstract base classes and duck typing.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">8 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">Overriding chooses the object method</span></div><pre>public class Demo {
+    public static void main(String[] args) {
+        Animal pet = new Dog(&quot;Milo&quot;);
+        System.out.println(pet.speak());
+    }
+}
+class Animal {
+    protected final String name;
+    Animal(String name) { this.name=name; }
+    String speak() { return name+&quot; is quiet&quot;; }
+}
+class Dog extends Animal {
+    Dog(String name) { super(name); }
+    @Override String speak() { return name+&quot; says woof&quot;; }
+}</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 8 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Inheritance and construction</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">Dispatch and abstract classes</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Interfaces and behavioural contracts</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Composition, final and multiple inheritance</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Inheritance and construction</h3><div class="concept"><h3><span class="idx">1.1</span>An is-a relationship</h3><p>Inheritance describes a specialised kind of an existing type. A Dog is an Animal. Java uses extends and allows one direct superclass; Python lists base classes in parentheses. Constructors establish a valid base part as well as any added subclass state. Java constructors are not inherited.</p></div><div class="concept"><h3><span class="idx">1.2</span>Use the parent without duplicating it</h3><p><code>super(name)</code> invokes a superclass constructor in Java. Python <code>super()</code> provides the next implementation in the method resolution order. Overriding lets a subclass specialise an inherited instance method while retaining the shared operation that callers expect.</p></div><div class="p1-explain" data-lang="java" data-title="Overriding chooses the object method" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Animal pet = new Dog("Milo");
+        System.out.println(pet.speak());
+    }
+}
+class Animal {
+    protected final String name;
+    Animal(String name) { this.name=name; }
+    String speak() { return name+" is quiet"; }
+}
+class Dog extends Animal {
+    Dog(String name) { super(name); }
+    @Override String speak() { return name+" says woof"; }
+}
+</script>
+<ol data-role="notes"><li data-line="13" data-match="super(name)" data-title="super(name)">Initialise the Animal part of the Dog with its name.</li><li data-line="4" data-match="pet.speak()" data-title="pet.speak()">The actual object is a Dog, so its override runs.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Calling the parent in Python" data-stdin="">
+<script type="text/plain" data-role="source">class Animal:
+    def __init__(self, name):
+        self.name = name
+    def speak(self):
+        return self.name + " is quiet"
+
+class Dog(Animal):
+    def speak(self):
+        return super().speak() + "; then woof"
+
+print(Dog("Milo").speak())
+</script>
+<ol data-role="notes"><li data-line="7" data-match="class Dog(Animal)" data-title="class Dog(Animal)">Dog derives from Animal and uses its constructor here.</li><li data-line="9" data-match="super().speak()" data-title="super().speak()">Invoke the next method in the method resolution order before extending the result.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a Cat with a different speak implementation. Put a Dog and a Cat behind the same general type and predict each method call.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>Dispatch and abstract classes</h3><div class="concept"><h3><span class="idx">2.1</span>Declared type versus object type</h3><p>The declared type of a Java variable determines which members a call may refer to. For an overridden instance method, the actual object selects the implementation at runtime. Field access and static methods do not follow that same dynamic-dispatch rule. Overloading is also chosen using compile-time argument types.</p></div><div class="concept"><h3><span class="idx">2.2</span>Incomplete does not mean useless</h3><p>An abstract class can hold state, a constructor and concrete methods while requiring subclasses to implement certain operations. It cannot be instantiated directly. Python's abc module provides ABC and abstractmethod for an enforced version of that contract. A class with only an informal method that raises NotImplementedError does not enforce the same instantiation restriction.</p></div><div class="p1-explain" data-lang="java" data-title="Fields and methods are resolved differently" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Parent value = new Child();
+        System.out.println(value.label);
+        System.out.println(value.describe());
+    }
+}
+class Parent {
+    String label="parent field";
+    String describe() { return "parent method"; }
+}
+class Child extends Parent {
+    String label="child field";
+    @Override String describe() { return "child method"; }
+}
+</script>
+<ol data-role="notes"><li data-line="4" data-match="value.label" data-title="value.label">Field access uses the declared type Parent.</li><li data-line="5" data-match="value.describe()" data-title="value.describe()">An overridden instance method is dispatched on the Child object.</li></ol></div><div class="p1-explain" data-lang="python" data-title="A Python abstract base class" data-stdin="">
+<script type="text/plain" data-role="source">from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Square(Shape):
+    def __init__(self, side):
+        self.side = side
+    def area(self):
+        return self.side * self.side
+
+shape = Square(3)
+print(shape.area())
+print(isinstance(shape, Shape))
+</script>
+<ol data-role="notes"><li data-line="4" data-match="@abstractmethod" data-title="@abstractmethod">A concrete subclass must provide this method before it can be instantiated.</li><li data-line="16" data-match="isinstance(shape, Shape)" data-title="isinstance(shape, Shape)">A Square is also an instance of its base type.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Replace Square(3) with Shape() in Python and explain the failure. In Java, rename the child field and predict whether method dispatch changes.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Interfaces and behavioural contracts</h3><div class="concept"><h3><span class="idx">3.1</span>Specify an operation without choosing storage</h3><p>A Java interface specifies a type that classes may implement independently of their single superclass. Implementations of its abstract public methods must be public. Interfaces have no per-object instance fields, but can have constants and default methods; they are more than an informal list of names.</p></div><div class="concept"><h3><span class="idx">3.2</span>A common caller needs only the promise</h3><p>A shape-area loop does not need to know each concrete shape. In Python, the caller can simply require an area or send method, without a common base class. This is duck typing: the required operations matter. It remains the programmer's responsibility to keep the behaviour and argument expectations consistent.</p></div><div class="p1-explain" data-lang="java" data-title="An interface is a useful promise" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Shape[] shapes = {new Square(3), new Rectangle(2,4)};
+        for(Shape shape:shapes) System.out.println(shape.area());
+    }
+}
+interface Shape { int area(); }
+class Square implements Shape {
+    private final int side;
+    Square(int side) { this.side=side; }
+    public int area() { return side*side; }
+}
+class Rectangle implements Shape {
+    private final int w,h;
+    Rectangle(int w,int h) { this.w=w; this.h=h; }
+    public int area() { return w*h; }
+}
+</script>
+<ol data-role="notes"><li data-line="7" data-match="interface Shape" data-title="interface Shape">Specify the public operation shared by otherwise different classes.</li><li data-line="4" data-match="shape.area()" data-title="shape.area()">Call the same contract on different implementations.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Duck typing uses a behavioural contract" data-stdin="">
+<script type="text/plain" data-role="source">class Email:
+    def send(self, text):
+        return "email: " + text
+
+class Screen:
+    def send(self, text):
+        return "screen: " + text
+
+def notify(channel):
+    print(channel.send("Hello"))
+
+notify(Email())
+notify(Screen())
+</script>
+<ol data-role="notes"><li data-line="10" data-match="channel.send(&quot;Hello&quot;)" data-title="channel.send(&quot;Hello&quot;)">The function requires send(text), not a particular inheritance relationship.</li><li data-line="13" data-match="notify(Screen())" data-title="notify(Screen())">A different object can satisfy the same behavioural expectation.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add another implementation while leaving the loop or notify function unchanged. Explain what must be preserved for existing callers to keep working.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Composition, final and multiple inheritance</h3><div class="concept"><h3><span class="idx">4.1</span>Use inheritance for substitutable types</h3><p>A Notice uses a delivery channel; it is not a kind of channel. Composition keeps the delivery choice replaceable. Java final on a class prevents subclassing; final on an instance method prevents overriding. A final reference still permits mutation of the object it refers to.</p></div><div class="concept"><h3><span class="idx">4.2</span>Trace the actual lookup order</h3><p>Python permits multiple inheritance, so super means the next implementation in the MRO, not always one fixed parent. Inspect __mro__ for the order. For introductory designs, a small interface or a composed helper often communicates the intended collaboration more clearly than a complicated hierarchy.</p></div><div class="p1-explain" data-lang="java" data-title="Compose a behaviour instead of inheriting it" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Notice notice=new Notice(new Screen());
+        notice.show("Due soon");
+    }
+}
+interface Channel { void send(String message); }
+class Screen implements Channel {
+    public void send(String message) { System.out.println("screen: "+message); }
+}
+class Notice {
+    private final Channel channel;
+    Notice(Channel channel) { this.channel=channel; }
+    void show(String text) { channel.send(text); }
+}
+</script>
+<ol data-role="notes"><li data-line="12" data-match="private final Channel channel" data-title="private final Channel channel">Keep a collaborator through its interface.</li><li data-line="14" data-match="channel.send(text)" data-title="channel.send(text)">Delegate message delivery rather than subclassing a concrete delivery class.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Method resolution in multiple inheritance" data-stdin="">
+<script type="text/plain" data-role="source">class A:
+    def label(self): return "A"
+class B:
+    def label(self): return "B"
+class C(A, B):
+    pass
+
+print(C().label())
+print([cls.__name__ for cls in C.__mro__])
+</script>
+<ol data-role="notes"><li data-line="5" data-match="class C(A, B)" data-title="class C(A, B)">For this simple hierarchy, A occurs before B in the method resolution order.</li><li data-line="9" data-match="C.__mro__" data-title="C.__mro__">Inspect the actual order Python uses rather than guessing from a diagram.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Reverse the Python base-class order in C. Then sketch how you would give Notice a test delivery channel that records messages rather than displaying them.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Review an is-a claim</h4><p>Consider making Square extend a mutable Rectangle with setWidth and setHeight. Write a caller that expects changing width to preserve height. Discuss the promise a Square would break, then propose an area-only interface instead.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Draw dispatch in two colours</h4><p>For Parent value = new Child(), mark declared types in one colour and actual objects in another. Explain the two output lines in the field/method example. Invent a method call rejected at compile time even though Child has that method.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118759"><span class="kind">Course source / reference</span><h4>Inheritance in Java</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118761"><span class="kind">Course source / reference</span><h4>Inheritance in Python</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118762"><span class="kind">Course source / reference</span><h4>Interfaces</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118763"><span class="kind">Course source / reference</span><h4>The List Interface</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/classes.html#inheritance"><span class="kind">Course source / reference</span><h4>Python inheritance</h4><p>Subclassing, overriding, and multiple inheritance.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://docs.python.org/3/library/abc.html"><span class="kind">Course source / reference</span><h4>Abstract base classes</h4><p>ABC and abstractmethod.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html"><span class="kind">Course source / reference</span><h4>Java interfaces</h4><p>Declaring and implementing interfaces.</p><span class="host">docs.oracle.com</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Read Java and Python inheritance, then Interfaces and the List-interface demonstration. Practise tracing construction, field access and overridden instance methods separately.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118759">Inheritance in Java</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118761">Inheritance in Python</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118762">Interfaces</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118763">The List Interface</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-7.html"><span class="dir">Previous</span>Week 7</a><a href="week-9.html"><span class="dir">Next</span>Week 9</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 8 · Inheritance, Interfaces and Polymorphism</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w8-data.js?v=07a0f17d"></script>
+<script src="../assets/w8-exercises.js?v=0d71bd23"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

@@ -1,0 +1,191 @@
+[
+  {
+    "file": "examples/q01/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "13\nInvalid: bad\n8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q02/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "13\nInvalid: bad\n8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "caught\ncleanup\ndone\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "mark out of range\nchecked\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "1: tea\n2: \n3: coffee\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q06/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "1: tea\n2: \n3: coffee\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/draw/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n19\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n2 12\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n2 19\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "",
+    "returncode": 1,
+    "error": "ValueError: invalid literal for int() with base 10: 'bad\\n'"
+  },
+  {
+    "file": "solutions/broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n19\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-1/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "A\nC\nD\nE\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-2/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "checked 4\n4\nchecked x\nbad\nchecked 2\n2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "4\n12\nbad\n-2\n7\n",
+    "stdout": "Invalid\nTotal: 17\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "0\n",
+    "stdout": "Total: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "2\nx\ny\n",
+    "stdout": "Invalid\nInvalid\nTotal: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "2\n0\n100\n",
+    "stdout": "Total: 100\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "4\n12\nbad\n-2\n7\n",
+    "stdout": "Invalid\nTotal: 17\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "0\n",
+    "stdout": "Total: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "2\nx\ny\n",
+    "stdout": "Invalid\nInvalid\nTotal: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "2\n0\n100\n",
+    "stdout": "Total: 100\n",
+    "returncode": 0,
+    "error": ""
+  }
+]

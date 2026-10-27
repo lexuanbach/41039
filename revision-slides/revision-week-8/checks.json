@@ -1,0 +1,173 @@
+[
+  {
+    "file": "examples/q01/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Milo says woof\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q02/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Milo is quiet; then woof\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "parent field\nchild method\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "9\nTrue\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "9\n8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q06/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "email: Hello\nscreen: Hello\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/draw/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "woof woof meow\ntrue\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Animal unknown\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Dog Milo\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "",
+    "returncode": 1,
+    "error": "TypeError: unsupported operand type(s) for +: 'method' and 'str'"
+  },
+  {
+    "file": "solutions/broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Hello Linh!\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-1/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "parent C\nC\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-2/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "ABC\nTrue\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "S 3\n",
+    "stdout": "9\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "R 2 4\n",
+    "stdout": "8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "S 1\n",
+    "stdout": "1\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "S 3\n",
+    "stdout": "9\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "R 2 4\n",
+    "stdout": "8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "S 1\n",
+    "stdout": "1\n",
+    "returncode": 0,
+    "error": ""
+  }
+]

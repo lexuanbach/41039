@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 11 · Designing Object-Oriented Programs · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Use SOLID and GRASP as questions about a concrete program: who owns the data, who makes decisions, which changes should stay local, and what callers may reasonably expect from a replacement.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html" aria-current="page"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 11 · 41039 Programming 1</span><h1>Designing Object-Oriented Programs</h1><p class="lede">Use SOLID and GRASP as questions about a concrete program: who owns the data, who makes decisions, which changes should stay local, and what callers may reasonably expect from a replacement.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">8 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">Keep the calculation in the expert</span></div><pre>public class Demo {
+    public static void main(String[] args) {
+        Order order=new Order();
+        order.add(new Line(300,2));
+        order.add(new Line(150,1));
+        System.out.println(order.total());
+    }
+}
+class Line {
+    private final int cents,quantity;
+    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }
+    int subtotal() { return cents*quantity; }
+}
+class Order {
+    private final java.util.List&lt;Line&gt; lines=new java.util.ArrayList&lt;Line&gt;();</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 11 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Responsibility and information experts</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">Extension and dependency inversion</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Substitution and focused interfaces</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Cohesion, coupling and practical restraint</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Responsibility and information experts</h3><div class="concept"><h3><span class="idx">1.1</span>A coherent reason to change</h3><p>A class should model one coherent responsibility. This does not mean one method per class. A model may need constructors, queries and updates that all preserve the same rules. Receipt wording, storage format and price calculations can change for different reasons; separating them limits the consequences of each change.</p></div><div class="concept"><h3><span class="idx">1.2</span>Put a calculation beside its information</h3><p>GRASP's Information Expert suggests assigning behaviour to the object that has the needed information. A line knows price and quantity, so it computes a subtotal. An order knows its lines, so it sums their subtotals. It need not reach inside every line's fields or repeat the subtotal rule.</p></div><div class="p1-explain" data-lang="java" data-title="Keep the calculation in the expert" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Order order=new Order();
+        order.add(new Line(300,2));
+        order.add(new Line(150,1));
+        System.out.println(order.total());
+    }
+}
+class Line {
+    private final int cents,quantity;
+    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }
+    int subtotal() { return cents*quantity; }
+}
+class Order {
+    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();
+    void add(Line line) { lines.add(line); }
+    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }
+}
+</script>
+<ol data-role="notes"><li data-line="12" data-match="int subtotal()" data-title="int subtotal()">The line owns the price and quantity needed for its subtotal.</li><li data-line="17" data-match="line.subtotal()" data-title="line.subtotal()">The order asks each line for its contribution instead of exposing its fields.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Separate calculation from presentation" data-stdin="">
+<script type="text/plain" data-role="source">class Order:
+    def __init__(self, amounts): self.amounts=list(amounts)
+    def total(self): return sum(self.amounts)
+
+def format_receipt(order):
+    return f"Total: {order.total()} cents"
+
+order=Order([600,150])
+print(order.total())
+print(format_receipt(order))
+</script>
+<ol data-role="notes"><li data-line="3" data-match="def total(self)" data-title="def total(self)">Keep domain calculation available independently of presentation.</li><li data-line="5" data-match="def format_receipt" data-title="def format_receipt">Changing receipt wording need not change the order calculation.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change the receipt wording without changing total(). Then add a per-line quantity and decide which class should absorb that rule.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>Extension and dependency inversion</h3><div class="concept"><h3><span class="idx">2.1</span>Name the variation you actually need</h3><p>A basket that depends on a PriceRule can accept another rule without editing its calculation. This is a concrete way to keep a stable caller while extending a policy. The abstraction earns its place when there are real alternatives; creating an interface for every class is not the goal.</p></div><div class="concept"><h3><span class="idx">2.2</span>Supply collaborators rather than hiding choices</h3><p>Dependency inversion asks high-level policy to depend on the needed abstraction, not a specific low-level implementation. Passing the collaborator through a constructor makes that choice explicit. Python can use a callable for a small policy. A function may be a clearer design than a hierarchy when there is one operation.</p></div><div class="p1-explain" data-lang="java" data-title="An extensible pricing rule" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Basket basket=new Basket(new StudentPrice());
+        System.out.println(basket.price(1000));
+    }
+}
+interface PriceRule { int apply(int cents); }
+class StudentPrice implements PriceRule {
+    public int apply(int cents) { return cents*80/100; }
+}
+class Basket {
+    private final PriceRule rule;
+    Basket(PriceRule rule) { this.rule=rule; }
+    int price(int cents) { return rule.apply(cents); }
+}
+</script>
+<ol data-role="notes"><li data-line="12" data-match="PriceRule rule" data-title="PriceRule rule">Depend on the pricing contract, not a particular policy class.</li><li data-line="14" data-match="rule.apply(cents)" data-title="rule.apply(cents)">Delegate the variation to the policy object.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Inject a function in Python" data-stdin="">
+<script type="text/plain" data-role="source">def student_price(cents): return cents*80//100
+def regular_price(cents): return cents
+
+class Basket:
+    def __init__(self, rule): self.rule=rule
+    def price(self, cents): return self.rule(cents)
+
+print(Basket(student_price).price(1000))
+print(Basket(regular_price).price(1000))
+</script>
+<ol data-role="notes"><li data-line="5" data-match="self.rule=rule" data-title="self.rule=rule">Store a collaborator supplied by the caller instead of choosing one internally.</li><li data-line="6" data-match="self.rule(cents)" data-title="self.rule(cents)">Call the selected pricing function through its common input/output contract.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a rule that charges half price. Keep Basket unchanged and explain which promise the new rule must retain.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Substitution and focused interfaces</h3><div class="concept"><h3><span class="idx">3.1</span>The signature is only part of the contract</h3><p>Liskov substitution concerns behaviour: a replacement must preserve expectations that make callers correct. A List implementation whose add unexpectedly prepends would violate callers relying on append order. Java's type checker can check method signatures, but it cannot prove every business rule.</p></div><div class="concept"><h3><span class="idx">3.2</span>Expose only the capability a caller uses</h3><p>Interface segregation keeps clients from depending on unrelated operations. A notifier needs send, not an entire storage, configuration and user-management service. A test recorder can satisfy the same capability without creating a real external effect. Tests can inspect recorded interactions as well as return values.</p></div><div class="p1-explain" data-lang="java" data-title="Substitutability includes behaviour" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }
+    public static void main(String[] args) {
+        java.util.List<Integer> a=new java.util.ArrayList<Integer>();
+        java.util.List<Integer> b=new java.util.LinkedList<Integer>();
+        fill(a); fill(b);
+        System.out.println(a.equals(b));
+        System.out.println(a.get(0));
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="2" data-match="xs.add(2)" data-title="xs.add(2)">The List add contract appends; caller expectations include order.</li><li data-line="7" data-match="a.equals(b)" data-title="a.equals(b)">List equality compares ordered elements across different implementations.</li></ol></div><div class="p1-explain" data-lang="python" data-title="A narrow capability" data-stdin="">
+<script type="text/plain" data-role="source">class Screen:
+    def send(self, message): return "screen: "+message
+class Recorder:
+    def __init__(self): self.messages=[]
+    def send(self, message):
+        self.messages.append(message)
+        return "recorded"
+
+def notify(channel, message): return channel.send(message)
+recorder=Recorder()
+print(notify(recorder,"Ready"))
+print(recorder.messages)
+</script>
+<ol data-role="notes"><li data-line="9" data-match="def notify(channel, message)" data-title="def notify(channel, message)">Require only send; the caller need not know how delivery is implemented.</li><li data-line="6" data-match="self.messages.append" data-title="self.messages.append">A recording implementation makes the interaction observable in a test.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Invent a send implementation that silently drops messages. Explain why matching a method signature alone does not prove the replacement is suitable.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Cohesion, coupling and practical restraint</h3><div class="concept"><h3><span class="idx">4.1</span>Coordinate without owning every rule</h3><p>A controller can translate a request into model operations and a response. Keep the inventory rule in Stock; the controller should not duplicate its availability calculation. High cohesion groups related work; low coupling keeps each component dependent on as few details as it needs.</p></div><div class="concept"><h3><span class="idx">4.2</span>Keep one source of each rule</h3><p>DRY avoids duplicating a piece of knowledge in several places. Similar-looking code is not always the same rule, so extract a helper when the meaning is shared. YAGNI cautions against implementing speculative features. GRASP also names Creator, Polymorphism, Pure Fabrication, Indirection and Protected Variation; use those roles to explain a design, not to force extra layers into a small program.</p></div><div class="p1-explain" data-lang="java" data-title="A controller coordinates an operation" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Stock stock=new Stock(2);
+        Counter counter=new Counter(stock);
+        System.out.println(counter.borrow());
+        System.out.println(counter.borrow());
+        System.out.println(counter.borrow());
+    }
+}
+class Stock {
+    private int count;
+    Stock(int count) { this.count=count; }
+    boolean take() { if(count==0) return false; count--; return true; }
+}
+class Counter {
+    private final Stock stock;
+    Counter(Stock stock) { this.stock=stock; }
+    String borrow() { return stock.take() ? "Borrowed" : "Unavailable"; }
+}
+</script>
+<ol data-role="notes"><li data-line="18" data-match="stock.take()" data-title="stock.take()">The stock object owns the availability rule and state change.</li><li data-line="17" data-match="Counter(Stock stock)" data-title="Counter(Stock stock)">The controller receives its collaborator and coordinates the request.</li></ol></div><div class="p1-explain" data-lang="python" data-title="One rule in one place" data-stdin="">
+<script type="text/plain" data-role="source">def passes(mark): return mark>=50
+
+def count_passes(marks):
+    return sum(passes(mark) for mark in marks)
+
+def labels(marks):
+    return ["P" if passes(mark) else "F" for mark in marks]
+
+marks=[49,50,85]
+print(count_passes(marks))
+print(labels(marks))
+</script>
+<ol data-role="notes"><li data-line="1" data-match="def passes" data-title="def passes">Keep the pass rule in one place so callers cannot quietly disagree.</li><li data-line="4" data-match="sum(passes(mark) for mark in marks)" data-title="sum(passes(mark) for mark in marks)">Both the count and labels depend on the same rule.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Move the pass threshold from 50 to 60 in one place and predict both outputs. For the borrowing example, identify the controller, expert and source of mutable state.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Review a change request</h4><p>An order currently prints its receipt directly. The next requirement is to save the same totals as CSV. Identify the part that should stay fixed, the responsibility that varies, and one small refactoring that isolates the change. Avoid adding speculative features.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Defend a responsibility map</h4><p>Draw UI → Counter → Stock and Order → Line. For each arrow, name the exact operation needed. Explain one coupling you removed and one coupling that is necessary for the program to work.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118778"><span class="kind">Course source / reference</span><h4>A Recap of the Four Pillars</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118779"><span class="kind">Course source / reference</span><h4>The SOLID Principles</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118780"><span class="kind">Course source / reference</span><h4>GRASP</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118781"><span class="kind">Course source / reference</span><h4>Other useful tools and ideas</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/util/List.html"><span class="kind">Course source / reference</span><h4>Java List contract</h4><p>A concrete contract used by the substitution and dependency examples.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/classes.html"><span class="kind">Course source / reference</span><h4>Python classes</h4><p>Methods, instance data and collaboration.</p><span class="host">docs.python.org</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Read the four-pillars recap, SOLID, GRASP and the practical design ideas on Ed. Use each principle to justify a concrete change rather than reciting its acronym.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118778">A Recap of the Four Pillars</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118779">The SOLID Principles</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118780">GRASP</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118781">Other useful tools and ideas</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-10.html"><span class="dir">Previous</span>Week 10</a><a href="week-12.html"><span class="dir">Next</span>Week 12</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 11 · Designing Object-Oriented Programs</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w11-data.js?v=08f306f5"></script>
+<script src="../assets/w11-exercises.js?v=e58d2765"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

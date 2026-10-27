@@ -1,16 +1,17 @@
 # Revision of Week 4 — 41039 Programming 1
 
-A 50-minute recap of Week 4, shown **at the start of the next lecture**, before any new
-material. It uses the same shape as Week 3: six short **individual** questions, then **four
-team rounds** for teams of 3–4: **draw the memory** (the stack and the heap), **spot the
-errors** (Java, then Python), **predict the output** (Java, then Python), and **write the
-code** (on paper, then at the keyboard). It is hard on purpose. Most questions turn on one
-idea: what a call copies, and what it shares.
+A recap of Week 4 lasting just under an hour, shown **at the start of the next lecture**,
+before any new material. It uses the same shape as Week 3: nine short **individual**
+questions (six on Week 4, then three catching up on Python lists, dicts and tuples), then
+**four team rounds** for teams of 3–4: **draw the memory** (the stack and the heap), **spot
+the errors** (Java, then Python), **predict the output** (Java, then two in Python), and
+**write the code** (on paper, then at the keyboard). It is hard on purpose. Most questions
+turn on one idea: what a call copies, and what it shares.
 
 | File | What |
 |---|---|
 | `revision-week-4.tex` | The deck. Build: `xelatex revision-week-4.tex` (twice — the TOC needs a second pass) |
-| `revision-week-4.pdf` | Built output, 37 pages (25 frames plus section outlines; individual answers are overlays, team answers are separate frames) |
+| `revision-week-4.pdf` | Built output, 46 pages (30 frames plus section outlines; individual answers are overlays, team answers are separate frames) |
 | `bk-logo.png` | Required next to the `.tex`, same file as earlier weeks |
 | `Marks.java` | *Spot the errors 1*, exactly as on the slide (same line numbers): five bugs, three reported by `javac` in two rounds |
 | `marks.py` | *Spot the errors 2*, exactly as on the slide: five errors, which Python shows one at a time |
@@ -44,6 +45,22 @@ reference), which were added to Week 4 at your request.
 | Code it 1: reverse, two ways | 3.5 *Functions and procedures*; 7.1 and 7.3 (the `swap` that cannot work, and the one that can) |
 | Code it 2: summarise | 2.1 (“a method returns a single value”); 8.5 (a record returns two values as one — here three); Weeks 2+3 tuples |
 
+## Scope: the catch-up on lists, dicts and tuples
+
+The Week 3 revision covered loops only, and left arrays, lists, dicts, sets and tuples out
+(`../revision-week-3/README.md`). This deck picks up the Python part of that gap: three
+individual frames in a section of their own, *On your own: lists, dicts and tuples*, and one
+team frame, *Predict 3*. Every question comes from the Weeks 2+3 page
+(`../../weeks/week-2-3.html`), sections 09–10, and each one ties back to Week 4's question:
+mutate, or rebind? Sets (10.3) are not asked about.
+
+| Revision frame | Source |
+|---|---|
+| Lists: one list, or two? | Weeks 2+3: 9.2 (`append`), 9.3 (`+`, `+=`, `extend`), 9.4 (slice assignment). Week 4: 7.5 (two names, one list; `+=` mutates) |
+| Dicts: through a function | Weeks 2+3: 10.2 (one syntax to change or add; `KeyError`; `in`, as in the counting program). Week 4: 7.4–7.5 (mutate or rebind); `b(x)` in *Mutate, or reassign?* is the Java twin of `rename` |
+| Tuples: works, or `TypeError`? | Weeks 2+3: 10.4 (a tuple cannot change; the comma makes it; unpacking; the swap; a list of tuples). Week 4: 8.4, and *Records* (e) — the value cannot change, the variable can |
+| Predict 3: count the words | Weeks 2+3: 10.2 (the word-counting program, `split()`, `items()`), 10.4 (unpacking). Week 4: 4.2 (`return`), 6.3 (the dict outlives `tally`'s frame), 8.5 (one return, several values) |
+
 Deliberately **kept out**:
 
 - **Classes beyond records**, `this`, constructors you write yourself — that is Week 5.
@@ -52,6 +69,10 @@ Deliberately **kept out**:
 - **Python's `min()`, `max()`, `sum()`**, which the course has not taught. *Code it 2* asks
   for the loop.
 - **Mutable default arguments** (`def f(items=[])`). A classic trap, but not on the page.
+- **`dict.get`, sorting a dict, `max(..., key=...)`**, none of them taught. *Predict 3* finds
+  the most common word with a loop, which is also what makes the tie question work.
+- **Unpacking the wrong number of values** (`x, y = (1, 2, 3)` is a `ValueError`). Not on the
+  page, so every unpacking in the deck matches.
 
 ## Every answer was run
 
@@ -62,6 +83,11 @@ Each claimed output and every compiler message was produced with OpenJDK 26 and 
   statement`), the five overload calls and the duplicate `show(int)` (`already defined`),
   `3 13`, the five array states (`9 2`, `9 2`, `9 2`, `4 4`, `4 0`), `[1, 5] 5 None`, and
   every records line: the two errors, `Point[x=1, y=2]`, `3` and `Point[x=3, y=4]`.
+- **Catch-up:** *Lists* (`[1, 2, [3, 4], 5]`, `4 5`, `[1, 'x', 5]`); *Dicts*
+  (`3 {'Linh': 7, 'Bach': 10, 'An': 8}`, `True False`, then `KeyError: 'Chi'`); and every
+  *Tuples* line run on its own after (a): (b) and (e) `TypeError: 'tuple' object does not
+  support item assignment`, (c) `(10, 4)`, (d) `[(9, 'z'), (2, 'b')]`, (f) `<class 'int'>`,
+  (g) `4 3`.
 - **Draw it:** `Tally` prints `1 fail`, `2 pass`, and a separate test confirms `m` is out of
   scope after the for-each.
 - **Spot the errors 1:** `Marks.java` at every stage. Round 1 gives only `return type required`
@@ -70,8 +96,10 @@ Each claimed output and every compiler message was produced with OpenJDK 26 and 
 - **Spot the errors 2:** `marks.py` at every stage. The order is `SyntaxError` (L17), then
   `str + NoneType` (L16), `str + float` (L16), the keyword-only `title` error (L19), and the
   silent alias (L7), which prints `[82, 65, 101]` twice.
-- **Predict:** *Predict 1* (`-1 2`, `1 99 3`, `3`, `false`, `true`) and *Predict 2*
-  (`[1, 0, 0] [1, 0, 0] 3 5 hi`, `3`, `hi!hi!`).
+- **Predict:** *Predict 1* (`-1 2`, `1 99 3`, `3`, `false`, `true`), *Predict 2*
+  (`[1, 0, 0] [1, 0, 0] 3 5 hi`, `3`, `hi!hi!`) and *Predict 3* (`6 4`,
+  `{'to': 2, 'be': 2, 'or': 1, 'not': 1}`, `to 2`, `('be', 3)`, `2`), plus *Predict 3* with
+  `>=`, where line 3 becomes `be 2` and the rest is unchanged.
 - **Code it:**
   - *Code it 1*: both correct methods, the `v = reversed(v)` version (array unchanged), and
     the full-length swap (`1 2 3 4` comes back unchanged).
@@ -81,11 +109,12 @@ Each claimed output and every compiler message was produced with OpenJDK 26 and 
 
 ## Running it
 
-**Part 1 (about 8 minutes).** Around a minute per frame, with a show of hands before each
-`\pause`. The records frame needs Java 16+, so if you demo it, use Ed or a local JDK. The
-site's console is Java 8.
+**Part 1 (about 13 minutes).** Around a minute per frame, ninety seconds for each of the three
+catch-up frames, with a show of hands before each `\pause`. The records frame needs Java 16+,
+so if you demo it, use Ed or a local JDK. The site's console is Java 8. On *Tuples*, point
+back to *Records* (e): it is the same idea in Python.
 
-**Part 2 (about 40 minutes), four rounds.** Form teams on the *Form teams* frame. For each
+**Part 2 (about 44 minutes), four rounds.** Form teams on the *Form teams* frame. For each
 challenge, leave the question frame up for the time on the slide, call on one team, invite
 disagreement, then show the answer frame.
 
@@ -93,11 +122,17 @@ disagreement, then show the answer frame.
   mistakes are two copies of the `{72, 45, 91}` array, and `m` still in `tally`'s frame.
 - **Spot the errors** (5 + 4 min). If there is time, compile `Marks.java` and run
   `marks.py` on the projector after each fix, so the room sees the errors arrive in rounds.
-- **Predict the output** (4 + 4 min). Insist on written answers first.
+- **Predict the output** (4 + 4 + 4 min). Insist on written answers first. On *Predict 3*,
+  the tie is the part worth arguing about: `be` is the last word to reach 2, which makes
+  `be 2` the tempting wrong answer.
 - **Write the code** (4 + 6 min). *Code it 1* is on paper. For *Code it 2*, open `Stats.java`
   and `stats.py` on the projector (with a JDK of 16 or later for the record), give one team
   each, and run all three tests. `{-3, -7}` is the test that catches starting at 0.
 
 **If you only have 25–30 minutes,** drop *Which one runs?* and *Records* from Part 1, then
 use one challenge per round: *Draw it*, *Spot the errors 2*, *Predict 1*, *Code it 1*. Keep
-*Mutate, or reassign?*: it is the idea every other frame depends on.
+*Mutate, or reassign?*: it is the idea every other frame depends on. Of the catch-up, keep
+*Dicts: through a function* if anything: it is *Mutate, or reassign?* again, with a dict.
+
+**If you only want to cut the catch-up,** skip its section and *Predict 3*. That saves about
+nine minutes and leaves the original fifty-minute deck.

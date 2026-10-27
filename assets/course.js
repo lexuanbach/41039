@@ -7,6 +7,16 @@
   var root = document.documentElement;
   var KEYS = ['A', 'B', 'C', 'D', 'E'];
 
+  // Keep course navigation available when the topbar cannot fit every week.
+  function initCourseNav() {
+    var menu = document.getElementById('course-weeks');
+    if (!menu) return;
+    var wide = window.matchMedia('(min-width: 1280px)');
+    function update() { menu.open = wide.matches; }
+    update();
+    wide.addEventListener('change', update);
+  }
+
   // ───────────── site theme (light / dark) ─────────────
   // The inline <script> in each page's <head> has already applied the stored
   // theme, so there is no flash before this runs.
@@ -300,6 +310,7 @@
   }
 
   function boot() {
+    initCourseNav();
     initTheme();
     initCodeTheme();
     initLesson();

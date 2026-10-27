@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 6 · Building Reliable Classes · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Turn Week 5&#x27;s class syntax into working models: define valid state, preserve it through methods, trace references, separate shared data from instance data, and connect objects through composition.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html" aria-current="page"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 6 · 41039 Programming 1</span><h1>Building Reliable Classes</h1><p class="lede">Turn Week 5&#x27;s class syntax into working models: define valid state, preserve it through methods, trace references, separate shared data from instance data, and connect objects through composition.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">8 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">A stock invariant</span></div><pre>public class Demo {
+    public static void main(String[] args) {
+        Stock item = new Stock(4);
+        System.out.println(item.take(3));
+        System.out.println(item.take(2));
+        System.out.println(item.getStock());
+    }
+}
+class Stock {
+    private int stock;
+    Stock(int stock) { this.stock = stock; }
+    boolean take(int amount) {
+        if (amount &lt;= 0 || amount &gt; stock) return false;
+        stock = stock - amount;
+        return true;</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 6 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Contracts and valid state</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">References and object lifetime</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Shared data and instance data</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Composition and a small public interface</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Contracts and valid state</h3><div class="concept"><h3><span class="idx">1.1</span>Start with a promise</h3><p>A class is useful when it gives the rest of the program a dependable promise. A stock item starts with a non-negative quantity; a successful withdrawal reduces it by exactly the requested positive amount; a rejected withdrawal changes nothing. These rules are its <strong>invariant</strong> and method contract.</p><p>Write down the inputs, result and state change before writing the method body. Test zero, negative amounts, exactly the available quantity and one too many. A getter reports a value; a mutator changes the model. Keeping these jobs clear makes a failing test easier to explain.</p></div><div class="concept"><h3><span class="idx">1.2</span>Hide the path around the rule</h3><p>Java <code>private</code> prevents an outside caller from assigning a field directly. Python <code>_stock</code> communicates intended use but does not enforce privacy. In either language, public methods should be the normal route for changing state. Constructor validation must establish the same invariant that later methods preserve; these small examples assume a valid starting quantity.</p></div><div class="p1-explain" data-lang="java" data-title="A stock invariant" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Stock item = new Stock(4);
+        System.out.println(item.take(3));
+        System.out.println(item.take(2));
+        System.out.println(item.getStock());
+    }
+}
+class Stock {
+    private int stock;
+    Stock(int stock) { this.stock = stock; }
+    boolean take(int amount) {
+        if (amount <= 0 || amount > stock) return false;
+        stock = stock - amount;
+        return true;
+    }
+    int getStock() { return stock; }
+}
+</script>
+<ol data-role="notes"><li data-line="11" data-match="this.stock" data-title="this.stock">Use this to name the object field, rather than the parameter.</li><li data-line="14" data-match="stock - amount" data-title="stock - amount">Compute a new balance only after the request has been validated.</li></ol></div><div class="p1-explain" data-lang="python" data-title="The same contract in Python" data-stdin="">
+<script type="text/plain" data-role="source">class Stock:
+    def __init__(self, stock):
+        self._stock = stock
+    def take(self, amount):
+        if amount <= 0 or amount > self._stock:
+            return False
+        self._stock -= amount
+        return True
+    def available(self):
+        return self._stock
+
+item = Stock(4)
+print(item.take(3))
+print(item.take(2))
+print(item.available())
+</script>
+<ol data-role="notes"><li data-line="3" data-match="self._stock" data-title="self._stock">Each object owns its own stock count; the underscore is a convention.</li><li data-line="6" data-match="return False" data-title="return False">Reject the request without changing the stock.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change a request to 0 and then to the exact remaining stock. Explain why the field changes in one case and stays unchanged in the other.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>References and object lifetime</h3><div class="concept"><h3><span class="idx">2.1</span>Draw objects separately from names</h3><p><code>b = a</code> copies a reference in both languages. Draw two arrows to one object, then trace a mutating call through either arrow. Creating another object requires another constructor call. Two objects with equal field values need not be the same object.</p></div><div class="concept"><h3><span class="idx">2.2</span>Instance collections belong in the constructor</h3><p>A Python list in the class body is shared. A list assigned to <code>self.items</code> in <code>__init__</code> is created for each instance. Compare that rule with Java instance fields and <code>static</code> fields. Before explaining output, count allocations, not variable names.</p></div><div class="p1-explain" data-lang="java" data-title="One object, two references" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Stock a = new Stock(5);
+        Stock b = a;
+        b.take(2);
+        System.out.println(a.getStock());
+        System.out.println(a == b);
+    }
+}
+class Stock {
+    private int stock;
+    Stock(int stock) { this.stock = stock; }
+    void take(int amount) { stock -= amount; }
+    int getStock() { return stock; }
+}
+</script>
+<ol data-role="notes"><li data-line="4" data-match="Stock b = a" data-title="Stock b = a">Copy the reference, not the object.</li><li data-line="7" data-match="a == b" data-title="a == b">Ask whether these references identify the same object.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Separate objects, separate state" data-stdin="">
+<script type="text/plain" data-role="source">class Basket:
+    def __init__(self):
+        self.items = []
+
+a = Basket()
+b = Basket()
+a.items.append("tea")
+print(a.items)
+print(b.items)
+print(a is b)
+</script>
+<ol data-role="notes"><li data-line="3" data-match="self.items = []" data-title="self.items = []">Create a fresh list whenever __init__ runs.</li><li data-line="10" data-match="a is b" data-title="a is b">Compare object identity, not the contents of the baskets.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Make b refer to a in the Python example. Predict which output lines change before running it.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Shared data and instance data</h3><div class="concept"><h3><span class="idx">3.1</span>A counter is a deliberate shared responsibility</h3><p>A shared ticket counter is appropriate when every new ticket must receive the next number. The ticket's own number is instance data. Updating the shared counter later does not rewrite existing ticket numbers.</p></div><div class="concept"><h3><span class="idx">3.2</span>Mutation differs from rebinding</h3><p>Appending to a shared class list changes that one list. Assigning <code>a.items = []</code> instead creates an instance attribute that shadows the class attribute for a. This is why the location of allocation matters more than whether the expression contains an object name.</p></div><div class="p1-explain" data-lang="java" data-title="Class count and instance number" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Ticket a = new Ticket();
+        Ticket b = new Ticket();
+        System.out.println(a.number + " " + b.number + " " + Ticket.count);
+    }
+}
+class Ticket {
+    static int count = 0;
+    final int number;
+    Ticket() { number = ++count; }
+}
+</script>
+<ol data-role="notes"><li data-line="9" data-match="static int count" data-title="static int count">One shared counter belongs to the class.</li><li data-line="10" data-match="final int number" data-title="final int number">Assign an individual number once for this ticket.</li></ol></div><div class="p1-explain" data-lang="python" data-title="A class attribute can share too much" data-stdin="">
+<script type="text/plain" data-role="source">class Basket:
+    items = []
+
+a = Basket()
+b = Basket()
+a.items.append("tea")
+print(b.items)
+print(a.items is b.items)
+</script>
+<ol data-role="notes"><li data-line="2" data-match="items = []" data-title="items = []">This list is constructed in the class body and shared by these instances.</li><li data-line="6" data-match="a.items.append" data-title="a.items.append">Mutate the shared list; this does not assign a new instance attribute.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Repair the shared Python basket by writing __init__. Construct two baskets and prove that adding to one does not change the other.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Composition and a small public interface</h3><div class="concept"><h3><span class="idx">4.1</span>A has-a relationship</h3><p>A shelf holds a book; it is not a special kind of book. A field that refers to another object expresses this <strong>composition</strong>. Give the class with the data the job that uses it: Book knows its title, while Shelf decides how to describe its contents.</p></div><div class="concept"><h3><span class="idx">4.2</span>Make observations easy</h3><p>A useful string representation helps a person inspect state while debugging. Return a string from <code>__str__</code>; do not print inside it. In Java the corresponding method is <code>toString()</code>. Keep presentation separate from the operations that update the model, so a formatting change does not change the rules.</p></div><div class="p1-explain" data-lang="java" data-title="Composition: a library contains books" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Book book = new Book("Tea");
+        Shelf shelf = new Shelf(book);
+        System.out.println(shelf.describe());
+    }
+}
+class Book {
+    private final String title;
+    Book(String title) { this.title = title; }
+    String title() { return title; }
+}
+class Shelf {
+    private final Book book;
+    Shelf(Book book) { this.book = book; }
+    String describe() { return "On shelf: " + book.title(); }
+}
+</script>
+<ol data-role="notes"><li data-line="14" data-match="private final Book book" data-title="private final Book book">A Shelf has a Book; it does not need to inherit from Book.</li><li data-line="16" data-match="book.title()" data-title="book.title()">Ask the contained object for the information it owns.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Representing an object for people" data-stdin="">
+<script type="text/plain" data-role="source">class Book:
+    def __init__(self, title):
+        self.title = title
+    def __str__(self):
+        return f"Book: {self.title}"
+
+book = Book("Tea")
+print(book)
+print(book.title)
+</script>
+<ol data-role="notes"><li data-line="4" data-match="__str__" data-title="__str__">Return the text that print should use for this object.</li><li data-line="3" data-match="self.title" data-title="self.title">Read data from the current book.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Extend Shelf to contain two books. Decide which object should know a book title and which should know the number of occupied slots.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Design a lending counter</h4><p>Write a contract for borrow() and returnBook(). Identify the fields, valid states and rejected requests. One person proposes edge cases, another draws object references, and a third explains how the methods preserve the rules.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Find the shared-state bug</h4><p>Use the two Basket versions above. Predict the result for two empty baskets and for two baskets receiving one item each. Repair the class and show a counterexample that failed before the repair.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118745"><span class="kind">Course source / reference</span><h4>Classes and Objects in Java</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118747"><span class="kind">Course source / reference</span><h4>Classes and Objects in Python</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118748"><span class="kind">Course source / reference</span><h4>Fundamentals of Object Oriented Programming</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/classes.html"><span class="kind">Course source / reference</span><h4>Python classes</h4><p>Class and instance attributes, methods and object identity.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html"><span class="kind">Course source / reference</span><h4>Oracle: classes</h4><p>Fields, methods and constructors in Java.</p><span class="host">docs.oracle.com</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Consolidate the classes and objects lessons already introduced in Week 5. Complete at least one Java and one Python exercise, then explain a rejected operation without relying on a printed success message.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118745">Classes and Objects in Java</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118747">Classes and Objects in Python</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118748">Fundamentals of Object Oriented Programming</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-5.html"><span class="dir">Previous</span>Week 5</a><a href="week-7.html"><span class="dir">Next</span>Week 7</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 6 · Building Reliable Classes</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w6-data.js?v=dce365ae"></script>
+<script src="../assets/w6-exercises.js?v=b115b0bf"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

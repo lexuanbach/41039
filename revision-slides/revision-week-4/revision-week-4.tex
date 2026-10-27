@@ -3,8 +3,11 @@
 % Scope: the Week 4 page (weeks/week-4.html), sections 01-08 -- methods, return, overloading,
 % varargs, Python functions and parameters, the call stack and the heap, pass-by-value in
 % Java and call-by-object-reference in Python, records. There is no Lecture 4 deck.
-% Two parts: six individual questions, then four team rounds (draw the memory, spot the
-% errors, predict the output, write the code).
+% Plus a catch-up on Python lists, dicts and tuples (weeks/week-2-3.html, sections 09-10),
+% which the Week 3 revision left out.
+% Two parts: nine individual questions (six on Week 4, three on lists, dicts and tuples),
+% then four team rounds (draw the memory, spot the errors, predict the output, write the
+% code). Round 3's Predict 3 is the team question on dicts and tuples.
 % Style and macros are identical to revision-week-3.tex, with stack/heap TikZ styles.
 % Compile: xelatex revision-week-4.tex   (run twice; bk-logo.png sits next to this file)
 
@@ -151,7 +154,8 @@
 
 
 \title[41039 Programming 1 --- Revision of Week 4]{41039 Programming 1}
-\subtitle{Revision of Week 4: methods, functions, the stack and the heap, and records}
+\subtitle{Revision of Week 4: methods, functions, the stack and the heap,\\
+  records, and a catch-up on lists, dicts and tuples}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
@@ -169,7 +173,7 @@
 \end{frame}
 
 % ======================================================================
-\begin{frame}{How the next fifty minutes work}
+\begin{frame}{How the next hour works}
   \hd{Same deal as before.} Not a test. Nothing is recorded against you. Answering earns
   extra credit, and being wrong out loud earns it too.
   \vspace{0.5em}
@@ -178,7 +182,8 @@
     \neutrallabel{Part 1 --- on your own}
     \begin{itemize}[itemsep=0.2em]
       \small
-      \item Six short questions, about a minute each
+      \item Nine short questions, about a minute each: six on Week 4, then three on
+        lists, dicts and tuples
       \item Commit to an answer \textbf{before} the reveal: on paper, or out loud
     \end{itemize}
     \column{0.49\textwidth}
@@ -413,6 +418,114 @@ System.out.println(p);
     \end{contextbox}
   \end{columns}
   \keyline{A final component is not a final variable. Know which one you have.}
+\end{frame}
+
+% ======================================================================
+\section{On your own: lists, dicts and tuples}
+% ======================================================================
+
+\begin{frame}[fragile]{Lists: one list, or two? \timing{Alone}{90 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+\begin{lstlisting}[language=Py]
+a = [1, 2]
+b = a
+a.append([3, 4])
+b += [5]
+c = a + [6]
+c[0] = 0
+print(a)
+print(len(a), len(c))
+a[1:3] = ['x']
+print(b)
+\end{lstlisting}
+    \begin{discussionbox}{What prints?}
+      \small Three lines. And how many lists are there at the end?
+    \end{discussionbox}
+    \column{0.50\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \code{[1, 2, [3, 4], 5]} \quad \code{4 5} \quad \code{[1, 'x', 5]}\\[0.3em]
+      \code{b = a}: two names, \textbf{one} list\\[0.1em]
+      \code{append} adds \textbf{one} element, here a whole list\\[0.1em]
+      \code{b += [5]} mutates that same list\\[0.1em]
+      \code{a + [6]} is a \textbf{new} list: \code{c[0] = 0} leaves \code{a} alone\\[0.1em]
+      \code{a[1:3] = ['x']}: two elements out, one in\\[0.1em]
+      Two lists at the end: \code{a} and \code{b} share one, \code{c} is the other
+    \end{contextbox}
+  \end{columns}
+  \keyline{append adds one element. + builds a new list. += changes the one you have.}
+\end{frame}
+
+\begin{frame}[fragile]{Dicts: through a function \timing{Alone}{90 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+\begin{lstlisting}[language=Py]
+def add_mark(book, name, mark):
+    book[name] = mark
+
+def rename(book):
+    book = {'nobody': 0}
+
+marks = {'Linh': 7, 'Bach': 9}
+add_mark(marks, 'Bach', 10)
+add_mark(marks, 'An', 8)
+rename(marks)
+print(len(marks), marks)
+print('An' in marks, 8 in marks)
+print(marks['Chi'])
+\end{lstlisting}
+    \column{0.48\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \code{3 \{'Linh': 7, 'Bach': 10, 'An': 8\}}\\
+      \code{True False}, then \code{KeyError: 'Chi'}\\[0.3em]
+      \code{book[name] = mark} \textbf{mutates} the caller's dict: \code{'Bach'} changes,
+      \code{'An'} is added. Keys are unique, so three entries\\[0.15em]
+      \code{rename} only \textbf{rebinds} its own \code{book}, like Java's
+      \code{b(x)}\\[0.15em]
+      \code{in} asks about \textbf{keys}; \code{8} is a value\\[0.15em]
+      A missing key is an error, not \code{None}: test \code{'Chi' in marks} first
+    \end{contextbox}
+  \end{columns}
+  \keyline{d[k] = v changes or adds. Reading a missing key is a KeyError.}
+\end{frame}
+
+\begin{frame}[fragile]{Tuples: works, or \texttt{TypeError}? \timing{Alone}{90 seconds}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
+point = (3, 4)
+pairs = [(1, 'a'), (2, 'b')]
+
+x, y = point             # (a)
+point[0] = 10            # (b)
+point = (10, y)          # (c)
+pairs[0] = (9, 'z')      # (d)
+pairs[1][0] = 9          # (e)
+one = (5)                # (f) type(one)?
+x, y = y, x              # (g) x and y now?
+\end{lstlisting}
+    {\small Judge each line on its own, as if it came straight after (a).}
+    \column{0.46\textwidth}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(a)} \yes{} \code{x} is 3, \code{y} is 4\\[0.1em]
+      \textbf{(b)} \no{} \code{TypeError}: a tuple does not support item
+      assignment\\[0.1em]
+      \textbf{(c)} \yes{} a \textbf{new} tuple; the variable is rebound, like
+      \code{p = new Point(3, 4)}\\[0.1em]
+      \textbf{(d)} \yes{} the \textbf{list} changes: a new tuple in slot 0\\[0.1em]
+      \textbf{(e)} \no{} that is \emph{inside} a tuple: \code{TypeError}\\[0.1em]
+      \textbf{(f)} \code{int}. The comma makes a tuple: \code{(5,)}\\[0.1em]
+      \textbf{(g)} \code{4 3}. The right side becomes \code{(4, 3)} first, then is
+      unpacked
+    \end{contextbox}
+  \end{columns}
+  \keyline{A tuple cannot change. The variable or list holding it can.}
 \end{frame}
 
 % ======================================================================
@@ -813,6 +926,78 @@ hi!hi!
   \keyline{A returned value you do not keep is simply gone.}
 \end{frame}
 
+\begin{frame}[fragile]{Predict 3: count the words \timing{Teams}{4 min}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+\begin{lstlisting}[language=Py]
+def tally(words):
+    counts = {}
+    for w in words:
+        if w in counts:
+            counts[w] += 1
+        else:
+            counts[w] = 1
+    return counts
+
+def best(counts):
+    top = ('', 0)
+    for pair in counts.items():
+        if pair[1] > top[1]:
+            top = pair
+    return top
+\end{lstlisting}
+    \column{0.49\textwidth}
+\begin{lstlisting}[language=Py]
+words = "to be or not to be".split()
+c = tally(words)
+w, n = best(c)
+print(len(words), len(c))
+print(c)
+print(w, n)
+c['be'] += 1
+print(best(c))
+words.append('to')
+print(c['to'])
+\end{lstlisting}
+    \begin{discussionbox}{Two tasks}
+      \small
+      \textbf{1.} Write the five lines of output.\\[0.2em]
+      \textbf{2.} \code{to} and \code{be} both appear twice. Which one does \code{best}
+      pick first, and why? What one-character change picks the other?
+    \end{discussionbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Predict 3: answers}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.42\textwidth}
+    \neutrallabel{1. Output}
+\begin{lstlisting}
+6 4
+{'to': 2, 'be': 2, 'or': 1, 'not': 1}
+to 2
+('be', 3)
+2
+\end{lstlisting}
+    \neutrallabel{2. The tie}
+    {\small \code{>} keeps the \textbf{first} pair to reach 2, and \code{'to'} went in
+    first. With \code{>=} a later tie replaces it, and line 3 becomes \code{be 2}.}
+    \column{0.54\textwidth}
+    \begin{contextbox}{Why}
+      \footnotesize\raggedright
+      \code{6 4}: six words, four keys --- keys are unique\\[0.15em]
+      \code{tally} builds a \textbf{new} dict. Its frame dies; the dict survives in
+      \code{c}\\[0.15em]
+      \code{items()} gives \code{(key, value)} tuples. \code{top = pair} rebinds
+      \code{top}: no tuple changes\\[0.15em]
+      \code{w, n = best(c)}: one return, two values\\[0.15em]
+      \code{c['be'] += 1} reads 2, stores 3: \code{be} wins outright\\[0.15em]
+      \code{words.append('to')} changes the list only. Nothing links it to \code{c}
+    \end{contextbox}
+  \end{columns}
+  \keyline{Counting is a dict's job. Handing back a pair is a tuple's.}
+\end{frame}
+
 % ======================================================================
 \section{Team round 4: write the code}
 % ======================================================================
@@ -983,10 +1168,10 @@ def summarise(values):
 
 \begin{frame}{You should now be able to\ldots}
   \begin{columns}[T,onlytextwidth]
-    \column{0.48\textwidth}
+    \column{0.32\textwidth}
     \neutrallabel{Week 4}
-    \begin{itemize}[itemsep=0.2em]
-      \small
+    \begin{itemize}[itemsep=0.1em]
+      \footnotesize
       \item[\yes] say why a method does not compile: return type, a \textbf{reachable}
         \code{return}
       \item[\yes] predict which overload runs
@@ -994,21 +1179,32 @@ def summarise(values):
       \item[\yes] explain why Java is \textbf{pass-by-value}, and what the value is for an
         array
     \end{itemize}
-    \column{0.48\textwidth}
+    \column{0.33\textwidth}
     \neutrallabel{\phantom{Week 4}}
-    \begin{itemize}[itemsep=0.2em]
-      \small
+    \begin{itemize}[itemsep=0.1em]
+      \footnotesize
       \item[\yes] tell \textbf{mutating} an argument from \textbf{rebinding} a parameter,
         in Java and in Python
       \item[\yes] use defaults, keyword arguments and \code{*names}
       \item[\yes] tell a function that \code{return}s from one that only prints
       \item[\yes] return several values as one, with a \textbf{record} or a tuple
     \end{itemize}
+    \column{0.31\textwidth}
+    \neutrallabel{Lists, dicts and tuples}
+    \begin{itemize}[itemsep=0.1em]
+      \footnotesize
+      \item[\yes] say what \code{append}, \code{+}, \code{+=} and a slice do to a list
+      \item[\yes] change, add and test \textbf{keys} in a dict, and expect a
+        \code{KeyError}
+      \item[\yes] unpack a tuple, and tell the tuple from the variable holding it
+    \end{itemize}
   \end{columns}
-  \vspace{0.5em}
+  \vspace{0.1em}
   \begin{contextbox}{If any box is unticked}
-    \small Week 4 page, sections 01--08, the quiz and the exercises:
-    \srclink{https://lexuanbach.github.io/41039/weeks/week-4.html}{lexuanbach.github.io/41039/weeks/week-4.html}
+    \footnotesize\raggedright Week 4 page, sections 01--08, the quiz and the exercises:
+    \srclink{https://lexuanbach.github.io/41039/weeks/week-4.html}{lexuanbach.github.io/41039/weeks/week-4.html}\\
+    Lists, dicts and tuples: Weeks 2+3 page, sections 09--10:
+    \srclink{https://lexuanbach.github.io/41039/weeks/week-2-3.html\#s09}{lexuanbach.github.io/41039/weeks/week-2-3.html\#s09}
   \end{contextbox}
 \end{frame}
 

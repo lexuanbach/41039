@@ -1,0 +1,1910 @@
+[
+  {
+    "week": 5,
+    "title": "Classes, objects and enums",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Counter {\n    private static int total = 0;\n    private int mine = 0;\n\n    public void click() {\n        total++;\n        mine++;\n    }\n\n    public static void main(String[] args) {\n        Counter a = new Counter();\n        Counter b = new Counter();\n        a.click();\n        a.click();\n        b.click();\n        System.out.println(a.mine + \" \" + b.mine + \" \" + total);\n    }\n}\n",
+        "why": "A static field has exactly one copy, on the class, shared by every object ;  so all three clicks count towards total. mine is an instance variable: each object has its own, so a counts 2 and b counts 1. Static fields are never copied into objects and never reset by a constructor.",
+        "title": "Class count and object count",
+        "release": 8
+      },
+      {
+        "lang": "java",
+        "code": "public class P {\n    private int x;\n\n    public P(int x) {\n        x = x;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(new P(5).x);\n    }\n}\n",
+        "why": "Inside the constructor, x means the parameter, which hides the field of the same name. So x = x copies the parameter onto itself, and the field keeps its default value, 0. It is legal (at most a compiler warning), which is exactly what makes it a nasty bug. this.x = x; is the fix ;  the first use of this in section 4.3.",
+        "title": "A constructor that changes nothing",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class Dog:\n    tricks = []\n\n    def __init__(self, name):\n        self.name = name\n\n    def add(self, trick):\n        self.tricks.append(trick)\n\na = Dog(\"Rex\")\nb = Dog(\"Fido\")\na.add(\"sit\")\nprint(b.name, b.tricks)\n",
+        "why": "name is set in __init__ through self, so each dog has its own. tricks is created once, in the class body: a class attribute, one list shared by every dog ;  like a Java static field. append mutates that shared list. Put self.tricks = [] in __init__ to give each dog its own.",
+        "title": "Two dogs, one list",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class Foo:\n    baz = \"blue\"\n\n    @classmethod\n    def bar(cls):\n        print(\"The class says \" + cls.baz)\n\nFoo.bar()\n",
+        "why": "A @classmethod receives the class itself as its first parameter, conventionally named cls, and Python supplies it automatically ;  you do not pass it. Through cls the method can read class attributes such as baz. It is called from the class, like a Java static method.",
+        "title": "The implicit class argument",
+        "release": 8
+      },
+      {
+        "lang": "java",
+        "code": "public class Cards {\n    enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }\n\n    public static void main(String[] args) {\n        Suit a = Suit.HEARTS;\n        Suit b = Suit.values()[0];\n        System.out.println(a + \" \" + (a == b));\n    }\n}\n",
+        "why": "An enum value prints as its name. There is exactly one object per enum value ;  no others can ever be created ;  so every reference to HEARTS is a reference to the same object, and == is true. values() returns an ordinary array, so indexing it is fine.",
+        "title": "Enum identity",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "from enum import Enum\n\nclass Colour(Enum):\n    RED = 1\n    GREEN = 1\n    BLUE = 2\n\nprint(Colour.GREEN)\nprint(len(Colour))\n",
+        "why": "GREEN and RED have the same value, so GREEN aliases RED. Printing the member uses its canonical name, Colour.RED. len(Colour) counts RED and BLUE, giving 2. The alias does not create a third member.",
+        "title": "An enum alias",
+        "release": 8
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        Account a=new Account(100);\n        Account b=new Account(200);\n        a.deposit(50);\n        System.out.println(a.balance()+\" \"+b.balance());\n    }\n}\nclass Account {\n    private static int cents;\n    Account(int cents) { cents=cents; }\n    void deposit(int amount) { cents=amount; }\n    int balance() { return cents; }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        Account a=new Account(100);\n        Account b=new Account(200);\n        a.deposit(50);\n        System.out.println(a.balance()+\" \"+b.balance());\n    }\n}\nclass Account {\n    private int cents;\n    Account(int cents) { this.cents=cents; }\n    void deposit(int amount) { cents+=amount; }\n    int balance() { return cents; }\n}\n",
+        "issues": [
+          [
+            "private static int cents",
+            "Use an instance field: different accounts need separate balances."
+          ],
+          [
+            "cents=cents",
+            "Assign the parameter to this.cents."
+          ],
+          [
+            "cents=amount",
+            "Add the deposit rather than replacing the balance."
+          ]
+        ],
+        "contract": "After depositing 50 into a, balances must be 150 and 200."
+      },
+      {
+        "lang": "python",
+        "broken": "class Account:\n    deposits=[]\n    def __init__(self, cents): self.cents=cents\n    def deposit(self, amount):\n        self.deposits.append(amount)\n        self.cents=amount\n    def __str__(self): print(self.cents)\n\na=Account(100)\nb=Account(200)\na.deposit(50)\nprint(a.cents,b.cents)\nprint(b.deposits)\nprint(a)\n",
+        "fixed": "class Account:\n    def __init__(self, cents):\n        self.cents=cents\n        self.deposits=[]\n    def deposit(self, amount):\n        self.deposits.append(amount)\n        self.cents+=amount\n    def __str__(self): return str(self.cents)\n\na=Account(100)\nb=Account(200)\na.deposit(50)\nprint(a.cents,b.cents)\nprint(b.deposits)\nprint(a)\n",
+        "issues": [
+          [
+            "deposits=[]",
+            "Allocate a fresh deposit list inside __init__ for each account."
+          ],
+          [
+            "self.cents=amount",
+            "Add to the current balance instead of replacing it."
+          ],
+          [
+            "def __str__",
+            "Return a string from __str__; printing inside it returns None."
+          ]
+        ],
+        "contract": "The accounts must have independent histories, and print(a) must produce 150."
+      }
+    ],
+    "diagram": {
+      "title": "Two names and two accounts",
+      "program": {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Account a=new Account(100);\n        Account b=a;\n        Account c=new Account(100);\n        b.deposit(50);\n        System.out.println(a.balance+\" \"+b.balance+\" \"+c.balance);\n        System.out.println((a==b)+\" \"+(a==c));\n    }\n}\nclass Account {\n    int balance;\n    Account(int balance) { this.balance=balance; }\n    void deposit(int amount) { balance+=amount; }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "a",
+          "a: Account",
+          0,
+          0
+        ],
+        [
+          "b",
+          "b: Account",
+          0,
+          -1
+        ],
+        [
+          "c",
+          "c: Account",
+          0,
+          -2
+        ],
+        [
+          "o1",
+          "Account #1\nbalance = 150",
+          5,
+          -0.3
+        ],
+        [
+          "o2",
+          "Account #2\nbalance = 100",
+          5,
+          -2
+        ]
+      ],
+      "edges": [
+        [
+          "a",
+          "o1",
+          ""
+        ],
+        [
+          "b",
+          "o1",
+          ""
+        ],
+        [
+          "c",
+          "o2",
+          ""
+        ]
+      ],
+      "why": "a and b share one object. c refers to a separately constructed account with its own balance.",
+      "expected": "150 150 100\ntrue false\n",
+      "kind": "objects"
+    },
+    "challenge": {
+      "title": "A bank account with a precise contract",
+      "brief": "Read the initial non-negative balance. Then process D amount or W amount until Q. Refuse non-positive amounts and withdrawals above the balance. Print OK or Refused for every command, then Balance: N. Use integer cents.",
+      "java": {
+        "id": "e2",
+        "lang": "java",
+        "title": "A bank account that enforces its rules",
+        "brief": "Complete <code>BankAccount</code>. It keeps a <code>private int</code> balance in <strong>cents</strong> (section 1.4). <code>deposit(int cents)</code> and <code>withdraw(int cents)</code> each return a <code>boolean</code>: <code>true</code> if they did it, <code>false</code> if they refused. Refuse any amount that is not positive, and any withdrawal larger than the balance.<br><code>main</code> is written for you. It reads a starting balance, then commands &mdash; <code>D 500</code> deposits 500 cents, <code>W 200</code> withdraws &mdash; until <code>Q</code>, printing <code>OK</code> or <code>Refused</code> after each, and finally <code>Balance: 1300</code>. (It compares Strings with <code>.equals</code>, as section 4.4 explains.)",
+        "starter": "import java.util.Scanner;\n\npublic class Bank {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        BankAccount acc = new BankAccount(sc.nextInt());\n\n        String command = sc.next();\n        while (!command.equals(\"Q\")) {\n            int amount = sc.nextInt();\n            boolean ok;\n            if (command.equals(\"D\")) {\n                ok = acc.deposit(amount);\n            } else {\n                ok = acc.withdraw(amount);\n            }\n            System.out.println(ok ? \"OK\" : \"Refused\");\n            command = sc.next();\n        }\n        System.out.println(\"Balance: \" + acc.getBalance());\n    }\n}\n\nclass BankAccount {\n\n    private int balance;\n\n    public BankAccount(int startingBalance) {\n        this.balance = startingBalance;\n    }\n\n    public boolean deposit(int cents) {\n        return false;\n    }\n\n    public boolean withdraw(int cents) {\n        return false;\n    }\n\n    public int getBalance() {\n        return this.balance;\n    }\n}\n",
+        "solution": "import java.util.Scanner;\n\npublic class Bank {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        BankAccount acc = new BankAccount(sc.nextInt());\n\n        String command = sc.next();\n        while (!command.equals(\"Q\")) {\n            int amount = sc.nextInt();\n            boolean ok;\n            if (command.equals(\"D\")) {\n                ok = acc.deposit(amount);\n            } else {\n                ok = acc.withdraw(amount);\n            }\n            System.out.println(ok ? \"OK\" : \"Refused\");\n            command = sc.next();\n        }\n        System.out.println(\"Balance: \" + acc.getBalance());\n    }\n}\n\nclass BankAccount {\n\n    private int balance;\n\n    public BankAccount(int startingBalance) {\n        this.balance = startingBalance;\n    }\n\n    public boolean deposit(int cents) {\n        if (cents <= 0) {\n            return false;\n        }\n        this.balance += cents;\n        return true;\n    }\n\n    public boolean withdraw(int cents) {\n        if (cents <= 0 || cents > this.balance) {\n            return false;\n        }\n        this.balance -= cents;\n        return true;\n    }\n\n    public int getBalance() {\n        return this.balance;\n    }\n}\n",
+        "tests": [
+          {
+            "stdin": "1000\nD 500\nW 200\nQ\n",
+            "expect": "OK\nOK\nBalance: 1300\n"
+          },
+          {
+            "stdin": "100\nW 500\nD -5\nD 50\nQ\n",
+            "expect": "Refused\nRefused\nOK\nBalance: 150\n"
+          },
+          {
+            "stdin": "0\nQ\n",
+            "expect": "Balance: 0\n"
+          },
+          {
+            "stdin": "250\nW 250\nW 1\nD 0\nQ\n",
+            "expect": "OK\nRefused\nRefused\nBalance: 0\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e8",
+        "lang": "python",
+        "title": "A double-underscore balance",
+        "brief": "Write a Python <code>BankAccount</code> that keeps its balance in cents in an attribute called <code>__balance</code> (section 6.3), with methods <code>deposit(self, cents)</code> and <code>withdraw(self, cents)</code> that return <code>True</code> or <code>False</code> by the same rules as exercise 2, and <code>balance(self)</code> to read it.<br>The rest of the program is written for you: it reads a starting balance, then lines like <code>D 500</code> and <code>W 200</code> until <code>Q</code>, printing <code>OK</code> or <code>Refused</code> after each, then <code>Balance: 1300</code>.",
+        "starter": "class BankAccount:\n    # __init__, deposit, withdraw and balance go here\n    pass\n\nacc = BankAccount(int(input()))\nline = input()\nwhile line != \"Q\":\n    parts = line.split()\n    amount = int(parts[1])\n    if parts[0] == \"D\":\n        ok = acc.deposit(amount)\n    else:\n        ok = acc.withdraw(amount)\n    if ok:\n        print(\"OK\")\n    else:\n        print(\"Refused\")\n    line = input()\nprint(\"Balance: \" + str(acc.balance()))\n",
+        "solution": "class BankAccount:\n\n    def __init__(self, starting):\n        self.__balance = starting\n\n    def deposit(self, cents):\n        if cents <= 0:\n            return False\n        self.__balance += cents\n        return True\n\n    def withdraw(self, cents):\n        if cents <= 0 or cents > self.__balance:\n            return False\n        self.__balance -= cents\n        return True\n\n    def balance(self):\n        return self.__balance\n\nacc = BankAccount(int(input()))\nline = input()\nwhile line != \"Q\":\n    parts = line.split()\n    amount = int(parts[1])\n    if parts[0] == \"D\":\n        ok = acc.deposit(amount)\n    else:\n        ok = acc.withdraw(amount)\n    if ok:\n        print(\"OK\")\n    else:\n        print(\"Refused\")\n    line = input()\nprint(\"Balance: \" + str(acc.balance()))\n",
+        "tests": [
+          {
+            "stdin": "1000\nD 500\nW 200\nQ\n",
+            "expect": "OK\nOK\nBalance: 1300\n"
+          },
+          {
+            "stdin": "100\nW 500\nD -5\nD 50\nQ\n",
+            "expect": "Refused\nRefused\nOK\nBalance: 150\n"
+          },
+          {
+            "stdin": "0\nQ\n",
+            "expect": "Balance: 0\n"
+          },
+          {
+            "stdin": "250\nW 250\nW 1\nD 0\nQ\n",
+            "expect": "OK\nRefused\nRefused\nBalance: 0\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Box a=new Box(2);\n        Box b=a;\n        b.side=3;\n        System.out.println(a.volume());\n        b=new Box(4);\n        System.out.println(a.volume()+\" \"+b.volume());\n    }\n}\nclass Box {\n    int side;\n    Box(int side) { this.side=side; }\n    int volume() { return side*side*side; }\n}\n",
+        "why": "The first assignment shares a box. The later constructor creates a new box for b; a still refers to the side-3 box.",
+        "title": "Aliasing, then replacement",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class Ticket:\n    issued=0\n    def __init__(self):\n        Ticket.issued+=1\n        self.number=Ticket.issued\n\na,b=Ticket(),Ticket()\nc=a\nc.number=9\nprint(a.number,b.number,Ticket.issued)\nprint(a is c,a is b)\n",
+        "why": "issued counts constructor calls. c aliases a, so changing c.number changes a.number without creating a third ticket.",
+        "title": "A counter is not an identity",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Distinguish class state from instance state.",
+      "Trace references separately from objects.",
+      "Use constructors, this/self, enums and string representations.",
+      "Explain switch-expression values and the order of guarded cases."
+    ],
+    "source": "Week 5 sections 01-08; advanced switch questions need Java 14 and Java 21 respectively.",
+    "bonus": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        int n = 7;\n        String s = switch (n % 3) {\n            case 0 -> \"fizz\";\n            case 1 -> \"one\";\n            default -> \"other\";\n        };\n        System.out.println(s);\n    }\n}\n",
+        "why": "7 % 3 is 1, so the case 1 arm gives \"one\". With the arrow form there is no fall-through: the switch produces the value after the arrow and is finished, so no break is needed. Because it produces a value, it can be assigned ;  that is the whole point of a switch expression.",
+        "title": "Switch expressions",
+        "release": 14
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\nrecord Student(String name, int mark) {}\n\nstatic String grade(Object o) {\n    return switch (o) {\n        case Student s when s.mark() >= 50 -> \"P\";\n        case Student s when s.mark() >= 85 -> \"HD\";\n        case Student s -> \"Z\";\n        default -> \"not a student\";\n    };\n}\n public static void main(String[] args) { System.out.println(grade(new Student(\"An\",92))); }\n}\n",
+        "why": "Cases are tried in order, and the first whose pattern matches and whose when is true wins. 92 >= 50, so the first case answers \"P\" and the HD case is never reached ;  the same ordering rule as an else if ladder in Weeks 2+3. (Put the >= 85 case first.) Guarded cases like these are allowed to overlap.",
+        "title": "Guard order in a pattern switch",
+        "release": 21
+      }
+    ]
+  },
+  {
+    "week": 6,
+    "title": "Building reliable classes",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock item = new Stock(4);\n        System.out.println(item.take(3));\n        System.out.println(item.take(2));\n        System.out.println(item.getStock());\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    boolean take(int amount) {\n        if (amount <= 0 || amount > stock) return false;\n        stock = stock - amount;\n        return true;\n    }\n    int getStock() { return stock; }\n}\n",
+        "why": "The first request leaves 1. The second request fails before changing the field, so it stays 1.",
+        "title": "A stock invariant",
+        "release": 8,
+        "expected": "true\nfalse\n1\n"
+      },
+      {
+        "lang": "python",
+        "code": "class Stock:\n    def __init__(self, stock):\n        self._stock = stock\n    def take(self, amount):\n        if amount <= 0 or amount > self._stock:\n            return False\n        self._stock -= amount\n        return True\n    def available(self):\n        return self._stock\n\nitem = Stock(4)\nprint(item.take(3))\nprint(item.take(2))\nprint(item.available())\n",
+        "why": "Both languages implement the same rule. Python prints booleans with initial capitals.",
+        "title": "The same contract in Python",
+        "release": 8,
+        "expected": "True\nFalse\n1\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock a = new Stock(5);\n        Stock b = a;\n        b.take(2);\n        System.out.println(a.getStock());\n        System.out.println(a == b);\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    void take(int amount) { stock -= amount; }\n    int getStock() { return stock; }\n}\n",
+        "why": "Assignment makes two names for one stock object. The mutation through b is visible through a.",
+        "title": "One object, two references",
+        "release": 8,
+        "expected": "3\ntrue\n"
+      },
+      {
+        "lang": "python",
+        "code": "class Basket:\n    def __init__(self):\n        self.items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(a.items)\nprint(b.items)\nprint(a is b)\n",
+        "why": "Each constructor call allocates a separate items list; only a receives tea.",
+        "title": "Separate objects, separate state",
+        "release": 8,
+        "expected": "['tea']\n[]\nFalse\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Ticket a = new Ticket();\n        Ticket b = new Ticket();\n        System.out.println(a.number + \" \" + b.number + \" \" + Ticket.count);\n    }\n}\nclass Ticket {\n    static int count = 0;\n    final int number;\n    Ticket() { number = ++count; }\n}\n",
+        "why": "The shared counter reaches 2; a keeps its previously assigned number 1.",
+        "title": "Class count and instance number",
+        "release": 8,
+        "expected": "1 2 2\n"
+      },
+      {
+        "lang": "python",
+        "code": "class Basket:\n    items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(b.items)\nprint(a.items is b.items)\n",
+        "why": "Both objects find the class attribute. Move the list into __init__ to give each basket its own storage.",
+        "title": "A class attribute can share too much",
+        "release": 8,
+        "expected": "['tea']\nTrue\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        Stock s=new Stock(4);\n        System.out.println(s.take(0));\n        System.out.println(s.take(4));\n        System.out.println(s.take(1));\n        System.out.println(s.left());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take(int n) {\n        if(n<0 || n>=count) return false;\n        count-=n;\n        return false;\n    }\n    int left() { return count; }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        Stock s=new Stock(4);\n        System.out.println(s.take(0));\n        System.out.println(s.take(4));\n        System.out.println(s.take(1));\n        System.out.println(s.left());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take(int n) {\n        if(n<=0 || n>count) return false;\n        count-=n;\n        return true;\n    }\n    int left() { return count; }\n}\n",
+        "issues": [
+          [
+            "n<0 || n>=count",
+            "Reject n <= 0, but allow n exactly equal to the available stock."
+          ],
+          [
+            "        return false;\n    }",
+            "The successful mutation must return true. The rejection branch still returns false."
+          ]
+        ],
+        "contract": "take accepts a positive amount no larger than stock, preserves state on rejection, and reports success truthfully."
+      },
+      {
+        "lang": "python",
+        "broken": "class Basket:\n    def __init__(self): self.items=[]\n    def copy(self): return self\n    def add(self,name): self.items.append(name)\n    def count(self): print(len(self.items))\n\na=Basket()\na.add(\"tea\")\nb=a.copy()\nb.add(\"milk\")\nprint(a.items,b.items)\nprint(a.count())\n",
+        "fixed": "class Basket:\n    def __init__(self): self.items=[]\n    def copy(self):\n        other=Basket()\n        other.items=self.items[:]\n        return other\n    def add(self,name): self.items.append(name)\n    def count(self): return len(self.items)\n\na=Basket()\na.add(\"tea\")\nb=a.copy()\nb.add(\"milk\")\nprint(a.items,b.items)\nprint(a.count())\n",
+        "issues": [
+          [
+            "def copy",
+            "Construct a distinct basket and copy the items list."
+          ],
+          [
+            "def count",
+            "Return the count instead of printing and returning None."
+          ]
+        ],
+        "contract": "copy must make an independent basket. Adding milk to b must leave a with tea only."
+      }
+    ],
+    "diagram": {
+      "title": "References inside a composed object",
+      "program": {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Book book=new Book(\"Tea\");\n        Shelf a=new Shelf(book);\n        Shelf b=a;\n        Shelf c=new Shelf(new Book(\"Coffee\"));\n        b.book.title=\"Water\";\n        System.out.println(a.book.title+\" \"+c.book.title);\n        System.out.println(a==b);\n    }\n}\nclass Book { String title; Book(String t) { title=t; } }\nclass Shelf { Book book; Shelf(Book b) { book=b; } }\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "a",
+          "a",
+          0,
+          0
+        ],
+        [
+          "b",
+          "b",
+          0,
+          -1
+        ],
+        [
+          "c",
+          "c",
+          0,
+          -2.5
+        ],
+        [
+          "s1",
+          "Shelf #1\nbook",
+          2.9,
+          -0.4
+        ],
+        [
+          "s2",
+          "Shelf #2\nbook",
+          2.9,
+          -2.5
+        ],
+        [
+          "o1",
+          "Book #1\ntitle = Water",
+          6.2,
+          -0.4
+        ],
+        [
+          "o2",
+          "Book #2\ntitle = Coffee",
+          6.2,
+          -2.5
+        ]
+      ],
+      "edges": [
+        [
+          "a",
+          "s1",
+          ""
+        ],
+        [
+          "b",
+          "s1",
+          ""
+        ],
+        [
+          "c",
+          "s2",
+          ""
+        ],
+        [
+          "s1",
+          "o1",
+          ""
+        ],
+        [
+          "s2",
+          "o2",
+          ""
+        ]
+      ],
+      "why": "Two shelf objects and two book objects remain. a and b share the first shelf, which holds the renamed book.",
+      "expected": "Water Coffee\ntrue\n",
+      "kind": "objects"
+    },
+    "challenge": {
+      "title": "An inventory that preserves its invariant",
+      "brief": "Read the initial stock, n, then n requests, with each input value on a separate line. Accept positive requests no larger than the remaining stock. Print OK or Refused after each request, then the final stock. Rejecting a request must leave stock unchanged.",
+      "java": {
+        "id": "e1",
+        "title": "An inventory that refuses invalid requests",
+        "lang": "java",
+        "brief": "Read an initial stock, a request count, then that many amounts. Print <code>OK</code> or <code>Refused</code> per request, then the remaining stock. Accept only positive amounts no larger than the current stock. The initial stock is non-negative.",
+        "starter": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int stock = sc.nextInt(), n = sc.nextInt();\n        for (int i = 0; i < n; i++) {\n            int amount = sc.nextInt();\n            // validate, update stock, and print a result\n        }\n        System.out.println(stock);\n    }\n}\n",
+        "solution": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        Inventory item = new Inventory(sc.nextInt());\n        int n = sc.nextInt();\n        for (int i=0;i<n;i++) System.out.println(item.take(sc.nextInt()) ? \"OK\" : \"Refused\");\n        System.out.println(item.available());\n    }\n}\nclass Inventory {\n    private int stock;\n    Inventory(int stock) { this.stock = stock; }\n    boolean take(int amount) {\n        if (amount <= 0 || amount > stock) return false;\n        stock -= amount;\n        return true;\n    }\n    int available() { return stock; }\n}\n",
+        "tests": [
+          {
+            "stdin": "5\n4\n2\n4\n0\n3\n",
+            "expect": "OK\nRefused\nRefused\nOK\n0\n"
+          },
+          {
+            "stdin": "0\n2\n1\n-1\n",
+            "expect": "Refused\nRefused\n0\n"
+          },
+          {
+            "stdin": "3\n0\n",
+            "expect": "3\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Inventory in Python",
+        "lang": "python",
+        "brief": "Implement the same stock contract as exercise 1. Input: initial stock, request count, then one amount per line. Print <code>OK</code> or <code>Refused</code> for each request, then the stock. Store the stock on an Inventory instance.",
+        "starter": "class Inventory:\n    # __init__, take and available\n    pass\n\nstock = int(input())\nn = int(input())\n# process n requests\n",
+        "solution": "class Inventory:\n    def __init__(self, stock): self._stock = stock\n    def take(self, amount):\n        if amount <= 0 or amount > self._stock: return False\n        self._stock -= amount\n        return True\n    def available(self): return self._stock\n\nitem = Inventory(int(input()))\nn = int(input())\nfor _ in range(n):\n    print(\"OK\" if item.take(int(input())) else \"Refused\")\nprint(item.available())\n",
+        "tests": [
+          {
+            "stdin": "5\n4\n2\n4\n0\n3\n",
+            "expect": "OK\nRefused\nRefused\nOK\n0\n"
+          },
+          {
+            "stdin": "0\n2\n1\n-1\n",
+            "expect": "Refused\nRefused\n0\n"
+          },
+          {
+            "stdin": "3\n0\n",
+            "expect": "3\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Counter a=new Counter();\n        Counter b=new Counter();\n        a.click(); b.click(); b.click();\n        Counter c=b;\n        c.click();\n        System.out.println(a.mine+\" \"+b.mine+\" \"+Counter.total);\n        System.out.println(c==b);\n    }\n}\nclass Counter {\n    static int total=0;\n    int mine=0;\n    void click() { total++; mine++; }\n}\n",
+        "why": "There are two Counter objects and four clicks. c aliases b rather than constructing another counter.",
+        "title": "Shared count, separate counts",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class Basket:\n    items=[]\n\na,b=Basket(),Basket()\na.items.append(\"tea\")\nb.items=[\"coffee\"]\na.items.append(\"milk\")\nprint(a.items)\nprint(b.items)\nprint(Basket.items)\n",
+        "why": "Appending changes the shared class list. Assigning b.items creates a separate instance attribute for b.",
+        "title": "Mutation followed by shadowing",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "State an invariant and check every mutating path.",
+      "Distinguish copying a reference from copying a model.",
+      "Place per-object mutable data in each instance.",
+      "Use composition and narrow methods to preserve rules."
+    ],
+    "source": "Week 6 sections 01-04; Week 5 classes provide the prerequisite.",
+    "bonus": []
+  },
+  {
+    "week": 7,
+    "title": "Lists and generics",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<String>();\n        names.add(\"An\");\n        names.add(\"Mai\");\n        names.add(1,\"Linh\");\n        names.set(0,\"Binh\");\n        System.out.println(names);\n        System.out.println(names.size());\n    }\n}\n",
+        "why": "add at an index inserts; set replaces. Three elements remain.",
+        "title": "Changing a resizable list",
+        "release": 8,
+        "expected": "[Binh, Linh, Mai]\n3\n"
+      },
+      {
+        "lang": "python",
+        "code": "names = [\"An\", \"Mai\"]\nnames.insert(1, \"Linh\")\nnames[0] = \"Binh\"\nprint(names)\nprint(len(names))\n",
+        "why": "Python lists offer the same insert/replace distinction, with different syntax.",
+        "title": "The comparable Python operations",
+        "release": 8,
+        "expected": "['Binh', 'Linh', 'Mai']\n3\n"
+      },
+      {
+        "lang": "java",
+        "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));\n        values.remove(1);\n        values.remove(Integer.valueOf(4));\n        System.out.println(values);\n    }\n}\n",
+        "why": "The index removal leaves [4,4]; the value removal deletes only the first 4.",
+        "title": "Remove an index or remove a value?",
+        "release": 8,
+        "expected": "[4]\n"
+      },
+      {
+        "lang": "python",
+        "code": "values = [1, 2, 2, 3, 4]\nkept = [value for value in values if value % 2 == 1]\nprint(kept)\nprint(values)\n",
+        "why": "Filtering leaves the source unchanged and keeps both order and only the matching values.",
+        "title": "Safe filtering produces a new list",
+        "release": 8,
+        "expected": "[1, 3]\n[1, 2, 2, 3, 4]\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Box<String> label = new Box<String>(\"tea\");\n        Box<Integer> count = new Box<Integer>(3);\n        System.out.println(label.get() + \" \" + count.get());\n    }\n}\nclass Box<T> {\n    private final T value;\n    Box(T value) { this.value = value; }\n    T get() { return value; }\n}\n",
+        "why": "The class is reused with two types while each individual box retains a checked element type.",
+        "title": "A reusable, type-safe box",
+        "release": 8,
+        "expected": "tea 3\n"
+      },
+      {
+        "lang": "python",
+        "code": "from collections import deque\nqueue = deque([\"An\", \"Mai\"])\nprint(queue.popleft())\nprint(list(queue))\n",
+        "why": "popleft removes An, and Mai remains waiting. Java LinkedList provides addLast/removeFirst. Finding an arbitrary index requires traversing links, so repeatedly accessing every index can take quadratic time. Prefer sequential iteration for that access pattern.",
+        "title": "The same FIFO contract with deque",
+        "release": 8,
+        "expected": "An\n['Mai']\n",
+        "probe": "Predict the output. Which Java list provides addLast/removeFirst? Why would repeated get(i) on that list be expensive?"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "import java.util.*;\npublic class Broken {\n    public static void main(String[] args) {\n        ArrayList<Integer> xs=new ArrayList<Integer>(Arrays.asList(9,1,9,2));\n        int target=1;\n        xs.remove(target);\n        for(int i=0;i<xs.size();i++) {\n            if(xs.get(i)==9) xs.remove(i);\n        }\n        System.out.println(xs);\n    }\n}\n",
+        "fixed": "import java.util.*;\npublic class Broken {\n    public static void main(String[] args) {\n        ArrayList<Integer> xs=new ArrayList<Integer>(Arrays.asList(9,1,9,2));\n        int target=1;\n        xs.remove(Integer.valueOf(target));\n        for(int i=xs.size()-1;i>=0;i--) {\n            if(xs.get(i)==9) xs.remove(i);\n        }\n        System.out.println(xs);\n    }\n}\n",
+        "issues": [
+          [
+            "xs.remove(target)",
+            "An int selects index removal; wrap target to select removal by value. This data initially hides the mistake."
+          ],
+          [
+            "for(int i=0;",
+            "Removing while increasing i skips an adjacent match after elements shift. Traverse indices backwards."
+          ]
+        ],
+        "contract": "Remove one occurrence of target by value, then every 9. Expected final list: [2]. Test target values that differ from their positions."
+      },
+      {
+        "lang": "python",
+        "broken": "values=[2,2,3,4,4,5]\nkept=values\nfor value in kept:\n    if value%2==0: kept.remove(value)\nprint(kept)\nprint(values)\n",
+        "fixed": "values=[2,2,3,4,4,5]\nkept=[value for value in values if value%2!=0]\nprint(kept)\nprint(values)\n",
+        "issues": [
+          [
+            "kept=values",
+            "Keep the original list unchanged by building a new result."
+          ],
+          [
+            "for value in kept",
+            "Removing from the list being traversed skips adjacent even values. Filter into a separate list."
+          ]
+        ],
+        "contract": "Keep odd values in a new list, preserving order and leaving values unchanged."
+      }
+    ],
+    "diagram": {
+      "title": "A list copy and a reference copy",
+      "program": {
+        "lang": "java",
+        "code": "import java.util.*;\npublic class Demo {\n    public static void main(String[] args) {\n        List<Integer> a=new ArrayList<Integer>(Arrays.asList(4,1,4));\n        List<Integer> b=a;\n        List<Integer> c=new ArrayList<Integer>(a);\n        b.remove(Integer.valueOf(4));\n        c.set(0,9);\n        System.out.println(a);\n        System.out.println(b);\n        System.out.println(c);\n    }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "a",
+          "a: List<Integer>",
+          0,
+          0
+        ],
+        [
+          "b",
+          "b: List<Integer>",
+          0,
+          -1
+        ],
+        [
+          "c",
+          "c: List<Integer>",
+          0,
+          -2
+        ],
+        [
+          "o1",
+          "ArrayList #1\n[1, 4]",
+          5,
+          -0.3
+        ],
+        [
+          "o2",
+          "ArrayList #2\n[9, 1, 4]",
+          5,
+          -2
+        ]
+      ],
+      "edges": [
+        [
+          "a",
+          "o1",
+          ""
+        ],
+        [
+          "b",
+          "o1",
+          ""
+        ],
+        [
+          "c",
+          "o2",
+          ""
+        ]
+      ],
+      "why": "new ArrayList(a) creates a distinct list container. The elements here are immutable Integer values, so a shallow copy is sufficient for independent changes to list positions.",
+      "expected": "[1, 4]\n[1, 4]\n[9, 1, 4]\n",
+      "kind": "objects"
+    },
+    "challenge": {
+      "title": "First occurrences, in order",
+      "brief": "Read n and n integers. Print each distinct value once in first-occurrence order, separated by single spaces. Empty input produces an empty line. Explain why sorting changes the contract.",
+      "java": {
+        "id": "e1",
+        "title": "Remove duplicates in Java",
+        "lang": "java",
+        "brief": "Read n, then n integers on the next line (possibly empty when n is 0). Print the values with duplicates removed, preserving first occurrence, separated by single spaces. Print an empty line for an empty result.",
+        "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // collect first occurrences and print with single spaces\n    }\n}\n",
+        "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        List<Integer> result=new ArrayList<Integer>();\n        for(int i=0;i<n;i++) {\n            int x=sc.nextInt();\n            if(!result.contains(x)) result.add(x);\n        }\n        for(int i=0;i<result.size();i++) {\n            if(i>0) System.out.print(\" \");\n            System.out.print(result.get(i));\n        }\n        System.out.println();\n    }\n}\n",
+        "tests": [
+          {
+            "stdin": "5\n4 1 4 2 1\n",
+            "expect": "4 1 2\n"
+          },
+          {
+            "stdin": "0\n\n",
+            "expect": "\n"
+          },
+          {
+            "stdin": "4\n7 7 7 7\n",
+            "expect": "7\n"
+          },
+          {
+            "stdin": "3\n-1 0 -1\n",
+            "expect": "-1 0\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Remove duplicates in Python",
+        "lang": "python",
+        "brief": "Read n, then n integers on the next line (possibly empty when n is 0). Print the values with duplicates removed, preserving first occurrence, separated by single spaces. Print an empty line for an empty result.",
+        "starter": "n=int(input())\nvalues=list(map(int,input().split()))\n# preserve the first occurrence of each value\n",
+        "solution": "n=int(input())\nvalues=list(map(int,input().split()))\nresult=[]\nfor x in values[:n]:\n    if x not in result: result.append(x)\nprint(*result)\n",
+        "tests": [
+          {
+            "stdin": "5\n4 1 4 2 1\n",
+            "expect": "4 1 2\n"
+          },
+          {
+            "stdin": "0\n\n",
+            "expect": "\n"
+          },
+          {
+            "stdin": "4\n7 7 7 7\n",
+            "expect": "7\n"
+          },
+          {
+            "stdin": "3\n-1 0 -1\n",
+            "expect": "-1 0\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "import java.util.*;\npublic class Demo {\n    public static void main(String[] args) {\n        List<Integer> xs=new ArrayList<Integer>(Arrays.asList(1,2,1));\n        xs.remove(1);\n        xs.add(1,4);\n        System.out.println(xs);\n        xs.remove(Integer.valueOf(1));\n        System.out.println(xs);\n        System.out.println(xs.size());\n    }\n}\n",
+        "why": "The first remove selects an index. add inserts without overwriting, then the Integer argument selects first-value removal.",
+        "title": "Three operations, two overloads",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "from collections import deque\nq=deque([\"An\",\"Mai\"])\nq.append(\"Linh\")\nserved=q.popleft()\nq.appendleft(\"Tea\")\nprint(served)\nprint(list(q))\nprint(len(q))\n",
+        "why": "popleft serves the oldest entry. appendleft then puts Tea before the remaining names.",
+        "title": "Queue order after mixed operations",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Distinguish append, insert, replace and both remove overloads.",
+      "Explain aliasing versus a copied list container.",
+      "Choose ArrayList, LinkedList or deque from the required operations.",
+      "Use wrapper types and type parameters without discarding type safety."
+    ],
+    "source": "Week 7 sections 01-04; the List interface is revisited in Week 8.",
+    "bonus": []
+  },
+  {
+    "week": 8,
+    "title": "Inheritance and interfaces",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Animal pet = new Dog(\"Milo\");\n        System.out.println(pet.speak());\n    }\n}\nclass Animal {\n    protected final String name;\n    Animal(String name) { this.name=name; }\n    String speak() { return name+\" is quiet\"; }\n}\nclass Dog extends Animal {\n    Dog(String name) { super(name); }\n    @Override String speak() { return name+\" says woof\"; }\n}\n",
+        "why": "The variable type permits speak, while the object type selects Dog.speak at runtime.",
+        "title": "Overriding chooses the object method",
+        "release": 8,
+        "expected": "Milo says woof\n"
+      },
+      {
+        "lang": "python",
+        "code": "class Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        return self.name + \" is quiet\"\n\nclass Dog(Animal):\n    def speak(self):\n        return super().speak() + \"; then woof\"\n\nprint(Dog(\"Milo\").speak())\n",
+        "why": "Dog extends the behaviour by calling the inherited implementation first.",
+        "title": "Calling the parent in Python",
+        "release": 8,
+        "expected": "Milo is quiet; then woof\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Parent value = new Child();\n        System.out.println(value.label);\n        System.out.println(value.describe());\n    }\n}\nclass Parent {\n    String label=\"parent field\";\n    String describe() { return \"parent method\"; }\n}\nclass Child extends Parent {\n    String label=\"child field\";\n    @Override String describe() { return \"child method\"; }\n}\n",
+        "why": "The field name is selected from Parent, but the overridden instance method comes from Child.",
+        "title": "Fields and methods are resolved differently",
+        "release": 8,
+        "expected": "parent field\nchild method\n"
+      },
+      {
+        "lang": "python",
+        "code": "from abc import ABC, abstractmethod\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Square(Shape):\n    def __init__(self, side):\n        self.side = side\n    def area(self):\n        return self.side * self.side\n\nshape = Square(3)\nprint(shape.area())\nprint(isinstance(shape, Shape))\n",
+        "why": "Square implements area and is a subtype of Shape; the area is 3\u00d73.",
+        "title": "A Python abstract base class",
+        "release": 8,
+        "expected": "9\nTrue\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Shape[] shapes = {new Square(3), new Rectangle(2,4)};\n        for(Shape shape:shapes) System.out.println(shape.area());\n    }\n}\ninterface Shape { int area(); }\nclass Square implements Shape {\n    private final int side;\n    Square(int side) { this.side=side; }\n    public int area() { return side*side; }\n}\nclass Rectangle implements Shape {\n    private final int w,h;\n    Rectangle(int w,int h) { this.w=w; this.h=h; }\n    public int area() { return w*h; }\n}\n",
+        "why": "Square computes 9, Rectangle computes 8, and the caller needs only the common interface.",
+        "title": "An interface is a useful promise",
+        "release": 8,
+        "expected": "9\n8\n"
+      },
+      {
+        "lang": "python",
+        "code": "class Email:\n    def send(self, text):\n        return \"email: \" + text\n\nclass Screen:\n    def send(self, text):\n        return \"screen: \" + text\n\ndef notify(channel):\n    print(channel.send(\"Hello\"))\n\nnotify(Email())\nnotify(Screen())\n",
+        "why": "Each object implements send; Python calls the method available on the received object.",
+        "title": "Duck typing uses a behavioural contract",
+        "release": 8,
+        "expected": "email: Hello\nscreen: Hello\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        Animal pet=new Dog(\"Milo\");\n        System.out.println(pet.speak());\n    }\n}\nclass Animal {\n    protected final String name;\n    Animal(String name) { this.name=name; }\n    String speak() { return \"Animal \"+name; }\n}\nclass Dog extends Animal {\n    Dog(String name) { super(\"unknown\"); }\n    String speak(int unused) { return \"Dog \"+name; }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        Animal pet=new Dog(\"Milo\");\n        System.out.println(pet.speak());\n    }\n}\nclass Animal {\n    protected final String name;\n    Animal(String name) { this.name=name; }\n    String speak() { return \"Animal \"+name; }\n}\nclass Dog extends Animal {\n    Dog(String name) { super(name); }\n    @Override String speak() { return \"Dog \"+name; }\n}\n",
+        "issues": [
+          [
+            "super(\"unknown\")",
+            "Pass the provided name to the superclass constructor."
+          ],
+          [
+            "String speak(int unused)",
+            "This overload does not override speak(). Use the same parameter list and add @Override to check it."
+          ]
+        ],
+        "contract": "Through an Animal reference, the Dog named Milo must say Dog Milo."
+      },
+      {
+        "lang": "python",
+        "broken": "class Person:\n    def __init__(self,name): self.name=name\n    def greet(self): return \"Hello \"+self.name\nclass Student(Person):\n    def __init__(self,name): self.mark=85\n    def greet(self): return super().greet+\"!\"\n\ns=Student(\"Linh\")\nprint(s.greet())\n",
+        "fixed": "class Person:\n    def __init__(self,name): self.name=name\n    def greet(self): return \"Hello \"+self.name\nclass Student(Person):\n    def __init__(self,name):\n        super().__init__(name)\n        self.mark=85\n    def greet(self): return super().greet()+\"!\"\n\ns=Student(\"Linh\")\nprint(s.greet())\n",
+        "issues": [
+          [
+            "self.mark=85",
+            "Initialise the Person part with super().__init__(name)."
+          ],
+          [
+            "super().greet+",
+            "Call the inherited method before concatenating its returned string."
+          ]
+        ],
+        "contract": "Student(\"Linh\").greet() must return Hello Linh! while retaining its mark."
+      }
+    ],
+    "diagram": {
+      "title": "Declared type, object type and an alias",
+      "program": {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Animal a=new Dog();\n        Animal b=a;\n        Animal c=new Cat();\n        System.out.println(a.speak()+\" \"+b.speak()+\" \"+c.speak());\n        System.out.println(a==b);\n    }\n}\nclass Animal { String speak() { return \"animal\"; } }\nclass Dog extends Animal { String speak() { return \"woof\"; } }\nclass Cat extends Animal { String speak() { return \"meow\"; } }\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "a",
+          "a: Animal",
+          0,
+          0
+        ],
+        [
+          "b",
+          "b: Animal",
+          0,
+          -1
+        ],
+        [
+          "c",
+          "c: Animal",
+          0,
+          -2
+        ],
+        [
+          "o1",
+          "actual Dog\nspeak = woof",
+          5,
+          -0.3
+        ],
+        [
+          "o2",
+          "actual Cat\nspeak = meow",
+          5,
+          -2
+        ]
+      ],
+      "edges": [
+        [
+          "a",
+          "o1",
+          ""
+        ],
+        [
+          "b",
+          "o1",
+          ""
+        ],
+        [
+          "c",
+          "o2",
+          ""
+        ]
+      ],
+      "why": "The declared type permits speak(). Each actual object selects the overridden instance method. b aliases a, so no third animal is created.",
+      "expected": "woof woof meow\ntrue\n",
+      "kind": "objects"
+    },
+    "challenge": {
+      "title": "One area contract, two shapes",
+      "brief": "Read S side or R width height using positive integer dimensions. Implement Square and Rectangle behind a shared area contract. Print the integer area. Explain why the caller does not need a shape-specific branch after construction.",
+      "java": {
+        "id": "e1",
+        "title": "Polymorphic areas in Java",
+        "lang": "java",
+        "brief": "Read one line: <code>S side</code> or <code>R width height</code>, using positive integer dimensions. Implement a Shape interface and concrete Square and Rectangle classes. Print the integer area.",
+        "starter": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        // create a Shape from S or R and print area()\n    }\n}\n",
+        "solution": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        String kind=sc.next();\n        Shape shape;\n        if(kind.equals(\"S\")) shape=new Square(sc.nextInt());\n        else shape=new Rectangle(sc.nextInt(),sc.nextInt());\n        System.out.println(shape.area());\n    }\n}\ninterface Shape { int area(); }\nclass Square implements Shape {\n    private final int s;\n    Square(int s) { this.s=s; }\n    public int area() { return s*s; }\n}\nclass Rectangle implements Shape {\n    private final int w,h;\n    Rectangle(int w,int h) { this.w=w; this.h=h; }\n    public int area() { return w*h; }\n}\n",
+        "tests": [
+          {
+            "stdin": "S 3\n",
+            "expect": "9\n"
+          },
+          {
+            "stdin": "R 2 4\n",
+            "expect": "8\n"
+          },
+          {
+            "stdin": "S 1\n",
+            "expect": "1\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Polymorphic areas in Python",
+        "lang": "python",
+        "brief": "Use the same input and output as exercise 1. Put area on two subclasses and call it through one shape variable.",
+        "starter": "parts=input().split()\n# define the classes, select a shape, print its area\n",
+        "solution": "class Shape:\n    def area(self): raise NotImplementedError\nclass Square(Shape):\n    def __init__(self,s): self.s=s\n    def area(self): return self.s*self.s\nclass Rectangle(Shape):\n    def __init__(self,w,h): self.w,self.h=w,h\n    def area(self): return self.w*self.h\n\nparts=input().split()\nshape=Square(int(parts[1])) if parts[0]==\"S\" else Rectangle(int(parts[1]),int(parts[2]))\nprint(shape.area())\n",
+        "tests": [
+          {
+            "stdin": "S 3\n",
+            "expect": "9\n"
+          },
+          {
+            "stdin": "R 2 4\n",
+            "expect": "8\n"
+          },
+          {
+            "stdin": "S 1\n",
+            "expect": "1\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Parent x=new Child();\n        System.out.println(x.label+\" \"+x.name());\n        Parent y=x;\n        System.out.println(y.name());\n    }\n}\nclass Parent {\n    String label=\"parent\";\n    String name() { return \"P\"; }\n}\nclass Child extends Parent {\n    String label=\"child\";\n    @Override String name() { return \"C\"; }\n}\n",
+        "why": "Field access uses the declared Parent type; the overridden instance method uses the actual Child object. Assigning another reference changes neither.",
+        "title": "Fields beside dynamic methods",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class A:\n    def label(self): return \"A\"\nclass B(A):\n    def label(self): return super().label()+\"B\"\nclass C(B):\n    def label(self): return super().label()+\"C\"\n\nprint(C().label())\nprint(isinstance(C(),A))\n",
+        "why": "C calls the next implementation B, which calls A. The strings are extended while calls return. A C is also an A.",
+        "title": "Following super through a hierarchy",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Trace declared types separately from actual object types.",
+      "Distinguish overriding, overloading and field hiding.",
+      "Initialise the inherited part of an object.",
+      "Use an interface or duck-typed capability to keep callers general."
+    ],
+    "source": "Week 8 sections 01-04. No sealed-class question depends on the empty Ed lesson.",
+    "bonus": []
+  },
+  {
+    "week": 9,
+    "title": "Exceptions and reading text",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        String[] values={\"12\",\"bad\",\"7\"};\n        for(String text:values) {\n            try { System.out.println(Integer.parseInt(text)+1); }\n            catch(NumberFormatException e) { System.out.println(\"Invalid: \"+text); }\n        }\n    }\n}\n",
+        "why": "The failed conversion jumps to the matching catch; the next loop iteration still runs.",
+        "title": "Catching exactly the invalid conversion",
+        "release": 8,
+        "expected": "13\nInvalid: bad\n8\n"
+      },
+      {
+        "lang": "python",
+        "code": "for text in [\"12\", \"bad\", \"7\"]:\n    try:\n        value = int(text)\n    except ValueError:\n        print(\"Invalid:\", text)\n    else:\n        print(value + 1)\n",
+        "why": "The else suite runs only for successfully parsed values; a ValueError produces the diagnostic.",
+        "title": "Conversion errors in Python",
+        "release": 8,
+        "expected": "13\nInvalid: bad\n8\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    static void parse() { Integer.parseInt(\"x\"); }\n    public static void main(String[] args) {\n        try {\n            parse();\n            System.out.println(\"after parse\");\n        } catch(NumberFormatException e) {\n            System.out.println(\"caught\");\n        } finally {\n            System.out.println(\"cleanup\");\n        }\n        System.out.println(\"done\");\n    }\n}\n",
+        "why": "The line after parse is skipped. The matching catch runs, then finally, then the following statement. The failure is an unchecked NumberFormatException. A throws declaration allows propagation; it does not handle an exception. Checked exceptions such as IOException must be caught or declared.",
+        "title": "Propagation and cleanup",
+        "release": 8,
+        "expected": "caught\ncleanup\ndone\n",
+        "probe": "What prints? Would adding throws to a method catch the failure? Which exception category is shown here?"
+      },
+      {
+        "lang": "python",
+        "code": "def mark(text):\n    value = int(text)\n    if not 0 <= value <= 100:\n        raise ValueError(\"mark out of range\")\n    return value\n\ntry:\n    print(mark(\"120\"))\nexcept ValueError as error:\n    print(error)\nfinally:\n    print(\"checked\")\n",
+        "why": "The conversion succeeds, but the range check raises before returning a mark.",
+        "title": "Raise at the point a rule is broken",
+        "release": 8,
+        "expected": "mark out of range\nchecked\n"
+      },
+      {
+        "lang": "java",
+        "code": "import java.io.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        try(BufferedReader reader=new BufferedReader(new StringReader(\"tea\\n\\ncoffee\"))) {\n            String line;\n            int count=0;\n            while((line=reader.readLine())!=null) {\n                count++;\n                System.out.println(count+\": \"+line);\n            }\n        } catch(IOException e) { System.out.println(\"Read failed\"); }\n    }\n}\n",
+        "why": "The reader returns an empty string for the middle line, and null only after coffee.",
+        "title": "BufferedReader stops at null, not ready()",
+        "release": 8,
+        "expected": "1: tea\n2: \n3: coffee\n"
+      },
+      {
+        "lang": "python",
+        "code": "from io import StringIO\n\nwith StringIO(\"tea\\n\\ncoffee\\n\") as source:\n    for line_number, line in enumerate(source, 1):\n        print(f\"{line_number}: {line.rstrip(chr(10))}\")\n",
+        "why": "A blank line still exists; stripping its newline does not remove the line from iteration.",
+        "title": "Line input has a different contract",
+        "release": 8,
+        "expected": "1: tea\n2: \n3: coffee\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        String[] input={\"12\",\"bad\",\"7\"};\n        int total=0,count=0;\n        try {\n            for(String text:input) {\n                count++;\n                total+=Integer.parseInt(text);\n            }\n        } catch(NumberFormatException e) {\n            System.out.println(\"Invalid\");\n        }\n        System.out.println(count+\" \"+total);\n    }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        String[] input={\"12\",\"bad\",\"7\"};\n        int total=0,count=0;\n        for(String text:input) {\n            try {\n                int value=Integer.parseInt(text);\n                total+=value;\n                count++;\n            } catch(NumberFormatException e) {\n                System.out.println(\"Invalid\");\n            }\n        }\n        System.out.println(count+\" \"+total);\n    }\n}\n",
+        "issues": [
+          [
+            "try {",
+            "Handling outside the entire loop stops later records after the first failure. Put handling inside each iteration."
+          ],
+          [
+            "count++;",
+            "Count successful records after conversion succeeds."
+          ]
+        ],
+        "contract": "Print Invalid for the bad token, then the count and sum of valid tokens: 2 19."
+      },
+      {
+        "lang": "python",
+        "broken": "from io import StringIO\nsource=StringIO(\"12\\nbad\\n7\\n\")\nfor line in source:\n    total=0\n    try:\n        total+=int(line)\n    except FileNotFoundError:\n        print(\"Invalid\")\nprint(total)\nsource.close()\n",
+        "fixed": "from io import StringIO\ntotal=0\nwith StringIO(\"12\\nbad\\n7\\n\") as source:\n    for line in source:\n        try:\n            total+=int(line)\n        except ValueError:\n            print(\"Invalid\")\nprint(total)\n",
+        "issues": [
+          [
+            "total=0",
+            "Initialise the accumulator before the loop."
+          ],
+          [
+            "except FileNotFoundError",
+            "int(line) raises ValueError for bad text; catch that specific failure."
+          ]
+        ],
+        "contract": "Report each invalid number, continue to later lines, and print the total of valid input. Use a context manager for the reader."
+      }
+    ],
+    "diagram": {
+      "title": "The exception path for the middle record",
+      "program": {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        int total=0;\n        for(String text:new String[]{\"12\",\"bad\",\"7\"}) {\n            try { total+=Integer.parseInt(text); }\n            catch(NumberFormatException e) { System.out.println(\"Invalid\"); }\n        }\n        System.out.println(total);\n    }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "read",
+          "next token",
+          0,
+          0
+        ],
+        [
+          "parse",
+          "parseInt(text)",
+          3,
+          0
+        ],
+        [
+          "add",
+          "add value to total",
+          6,
+          0
+        ],
+        [
+          "catch",
+          "matching catch\nprint Invalid",
+          3,
+          -1.5
+        ],
+        [
+          "next",
+          "next iteration",
+          6,
+          -1.5
+        ]
+      ],
+      "edges": [
+        [
+          "read",
+          "parse",
+          ""
+        ],
+        [
+          "parse",
+          "add",
+          "success"
+        ],
+        [
+          "parse",
+          "catch",
+          "failure"
+        ],
+        [
+          "add",
+          "next",
+          ""
+        ],
+        [
+          "catch",
+          "next",
+          ""
+        ]
+      ],
+      "why": "For bad, parsing throws before addition. The catch runs once, total remains 12, and the following iteration adds 7.",
+      "expected": "Invalid\n19\n",
+      "kind": "flow"
+    },
+    "challenge": {
+      "title": "Continue after an invalid record",
+      "brief": "Read n then n lines. A line is integer text or an invalid word. Print Invalid for each failed conversion, keep processing, and finish with Total: N. Keep the try block around the conversion that may fail.",
+      "java": {
+        "id": "e1",
+        "title": "Recover from invalid integers in Java",
+        "lang": "java",
+        "brief": "Read n, then n lines. Each line is a decimal integer fitting in Java int, or a non-integer word. Print <code>Invalid</code> for each failed conversion; sum only valid integers. Finally print <code>Total: N</code>.",
+        "starter": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=Integer.parseInt(sc.nextLine());\n        // process all n lines; a bad value must not stop later values\n    }\n}\n",
+        "solution": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=Integer.parseInt(sc.nextLine());\n        int total=0;\n        for(int i=0;i<n;i++) {\n            try { total+=Integer.parseInt(sc.nextLine()); }\n            catch(NumberFormatException e) { System.out.println(\"Invalid\"); }\n        }\n        System.out.println(\"Total: \"+total);\n    }\n}\n",
+        "tests": [
+          {
+            "stdin": "4\n12\nbad\n-2\n7\n",
+            "expect": "Invalid\nTotal: 17\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "Total: 0\n"
+          },
+          {
+            "stdin": "2\nx\ny\n",
+            "expect": "Invalid\nInvalid\nTotal: 0\n"
+          },
+          {
+            "stdin": "2\n0\n100\n",
+            "expect": "Total: 100\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Recover from invalid integers in Python",
+        "lang": "python",
+        "brief": "Use the same contract as exercise 1: read n then n lines, report each invalid conversion, and print the total of the valid integers.",
+        "starter": "n=int(input())\n# catch ValueError for each conversion\n",
+        "solution": "n=int(input())\ntotal=0\nfor _ in range(n):\n    try: total+=int(input())\n    except ValueError: print(\"Invalid\")\nprint(f\"Total: {total}\")\n",
+        "tests": [
+          {
+            "stdin": "4\n12\nbad\n-2\n7\n",
+            "expect": "Invalid\nTotal: 17\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "Total: 0\n"
+          },
+          {
+            "stdin": "2\nx\ny\n",
+            "expect": "Invalid\nInvalid\nTotal: 0\n"
+          },
+          {
+            "stdin": "2\n0\n100\n",
+            "expect": "Total: 100\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        try {\n            System.out.println(\"A\");\n            Integer.parseInt(\"bad\");\n            System.out.println(\"B\");\n        } catch(NumberFormatException e) {\n            System.out.println(\"C\");\n        } finally { System.out.println(\"D\"); }\n        System.out.println(\"E\");\n    }\n}\n",
+        "why": "The failed conversion skips B. The matching catch prints C, finally prints D, and the handled exception allows E.",
+        "title": "A caught failure and finally",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "def parse(text):\n    try:\n        return int(text)\n    finally:\n        print(\"checked\",text)\n\nfor text in [\"4\",\"x\",\"2\"]:\n    try: print(parse(text))\n    except ValueError: print(\"bad\")\n",
+        "why": "finally runs when parse returns and when its exception propagates. The caller handles x, then continues with 2.",
+        "title": "Finally before return or propagation",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Trace the first statement skipped by an exception.",
+      "Distinguish handling from a throws declaration.",
+      "Recognise blank lines, EOF and token boundaries.",
+      "Close a reader while preserving the intended recovery policy."
+    ],
+    "source": "Week 9 sections 01-04. The memory readers use the same line contracts as file readers.",
+    "bonus": []
+  },
+  {
+    "week": 10,
+    "title": "Writing files and reliable reports",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "import java.io.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        StringWriter buffer=new StringWriter();\n        try(PrintWriter writer=new PrintWriter(buffer)) {\n            writer.println(\"name,mark\");\n            writer.println(\"Linh,85\");\n        }\n        System.out.print(buffer.toString());\n    }\n}\n",
+        "why": "The writer emits the header then the record. The buffer lets the page show exactly what would be written.",
+        "title": "A writer can target memory",
+        "release": 8,
+        "expected": "name,mark\nLinh,85\n"
+      },
+      {
+        "lang": "python",
+        "code": "from io import StringIO\nbuffer=StringIO()\nbuffer.write(\"tea\")\nbuffer.write(\"coffee\")\nprint(repr(buffer.getvalue()))\nbuffer.close()\n",
+        "why": "The two writes concatenate; print adds a newline only when displaying the representation.",
+        "title": "Python write does not add a newline",
+        "release": 8,
+        "expected": "'teacoffee'\n"
+      },
+      {
+        "lang": "java",
+        "code": "import java.io.*;\n\npublic class Demo {\n    public static void main(String[] args) throws IOException {\n        File file=new File(\"report.txt\");\n        try(PrintWriter out=new PrintWriter(file,\"UTF-8\")) {\n            out.println(\"name,mark\");\n            out.println(\"Linh,85\");\n            if(out.checkError()) throw new IOException(\"write failed\");\n        }\n        try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file),\"UTF-8\"))) {\n            String line;\n            while((line=in.readLine())!=null) System.out.println(line);\n        }\n    }\n}\n",
+        "why": "Closing completes the output before a reader opens the file. Records appear in their written order. PrintWriter stores many write failures instead of throwing them; checkError reports those failures. Closing manages resource lifetime but does not prove that every write succeeded.",
+        "title": "Java file output and read-back on Ed",
+        "release": 8,
+        "expected": "name,mark\nLinh,85\n",
+        "probe": "Predict the output. Why close before reading back? Do PrintWriter write failures always throw IOException?"
+      },
+      {
+        "lang": "python",
+        "code": "import csv\nfrom io import StringIO\nbuffer=StringIO(newline=\"\")\nwriter=csv.writer(buffer,lineterminator=\"\\n\")\nwriter.writerow([\"name\",\"mark\"])\nwriter.writerow([\"An, Mai\",85])\nprint(buffer.getvalue(),end=\"\")\nbuffer.seek(0)\nrows=list(csv.reader(buffer))\nprint(rows[1][0])\nbuffer.close()\n",
+        "why": "CSV quotes the name containing a comma; the reader returns the original field without the quoting characters.",
+        "title": "Use CSV tooling when fields need quoting",
+        "release": 8,
+        "expected": "name,mark\n\"An, Mai\",85\nAn, Mai\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    static String format(String name,int mark) { return name+\",\"+mark; }\n    public static void main(String[] args) {\n        String[] names={\"Linh\",\"An\"};\n        int[] marks={85,49};\n        for(int i=0;i<names.length;i++) System.out.println(format(names[i],marks[i]));\n    }\n}\n",
+        "why": "The formatter pairs each name with the corresponding mark; persistence is a separate choice.",
+        "title": "Format records separately from saving them",
+        "release": 8,
+        "expected": "Linh,85\nAn,49\n"
+      },
+      {
+        "lang": "python",
+        "code": "import json\nrecord={\"name\":\"Linh\",\"marks\":[85,90]}\ntext=json.dumps(record,sort_keys=True)\nrestored=json.loads(text)\nprint(restored[\"name\"])\nprint(sum(restored[\"marks\"]))\nprint(restored==record)\n",
+        "why": "The round trip preserves the two marks and name; their sum is 175.",
+        "title": "Round-trip a small document",
+        "release": 8,
+        "expected": "Linh\n175\nTrue\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "import java.io.*;\npublic class Broken {\n    public static void main(String[] args) {\n        StringWriter buffer=new StringWriter();\n        PrintWriter out=new PrintWriter(buffer);\n        String[] names={\"Linh\",\"An\"};\n        int[] marks={85,49};\n        out.print(\"name,mark\");\n        for(int i=0;i<names.length;i++) {\n            out.print(names[i]+marks[i]);\n        }\n        System.out.print(buffer.toString());\n    }\n}\n",
+        "fixed": "import java.io.*;\npublic class Broken {\n    public static void main(String[] args) {\n        StringWriter buffer=new StringWriter();\n        PrintWriter out=new PrintWriter(buffer);\n        String[] names={\"Linh\",\"An\"};\n        int[] marks={85,49};\n        out.println(\"name,mark\");\n        for(int i=0;i<names.length;i++) {\n            out.println(names[i]+\",\"+marks[i]);\n        }\n        out.close();\n        System.out.print(buffer.toString());\n    }\n}\n",
+        "issues": [
+          [
+            "out.print(\"name,mark\")",
+            "Terminate the header with println."
+          ],
+          [
+            "out.print(names[i]+marks[i])",
+            "Insert the field delimiter and terminate every record."
+          ],
+          [
+            "System.out.print(buffer",
+            "Close the writer before reading back the stored text. A memory writer may hide missing-flush bugs."
+          ]
+        ],
+        "contract": "Emit exactly three CSV lines: a header, Linh,85 and An,49. Names contain no commas or newlines."
+      },
+      {
+        "lang": "python",
+        "broken": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nwith TemporaryDirectory() as folder:\n    path=Path(folder)/\"report.txt\"\n    path.write_text(\"old\\n\",encoding=\"utf-8\")\n    with path.open(\"w\",encoding=\"utf-8\") as out:\n        out.write(\"new\")\n    with path.open(\"r\",encoding=\"utf-8\") as source:\n        print(source.read(),end=\"\")\n",
+        "fixed": "from pathlib import Path\nfrom tempfile import TemporaryDirectory\nwith TemporaryDirectory() as folder:\n    path=Path(folder)/\"report.txt\"\n    path.write_text(\"old\\n\",encoding=\"utf-8\")\n    with path.open(\"a\",encoding=\"utf-8\") as out:\n        out.write(\"new\\n\")\n    with path.open(\"r\",encoding=\"utf-8\") as source:\n        print(source.read(),end=\"\")\n",
+        "issues": [
+          [
+            "path.open(\"w\"",
+            "Use append mode to retain old content."
+          ],
+          [
+            "out.write(\"new\")",
+            "Add the record terminator explicitly. write does not add a newline."
+          ]
+        ],
+        "contract": "Append a complete new record to the existing old record. The resulting file must contain old and new on separate lines."
+      }
+    ],
+    "diagram": {
+      "title": "One report, several responsibilities",
+      "program": {
+        "lang": "java",
+        "code": "import java.io.*;\npublic class Demo {\n    public static void main(String[] args) {\n        int[] marks={85,49,50};\n        int total=0,passed=0;\n        for(int mark:marks) { total+=mark; if(mark>=50) passed++; }\n        StringWriter text=new StringWriter();\n        try(PrintWriter out=new PrintWriter(text)) {\n            out.println(\"count,total,passed\");\n            out.println(marks.length+\",\"+total+\",\"+passed);\n        }\n        System.out.print(text.toString());\n    }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "read",
+          "input values\n85, 49, 50",
+          0,
+          0
+        ],
+        [
+          "calc",
+          "calculation\n3, 184, 2",
+          3.2,
+          0
+        ],
+        [
+          "format",
+          "format records\nheader + values",
+          6.4,
+          0
+        ],
+        [
+          "write",
+          "writer\nmemory or file",
+          6.4,
+          -1.5
+        ],
+        [
+          "readback",
+          "read back\ncompare values",
+          3.2,
+          -1.5
+        ]
+      ],
+      "edges": [
+        [
+          "read",
+          "calc",
+          ""
+        ],
+        [
+          "calc",
+          "format",
+          ""
+        ],
+        [
+          "format",
+          "write",
+          ""
+        ],
+        [
+          "write",
+          "readback",
+          ""
+        ]
+      ],
+      "why": "Calculation produces values, formatting chooses a representation, and writing chooses a destination. A read-back test must inspect values and delimiters, not only whether an exception occurred.",
+      "expected": "count,total,passed\n3,184,2\n",
+      "kind": "flow"
+    },
+    "challenge": {
+      "title": "A report with a stable schema",
+      "brief": "Read n then n marks in 0..100. Print count,total,passed and one CSV record with the number of marks, their sum, and the number at least 50. Standard output is the test destination; the same formatter could feed a file writer.",
+      "java": {
+        "id": "e1",
+        "title": "Write a summary in Java",
+        "lang": "java",
+        "brief": "Read n, then n integer marks in 0..100. Print a CSV header <code>count,total,passed</code>, then n, the sum, and the number \u226550. Standard output stands in for a report file.",
+        "starter": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // compute then print the header and record\n    }\n}\n",
+        "solution": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt(),total=0,passed=0;\n        for(int i=0;i<n;i++) { int mark=sc.nextInt(); total+=mark; if(mark>=50) passed++; }\n        System.out.println(\"count,total,passed\");\n        System.out.println(n+\",\"+total+\",\"+passed);\n    }\n}\n",
+        "tests": [
+          {
+            "stdin": "3\n85 49 50\n",
+            "expect": "count,total,passed\n3,184,2\n"
+          },
+          {
+            "stdin": "0\n\n",
+            "expect": "count,total,passed\n0,0,0\n"
+          },
+          {
+            "stdin": "3\n0 0 0\n",
+            "expect": "count,total,passed\n3,0,0\n"
+          },
+          {
+            "stdin": "2\n100 50\n",
+            "expect": "count,total,passed\n2,150,2\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Write a summary in Python",
+        "lang": "python",
+        "brief": "Use the same report contract as exercise 1. Input contains n, then one line with the n marks (empty if n is zero). Print the header and one summary record.",
+        "starter": "n=int(input())\nmarks=list(map(int,input().split()))\n# print the summary\n",
+        "solution": "n=int(input())\nmarks=list(map(int,input().split()))[:n]\nprint(\"count,total,passed\")\nprint(f\"{n},{sum(marks)},{sum(mark>=50 for mark in marks)}\")\n",
+        "tests": [
+          {
+            "stdin": "3\n85 49 50\n",
+            "expect": "count,total,passed\n3,184,2\n"
+          },
+          {
+            "stdin": "0\n\n",
+            "expect": "count,total,passed\n0,0,0\n"
+          },
+          {
+            "stdin": "3\n0 0 0\n",
+            "expect": "count,total,passed\n3,0,0\n"
+          },
+          {
+            "stdin": "2\n100 50\n",
+            "expect": "count,total,passed\n2,150,2\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "import java.io.*;\npublic class Demo {\n    public static void main(String[] args) {\n        StringWriter buffer=new StringWriter();\n        try(PrintWriter out=new PrintWriter(buffer)) {\n            out.print(\"A\");\n            out.println(\"B\");\n            out.println(\"C\");\n        }\n        System.out.print(buffer.toString());\n        System.out.println(\"D\");\n    }\n}\n",
+        "why": "print writes no terminator. The first println completes AB; the next completes C. D goes to standard output after the stored text.",
+        "title": "A writer preserves exact characters",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "import csv\nfrom io import StringIO\ntext=StringIO(newline=\"\")\nwriter=csv.writer(text,lineterminator=\"\\n\")\nwriter.writerow([\"An, Mai\",50])\nwriter.writerow([\"Tea\",49])\ntext.seek(0)\nrows=list(csv.reader(text))\nprint(len(rows))\nprint(rows[0][0],int(rows[0][1])>=50)\nprint(rows[1])\n",
+        "why": "The CSV writer quotes the comma in the name. The reader reconstructs one field containing that comma; the mark is converted before comparing it numerically.",
+        "title": "Quoting and a read-back test",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Specify delimiters, newlines, field order and text encoding.",
+      "Distinguish write, append and read modes.",
+      "Separate computation from formatting and persistence.",
+      "Use quoting for general CSV and inspect values after reading back."
+    ],
+    "source": "Week 10 sections 01-04. Real file examples run in a temporary working directory.",
+    "bonus": []
+  },
+  {
+    "week": 11,
+    "title": "Designing object-oriented programs",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Order order=new Order();\n        order.add(new Line(300,2));\n        order.add(new Line(150,1));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }\n}\n",
+        "why": "Each line computes its own subtotal; Order sums 600 and 150.",
+        "title": "Keep the calculation in the expert",
+        "release": 8,
+        "expected": "750\n",
+        "probe": "Predict the total. Which object should compute one line subtotal, and which object should aggregate the order?"
+      },
+      {
+        "lang": "python",
+        "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+        "why": "The calculation returns a number; the formatter builds a human-readable receipt from that result.",
+        "title": "Separate calculation from presentation",
+        "release": 8,
+        "expected": "750\nTotal: 750 cents\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+        "why": "StudentPrice applies the 80% policy. Basket depends on the PriceRule abstraction and receives its collaborator through the constructor. This supports dependency inversion and lets a new policy extend the behaviour without changing Basket.price.",
+        "title": "An extensible pricing rule",
+        "release": 8,
+        "expected": "800\n",
+        "probe": "What prints? Which parts depend on the pricing interface, and how does that help when adding a new policy?"
+      },
+      {
+        "lang": "python",
+        "code": "def student_price(cents): return cents*80//100\ndef regular_price(cents): return cents\n\nclass Basket:\n    def __init__(self, rule): self.rule=rule\n    def price(self, cents): return self.rule(cents)\n\nprint(Basket(student_price).price(1000))\nprint(Basket(regular_price).price(1000))\n",
+        "why": "The caller supplies different policies to the same Basket implementation.",
+        "title": "Inject a function in Python",
+        "release": 8,
+        "expected": "800\n1000\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.LinkedList<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+        "why": "Both implementations preserve append order, so their contents are equal and begin with 2. A replacement that prepended instead would violate the List contract. Matching a method signature does not prove behavioural substitutability.",
+        "title": "Substitutability includes behaviour",
+        "release": 8,
+        "expected": "true\n2\n",
+        "probe": "Predict the output. Would a replacement List remain substitutable if its add method inserted at the front?"
+      },
+      {
+        "lang": "python",
+        "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message)\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+        "why": "The recorder fulfils the same send capability and stores the message for inspection.",
+        "title": "A narrow capability",
+        "release": 8,
+        "expected": "recorded\n['Ready']\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        Checkout c=new Checkout(new HalfPrice());\n        System.out.println(c.total(1000));\n    }\n}\ninterface Pricing { int apply(int cents); }\nclass Regular implements Pricing {\n    public int apply(int cents) { return cents; }\n}\nclass HalfPrice implements Pricing {\n    public int apply(int cents) { return cents/2; }\n}\nclass Checkout {\n    private final Pricing rule;\n    Checkout(Pricing rule) { this.rule=new Regular(); }\n    int total(int cents) {\n        System.out.println(\"charging\");\n        return rule.apply(cents);\n    }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        Checkout c=new Checkout(new HalfPrice());\n        System.out.println(c.total(1000));\n    }\n}\ninterface Pricing { int apply(int cents); }\nclass Regular implements Pricing {\n    public int apply(int cents) { return cents; }\n}\nclass HalfPrice implements Pricing {\n    public int apply(int cents) { return cents/2; }\n}\nclass Checkout {\n    private final Pricing rule;\n    Checkout(Pricing rule) { this.rule=rule; }\n    int total(int cents) {\n        return rule.apply(cents);\n    }\n}\n",
+        "issues": [
+          [
+            "this.rule=new Regular()",
+            "Keep the supplied Pricing collaborator instead of constructing an unrelated fixed policy."
+          ],
+          [
+            "System.out.println(\"charging\")",
+            "A calculation-only total method should return the charge without choosing a presentation side effect."
+          ]
+        ],
+        "contract": "With HalfPrice, total(1000) returns 500 without printing. Main prints one line."
+      },
+      {
+        "lang": "python",
+        "broken": "def passes(mark): return mark>50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\ndef labels(marks):\n    return [\"P\" if mark>=50 else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+        "fixed": "def passes(mark): return mark>=50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+        "issues": [
+          [
+            "mark>50",
+            "Include the exact pass boundary: 50 passes."
+          ],
+          [
+            "\"P\" if mark>=50",
+            "Use passes(mark) here too, so counting and labels share one source of the pass rule."
+          ]
+        ],
+        "contract": "Count and labels must agree at the boundary, and one function must own the pass rule."
+      }
+    ],
+    "diagram": {
+      "title": "A responsibility map for an order",
+      "program": {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Line a=new Line(300,2);\n        Line b=new Line(150,1);\n        Order order=new Order(a,b);\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final Line a,b;\n    Order(Line a,Line b) { this.a=a; this.b=b; }\n    int total() { return a.subtotal()+b.subtotal(); }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "ui",
+          "presentation\nformat a total",
+          0,
+          0
+        ],
+        [
+          "order",
+          "Order\ntotal()",
+          3.4,
+          0
+        ],
+        [
+          "a",
+          "Line a\nsubtotal = 600",
+          6.8,
+          0
+        ],
+        [
+          "b",
+          "Line b\nsubtotal = 150",
+          6.8,
+          -1.5
+        ]
+      ],
+      "edges": [
+        [
+          "ui",
+          "order",
+          "asks"
+        ],
+        [
+          "order",
+          "a",
+          "delegates"
+        ],
+        [
+          "order",
+          "b",
+          "delegates"
+        ]
+      ],
+      "why": "Line is the information expert for its own subtotal. Order aggregates its lines. Presentation can change its wording without changing the arithmetic.",
+      "expected": "750\n",
+      "kind": "flow"
+    },
+    "challenge": {
+      "title": "Information experts in an order",
+      "brief": "Read n, then n pairs: non-negative unit price in cents and quantity. Line.subtotal computes the product. Order.total sums the line subtotals. Print the total. Explain which responsibility belongs to each class.",
+      "java": {
+        "id": "e1",
+        "title": "Let each order line compute its subtotal",
+        "lang": "java",
+        "brief": "Read n, then n pairs of non-negative integers: unit price in cents and quantity. Implement Line.subtotal() and Order.total(). Print the total price. All products and totals fit in Java int.",
+        "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // use Line objects and an Order instead of duplicating subtotal logic\n    }\n}\n",
+        "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        Order order=new Order();\n        for(int i=0;i<n;i++) order.add(new Line(sc.nextInt(),sc.nextInt()));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int price,quantity;\n    Line(int price,int quantity) { this.price=price; this.quantity=quantity; }\n    int subtotal() { return price*quantity; }\n}\nclass Order {\n    private final List<Line> lines=new ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int total=0; for(Line line:lines) total+=line.subtotal(); return total; }\n}\n",
+        "tests": [
+          {
+            "stdin": "2\n300 2\n150 1\n",
+            "expect": "750\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "0\n"
+          },
+          {
+            "stdin": "3\n0 10\n100 0\n1 1\n",
+            "expect": "1\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "Information experts in Python",
+        "lang": "python",
+        "brief": "Use the same input and output as exercise 1. Put price \u00d7 quantity in Line.subtotal and summation in Order.total.",
+        "starter": "class Line:\n    pass\nclass Order:\n    pass\n# read the order, then print its total\n",
+        "solution": "class Line:\n    def __init__(self,price,quantity): self.price,self.quantity=price,quantity\n    def subtotal(self): return self.price*self.quantity\nclass Order:\n    def __init__(self): self.lines=[]\n    def add(self,line): self.lines.append(line)\n    def total(self): return sum(line.subtotal() for line in self.lines)\n\norder=Order()\nn=int(input())\nfor _ in range(n):\n    price,quantity=map(int,input().split())\n    order.add(Line(price,quantity))\nprint(order.total())\n",
+        "tests": [
+          {
+            "stdin": "2\n300 2\n150 1\n",
+            "expect": "750\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "0\n"
+          },
+          {
+            "stdin": "3\n0 10\n100 0\n1 1\n",
+            "expect": "1\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    static int charge(Price rule,int cents) { return rule.apply(cents); }\n    public static void main(String[] args) {\n        Price[] rules={new Regular(),new Half()};\n        for(Price rule:rules) System.out.println(charge(rule,101));\n    }\n}\ninterface Price { int apply(int cents); }\nclass Regular implements Price {\n    public int apply(int cents) { return cents; }\n}\nclass Half implements Price {\n    public int apply(int cents) { return cents/2; }\n}\n",
+        "why": "charge depends only on Price. The two objects select different policies; integer division truncates the fractional cent for Half.",
+        "title": "A policy and a common caller",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "class Recorder:\n    def __init__(self): self.messages=[]\n    def send(self,text):\n        self.messages.append(text)\n        return len(self.messages)\n\ndef notify(channel,text): return channel.send(text)\na=Recorder()\nb=a\nprint(notify(b,\"Ready\"))\nprint(notify(a,\"Go\"))\nprint(a.messages,b.messages is a.messages)\n",
+        "why": "The recorder is a test collaborator. Both variables identify one recorder, so both requests add to the same history.",
+        "title": "One capability, observable interactions",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Assign behaviour to the object with the needed information.",
+      "Keep computation independent of display and file choices.",
+      "Supply collaborators through a useful abstraction.",
+      "Use SOLID, GRASP, DRY and YAGNI to justify concrete decisions."
+    ],
+    "source": "Week 11 sections 01-04. Evaluate the responsibilities and contracts, not only the acronym.",
+    "bonus": []
+  },
+  {
+    "week": 12,
+    "title": "Review and integration",
+    "questions": [
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        int[] marks={49,50,85};\n        int passed=0;\n        for(int i=0;i<marks.length;i++) {\n            if(marks[i]>=50) passed++;\n        }\n        System.out.println(passed);\n    }\n}\n",
+        "why": "Exactly 50 is included, so the marks 50 and 85 pass.",
+        "title": "A loop with an explicit invariant",
+        "release": 8,
+        "expected": "2\n"
+      },
+      {
+        "lang": "python",
+        "code": "def change(values):\n    values.append(3)\n    values=[9]\n    return values\n\nitems=[1,2]\nresult=change(items)\nprint(items)\nprint(result)\n",
+        "why": "Appending affects the shared list; assigning a new list to the local name does not rebind items.",
+        "title": "Mutation versus replacement, revisited",
+        "release": 8,
+        "expected": "[1, 2, 3]\n[9]\n"
+      },
+      {
+        "lang": "java",
+        "code": "import java.io.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        String data=\"Linh,85\\nAn,49\\nMai,50\";\n        int count=0,passed=0;\n        try(BufferedReader reader=new BufferedReader(new StringReader(data))) {\n            String line;\n            while((line=reader.readLine())!=null) {\n                String[] parts=line.split(\",\");\n                int mark=Integer.parseInt(parts[1]);\n                count++;\n                if(mark>=50) passed++;\n            }\n        } catch(IOException e) { throw new RuntimeException(e); }\n        System.out.println(\"records=\"+count+\", passed=\"+passed);\n    }\n}\n",
+        "why": "All three valid simple records are read, including the final line without a newline; two marks pass.",
+        "title": "An end-to-end marks pipeline",
+        "release": 8,
+        "expected": "records=3, passed=2\n"
+      },
+      {
+        "lang": "python",
+        "code": "def parse(line):\n    name,text=line.split(\",\")\n    mark=int(text)\n    if not 0<=mark<=100:\n        raise ValueError(\"range\")\n    return name,mark\n\nrecords=[]\nfor line in [\"Linh,85\",\"An,bad\",\"Mai,50\"]:\n    try: records.append(parse(line))\n    except ValueError: print(\"Invalid\")\nprint(sum(mark>=50 for name,mark in records))\n",
+        "why": "The bad record is not appended; Linh and Mai both pass.",
+        "title": "Separate parse, validate and summarise",
+        "release": 8,
+        "expected": "Invalid\n2\n"
+      },
+      {
+        "lang": "java",
+        "code": "public class Demo {\n    public static void main(String[] args) {\n        Counter counter=new Counter(2);\n        System.out.println(counter.take(0));\n        System.out.println(counter.take(2));\n        System.out.println(counter.take(1));\n        System.out.println(counter.left());\n    }\n}\nclass Counter {\n    private int count;\n    Counter(int count) { this.count=count; }\n    boolean take(int n) {\n        if(n<=0 || n>count) return false;\n        count-=n;\n        return true;\n    }\n    int left() { return count; }\n}\n",
+        "why": "Zero is rejected; taking exactly 2 succeeds; taking 1 from zero stock is rejected.",
+        "title": "A contract can be tested at its boundaries",
+        "release": 8,
+        "expected": "false\ntrue\nfalse\n0\n"
+      },
+      {
+        "lang": "python",
+        "code": "marks=[49,50,85]\ntotal=0\nfor position,mark in enumerate(marks):\n    before=total\n    total+=mark\n    print(position,before,total)\nprint(\"total\",total)\n",
+        "why": "The accumulator moves 0 \u2192 49 \u2192 99 \u2192 184; the trace connects each new state to its cause.",
+        "title": "Make a useful explanation from a trace",
+        "release": 8,
+        "expected": "0 0 49\n1 49 99\n2 99 184\ntotal 184\n"
+      }
+    ],
+    "debug": [
+      {
+        "lang": "java",
+        "broken": "public class Broken {\n    public static void main(String[] args) {\n        String[] input={\"A,50\",\"B,bad\",\"C,101\"};\n        int total=0,passed=0;\n        for(String line:input) {\n            try {\n                int mark=Integer.parseInt(line.split(\",\")[1]);\n                total+=mark;\n                if(mark>50) passed++;\n            } catch(NumberFormatException e) {\n                System.out.println(\"Invalid\");\n            }\n        }\n        System.out.println(\"count,total,passed\");\n        System.out.println(input.length+\",\"+total+\",\"+passed);\n    }\n}\n",
+        "fixed": "public class Broken {\n    public static void main(String[] args) {\n        String[] input={\"A,50\",\"B,bad\",\"C,101\"};\n        int total=0,passed=0,count=0;\n        for(String line:input) {\n            try {\n                int mark=Integer.parseInt(line.split(\",\")[1]);\n                if(mark<0 || mark>100) throw new IllegalArgumentException();\n                count++;\n                total+=mark;\n                if(mark>=50) passed++;\n            } catch(IllegalArgumentException e) {\n                System.out.println(\"Invalid\");\n            }\n        }\n        System.out.println(\"count,total,passed\");\n        System.out.println(count+\",\"+total+\",\"+passed);\n    }\n}\n",
+        "issues": [
+          [
+            "Integer.parseInt",
+            "After parsing, validate the domain range before updating any summary. Catch the validation failure too."
+          ],
+          [
+            "if(mark>50)",
+            "The pass boundary is inclusive: mark >= 50."
+          ],
+          [
+            "input.length",
+            "Count accepted records, not attempted input records."
+          ]
+        ],
+        "contract": "Reject non-numeric and out-of-range marks. Count and sum only accepted records."
+      },
+      {
+        "lang": "python",
+        "broken": "lines=[\"A,50\",\"broken\",\"C,101\"]\nmarks=[]\nfor line in lines:\n    parts=line.split(\",\")\n    try:\n        marks.append(int(parts[1]))\n    except ValueError:\n        print(\"Invalid\")\nprint(\"count,total,passed\")\nprint(f\"{len(lines)},{sum(marks)},{sum(m>50 for m in marks)}\")\n",
+        "fixed": "lines=[\"A,50\",\"broken\",\"C,101\"]\nmarks=[]\nfor line in lines:\n    try:\n        parts=line.split(\",\")\n        if len(parts)!=2 or not parts[0]: raise ValueError(\"fields\")\n        mark=int(parts[1])\n        if not 0<=mark<=100: raise ValueError(\"range\")\n        marks.append(mark)\n    except ValueError:\n        print(\"Invalid\")\nprint(\"count,total,passed\")\nprint(f\"{len(marks)},{sum(marks)},{sum(m>=50 for m in marks)}\")\n",
+        "issues": [
+          [
+            "parts[1]",
+            "Check the number of fields and a non-empty name before indexing."
+          ],
+          [
+            "marks.append(int",
+            "Parse and validate 0..100 before appending."
+          ],
+          [
+            "len(lines)",
+            "Count successful records with len(marks)."
+          ],
+          [
+            "m>50",
+            "Include exactly 50 in the pass count."
+          ]
+        ],
+        "contract": "Reject malformed fields and invalid marks without stopping later records. Only valid marks contribute to the report."
+      }
+    ],
+    "diagram": {
+      "title": "The valid-record pipeline",
+      "program": {
+        "lang": "java",
+        "code": "import java.util.*;\npublic class Demo {\n    public static void main(String[] args) {\n        String[] lines={\"A,50\",\"B,bad\",\"C,85\"};\n        List<Integer> accepted=new ArrayList<Integer>();\n        for(String line:lines) {\n            try { accepted.add(Integer.parseInt(line.split(\",\")[1])); }\n            catch(NumberFormatException e) { System.out.println(\"Invalid\"); }\n        }\n        int total=0; for(int mark:accepted) total+=mark;\n        System.out.println(accepted.size()+\" \"+total);\n    }\n}\n",
+        "why": "",
+        "title": "",
+        "release": 8
+      },
+      "nodes": [
+        [
+          "read",
+          "3 input records",
+          0,
+          0
+        ],
+        [
+          "parse",
+          "parse / validate",
+          3.3,
+          0
+        ],
+        [
+          "store",
+          "accepted\n[50, 85]",
+          6.6,
+          0
+        ],
+        [
+          "reject",
+          "B,bad\nreport Invalid",
+          3.3,
+          -1.5
+        ],
+        [
+          "sum",
+          "summary\ncount 2, total 135",
+          6.6,
+          -1.5
+        ]
+      ],
+      "edges": [
+        [
+          "read",
+          "parse",
+          ""
+        ],
+        [
+          "parse",
+          "store",
+          "valid"
+        ],
+        [
+          "parse",
+          "reject",
+          "invalid"
+        ],
+        [
+          "store",
+          "sum",
+          ""
+        ]
+      ],
+      "why": "Attempted inputs and accepted records are different collections. Rejected data never contributes to a successful count or total. The shown numeric values are all within range.",
+      "expected": "Invalid\n2 135\n",
+      "kind": "flow"
+    },
+    "challenge": {
+      "title": "A complete marks pipeline",
+      "brief": "Read n then n records name,mark. Require exactly two fields, a non-empty name, and an integer mark in 0..100. Print Invalid immediately for each rejected record. Store accepted Student objects. Finish with count,total,passed and the summary of valid records.",
+      "java": {
+        "id": "e1",
+        "title": "An integrated marks report in Java",
+        "lang": "java",
+        "brief": "Read n, then n records <code>name,mark</code>. Names must be non-empty and contain no commas; mark text is an integer in 0..100 or an invalid word. Any other record shape is invalid. Print <code>Invalid</code> immediately for each rejected record. Then print <code>count,total,passed</code> and one CSV record counting only valid records, their mark sum and the number \u226550. Use Student objects for accepted data.",
+        "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=Integer.parseInt(sc.nextLine());\n        // parse and validate each row, store valid Student objects, then report\n    }\n}\n",
+        "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=Integer.parseInt(sc.nextLine());\n        List<Student> records=new ArrayList<Student>();\n        for(int i=0;i<n;i++) {\n            String line=sc.nextLine();\n            String[] parts=line.split(\",\",-1);\n            try {\n                if(parts.length!=2 || parts[0].isEmpty()) throw new IllegalArgumentException();\n                int mark=Integer.parseInt(parts[1]);\n                if(mark<0 || mark>100) throw new IllegalArgumentException();\n                records.add(new Student(parts[0],mark));\n            } catch(IllegalArgumentException e) { System.out.println(\"Invalid\"); }\n        }\n        int total=0,passed=0;\n        for(Student student:records) { total+=student.mark(); if(student.passed()) passed++; }\n        System.out.println(\"count,total,passed\");\n        System.out.println(records.size()+\",\"+total+\",\"+passed);\n    }\n}\nclass Student {\n    private final String name;\n    private final int mark;\n    Student(String name,int mark) { this.name=name; this.mark=mark; }\n    int mark() { return mark; }\n    boolean passed() { return mark>=50; }\n}\n",
+        "tests": [
+          {
+            "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
+            "expect": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "count,total,passed\n0,0,0\n"
+          },
+          {
+            "stdin": "3\nA,0\nB,50\nC,100\n",
+            "expect": "count,total,passed\n3,150,2\n"
+          },
+          {
+            "stdin": "3\nmissing\n,50\na,b,c\n",
+            "expect": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n"
+          }
+        ]
+      },
+      "python": {
+        "id": "e2",
+        "title": "An integrated marks report in Python",
+        "lang": "python",
+        "brief": "Implement the same input and output policy as exercise 1 using a Student class and a parse function that raises ValueError for invalid rows.",
+        "starter": "class Student:\n    pass\ndef parse(line):\n    # return a valid Student or raise ValueError\n    pass\nn=int(input())\n# collect accepted records and print the summary\n",
+        "solution": "class Student:\n    def __init__(self,name,mark): self.name,self.mark=name,mark\n    def passed(self): return self.mark>=50\n\ndef parse(line):\n    parts=line.split(\",\")\n    if len(parts)!=2 or not parts[0]: raise ValueError(\"record\")\n    mark=int(parts[1])\n    if not 0<=mark<=100: raise ValueError(\"range\")\n    return Student(parts[0],mark)\n\nn=int(input())\nrecords=[]\nfor _ in range(n):\n    try: records.append(parse(input()))\n    except ValueError: print(\"Invalid\")\nprint(\"count,total,passed\")\nprint(f\"{len(records)},{sum(s.mark for s in records)},{sum(s.passed() for s in records)}\")\n",
+        "tests": [
+          {
+            "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
+            "expect": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n"
+          },
+          {
+            "stdin": "0\n",
+            "expect": "count,total,passed\n0,0,0\n"
+          },
+          {
+            "stdin": "3\nA,0\nB,50\nC,100\n",
+            "expect": "count,total,passed\n3,150,2\n"
+          },
+          {
+            "stdin": "3\nmissing\n,50\na,b,c\n",
+            "expect": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n"
+          }
+        ]
+      }
+    },
+    "predict": [
+      {
+        "lang": "java",
+        "code": "import java.util.*;\npublic class Demo {\n    static int count(List<Integer> xs) { int n=0; for(int x:xs) if(x>=50) n++; return n; }\n    public static void main(String[] args) {\n        List<Integer> a=new ArrayList<Integer>(Arrays.asList(49,50,85));\n        List<Integer> b=a;\n        List<Integer> c=new ArrayList<Integer>(a);\n        b.remove(Integer.valueOf(49));\n        c.set(0,0);\n        System.out.println(a);\n        System.out.println(c);\n        System.out.println(count(a));\n    }\n}\n",
+        "why": "Alias mutation affects a. The copied container c changes independently. count tests the inclusive boundary on the current a.",
+        "title": "References, collections and a boundary",
+        "release": 8
+      },
+      {
+        "lang": "python",
+        "code": "def parse(text):\n    name,raw=text.split(\",\")\n    mark=int(raw)\n    if not 0<=mark<=100: raise ValueError(\"range\")\n    return name,mark\n\nrecords=[]\nfor line in [\"A,50\",\"B,bad\",\"C,85\"]:\n    try: records.append(parse(line))\n    except ValueError: print(\"Invalid\")\nprint(len(records),sum(mark for name,mark in records))\nprint(sum(mark>=50 for name,mark in records))\n",
+        "why": "The failed conversion prevents append. The two accepted tuples supply both the valid-record count and numeric summary.",
+        "title": "A record either enters the model or does not",
+        "release": 8
+      }
+    ],
+    "learning": [
+      "Explain a program through state changes and call contracts.",
+      "Combine validation, models, collections and report formatting.",
+      "Choose tests that distinguish a plausible wrong implementation.",
+      "Treat functional transformations and streams as optional follow-on material."
+    ],
+    "source": "Week 12 sections 01-03. The two final individual questions use optional section 04.",
+    "bonus": [
+      {
+        "lang": "java",
+        "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<Integer> marks=Arrays.asList(49,50,85);\n        int total=marks.stream()\n            .filter(mark -> mark>=50)\n            .mapToInt(mark -> mark)\n            .sum();\n        System.out.println(total);\n        System.out.println(marks);\n    }\n}\n",
+        "why": "The pipeline sums 50 and 85 without changing the source list. This uses Java 8-compatible APIs.",
+        "title": "Optional extension: filter, map, reduce",
+        "release": 8,
+        "expected": "135\n[49, 50, 85]\n"
+      },
+      {
+        "lang": "python",
+        "code": "def doubled(values):\n    return [value*2 for value in values]\n\nsource=[2,3]\nprint(doubled(source))\nprint(source)\nprint(doubled(source)==doubled(source))\n",
+        "why": "For the same integer input this function returns the same result and does not modify its argument.",
+        "title": "Optional extension: a pure transformation",
+        "release": 8,
+        "expected": "[4, 6]\n[2, 3]\nTrue\n"
+      }
+    ]
+  }
+]

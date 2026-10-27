@@ -1,0 +1,209 @@
+[
+  {
+    "file": "examples/q01/Counter.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "2 1 3\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q02/P.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Fido ['sit']\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "The class says blue\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05/Cards.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "HEARTS true\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q06/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Colour.RED\n2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07/Demo.java",
+    "lang": "java",
+    "release": 14,
+    "stdin": "",
+    "stdout": "one\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q08/Demo.java",
+    "lang": "java",
+    "release": 21,
+    "stdin": "",
+    "stdout": "P\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/draw/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "150 150 100\ntrue false\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "50 50\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "150 200\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "50 200\n[50]\n50\n",
+    "returncode": 1,
+    "error": "TypeError: __str__ returned non-string (type NoneType)"
+  },
+  {
+    "file": "solutions/broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "150 200\n[]\n150\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-1/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "27\n27 64\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-2/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "9 2 2\nTrue False\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Bank.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "1000\nD 500\nW 200\nQ\n",
+    "stdout": "OK\nOK\nBalance: 1300\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Bank.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "100\nW 500\nD -5\nD 50\nQ\n",
+    "stdout": "Refused\nRefused\nOK\nBalance: 150\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Bank.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "0\nQ\n",
+    "stdout": "Balance: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Bank.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "250\nW 250\nW 1\nD 0\nQ\n",
+    "stdout": "OK\nRefused\nRefused\nBalance: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "1000\nD 500\nW 200\nQ\n",
+    "stdout": "OK\nOK\nBalance: 1300\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "100\nW 500\nD -5\nD 50\nQ\n",
+    "stdout": "Refused\nRefused\nOK\nBalance: 150\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "0\nQ\n",
+    "stdout": "Balance: 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "250\nW 250\nW 1\nD 0\nQ\n",
+    "stdout": "OK\nRefused\nRefused\nBalance: 0\n",
+    "returncode": 0,
+    "error": ""
+  }
+]

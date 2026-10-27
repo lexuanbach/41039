@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 12 · Review, Integration and What Comes Next · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Connect state, decisions and iteration to classes, collections, exceptions and text I/O. Build and explain a small data pipeline, diagnose boundary bugs, and preview functional transformations without changing the core course requirements.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html" aria-current="page"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 12 · 41039 Programming 1</span><h1>Review, Integration and What Comes Next</h1><p class="lede">Connect state, decisions and iteration to classes, collections, exceptions and text I/O. Build and explain a small data pipeline, diagnose boundary bugs, and preview functional transformations without changing the core course requirements.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">8 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">A loop with an explicit invariant</span></div><pre>public class Demo {
+    public static void main(String[] args) {
+        int[] marks={49,50,85};
+        int passed=0;
+        for(int i=0;i&lt;marks.length;i++) {
+            if(marks[i]&gt;=50) passed++;
+        }
+        System.out.println(passed);
+    }
+}</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 12 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Trace the foundation accurately</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">Combine parsing, models and reports</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Test boundaries and explain causes</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Optional: functional ideas and streams</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Trace the foundation accurately</h3><div class="concept"><h3><span class="idx">1.1</span>Use the state you can observe</h3><p>For a loop, name what the accumulator means after each iteration. A pass counter counts passing values in the processed prefix, not the remaining suffix. State the index range and boundary condition before predicting the output. Exactly 50 is a useful test because it distinguishes ≥ from &gt;.</p></div><div class="concept"><h3><span class="idx">1.2</span>Separate mutation from rebinding</h3><p>Method and function calls pass values; when a value is an object reference, both caller and parameter can identify the same object. Mutating that object is visible through both names. Reassigning the local parameter chooses another value for that local name. Explain these as two different operations rather than saying that a language passes every object by reference.</p></div><div class="p1-explain" data-lang="java" data-title="A loop with an explicit invariant" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        int[] marks={49,50,85};
+        int passed=0;
+        for(int i=0;i<marks.length;i++) {
+            if(marks[i]>=50) passed++;
+        }
+        System.out.println(passed);
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="5" data-match="i&lt;marks.length" data-title="i&lt;marks.length">The last valid index is one less than the length.</li><li data-line="6" data-match="passed++" data-title="passed++">After each iteration, passed counts the passing marks in the processed prefix.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Mutation versus replacement, revisited" data-stdin="">
+<script type="text/plain" data-role="source">def change(values):
+    values.append(3)
+    values=[9]
+    return values
+
+items=[1,2]
+result=change(items)
+print(items)
+print(result)
+</script>
+<ol data-role="notes"><li data-line="2" data-match="values.append(3)" data-title="values.append(3)">Mutate the list referred to by the caller and parameter.</li><li data-line="3" data-match="values=[9]" data-title="values=[9]">Rebind only the local name to a new list.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Draw the list objects and references before and after change(). Then trace the Java loop with zero marks and with one mark exactly equal to 50.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>Combine parsing, models and reports</h3><div class="concept"><h3><span class="idx">2.1</span>Make each stage have a clear contract</h3><p>A small data pipeline can read text, parse a record, validate domain values, construct model objects, compute a summary and write a report. Give each stage a named job. A valid delimiter split does not prove the mark is numeric; a numeric mark does not prove it is within 0..100.</p></div><div class="concept"><h3><span class="idx">2.2</span>Choose an explicit error policy</h3><p>The Python example reports an invalid row and continues. A different application might stop at the first bad row. Either policy can be sensible if documented. Keep a rejected row out of the successful-record collection, and base the summary count on that collection rather than on the number of attempted inputs.</p></div><div class="p1-explain" data-lang="java" data-title="An end-to-end marks pipeline" data-stdin="">
+<script type="text/plain" data-role="source">import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        String data="Linh,85\nAn,49\nMai,50";
+        int count=0,passed=0;
+        try(BufferedReader reader=new BufferedReader(new StringReader(data))) {
+            String line;
+            while((line=reader.readLine())!=null) {
+                String[] parts=line.split(",");
+                int mark=Integer.parseInt(parts[1]);
+                count++;
+                if(mark>=50) passed++;
+            }
+        } catch(IOException e) { throw new RuntimeException(e); }
+        System.out.println("records="+count+", passed="+passed);
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="9" data-match="reader.readLine()" data-title="reader.readLine()">The input stage produces one record at a time.</li><li data-line="11" data-match="Integer.parseInt(parts[1])" data-title="Integer.parseInt(parts[1])">Convert the mark field before applying the numeric rule.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Separate parse, validate and summarise" data-stdin="">
+<script type="text/plain" data-role="source">def parse(line):
+    name,text=line.split(",")
+    mark=int(text)
+    if not 0<=mark<=100:
+        raise ValueError("range")
+    return name,mark
+
+records=[]
+for line in ["Linh,85","An,bad","Mai,50"]:
+    try: records.append(parse(line))
+    except ValueError: print("Invalid")
+print(sum(mark>=50 for name,mark in records))
+</script>
+<ol data-role="notes"><li data-line="10" data-match="records.append(parse(line))" data-title="records.append(parse(line))">Append only when parsing and validation both complete successfully.</li><li data-line="11" data-match="except ValueError" data-title="except ValueError">Report the invalid record and continue processing later records.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a malformed row and an out-of-range mark. Write the expected diagnostic policy before editing the implementation, then verify which rows reach the summary.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Test boundaries and explain causes</h3><div class="concept"><h3><span class="idx">3.1</span>A test should distinguish a mistake</h3><p>Useful cases include no data, one item, the exact boundary, one below it, duplicates, a blank line, and a final record without a newline. For a mutator, inspect the resulting state as well as the return value. A test that passes even when the intended rule is removed is weak evidence.</p></div><div class="concept"><h3><span class="idx">3.2</span>Explain from input to consequence</h3><p>A code explanation should name the relevant state, condition or dispatch decision, then connect it to the next visible result. Avoid merely restating each line. For a bug, give a small counterexample, identify the first incorrect state transition, propose the correction and predict its effect on the counterexample.</p></div><div class="p1-explain" data-lang="java" data-title="A contract can be tested at its boundaries" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Counter counter=new Counter(2);
+        System.out.println(counter.take(0));
+        System.out.println(counter.take(2));
+        System.out.println(counter.take(1));
+        System.out.println(counter.left());
+    }
+}
+class Counter {
+    private int count;
+    Counter(int count) { this.count=count; }
+    boolean take(int n) {
+        if(n<=0 || n>count) return false;
+        count-=n;
+        return true;
+    }
+    int left() { return count; }
+}
+</script>
+<ol data-role="notes"><li data-line="14" data-match="n&lt;=0 || n&gt;count" data-title="n&lt;=0 || n&gt;count">Reject both lower and upper boundary violations.</li><li data-line="5" data-match="counter.take(2)" data-title="counter.take(2)">Exactly the available quantity is a valid request.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Make a useful explanation from a trace" data-stdin="">
+<script type="text/plain" data-role="source">marks=[49,50,85]
+total=0
+for position,mark in enumerate(marks):
+    before=total
+    total+=mark
+    print(position,before,total)
+print("total",total)
+</script>
+<ol data-role="notes"><li data-line="4" data-match="before=total" data-title="before=total">Record the state before the update so its effect can be explained.</li><li data-line="5" data-match="total+=mark" data-title="total+=mark">Add the current mark exactly once.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Write a counterexample for replacing >=50 with >50, and another for allowing take(0). Use the trace table to identify the first divergence.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Optional: functional ideas and streams</h3><div class="concept"><h3><span class="idx">4.1</span>A new way to express a familiar traversal</h3><p>Ed's Beyond Programming 1 lessons introduce first-class functions, pure transformations and stream pipelines. A filter selects elements; a map transforms them; a reduction combines results. A stream pipeline has intermediate operations and a terminal operation. These ideas express computations already possible with loops.</p></div><div class="concept"><h3><span class="idx">4.2</span>Preview, not a new assessment specification</h3><p>The Java example uses Java 8 stream operations and Arrays.asList so it remains compatible with this website. It avoids later APIs such as List.of and Stream.toList. The Python function constructs a fresh result without modifying its input. This section is optional enrichment; current Canvas instructions determine assessed scope.</p></div><div class="p1-explain" data-lang="java" data-title="Optional extension: filter, map, reduce" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        List<Integer> marks=Arrays.asList(49,50,85);
+        int total=marks.stream()
+            .filter(mark -> mark>=50)
+            .mapToInt(mark -> mark)
+            .sum();
+        System.out.println(total);
+        System.out.println(marks);
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="7" data-match="filter(mark -&gt; mark&gt;=50)" data-title="filter(mark -&gt; mark&gt;=50)">Keep only values meeting the pass predicate.</li><li data-line="9" data-match=".sum()" data-title=".sum()">The terminal operation consumes the pipeline and returns the aggregate.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Optional extension: a pure transformation" data-stdin="">
+<script type="text/plain" data-role="source">def doubled(values):
+    return [value*2 for value in values]
+
+source=[2,3]
+print(doubled(source))
+print(source)
+print(doubled(source)==doubled(source))
+</script>
+<ol data-role="notes"><li data-line="2" data-match="return [value*2 for value in values]" data-title="return [value*2 for value in values]">Construct a result without mutating the input list.</li><li data-line="4" data-match="source" data-title="source">The caller can reuse the unchanged data after the function returns.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Rewrite the stream example as a loop and compare both outputs on an empty list. Describe what stays unchanged in the input and where the result is created.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Review a pipeline with a partner</h4><p>One person writes the input contract, another implements it, and a third supplies counterexamples: empty input, exactly 50, a non-numeric mark, an out-of-range mark, a missing field and a duplicate name. Explain the first incorrect state for every failure you find.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Explain before running</h4><p>Choose one snippet involving references and another involving dispatch. Predict the output, draw the objects or call path, and state one small change that would alter the result. Run only after the group agrees on a causal explanation.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118739"><span class="kind">Course source / reference</span><h4>Memory in the JVM</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118740"><span class="kind">Course source / reference</span><h4>How Data is Passed Through Parameters in Java</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118768"><span class="kind">Course source / reference</span><h4>Exceptions</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118789"><span class="kind">Course source / reference</span><h4>Basic Ideas in Functional Programming — optional</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118790"><span class="kind">Course source / reference</span><h4>Java Streams — optional</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"><span class="kind">Course source / reference</span><h4>Java 8 streams</h4><p>Intermediate and terminal operations and non-interference.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.python.org/3/tutorial/datastructures.html"><span class="kind">Course source / reference</span><h4>Python data structures</h4><p>Lists and comprehensions.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule"><span class="kind">Course source / reference</span><h4>Canvas subject schedule</h4><p>Review and requests; current announcements determine the active schedule.</p><span class="host">canvas.uts.edu.au</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Use the earlier week pages to repair a specific gap, then complete an integrated marks report in both languages. Treat functional programming and streams as optional follow-on reading, and check current Canvas guidance for assessed scope.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118739">Memory in the JVM</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118740">How Data is Passed Through Parameters in Java</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118768">Exceptions</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118789">Basic Ideas in Functional Programming — optional</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118790">Java Streams — optional</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-11.html"><span class="dir">Previous</span>Week 11</a><a href="../index.html#materials"><span class="dir">Next</span>All course materials</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 12 · Review, Integration and What Comes Next</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w12-data.js?v=1f8deef3"></script>
+<script src="../assets/w12-exercises.js?v=fb3fe556"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

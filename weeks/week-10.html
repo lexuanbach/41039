@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 10 · Writing Files and Reliable Reports · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Choose a text format, write complete records, close resources, and check what a later reader receives. Separate computation from presentation so reports can be tested without depending on a real file.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html" aria-current="page"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 10 · 41039 Programming 1</span><h1>Writing Files and Reliable Reports</h1><p class="lede">Choose a text format, write complete records, close resources, and check what a later reader receives. Separate computation from presentation so reports can be tested without depending on a real file.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">6 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">A writer can target memory</span></div><pre>import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        StringWriter buffer=new StringWriter();
+        try(PrintWriter writer=new PrintWriter(buffer)) {
+            writer.println(&quot;name,mark&quot;);
+            writer.println(&quot;Linh,85&quot;);
+        }
+        System.out.print(buffer.toString());
+    }
+}</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 10 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">Output is a data contract</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">File modes, closing and error reporting</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Delimited records and quoting</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Documents, summaries and repeatable tests</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>Output is a data contract</h3><div class="concept"><h3><span class="idx">1.1</span>Write the format down first</h3><p>A report intended for another program needs a defined field order, delimiter, encoding and newline policy. Human-readable object display is not automatically a stable storage format. Keep the calculation separate from formatting and keep formatting separate from the destination.</p></div><div class="concept"><h3><span class="idx">1.2</span>print, println and write</h3><p>Java PrintWriter offers print and println. Python write emits exactly the string supplied; it does not insert a separator or newline. An in-memory StringWriter or StringIO makes the stored output visible without depending on an external file. The same distinction matters when writing to a file.</p></div><div class="p1-explain" data-lang="java" data-title="A writer can target memory" data-stdin="">
+<script type="text/plain" data-role="source">import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        StringWriter buffer=new StringWriter();
+        try(PrintWriter writer=new PrintWriter(buffer)) {
+            writer.println("name,mark");
+            writer.println("Linh,85");
+        }
+        System.out.print(buffer.toString());
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="6" data-match="new PrintWriter(buffer)" data-title="new PrintWriter(buffer)">Use the same formatted writer operations with an in-memory destination.</li><li data-line="7" data-match="writer.println" data-title="writer.println">Write a complete line, including the line separator.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Python write does not add a newline" data-stdin="">
+<script type="text/plain" data-role="source">from io import StringIO
+buffer=StringIO()
+buffer.write("tea")
+buffer.write("coffee")
+print(repr(buffer.getvalue()))
+buffer.close()
+</script>
+<ol data-role="notes"><li data-line="3" data-match="buffer.write(&quot;tea&quot;)" data-title="buffer.write(&quot;tea&quot;)">Write exactly these characters, with no implicit newline.</li><li data-line="5" data-match="repr(buffer.getvalue())" data-title="repr(buffer.getvalue())">Display the stored string explicitly so whitespace can be inspected.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a newline explicitly between the Python writes and inspect repr again. In Java, replace the first println with print and explain the malformed record.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>File modes, closing and error reporting</h3><div class="concept"><h3><span class="idx">2.1</span>Overwrite and append are different promises</h3><p>Opening Python text in w mode truncates an existing file; a mode appends. Java new PrintWriter("report.txt") also truncates an existing file. For appending in Java, wrap a suitable append-mode writer, such as new FileWriter("report.txt", true). Choose the mode deliberately before opening a file.</p></div><div class="concept"><h3><span class="idx">2.2</span>Close before checking the saved result</h3><p>Buffered output can remain unwritten until flushing or closing. try-with-resources and with arrange cleanup when leaving scope. PrintWriter is unusual: many write methods record errors rather than throwing IOException, so checkError is needed when the program must detect a failed write. Closing a resource does not prove the data was valid or the whole operation succeeded.</p></div><div class="p1-explain" data-lang="python" data-title="Overwrite and append on an actual file" data-stdin="" data-run="none">
+<script type="text/plain" data-role="source">from pathlib import Path
+from tempfile import TemporaryDirectory
+
+with TemporaryDirectory() as folder:
+    path=Path(folder)/"report.txt"
+    with path.open("w",encoding="utf-8") as out:
+        out.write("old\n")
+    with path.open("w",encoding="utf-8") as out:
+        out.write("new\n")
+    with path.open("a",encoding="utf-8") as out:
+        out.write("tail\n")
+    print(path.read_text(encoding="utf-8"),end="")
+</script>
+<ol data-role="notes"><li data-line="6" data-match="path.open(&quot;w&quot;" data-title="path.open(&quot;w&quot;">Opening in write mode truncates the existing contents.</li><li data-line="10" data-match="path.open(&quot;a&quot;" data-title="path.open(&quot;a&quot;">Append preserves existing content and writes after it.</li></ol><pre data-role="output" data-label="Verified output · run this file example on Ed">new
+tail
+</pre></div><div class="p1-explain" data-lang="java" data-title="Java file output and read-back on Ed" data-stdin="" data-run="none">
+<script type="text/plain" data-role="source">import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) throws IOException {
+        File file=new File("report.txt");
+        try(PrintWriter out=new PrintWriter(file,"UTF-8")) {
+            out.println("name,mark");
+            out.println("Linh,85");
+            if(out.checkError()) throw new IOException("write failed");
+        }
+        try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"))) {
+            String line;
+            while((line=in.readLine())!=null) System.out.println(line);
+        }
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="9" data-match="out.checkError()" data-title="out.checkError()">PrintWriter stores many write errors internally; check them explicitly.</li><li data-line="11" data-match="new InputStreamReader" data-title="new InputStreamReader">Choose UTF-8 when decoding the bytes during read-back.</li></ol><pre data-role="output" data-label="Verified output · run this file example on Ed">name,mark
+Linh,85
+</pre></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Run the file examples on Ed. Change append to write in the Python example, then read back the result. Describe exactly which previous content is retained.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Delimited records and quoting</h3><div class="concept"><h3><span class="idx">3.1</span>A simple delimiter has a precondition</h3><p>Joining name and mark with a comma is sufficient only when the name cannot contain commas or newlines. If those values are legal, manual splitting loses information. State that restriction in a simple exercise; use a real CSV writer and reader for general CSV.</p></div><div class="concept"><h3><span class="idx">3.2</span>Round-trip what you produce</h3><p>Read the output back using the intended parser. Check values as well as the number of lines. The Python CSV example uses an explicit newline policy and demonstrates a quoted comma. Java has no equivalent general CSV parser in the core API; do not describe String.split as a complete CSV solution.</p></div><div class="p1-explain" data-lang="java" data-title="Format records separately from saving them" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    static String format(String name,int mark) { return name+","+mark; }
+    public static void main(String[] args) {
+        String[] names={"Linh","An"};
+        int[] marks={85,49};
+        for(int i=0;i<names.length;i++) System.out.println(format(names[i],marks[i]));
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="2" data-match="return name+&quot;,&quot;+mark" data-title="return name+&quot;,&quot;+mark">A formatting method returns data instead of choosing where to write it.</li><li data-line="6" data-match="format(names[i],marks[i])" data-title="format(names[i],marks[i])">The caller can send the result to the screen or to a file.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Use CSV tooling when fields need quoting" data-stdin="">
+<script type="text/plain" data-role="source">import csv
+from io import StringIO
+buffer=StringIO(newline="")
+writer=csv.writer(buffer,lineterminator="\n")
+writer.writerow(["name","mark"])
+writer.writerow(["An, Mai",85])
+print(buffer.getvalue(),end="")
+buffer.seek(0)
+rows=list(csv.reader(buffer))
+print(rows[1][0])
+buffer.close()
+</script>
+<ol data-role="notes"><li data-line="4" data-match="csv.writer" data-title="csv.writer">Let the CSV writer quote a field that contains a comma.</li><li data-line="8" data-match="buffer.seek(0)" data-title="buffer.seek(0)">Rewind the stream before reading back the data.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Try a name containing a comma, then a quote. Explain why a parser must understand quoting before it can decide where one field ends.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Documents, summaries and repeatable tests</h3><div class="concept"><h3><span class="idx">4.1</span>Choose a format that represents the structure</h3><p>JSON can represent mappings and lists, so it avoids inventing a delimiter convention for nested data. Parsing still needs validation: a syntactically valid document can have missing fields or invalid marks. A successful round trip should preserve the intended values, not just produce identical whitespace.</p></div><div class="concept"><h3><span class="idx">4.2</span>Test a pipeline in layers</h3><p>First test a calculation, then its formatted record, then a write/read round trip. Include empty input, a boundary mark and a final record without a trailing newline. An in-memory destination gives deterministic output tests; an Ed file exercise checks working-directory and file-mode assumptions.</p></div><div class="p1-explain" data-lang="python" data-title="Round-trip a small document" data-stdin="">
+<script type="text/plain" data-role="source">import json
+record={"name":"Linh","marks":[85,90]}
+text=json.dumps(record,sort_keys=True)
+restored=json.loads(text)
+print(restored["name"])
+print(sum(restored["marks"]))
+print(restored==record)
+</script>
+<ol data-role="notes"><li data-line="3" data-match="json.dumps" data-title="json.dumps">Serialise the data into text, using a defined format rather than object display text.</li><li data-line="4" data-match="json.loads" data-title="json.loads">Parse that text back into data and verify the recovered values.</li></ol></div><div class="p1-explain" data-lang="java" data-title="A deterministic summary with PrintWriter" data-stdin="">
+<script type="text/plain" data-role="source">import java.io.*;
+
+public class Demo {
+    public static void main(String[] args) {
+        int[] marks={85,49,50};
+        int passed=0,total=0;
+        for(int mark:marks) { total+=mark; if(mark>=50) passed++; }
+        StringWriter buffer=new StringWriter();
+        try(PrintWriter out=new PrintWriter(buffer)) {
+            out.println("count,total,passed");
+            out.println(marks.length+","+total+","+passed);
+        }
+        System.out.print(buffer.toString());
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="7" data-match="if(mark&gt;=50)" data-title="if(mark&gt;=50)">The pass boundary includes exactly 50.</li><li data-line="11" data-match="marks.length+&quot;,&quot;+total+&quot;,&quot;+passed" data-title="marks.length+&quot;,&quot;+total+&quot;,&quot;+passed">Build a record in the same field order as the header.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change the marks to an empty array or list. Decide which summary fields still have a meaningful value and which calculations would require an explicit empty-input policy.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Write a format contract</h4><p>Design a marks report with names containing commas. Specify encoding, columns, quoting and how empty data is represented. Have another group parse a sample using only the written contract.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Test overwrite versus append</h4><p>Start with one record, then run a writer twice. Explain the result for overwrite and append. Propose a read-back test that detects the wrong mode instead of checking only that no exception was raised.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118769"><span class="kind">Course source / reference</span><h4>Basic File I/O in Java</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118770"><span class="kind">Course source / reference</span><h4>Basic File I/O in Python</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/io/PrintWriter.html"><span class="kind">Course source / reference</span><h4>PrintWriter API</h4><p>Writing, flushing and checkError.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.python.org/3/library/csv.html"><span class="kind">Course source / reference</span><h4>Python CSV</h4><p>Readers, writers, quoting and newline handling.</p><span class="host">docs.python.org</span></a><a class="read-card" href="https://docs.python.org/3/library/json.html"><span class="kind">Course source / reference</span><h4>Python JSON</h4><p>Serialising and parsing structured text.</p><span class="host">docs.python.org</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Finish the output and resource-management sections of both I/O lessons. Practise the memory examples here and run the labelled real-file examples on Ed.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118769">Basic File I/O in Java</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118770">Basic File I/O in Python</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-9.html"><span class="dir">Previous</span>Week 9</a><a href="week-11.html"><span class="dir">Next</span>Week 11</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 10 · Writing Files and Reliable Reports</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w10-data.js?v=b3c149b6"></script>
+<script src="../assets/w10-exercises.js?v=4713fa5c"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>

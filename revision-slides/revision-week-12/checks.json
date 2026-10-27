@@ -1,0 +1,209 @@
+[
+  {
+    "file": "examples/q01/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q02/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "[1, 2, 3]\n[9]\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "records=3, passed=2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "false\ntrue\nfalse\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q06/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0 0 49\n1 49 99\n2 99 184\ntotal 184\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "135\n[49, 50, 85]\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q08/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "[4, 6]\n[2, 3]\nTrue\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/draw/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n2 135\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\ncount,total,passed\n3,151,1\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Broken.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\nInvalid\ncount,total,passed\n1,50,1\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "",
+    "returncode": 1,
+    "error": "IndexError: list index out of range"
+  },
+  {
+    "file": "solutions/broken.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\nInvalid\ncount,total,passed\n1,50,1\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-1/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "[50, 85]\n[0, 50, 85]\n2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/predict-2/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid\n2 135\n2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
+    "stdout": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "0\n",
+    "stdout": "count,total,passed\n0,0,0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "3\nA,0\nB,50\nC,100\n",
+    "stdout": "count,total,passed\n3,150,2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "3\nmissing\n,50\na,b,c\n",
+    "stdout": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
+    "stdout": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "0\n",
+    "stdout": "count,total,passed\n0,0,0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "3\nA,0\nB,50\nC,100\n",
+    "stdout": "count,total,passed\n3,150,2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/challenge.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "3\nmissing\n,50\na,b,c\n",
+    "stdout": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n",
+    "returncode": 0,
+    "error": ""
+  }
+]

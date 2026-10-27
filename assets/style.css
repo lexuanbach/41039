@@ -1361,6 +1361,41 @@ body.code-fullscreen-open { overflow: hidden; }
 .team-card ol, .team-card ul { margin: 0.4rem 0 0 1.2rem; }
 .team-card li { margin-bottom: 0.25rem; }
 
+/* Course-wide rail. On narrow screens the same links live in a disclosure. */
+.layout { max-width: 94rem; margin: 0 auto; padding: 0 1.5rem; }
+.layout > main { min-width: 0; }
+.side { padding-top: 1rem; }
+.side summary {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem; font-weight: 600;
+  color: var(--ink-soft); cursor: pointer; padding: 0.6rem;
+}
+.side nav { display: grid; gap: 0.15rem; padding: 0.4rem 0; }
+.side a {
+  display: block; text-decoration: none; font-size: 0.84rem;
+  color: var(--ink-soft); padding: 0.35rem 0.6rem;
+  border-radius: 6px; border-left: 2px solid transparent;
+}
+.side a:hover { color: var(--ink); background: color-mix(in srgb, var(--teal) 6%, transparent); }
+.side a[aria-current="page"] {
+  color: var(--teal); font-weight: 600; border-left-color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 8%, transparent);
+}
+.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; margin-right: 0.5rem; }
+.mat-card.later { border-top-color: var(--teal); }
+.mat-card.later .mat-num { color: var(--teal); }
+@media (min-width: 1280px) {
+  .layout { display: grid; grid-template-columns: 12rem minmax(0,1fr); gap: 2rem; align-items: start; }
+  .layout > main .wrap { max-width: none; padding: 0; }
+  .side { position: sticky; top: 4.6rem; max-height: calc(100vh - 5.6rem); overflow-y: auto; }
+  .layout .lesson { grid-template-columns: 14rem minmax(0,1fr); }
+}
+@media (max-width: 1279px) {
+  .layout { padding: 0; }
+  .side { margin: 0 1.5rem; border-bottom: 1px solid var(--line); }
+  .side nav { max-height: 16rem; overflow-y: auto; }
+}
+
 /* ── Further reading ── */
 .read-grid { display: grid; gap: 0.8rem; }
 .read-card {

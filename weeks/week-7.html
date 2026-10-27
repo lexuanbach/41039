@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Week 7 · Lists and Generics · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Replace fixed-size arrays with collections, compare ArrayList and LinkedList, distinguish positions from values, and use type parameters to reuse code without giving up type checking.">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("p1-theme");
+    if (savedTheme === "light" || savedTheme === "dark") {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {}
+  try {
+    const savedCodeTheme = localStorage.getItem("p1-code-theme");
+    if (savedCodeTheme && savedCodeTheme !== "midnight") {
+      document.documentElement.dataset.codeTheme = savedCodeTheme;
+    }
+  } catch (error) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="../assets/style.css?v=8224c40a">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="../index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header><div class="layout"><aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a><a href="week-1.html"><span class="ch-num">1</span>First programs</a><a href="week-2-3.html"><span class="ch-num">2-3</span>Choosing and repeating</a><a href="week-4.html"><span class="ch-num">4</span>Methods and records</a><a href="week-5.html"><span class="ch-num">5</span>Classes and enums</a><a href="week-6.html"><span class="ch-num">6</span>Reliable classes</a><a href="week-7.html" aria-current="page"><span class="ch-num">7</span>Lists and generics</a><a href="week-8.html"><span class="ch-num">8</span>Inheritance and interfaces</a><a href="week-9.html"><span class="ch-num">9</span>Exceptions and input</a><a href="week-10.html"><span class="ch-num">10</span>Output and reports</a><a href="week-11.html"><span class="ch-num">11</span>OOP design</a><a href="week-12.html"><span class="ch-num">12</span>Review and integration</a><a href="../playground.html">Java + Python playground</a></nav></details></aside><main>
+<section class="hero"><div class="wrap"><div><span class="eyebrow">Week 7 · 41039 Programming 1</span><h1>Lists and Generics</h1><p class="lede">Replace fixed-size arrays with collections, compare ArrayList and LinkedList, distinguish positions from values, and use type parameters to reuse code without giving up type checking.</p><div class="meta-chips"><span class="chip">4 lecture sections</span><span class="chip">8 runnable examples</span><span class="chip">6 exercises · 12 MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">Changing a resizable list</span></div><pre>import java.util.ArrayList;
+
+public class Demo {
+    public static void main(String[] args) {
+        ArrayList&lt;String&gt; names = new ArrayList&lt;String&gt;();
+        names.add(&quot;An&quot;);
+        names.add(&quot;Mai&quot;);
+        names.add(1,&quot;Linh&quot;);
+        names.set(0,&quot;Binh&quot;);
+        System.out.println(names);
+        System.out.println(names.size());
+    }
+}</pre></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week 7 · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical"><button class="lesson-tab" role="tab" id="tab-s01" aria-controls="panel-s01" aria-selected="true" tabindex="0" data-target="s01"><span class="t-num">01</span><span class="t-text"><span class="t-title">ArrayList and Python lists</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s02" aria-controls="panel-s02" aria-selected="false" tabindex="-1" data-target="s02"><span class="t-num">02</span><span class="t-text"><span class="t-title">Removal and safe traversal</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s03" aria-controls="panel-s03" aria-selected="false" tabindex="-1" data-target="s03"><span class="t-num">03</span><span class="t-text"><span class="t-title">Linked nodes and queues</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s04" aria-controls="panel-s04" aria-selected="false" tabindex="-1" data-target="s04"><span class="t-num">04</span><span class="t-text"><span class="t-title">Type parameters and programming to List</span><span class="t-meta">2 examples · Java + Python</span></span></button><button class="lesson-tab" role="tab" id="tab-s05" aria-controls="panel-s05" aria-selected="false" tabindex="-1" data-target="s05"><span class="t-num">05</span><span class="t-text"><span class="t-title">Coding exercises</span><span class="t-meta">6 tasks · auto-marked</span></span></button><button class="lesson-tab" role="tab" id="tab-s06" aria-controls="panel-s06" aria-selected="false" tabindex="-1" data-target="s06"><span class="t-num">06</span><span class="t-text"><span class="t-title">Team activity</span><span class="t-meta">2 activities · discussion</span></span></button><button class="lesson-tab" role="tab" id="tab-s07" aria-controls="panel-s07" aria-selected="false" tabindex="-1" data-target="s07"><span class="t-num">07</span><span class="t-text"><span class="t-title">Quiz</span><span class="t-meta">12 questions · explained</span></span></button><button class="lesson-tab" role="tab" id="tab-s08" aria-controls="panel-s08" aria-selected="false" tabindex="-1" data-target="s08"><span class="t-num">08</span><span class="t-text"><span class="t-title">Further reading</span><span class="t-meta">Ed + Canvas + documentation</span></span></button></nav></div><div class="lesson-content"><section class="lesson-panel" role="tabpanel" id="panel-s01" aria-labelledby="tab-s01" tabindex="0"><h3 class="panel-head"><span class="panel-num">01</span>ArrayList and Python lists</h3><div class="concept"><h3><span class="idx">1.1</span>A sequence that grows</h3><p>An array has a fixed length. An ArrayList manages a backing array and its capacity for you, so adding an element does not require you to allocate a replacement yourself. <code>size()</code> is the number of stored elements; capacity is internal storage, not a set of elements you can already access.</p></div><div class="concept"><h3><span class="idx">1.2</span>Insert, replace and inspect</h3><p>Use <code>add(value)</code> to append, <code>add(index,value)</code> to insert and <code>set(index,value)</code> to replace. Valid access indices run from 0 through size−1. Insertion also permits size, which appends. Python uses append, insert and bracket assignment for the corresponding jobs.</p></div><div class="p1-explain" data-lang="java" data-title="Changing a resizable list" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.ArrayList;
+
+public class Demo {
+    public static void main(String[] args) {
+        ArrayList<String> names = new ArrayList<String>();
+        names.add("An");
+        names.add("Mai");
+        names.add(1,"Linh");
+        names.set(0,"Binh");
+        System.out.println(names);
+        System.out.println(names.size());
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="8" data-match="names.add(1,&quot;Linh&quot;)" data-title="names.add(1,&quot;Linh&quot;)">Insert at index 1 and shift the later elements right.</li><li data-line="9" data-match="names.set(0,&quot;Binh&quot;)" data-title="names.set(0,&quot;Binh&quot;)">Replace an existing element; the list size stays unchanged.</li></ol></div><div class="p1-explain" data-lang="python" data-title="The comparable Python operations" data-stdin="">
+<script type="text/plain" data-role="source">names = ["An", "Mai"]
+names.insert(1, "Linh")
+names[0] = "Binh"
+print(names)
+print(len(names))
+</script>
+<ol data-role="notes"><li data-line="2" data-match="names.insert(1, &quot;Linh&quot;)" data-title="names.insert(1, &quot;Linh&quot;)">Insert rather than overwrite the existing index.</li><li data-line="3" data-match="names[0] = &quot;Binh&quot;" data-title="names[0] = &quot;Binh&quot;">Replace one list element.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Insert at the current size, then try get(size) in Java. Explain why the first operation is valid and the second is outside the list.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s02" aria-labelledby="tab-s02" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">02</span>Removal and safe traversal</h3><div class="concept"><h3><span class="idx">2.1</span>Overloading can change meaning</h3><p>On <code>ArrayList&lt;Integer&gt;</code>, <code>remove(1)</code> removes index 1; <code>remove(Integer.valueOf(1))</code> removes the first value equal to 1. The argument type decides the overload. A value removal that finds no match returns false; a position outside the list is an error.</p></div><div class="concept"><h3><span class="idx">2.2</span>Do not shift the ground under your loop</h3><p>Removing from a list while an enhanced for-loop is traversing it can invalidate the traversal. Use an Iterator and its remove method, iterate indices backwards, or create a filtered result. The Python example creates a new list, so repeated adjacent rejected values are handled correctly.</p></div><div class="p1-explain" data-lang="java" data-title="Remove an index or remove a value?" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Demo {
+    public static void main(String[] args) {
+        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));
+        values.remove(1);
+        values.remove(Integer.valueOf(4));
+        System.out.println(values);
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="7" data-match="values.remove(1)" data-title="values.remove(1)">The int argument selects the index overload, removing the element 1 at index 1.</li><li data-line="8" data-match="Integer.valueOf(4)" data-title="Integer.valueOf(4)">Pass an Integer object to select removal by value.</li></ol></div><div class="p1-explain" data-lang="python" data-title="Safe filtering produces a new list" data-stdin="">
+<script type="text/plain" data-role="source">values = [1, 2, 2, 3, 4]
+kept = [value for value in values if value % 2 == 1]
+print(kept)
+print(values)
+</script>
+<ol data-role="notes"><li data-line="2" data-match="value % 2 == 1" data-title="value % 2 == 1">Keep only odd values.</li><li data-line="2" data-match="kept =" data-title="kept =">The comprehension builds a new list instead of editing the list being traversed.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change the Java values to [1,4,1]. Predict both removals. In Python, explain why two adjacent even values are both removed by the comprehension.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s03" aria-labelledby="tab-s03" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">03</span>Linked nodes and queues</h3><div class="concept"><h3><span class="idx">3.1</span>Follow links instead of shifting values</h3><p>A linked list stores nodes with links between them. Java LinkedList is doubly linked. Adding or removing at an end does not shift a backing array, but reaching the node at an arbitrary index still requires traversal. A fast unlink after finding a node does not make every remove(index) constant time.</p></div><div class="concept"><h3><span class="idx">3.2</span>Choose from the access pattern</h3><p>ArrayList is a sound default for indexed access and ordinary traversal. LinkedList offers operations at both ends. Repeated get(i) in a loop can make a linked-list traversal quadratic; an enhanced for-loop visits it sequentially. For a Python FIFO queue, collections.deque avoids repeatedly shifting the front of a list.</p></div><div class="p1-explain" data-lang="java" data-title="A queue built with LinkedList" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.LinkedList;
+
+public class Demo {
+    public static void main(String[] args) {
+        LinkedList<String> queue = new LinkedList<String>();
+        queue.addLast("An");
+        queue.addLast("Mai");
+        System.out.println(queue.removeFirst());
+        System.out.println(queue);
+    }
+}
+</script>
+<ol data-role="notes"><li data-line="6" data-match="queue.addLast" data-title="queue.addLast">Add to the tail of the queue.</li><li data-line="8" data-match="queue.removeFirst()" data-title="queue.removeFirst()">Remove and return the head, giving first-in-first-out service.</li></ol></div><div class="p1-explain" data-lang="python" data-title="The same FIFO contract with deque" data-stdin="">
+<script type="text/plain" data-role="source">from collections import deque
+queue = deque(["An", "Mai"])
+print(queue.popleft())
+print(list(queue))
+</script>
+<ol data-role="notes"><li data-line="1" data-match="deque" data-title="deque">Use the standard double-ended queue for efficient operations at either end.</li><li data-line="3" data-match="queue.popleft()" data-title="queue.popleft()">Remove the leftmost, oldest entry.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Add a third person and remove two people. Draw the waiting order after each operation; then describe the result without discussing either implementation.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s04" aria-labelledby="tab-s04" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">04</span>Type parameters and programming to List</h3><div class="concept"><h3><span class="idx">4.1</span>Reuse behaviour while retaining types</h3><p><code>Box&lt;T&gt;</code> describes one class parameterised by a reference type. <code>Box&lt;String&gt;</code> accepts strings and returns a String. A raw Box would discard useful checking. Primitive types cannot be type arguments: use Integer rather than int. Boxing and unboxing bridge the two, but unboxing a null Integer fails.</p></div><div class="concept"><h3><span class="idx">4.2</span>Separate the operation from storage</h3><p>A method accepting <code>List&lt;Integer&gt;</code> can work with ArrayList or LinkedList when it needs only the List operations. Neither <code>List&lt;Integer&gt;</code> nor <code>List&lt;Double&gt;</code> is a subtype of <code>List&lt;Number&gt;</code>. Generic type arguments are invariant. This page introduces the idea; wildcard bounds and type erasure are further reading.</p></div><div class="p1-explain" data-lang="java" data-title="A reusable, type-safe box" data-stdin="">
+<script type="text/plain" data-role="source">public class Demo {
+    public static void main(String[] args) {
+        Box<String> label = new Box<String>("tea");
+        Box<Integer> count = new Box<Integer>(3);
+        System.out.println(label.get() + " " + count.get());
+    }
+}
+class Box<T> {
+    private final T value;
+    Box(T value) { this.value = value; }
+    T get() { return value; }
+}
+</script>
+<ol data-role="notes"><li data-line="8" data-match="Box&lt;T&gt;" data-title="Box&lt;T&gt;">T names a reference type supplied when the box is used.</li><li data-line="11" data-match="T get()" data-title="T get()">The return type is the same type parameter as the stored value.</li></ol></div><div class="p1-explain" data-lang="java" data-title="A list contract with two implementations" data-stdin="">
+<script type="text/plain" data-role="source">import java.util.*;
+
+public class Demo {
+    static int total(List<Integer> xs) {
+        int sum=0;
+        for(int x:xs) sum+=x;
+        return sum;
+    }
+    public static void main(String[] args) {
+        List<Integer> a = new ArrayList<Integer>(Arrays.asList(2,3));
+        List<Integer> b = new LinkedList<Integer>(a);
+        System.out.println(total(a));
+        System.out.println(total(b));
+    }
+}
+// Both lists satisfy the same operations used here.
+</script>
+<ol data-role="notes"><li data-line="10" data-match="List&lt;Integer&gt; a" data-title="List&lt;Integer&gt; a">Expose only the list contract to callers.</li><li data-line="6" data-match="for(int x:xs)" data-title="for(int x:xs)">Traverse elements without repeated indexed lookup, which would be expensive for a linked list.</li></ol></div><div class="note tip"><span class="tag">Predict · run · change · explain</span><p>Change only the concrete list construction in the total example. Explain which lines depend on the storage choice and which lines depend only on the contract.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s05" aria-labelledby="tab-s05" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">05</span>Coding exercises</h3><p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div></section><section class="lesson-panel" role="tabpanel" id="panel-s06" aria-labelledby="tab-s06" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">06</span>Team activity</h3><div class="team-card"><div class="team-meta">Activity 1 · 12 min · groups of 3</div><h4>Choose a collection</h4><p>Compare a marks register (frequent indexed reads), a printer queue (append and serve from the front), and a playlist (sequential traversal). Choose the operations first, then a collection. Explain one poor choice and its cost.</p></div><div class="team-card"><div class="team-meta">Activity 2 · 12 min · groups of 3</div><h4>Trace a removal bug</h4><p>Write down the result of remove(1) and remove(Integer.valueOf(1)) on [1,4,1]. Swap roles: one person predicts, one runs, one explains overload selection and the size change.</p></div></section><section class="lesson-panel" role="tabpanel" id="panel-s07" aria-labelledby="tab-s07" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">07</span>Quiz</h3><div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div></section><section class="lesson-panel" role="tabpanel" id="panel-s08" aria-labelledby="tab-s08" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">08</span>Further reading</h3><p>The Ed lessons below provide the course material behind this page. The worked examples, activities and practice questions here are newly written adaptations.</p><div class="read-grid"><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118753"><span class="kind">Course source / reference</span><h4>Java Lists 1 - ArrayLists</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118754"><span class="kind">Course source / reference</span><h4>Java Lists 2 - LinkedLists</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118755"><span class="kind">Course source / reference</span><h4>Generics</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://edstem.org/au/courses/41298/lessons/118763"><span class="kind">Course source / reference</span><h4>Java Lists 3 - The List Interface</h4><p>Read the lesson and trace its examples on Ed.</p><span class="host">edstem.org</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html"><span class="kind">Course source / reference</span><h4>ArrayList API</h4><p>Method overloads and the cost of list operations.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.oracle.com/javase/8/docs/api/java/util/LinkedList.html"><span class="kind">Course source / reference</span><h4>LinkedList API</h4><p>The doubly linked List and Deque implementation.</p><span class="host">docs.oracle.com</span></a><a class="read-card" href="https://docs.python.org/3/library/collections.html#collections.deque"><span class="kind">Course source / reference</span><h4>Python deque</h4><p>Double-ended queues and their operations.</p><span class="host">docs.python.org</span></a></div></section></div></div></div></section>
+<section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>Read ArrayLists, LinkedLists and Generics on Ed, then practise the List interface example. Solve a removal task and explain why the argument type changes its meaning.</p></div><ol><li><a href="https://edstem.org/au/courses/41298/lessons/118753">Java Lists 1 - ArrayLists</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118754">Java Lists 2 - LinkedLists</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118755">Generics</a></li><li><a href="https://edstem.org/au/courses/41298/lessons/118763">Java Lists 3 - The List Interface</a></li></ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
+<div class="wrap pagenav"><a href="week-6.html"><span class="dir">Previous</span>Week 6</a><a href="week-8.html"><span class="dir">Next</span>Week 8</a></div>
+<footer><div class="wrap"><p>41039 Programming 1 · Week 7 · Lists and Generics</p></div></footer>
+</main></div><script src="../assets/runtime.js?v=4cdadefe"></script>
+<script src="../assets/highlight.js?v=88b90c66"></script>
+<script src="../assets/editor.js?v=0ea13585"></script>
+<script src="../assets/console-ui.js?v=6c39ad9b"></script>
+<script src="../assets/explain.js?v=706b7440"></script>
+<script src="../assets/w7-data.js?v=e27a7d0b"></script>
+<script src="../assets/w7-exercises.js?v=155a0ec9"></script>
+<script src="../assets/exercises.js?v=a455b14d"></script>
+<script src="../assets/course.js?v=6353e7e3"></script>
+</body></html>
