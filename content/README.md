@@ -33,6 +33,10 @@ Technical corrections applied when adapting the readings:
 - Interface constants/default methods and Python's full MRO need qualifications beyond
   introductory shorthand.
 
+Week 7 also carries `visuals` (interactive diagrams drawn by `assets/visuals.js`), `extras`
+(explained examples that are not quiz questions) and optional `media` (photographs and comics);
+see architecture.md, *Interactive diagrams*. The checker verifies all of them.
+
 Run from the repository root after editing the content:
 
 ```sh

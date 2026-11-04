@@ -1364,36 +1364,36 @@ body.code-fullscreen-open { overflow: hidden; }
 /* Course-wide rail. On narrow screens the same links live in a disclosure. */
 .layout { max-width: 94rem; margin: 0 auto; padding: 0 1.5rem; }
 .layout > main { min-width: 0; }
-.side { padding-top: 1rem; }
-.side summary {
+aside.side { padding-top: 1rem; }
+aside.side summary {
   font-family: "IBM Plex Mono", monospace;
   font-size: 0.78rem; font-weight: 600;
   color: var(--ink-soft); cursor: pointer; padding: 0.6rem;
 }
-.side nav { display: grid; gap: 0.15rem; padding: 0.4rem 0; }
-.side a {
+aside.side nav { display: grid; gap: 0.15rem; padding: 0.4rem 0; }
+aside.side a {
   display: block; text-decoration: none; font-size: 0.84rem;
   color: var(--ink-soft); padding: 0.35rem 0.6rem;
   border-radius: 6px; border-left: 2px solid transparent;
 }
-.side a:hover { color: var(--ink); background: color-mix(in srgb, var(--teal) 6%, transparent); }
-.side a[aria-current="page"] {
+aside.side a:hover { color: var(--ink); background: color-mix(in srgb, var(--teal) 6%, transparent); }
+aside.side a[aria-current="page"] {
   color: var(--teal); font-weight: 600; border-left-color: var(--teal);
   background: color-mix(in srgb, var(--teal) 8%, transparent);
 }
-.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; margin-right: 0.5rem; }
+aside.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; margin-right: 0.5rem; }
 .mat-card.later { border-top-color: var(--teal); }
 .mat-card.later .mat-num { color: var(--teal); }
 @media (min-width: 1280px) {
   .layout { display: grid; grid-template-columns: 12rem minmax(0,1fr); gap: 2rem; align-items: start; }
   .layout > main .wrap { max-width: none; padding: 0; }
-  .side { position: sticky; top: 4.6rem; max-height: calc(100vh - 5.6rem); overflow-y: auto; }
+  aside.side { position: sticky; top: 4.6rem; max-height: calc(100vh - 5.6rem); overflow-y: auto; }
   .layout .lesson { grid-template-columns: 14rem minmax(0,1fr); }
 }
 @media (max-width: 1279px) {
   .layout { padding: 0; }
-  .side { margin: 0 1.5rem; border-bottom: 1px solid var(--line); }
-  .side nav { max-height: 16rem; overflow-y: auto; }
+  aside.side { margin: 0 1.5rem; border-bottom: 1px solid var(--line); }
+  aside.side nav { max-height: 16rem; overflow-y: auto; }
 }
 
 /* ── Further reading ── */
@@ -1614,3 +1614,232 @@ body.code-fullscreen-open { overflow: hidden; }
 }
 /* code quoted in a note keeps its spaces (output such as "after swap:  x = 1") */
 .explain-tip code, .explain-all code { white-space: pre-wrap; }
+
+/* ── Interactive diagrams (assets/visuals.js) ─────────────
+   Step through a program and watch the data change. Same card as explained code;
+   code panes reuse .explain-code. Colours: teal = the thing being looked at (Part 2),
+   green = added, amber = moved / skipped (warning), red = removed or refused. */
+.viz {
+  --cw: 3.5rem; --cg: 0.35rem;              /* list cell width and gap */
+  --nw: 4.4rem; --lw: 1.9rem;              /* queue node width and link width */
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 12px; box-shadow: var(--shadow);
+  margin: 1.2rem 0 1.6rem; overflow: hidden;
+}
+.viz-fallback { padding: 0.8rem 0.9rem; }
+.viz-fallback .viz-title { font-family: "Archivo", sans-serif; font-weight: 700; }
+.viz-head {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.7rem;
+  padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--line);
+  border-top: 3px solid var(--teal);
+}
+.viz-head .title { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 0.95rem; margin-right: auto; }
+.viz-kicker {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-ink);
+}
+.viz-langs { display: inline-flex; gap: 0.35rem; }
+.viz-body { padding: 0.85rem 0.9rem 1rem; display: grid; gap: 0.8rem; min-width: 0; }
+.viz-body > * { min-width: 0; }
+.viz-intro { font-size: 0.93rem; color: var(--ink-soft); max-width: 46rem; }
+.viz-muted { color: var(--ink-soft); font-size: 0.88rem; }
+.viz [hidden] { display: none !important; }
+.viz code, .viz-sandbox code {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.86em;
+  background: var(--paper); padding: 0.05em 0.3em; border-radius: 4px;
+}
+
+/* the stage: tracks of cells or nodes, and a strip of variables */
+.viz-stage {
+  background: color-mix(in srgb, var(--teal) 5%, var(--paper));
+  border: 1px solid var(--line); border-radius: 10px;
+  padding: 0.8rem 0.8rem 0.7rem; overflow-x: auto; display: grid; gap: 0.6rem;
+}
+.viz-track { display: grid; gap: 0.25rem; }
+.viz-track-name { font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; font-weight: 600; color: var(--ink-soft); }
+.viz-row { position: relative; padding-top: 1.45rem; padding-right: calc(var(--cw) + var(--cg)); width: max-content; min-width: 100%; }
+.viz-cells, .viz-idx { display: flex; gap: var(--cg); position: relative; }
+.viz-cells { min-height: 3.1rem; }
+.viz-cells.is-empty::before {
+  content: "empty"; align-self: center; font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem; color: var(--ink-soft); font-style: italic;
+}
+.viz-cell {
+  flex: 0 0 var(--cw); width: var(--cw); height: 3.1rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: var(--surface); border: 1.5px solid var(--ink-soft); border-radius: 7px;
+  font-family: "IBM Plex Mono", monospace; line-height: 1.15;
+  transition: transform 380ms ease, background-color 200ms ease, border-color 200ms ease, opacity 200ms ease;
+}
+.viz-cell .v { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.viz-cell .m { font-size: 0.6rem; letter-spacing: 0.04em; color: var(--ink-soft); min-height: 0.7rem; }
+.viz-cell[data-mark="add"]     { border-color: var(--green); background: color-mix(in srgb, var(--green) 14%, var(--surface)); }
+.viz-cell[data-mark="add"] .m  { color: var(--green); }
+.viz-cell[data-mark="changed"] { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 16%, var(--surface)); }
+.viz-cell[data-mark="changed"] .m, .viz-cell[data-mark="check"] .m, .viz-cell[data-mark="read"] .m { color: var(--teal-ink); }
+.viz-cell[data-mark="check"], .viz-cell[data-mark="read"] { border-color: var(--teal); border-width: 2.5px; background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
+.viz-cell[data-mark="moved"]   { border-style: dashed; border-color: var(--amber); }
+.viz-cell[data-mark="moved"] .m { color: var(--amber); }
+.viz-cell[data-mark="skipped"] { border-color: var(--amber); border-width: 2.5px; background: color-mix(in srgb, var(--amber) 16%, var(--surface)); }
+.viz-cell[data-mark="skipped"] .m { color: var(--amber); font-weight: 700; }
+.viz-cell[data-mark="done"]    { opacity: 0.6; }
+.viz-cell.is-leaving { position: absolute; border-color: var(--red); background: color-mix(in srgb, var(--red) 14%, var(--surface)); pointer-events: none; }
+.viz-idx span {
+  flex: 0 0 var(--cw); width: var(--cw); text-align: center;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.viz-ptr {
+  position: absolute; top: 0; width: var(--cw); text-align: center;
+  left: calc(var(--i, 0) * (var(--cw) + var(--cg)));
+  font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; font-weight: 700; color: var(--teal-ink);
+  transition: left 380ms ease; white-space: nowrap;
+}
+.viz-ptr::after { content: "▼"; display: block; font-size: 0.6rem; line-height: 0.8; }
+.viz-ptr.is-out { color: var(--ink-soft); }
+.viz-vars { display: flex; flex-wrap: wrap; gap: 0.35rem; min-height: 1.6rem; }
+.viz-vars:empty { display: none; }
+.viz-vars span {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.76rem;
+  padding: 0.12rem 0.5rem; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--line); color: var(--ink);
+}
+
+/* caption and step controls */
+.viz-say {
+  border-left: 3px solid var(--teal); padding: 0.45rem 0.75rem;
+  background: color-mix(in srgb, var(--teal) 7%, transparent); border-radius: 0 8px 8px 0;
+  font-size: 0.93rem; min-height: 2.6rem;
+}
+.viz-say:empty { display: none; }
+.viz-controls, .viz-ops { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.viz-count { margin-left: auto; font-family: "IBM Plex Mono", monospace; font-size: 0.76rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.btn.mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 0.78rem; }
+
+/* segmented choices (strategy, type, declaration, statement) */
+.viz-seg { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; }
+.viz-seg-btn {
+  font-family: "Be Vietnam Pro", system-ui, sans-serif; font-size: 0.82rem; font-weight: 600;
+  padding: 0.35rem 0.7rem; border-radius: 7px; cursor: pointer;
+  background: var(--paper); color: var(--ink-soft); border: 1px solid var(--line);
+}
+.viz-seg-btn.mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 0.78rem; }
+.viz-seg-btn:hover { color: var(--ink); border-color: var(--ink-soft); }
+.viz-seg-btn[aria-pressed="true"] {
+  color: var(--teal-ink); border-color: var(--teal);
+  background: color-mix(in srgb, var(--teal) 12%, var(--surface));
+}
+.viz-seg-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.viz-form { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; }
+.viz-field-label { font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); }
+.viz-field { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 600; color: var(--ink-soft); }
+.viz-field span { font-family: "IBM Plex Mono", monospace; }
+.viz-field input {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.9rem; width: 7rem;
+  padding: 0.3rem 0.5rem; border-radius: 7px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.viz-field input[type="number"] { width: 4.2rem; }
+.viz-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* code panes: Java beside Python when there is room, stacked when not */
+.viz-panes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 0.7rem; }
+.viz-pane { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; background: var(--surface); }
+.viz-pane-head { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.4rem 0.7rem; border-bottom: 1px solid var(--line); }
+.viz-pane-label { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-soft); }
+.viz-code { font-size: calc(0.76rem * var(--code-scale, 1)); line-height: 1.75; }
+.viz-code .cl { min-height: 1.75em; transition: background-color 160ms ease; }
+.viz-code .cl.is-now {
+  background: color-mix(in srgb, var(--code-hl-fn) 20%, transparent);
+  box-shadow: inset 3px 0 0 var(--code-hl-fn);
+}
+.viz-code .cl.is-ok  { background: color-mix(in srgb, var(--code-hl-str) 20%, transparent); box-shadow: inset 3px 0 0 var(--code-hl-str); }
+.viz-code .cl.is-bad { background: color-mix(in srgb, var(--code-hl-ann) 24%, transparent); box-shadow: inset 3px 0 0 var(--code-hl-ann); }
+.viz-code .viz-sub { background: color-mix(in srgb, var(--code-hl-fn) 26%, transparent); border-radius: 3px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--code-hl-fn) 60%, transparent); }
+.viz-code .viz-t   { background: color-mix(in srgb, var(--code-hl-kw) 26%, transparent); border-radius: 3px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--code-hl-kw) 60%, transparent); }
+.viz-out-label {
+  padding: 0.3rem 0.7rem; font-family: "IBM Plex Mono", monospace; font-size: 0.68rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+}
+.viz .viz-out { height: auto; min-height: 2.6rem; max-height: 12rem; resize: none; font-size: calc(0.76rem * var(--code-scale, 1)); border-top: 0; }
+.viz .viz-out:empty::before { content: "Nothing printed yet."; }
+.viz-verdict .viz-out { border-radius: 8px; margin: 0.2rem 0 0.6rem; white-space: pre; overflow-x: auto; }
+.viz-verdict .viz-out.is-error { color: #FF9B9B; }
+:root[data-code-theme="paper"] .viz-verdict .viz-out.is-error { color: #B3261E; }
+.viz-verdict { display: grid; gap: 0.5rem; align-content: start; font-size: 0.92rem; }
+.viz-verdict .viz-out-label { border-top: 0; padding: 0; }
+.viz-big { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 1.05rem; }
+.viz-good { color: var(--green); }
+.viz-bad { color: var(--red); }
+.viz-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.5rem; font-size: 0.9rem; }
+.viz-arrow { color: var(--ink-soft); }
+
+/* "Your turn" sandbox */
+.viz-sandbox { border-top: 1px dashed var(--line); padding-top: 0.9rem; display: grid; gap: 0.7rem; min-width: 0; }
+.viz-sandbox h4 { font-family: "Archivo", sans-serif; font-size: 0.95rem; }
+.viz-sandbox .viz-track {
+  background: color-mix(in srgb, var(--teal) 5%, var(--paper));
+  border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.8rem; overflow-x: auto;
+}
+.viz-sandbox .viz-row { padding-top: 0; }
+.viz-result { display: grid; gap: 0.45rem; min-height: 2.5rem; }
+
+/* linked queue: nodes with links, head above, tail and node below */
+.viz-qtrack { display: grid; gap: 0.3rem; width: max-content; min-width: 100%; }
+.viz-qlabels { position: relative; height: 1.5rem; }
+.viz-qlabel {
+  position: absolute; top: 0; width: var(--nw); text-align: center;
+  left: calc(var(--i, 0) * (var(--nw) + var(--lw)));
+  font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; font-weight: 700;
+  transition: left 380ms ease; white-space: nowrap;
+}
+.viz-qlabel.is-head { color: var(--teal-ink); }
+.viz-qlabel.is-head::after { content: "▼"; display: block; font-size: 0.6rem; line-height: 0.8; }
+.viz-qlabel.is-tail { color: var(--amber); }
+.viz-qlabel.is-tail::before { content: "▲"; display: block; font-size: 0.6rem; line-height: 0.8; }
+.viz-qlabel.is-local { color: var(--ink-soft); font-weight: 600; }
+.viz-qlabel.is-local::before { content: "▲"; display: block; font-size: 0.6rem; line-height: 0.8; }
+.viz-qlabel.is-null { width: auto; color: var(--ink-soft); font-weight: 500; font-style: italic; }
+.viz-qlabel.is-null::before, .viz-qlabel.is-null::after { content: none; }
+.viz-nodes { display: flex; position: relative; min-height: 2.9rem; }
+.viz-slot { display: flex; align-items: center; flex: 0 0 calc(var(--nw) + var(--lw)); transition: transform 380ms ease, opacity 200ms ease; }
+.viz-node {
+  width: var(--nw); height: 2.9rem; display: grid; grid-template-columns: 1fr 1.5rem;
+  border: 1.5px solid var(--ink-soft); border-radius: 7px; background: var(--surface);
+  font-family: "IBM Plex Mono", monospace; overflow: hidden;
+}
+.viz-node .nv { display: flex; align-items: center; justify-content: center; font-size: 0.86rem; font-weight: 600; }
+.viz-node .nn {
+  display: flex; align-items: center; justify-content: center; font-size: 0.56rem; color: var(--ink-soft);
+  border-left: 1.5px solid var(--line); background: var(--paper);
+}
+.viz-slot[data-mark="new"] .viz-node { border-color: var(--green); background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+.viz-slot[data-mark="read"] .viz-node { border-color: var(--teal); border-width: 2.5px; }
+.viz-slot[data-mark="gone"] .viz-node { border-style: dashed; border-color: var(--red); opacity: 0.6; }
+.viz-slot.is-leaving { position: absolute; opacity: 0; pointer-events: none; }
+.viz-link { position: relative; width: var(--lw); height: 2px; }
+.viz-link.is-on { background: var(--ink-soft); margin-right: 3px; }
+.viz-link.is-on::after {
+  content: ""; position: absolute; right: -5px; top: -4px;
+  border-left: 7px solid var(--ink-soft); border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+}
+.viz-link.is-new { background: var(--green); }
+.viz-link.is-new::after { border-left-color: var(--green); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-cell.is-entering, .viz-slot.is-entering { animation: viz-in 360ms ease both; }
+  .viz-cell.is-leaving { animation: viz-out 420ms ease forwards; }
+  @keyframes viz-in { from { opacity: 0; transform: translateY(-0.7rem) scale(0.9); } }
+  @keyframes viz-out { to { opacity: 0; transform: translateY(0.9rem) scale(0.9); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .viz-cell, .viz-slot, .viz-ptr, .viz-qlabel { transition: none; }
+}
+@media (max-width: 560px) {
+  .viz { --cw: 3rem; --cg: 0.28rem; --nw: 3.9rem; --lw: 1.5rem; }
+  .viz-body { padding: 0.75rem 0.7rem 0.9rem; }
+  .viz-count { margin-left: 0; width: 100%; }
+}
+/* the current-line band spans the whole line, even when the pane scrolls sideways */
+.viz-code .cl { width: max-content; min-width: 100%; }

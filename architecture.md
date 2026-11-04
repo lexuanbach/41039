@@ -62,6 +62,8 @@ UTS-Programming-I-Website/
 │   ├── w4-exercises.js     # Week 4 exercise data (same global)
 │   ├── w5-exercises.js     # Week 5 exercise data (same global)
 │   ├── console-ui.js       # The console widget rendered on pages
+│   ├── explain.js          # Explained code: hover/tap notes on read-only examples
+│   ├── visuals.js          # Interactive step-through diagrams (Week 7)
 │   ├── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
 │   ├── w23-data.js         # Weeks 2+3 quiz data (same global)
 │   ├── w4-data.js          # Week 4 quiz data (same global)
@@ -351,6 +353,41 @@ explained". Output panels, compiler messages and syntax templates stay plain `co
   `data-run="none"` (no Run, no Edit) plus the real output, shown as given:
   `<pre data-role="output" data-label="Output (Java 16 or later — …)">…</pre>` after the `</ol>`.
   Work that output out with a real JDK; nothing here checks it.
+
+### Interactive diagrams (`assets/visuals.js`)
+
+Step-through pictures of what a program does to its data, used on Week 7. A page loads
+`visuals.js` (after `highlight.js`) only when it has one; `build_week_pages.py` adds it.
+
+```html
+<div class="p1-viz" data-kind="filter" data-title="…">
+  <script type="application/json" data-role="spec">{…}</script>
+  <div class="viz-fallback">…intro, shown without JavaScript…</div>
+</div>
+```
+
+- The spec is a section's `visuals[]` entry in `content/weeks-6-12.json`, serialised by the
+  generator (`</` escaped). Kinds: `list-ops` (scripted ArrayList / Python list program, one line
+  per step, plus a *Your turn* sandbox), `filter` (removing while looping: forward bug, backwards,
+  new list), `queue` (hand-built linked queue; Enqueue/Dequeue add steps), `box` (`Box<T>` with T
+  filled in) and `typecheck` (declaration × statement → compiles, or javac's message).
+- **Nothing on a diagram is hand-written output.** `check_week_content.py` runs every program a
+  diagram shows (ECJ `-1.8` and CPython), checks every line marker exists in its code, checks the
+  queue panes are exact excerpts of the explained examples they name, simulates the list
+  operations against the real output, and compiles every typecheck combination with ECJ (verdict)
+  and `javac --release 8` (the message shown). `--refresh` regenerates outputs and javac text.
+- Code panes reuse `.explain-code`; the current line is `.cl.is-now`. Steps are announced in an
+  `aria-live` caption; ← / → step when focus is inside a diagram. Cells and nodes are keyed and
+  moved with FLIP transforms, skipped under `prefers-reduced-motion`. Colours: teal = looked at,
+  green = added, amber = moved/skipped, red = removed or refused — tokens only.
+- A section may also hold `extras[]`: explained examples rendered like `examples[]` but **not**
+  turned into quiz questions (the quiz stays at 12). `compile_error: true` marks a deliberate
+  compile error: the checker requires ECJ to fail with `ecj_error`, javac to print `javac_error`,
+  and the program minus that line to print `fixed_output`.
+- `media[]` places photographs and comics with the Weeks 1–5 components (`banner`, `side`,
+  `media-row`, `did-you-know`, `comic`; `place`: `top`, `concept-N` (a media-row without `html` wraps that concept), `after-visuals` or `end`). Credits are built
+  from `media/photo-credits.json` / the xkcd metadata, and the Further reading panel gains the
+  Photographs and Comics tables automatically.
 
 ### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
 

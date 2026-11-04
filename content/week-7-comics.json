@@ -1,0 +1,44 @@
+[
+ {
+  "num": 163,
+  "title": "Donald Knuth",
+  "year": "2006",
+  "section": "s01",
+  "concept": "Zero-based indexing: ArrayList and Python list indexes run from 0 to size()-1; mixing 0- and 1-based conventions causes off-by-one errors",
+  "file": "media/xkcd-163.png",
+  "alt": "xkcd comic: one programmer tells another he is being inconsistent with his array indices, some starting from one and some from zero. The other replies that different tasks call for different conventions, and quotes algorithms expert Donald Knuth as saying “Who are you? How did you get in my house?” — which is what Knuth said when he asked him about it.",
+  "caption": "Java and Python have already picked a convention for you: the first element is at index <code>0</code> and the last is at <code>size() - 1</code>. Mix the two and you get an off-by-one bug &mdash; and no need to break into a professor&rsquo;s house to settle it.",
+  "figure_html": "<figure class=\"fig fig-wide plain\">\n  <img src=\"../media/xkcd-163.png\" alt=\"xkcd comic: one programmer tells another he is being inconsistent with his array indices, some starting from one and some from zero. The other replies that different tasks call for different conventions, and quotes algorithms expert Donald Knuth as saying “Who are you? How did you get in my house?” — which is what Knuth said when he asked him about it.\" loading=\"lazy\">\n  <figcaption>Java and Python have already picked a convention for you: the first element is at index <code>0</code> and the last is at <code>size() - 1</code>. Mix the two and you get an off-by-one bug &mdash; and no need to break into a professor&rsquo;s house to settle it.<span class=\"credit\"><a href=\"https://xkcd.com/163/\">xkcd 163, <em>Donald Knuth</em></a> (2006) &mdash; Randall Munroe, <a href=\"https://creativecommons.org/licenses/by-nc/2.5/\">CC BY-NC 2.5</a></span></figcaption>\n</figure>",
+  "size": "fig-wide",
+  "width": 640,
+  "height": 339
+ },
+ {
+  "num": 2483,
+  "title": "Linked List Interview Problem",
+  "year": "2021",
+  "section": "s03",
+  "concept": "Linked lists: each node holds only a next link, so a singly linked list can be traversed forwards but never back",
+  "file": "media/xkcd-2483.png",
+  "alt": "xkcd comic: at a coding interview, asked to traverse a linked list, a candidate writes a function on the whiteboard that emails the list’s head pointer to a technology museum as an item donation. The interviewer says “Hey.” Caption: Coding interview tip: interviewers get really mad when you try to donate their linked lists to a technology museum.",
+  "caption": "Each node knows only its <code>next</code> &mdash; which is why, in the hover text, Randall won&rsquo;t traverse this list himself: a singly linked list never shows you the way back.",
+  "figure_html": "<figure class=\"fig fig-narrow plain\">\n  <img src=\"../media/xkcd-2483.png\" alt=\"xkcd comic: at a coding interview, asked to traverse a linked list, a candidate writes a function on the whiteboard that emails the list’s head pointer to a technology museum as an item donation. The interviewer says “Hey.” Caption: Coding interview tip: interviewers get really mad when you try to donate their linked lists to a technology museum.\" loading=\"lazy\">\n  <figcaption>Each node knows only its <code>next</code> &mdash; which is why, in the hover text, Randall won&rsquo;t traverse this list himself: a singly linked list never shows you the way back.<span class=\"credit\"><a href=\"https://xkcd.com/2483/\">xkcd 2483, <em>Linked List Interview Problem</em></a> (2021) &mdash; Randall Munroe, <a href=\"https://creativecommons.org/licenses/by-nc/2.5/\">CC BY-NC 2.5</a></span></figcaption>\n</figure>",
+  "size": "fig-narrow",
+  "width": 369,
+  "height": 441
+ },
+ {
+  "num": 1172,
+  "title": "Workflow",
+  "year": "2013",
+  "section": "s04",
+  "concept": "Programming to an interface: declare List<T> and rely only on what List promises, not on one implementation's accidental behaviour",
+  "file": "media/xkcd-1172.png",
+  "alt": "xkcd comic: a software changelog for version 10.17 reads “The CPU no longer overheats when you hold down spacebar.” A long-time user complains the update broke his workflow, because he holds spacebar instead of the hard-to-reach Control key and configured his editor to treat the rapid temperature rise as Control. The admin replies “That’s horrifying.” Caption: Every change breaks someone’s workflow.",
+  "caption": "He relied on something the software never promised. Write <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code> and use only what <code>List</code> promises, and swapping in a different implementation later won&rsquo;t break anyone&rsquo;s workflow.",
+  "figure_html": "<figure class=\"fig fig-narrow plain\">\n  <img src=\"../media/xkcd-1172.png\" alt=\"xkcd comic: a software changelog for version 10.17 reads “The CPU no longer overheats when you hold down spacebar.” A long-time user complains the update broke his workflow, because he holds spacebar instead of the hard-to-reach Control key and configured his editor to treat the rapid temperature rise as Control. The admin replies “That’s horrifying.” Caption: Every change breaks someone’s workflow.\" loading=\"lazy\">\n  <figcaption>He relied on something the software never promised. Write <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code> and use only what <code>List</code> promises, and swapping in a different implementation later won&rsquo;t break anyone&rsquo;s workflow.<span class=\"credit\"><a href=\"https://xkcd.com/1172/\">xkcd 1172, <em>Workflow</em></a> (2013) &mdash; Randall Munroe, <a href=\"https://creativecommons.org/licenses/by-nc/2.5/\">CC BY-NC 2.5</a></span></figcaption>\n</figure>",
+  "size": "fig-narrow",
+  "width": 278,
+  "height": 386
+ }
+]

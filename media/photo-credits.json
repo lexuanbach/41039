@@ -169,6 +169,86 @@
   "licence": "CC BY 3.0",
   "licence_url": "https://creativecommons.org/licenses/by/3.0"
  },
+ "photo-w7-bookshelf": {
+  "artist": "Roman Eisele",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APart_of_a_bookshelf_containing_books_by_Aristotle_%281%29.jpg",
+  "credit_line": "Own work",
+  "date": "Taken on 20 February 2020, 16:48:10",
+  "description": "Part of my bookshelf containing some editions of the Metaphysics and of the Physics of Aristotle . Also a sample photo for the Zeiss Loxia 85mm F2.4 lens. Perspective, brightness and colours have been adjusted a little bit and the usual sharpening has been applied, but no additional CA removal. Photo taken near to the minimum focussing distance – the image quality is still quite nice.",
+  "file": "photo-w7-bookshelf.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-w7-bus-queue": {
+  "artist": "Grand Canyon NPS",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APeople_In_Line_%2853027406092%29.jpg",
+  "credit_line": "People_In_Line",
+  "date": "Taken on 6 July 2023, 13:05:58",
+  "description": "On July 6, 2023, the Federal Highway Administration announced a $27.5 million grant to Grand Canyon National Park to purchase new electric buses. NPS Photo / J. Stebbins Alt text: a line of people waiting to board a bus",
+  "file": "photo-w7-bus-queue.jpg",
+  "licence": "Public domain",
+  "licence_url": ""
+ },
+ "photo-w7-coloured-seats": {
+  "artist": "Katy Warner from Orlando, FL, USA",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ARows_%26_rows_%282643731555%29.jpg",
+  "credit_line": "rows & rows",
+  "date": "2008-07-03 17:20",
+  "description": "I thought it was weird that every chair for seat 20 was white. It was only in this section that I noticed it.",
+  "file": "photo-w7-coloured-seats.jpg",
+  "licence": "CC BY-SA 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/2.0"
+ },
+ "photo-w7-egg-tray": {
+  "artist": "Rlsheehan",
+  "commons": "https://commons.wikimedia.org/wiki/File%3APlastic_egg_carton.jpg",
+  "credit_line": "Own work",
+  "date": "2018-09-07",
+  "description": "Plastic PETE egg carton for 24 eggs",
+  "file": "photo-w7-egg-tray.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-w7-labelled-jars": {
+  "artist": "Jules Verne Times Two",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AAmber_glass_apothecary_jars_with_labels_on_a_shelf%2C_Museu_do_Vidro%2C_Marinha_Grande%2C_Portugal_julesvernex2.jpg",
+  "credit_line": "Own work https://julesvernex2.com",
+  "date": "2024-05-12",
+  "description": "Amber glass apothecary jars with labels on a shelf, Museu do Vidro, Marinha Grande, Portugal",
+  "file": "photo-w7-labelled-jars.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-w7-numbered-seats": {
+  "artist": "Yann Duarte from Vitória, Brasil",
+  "commons": "https://commons.wikimedia.org/wiki/File%3ABuenos_Aires_stadium_seats_%284964343097%29.jpg",
+  "credit_line": "Flickr",
+  "date": "2010-09-02 21:23",
+  "description": "",
+  "file": "photo-w7-numbered-seats.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
+ "photo-w7-power-socket": {
+  "artist": "Fredquint",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AAustralian_Dual_Socket_Outlet.jpg",
+  "credit_line": "Own work",
+  "date": "2019-10-05 10:51:03",
+  "description": "Australian dual socket outlet with switches, as required by AS/NZS 3000",
+  "file": "photo-w7-power-socket.jpg",
+  "licence": "CC BY-SA 4.0",
+  "licence_url": "https://creativecommons.org/licenses/by-sa/4.0"
+ },
+ "photo-w7-treasure-clue": {
+  "artist": "Personal Creations",
+  "commons": "https://commons.wikimedia.org/wiki/File%3AHalloween_treasure_hunt_hidden_clue_%2815168095947%29.jpg",
+  "credit_line": "Halloween treasure hunt hidden clue",
+  "date": "2014-09-25 15:15",
+  "description": "",
+  "file": "photo-w7-treasure-clue.jpg",
+  "licence": "CC BY 2.0",
+  "licence_url": "https://creativecommons.org/licenses/by/2.0"
+ },
  "portrait-bentley": {
   "artist": "",
   "commons": "https://commons.wikimedia.org/wiki/File%3AJon_Bentley_informaticien.jpg",

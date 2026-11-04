@@ -1,0 +1,98 @@
+[
+ {
+  "concept": "1.1",
+  "section": "s01",
+  "title": "Cups versus eggs: capacity and size",
+  "intuition": "This carton has cups for 24 eggs but holds 21. The cups are the <em>capacity</em>: storage the ArrayList has set aside. The eggs are the <code>size()</code>: the elements actually in the list, at indexes 0 to 20 &mdash; an empty cup is not an element, so <code>get(21)</code> fails even though there is room. When a 25th egg arrives, ArrayList fetches a bigger carton and moves every egg across for you; with a plain array you would have to do that yourself.",
+  "photo": "photo-w7-egg-tray",
+  "file": "media/photo-w7-egg-tray.jpg",
+  "alt": "A clear plastic carton for 24 eggs lying open on a wooden floor, holding 21 brown eggs with three empty cups at the front",
+  "caption": "<strong>Room for 24, holding 21.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3APlastic_egg_carton.jpg\">Rlsheehan, 2018</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\">CC BY-SA 4.0</a></span>",
+  "suggested_component": "photo banner"
+ },
+ {
+  "concept": "1.2",
+  "section": "s01",
+  "title": "Slide a book in",
+  "intuition": "Push a new book in between two others and every book to its right slides along one place. That is <code>add(i, x)</code>: the new element takes index <code>i</code> and every later element's index goes up by one. Swapping one book for another moves nothing else &mdash; that is <code>set(i, x)</code>. You can only take down a book that is there (positions 0 to <code>size()</code>&minus;1), but you may add one at position <code>size()</code>, the very end. Where it breaks: you shove a row of books in one push, but the list moves each element separately, so inserting near the front of a long list is real work.",
+  "photo": "photo-w7-bookshelf",
+  "file": "media/photo-w7-bookshelf.jpg",
+  "alt": "A tightly packed shelf of hardback books of different heights and colours, editions of Aristotle's Metaphysics and Physics",
+  "caption": "<strong>Make room, and everything to the right moves.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3APart_of_a_bookshelf_containing_books_by_Aristotle_%281%29.jpg\">Roman Eisele, 2020</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\">CC BY-SA 4.0</a></span>",
+  "suggested_component": "media-row"
+ },
+ {
+  "concept": "2.1",
+  "section": "s02",
+  "title": "Seat position or seat number?",
+  "intuition": "Every seat here has two numbers: its position in the row, counted from 0 at the left, and the number painted on it. In the second row from the front (219, 217, 215, 213&hellip;), position 1 holds the seat painted 217. On an <code>ArrayList&lt;Integer&gt;</code>, <code>remove(1)</code> means &ldquo;the seat at position 1&rdquo;, while <code>remove(Integer.valueOf(211))</code> means &ldquo;the seat with 211 painted on it&rdquo;, wherever it is. Java chooses between them from the argument's type: a plain <code>int</code> is a position, an <code>Integer</code> is a value.",
+  "photo": "photo-w7-numbered-seats",
+  "file": "media/photo-w7-numbered-seats.jpg",
+  "alt": "Rows of light-blue stadium seats, each with a number painted on it; the second row from the front reads 219, 217, 215, 213, 211, 209",
+  "caption": "<strong>Position 1 is not seat 1.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3ABuenos_Aires_stadium_seats_%284964343097%29.jpg\">Yann Duarte from Vitória, Brasil, 2010</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\">CC BY 2.0</a></span>",
+  "suggested_component": "photo banner"
+ },
+ {
+  "concept": "2.2",
+  "section": "s02",
+  "title": "The seat that slid past you",
+  "intuition": "Walk along the front row removing every yellow seat, with everything to its right sliding one place left to close the gap (real seats are bolted down; a list's elements are not). At 21 you find yellow and remove it, so yellow 22 slides into the place you have just checked; you step on and find 23, and 22 is never looked at. That is what removing inside a forward loop over indexes does to two neighbouring matches. Walk from the right-hand end instead, let an Iterator do the removing, or copy the seats you keep into a new list.",
+  "photo": "photo-w7-coloured-seats",
+  "file": "media/photo-w7-coloured-seats.jpg",
+  "alt": "Numbered folding stadium seats in white, yellow, blue and red; in the front row seats 21 and 22 are both yellow, between a white 20 and a blue 23",
+  "caption": "<strong>Remove 21, and 22 slides into the place you just checked.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3ARows_%26_rows_%282643731555%29.jpg\">Katy Warner from Orlando, FL, USA, 2008</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/2.0\">CC BY-SA 2.0</a></span>",
+  "suggested_component": "media-row"
+ },
+ {
+  "concept": "3.1",
+  "section": "s03",
+  "title": "Each clue points to the next",
+  "intuition": "Each clue in a treasure hunt holds a small prize and says where the next clue is &mdash; this one leads to clue #3. That is a linked-list node: one value plus a link to the next node, and the nodes can sit anywhere. To reach clue 5 you cannot jump there; you start at the first clue and follow every link, which is why reaching index <code>i</code> in a LinkedList means walking. Once you are standing at the right clue, adding a new one only means rewriting one note &mdash; nothing else has to shift. Where it breaks: Java's LinkedList nodes also point back to the previous node, so it can be walked from either end.",
+  "photo": "photo-w7-treasure-clue",
+  "file": "media/photo-w7-treasure-clue.jpg",
+  "alt": "A handwritten treasure-hunt note propped beside a wrapped sweet, reading “A lantern named Jack will light the way to clue #3!”, with a glowing jack-o'-lantern blurred in front",
+  "caption": "<strong>A value, and the way to the next one.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3AHalloween_treasure_hunt_hidden_clue_%2815168095947%29.jpg\">Personal Creations, 2014</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\">CC BY 2.0</a></span>",
+  "suggested_component": "photo banner"
+ },
+ {
+  "concept": "3.2",
+  "section": "s03",
+  "title": "Join at the back, leave from the front",
+  "intuition": "People join at the back, where the sign says ENTER HERE, and board at the front, so whoever has waited longest gets on first: first in, first out. A queue only ever uses its two ends, which is why a LinkedList or Python's <code>collections.deque</code> suits it. Taking the first element out of an ArrayList or Python list is like making everyone in this line step forward one place each time the bus takes a passenger. Where it breaks: in a real line people do step forward; in a deque or linked list nothing moves &mdash; only the record of who is at the front changes.",
+  "photo": "photo-w7-bus-queue",
+  "file": "media/photo-w7-bus-queue.jpg",
+  "alt": "A line of people waiting inside a chain barrier to board a shuttle bus at Grand Canyon; an ENTER HERE sign marks the back of the line",
+  "caption": "<strong>First in, first out.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3APeople_In_Line_%2853027406092%29.jpg\">Grand Canyon NPS, 2023</a> &middot; public domain</span>",
+  "suggested_component": "media-row"
+ },
+ {
+  "concept": "4.1",
+  "section": "s04",
+  "title": "One jar design, many labels",
+  "intuition": "Every jar on this shelf is made to the same design; only the label changes. <code>Box&lt;T&gt;</code> is the design and the type argument is the label: <code>Box&lt;String&gt;</code>, <code>ArrayList&lt;Book&gt;</code>. Because the label is part of the type, the compiler refuses to put the wrong thing in, and you know exactly what comes out without checking. Where it breaks: a paper label cannot stop anyone pouring in the wrong powder, but the compiler does stop you &mdash; and the label must name a class, so it is <code>Integer</code>, not <code>int</code>.",
+  "photo": "photo-w7-labelled-jars",
+  "file": "media/photo-w7-labelled-jars.jpg",
+  "alt": "A row of identical amber glass apothecary jars with stoppers on a glass shelf, each with an ornate paper label naming a different chemical",
+  "caption": "<strong>The same jar; the label says what goes in.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3AAmber_glass_apothecary_jars_with_labels_on_a_shelf%2C_Museu_do_Vidro%2C_Marinha_Grande%2C_Portugal_julesvernex2.jpg\">Jules Verne Times Two, 2024</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\">CC BY-SA 4.0</a></span>",
+  "suggested_component": "photo banner"
+ },
+ {
+  "concept": "4.2",
+  "section": "s04",
+  "title": "Built to the standard, not the appliance",
+  "intuition": "This power point does not care whether a kettle, a lamp or a phone charger is plugged in, as long as the plug has the standard shape. A method whose parameter is <code>List&lt;Integer&gt;</code> is the socket: an ArrayList or a LinkedList both fit, because the method uses only the operations every List promises. One thing does not follow: a <code>List&lt;Integer&gt;</code> is not a <code>List&lt;Number&gt;</code>. If it were, code holding it as a list of Numbers could add a Double to it &mdash; like pouring rice into the sugar jar because both are &ldquo;food&rdquo;.",
+  "photo": "photo-w7-power-socket",
+  "file": "media/photo-w7-power-socket.jpg",
+  "alt": "A white Australian double power point on a wall, with two switches and two three-pin sockets",
+  "caption": "<strong>Any plug of the standard shape fits.</strong>",
+  "credit_html": "<span class=\"credit\">Photo: <a href=\"https://commons.wikimedia.org/wiki/File%3AAustralian_Dual_Socket_Outlet.jpg\">Fredquint, 2019</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\">CC BY-SA 4.0</a></span>",
+  "suggested_component": "media-row"
+ }
+]
