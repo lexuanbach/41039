@@ -1136,8 +1136,9 @@ body.code-fullscreen-open { overflow: hidden; }
   font-size: 0.72rem; color: var(--ink-soft); opacity: 0.85;
   display: block; margin-top: 0.15rem;
 }
-.fig-narrow img { max-width: 24rem; }
-.fig-wide img { max-width: 40rem; }
+/* min() keeps the 100% cap: a 640px comic must not widen a 390px phone page */
+.fig-narrow img { max-width: min(100%, 24rem); }
+.fig-wide img { max-width: min(100%, 40rem); }
 /* Comics are line art and need their height to stay readable; photographs are
    decorative here and get the tighter cap above. */
 .fig.plain img { max-height: 26rem; }
@@ -1743,7 +1744,8 @@ aside.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem
 .viz-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 /* code panes: Java beside Python when there is room, stacked when not */
-.viz-panes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 0.7rem; }
+/* side by side only when each pane gets about 30rem; otherwise one column */
+.viz-panes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); gap: 0.7rem; }
 .viz-pane { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0; background: var(--surface); }
 .viz-pane-head { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.4rem 0.7rem; border-bottom: 1px solid var(--line); }
 .viz-pane-label { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--ink-soft); }
@@ -1764,7 +1766,7 @@ aside.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem
 }
 .viz .viz-out { height: auto; min-height: 2.6rem; max-height: 12rem; resize: none; font-size: calc(0.76rem * var(--code-scale, 1)); border-top: 0; }
 .viz .viz-out:empty::before { content: "Nothing printed yet."; }
-.viz-verdict .viz-out { border-radius: 8px; margin: 0.2rem 0 0.6rem; white-space: pre; overflow-x: auto; }
+.viz-verdict .viz-out { border-radius: 8px; margin: 0.2rem 0 0.6rem; white-space: pre-wrap; overflow-wrap: anywhere; }
 .viz-verdict .viz-out.is-error { color: #FF9B9B; }
 :root[data-code-theme="paper"] .viz-verdict .viz-out.is-error { color: #B3261E; }
 .viz-verdict { display: grid; gap: 0.5rem; align-content: start; font-size: 0.92rem; }
@@ -1841,5 +1843,11 @@ aside.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem
   .viz-body { padding: 0.75rem 0.7rem 0.9rem; }
   .viz-count { margin-left: 0; width: 100%; }
 }
-/* the current-line band spans the whole line, even when the pane scrolls sideways */
-.viz-code .cl { width: max-content; min-width: 100%; }
+/* nothing a student needs may hide off to the side: long lines wrap, and a wrapped
+   line's continuation hangs two characters in so it does not look like a new line */
+.viz-code { overflow-x: hidden; }
+.viz-code .cl { white-space: pre-wrap; overflow-wrap: anywhere; padding-left: calc(3.2em + 2ch); text-indent: -2ch; }
+.viz-typecheck { display: grid; gap: 0.7rem; }
+.viz-warn { color: var(--amber); }
+.viz-code .cl::before { text-indent: 0; }
+@media (max-width: 560px) { .viz-code { font-size: calc(0.7rem * var(--code-scale, 1)); } }

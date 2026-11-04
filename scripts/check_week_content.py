@@ -252,13 +252,16 @@ def main():
                         if message is not None:
                             assert ('error:' in message) != result['ok'], (label, decl['id'], stmt['code'], message)
                             shown = javac_summary(message)
+                            errors = sum(': error:' in l for l in message.splitlines())
                             if args.refresh:
                                 if shown:
                                     result['javac'] = shown
                                 else:
                                     result.pop('javac', None)
+                                result['errors'] = errors
                             else:
                                 assert result.get('javac', '') == shown, (label, decl['id'], stmt['code'], message)
+                                assert result.get('errors') == errors, (label, decl['id'], stmt['code'], 'error count')
             else:
                 raise AssertionError(('Unknown visual kind', v['kind']))
 

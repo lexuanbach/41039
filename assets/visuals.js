@@ -91,7 +91,10 @@ window.P1Visuals = (function () {
       root.appendChild(out);
     }
     function setHtml(lines) {
-      pre.innerHTML = lines.map(function (l) { return '<div class="cl">' + l + '</div>'; }).join('');
+      // indentation in no-break spaces, so a long line that wraps never leaves its indent behind
+      pre.innerHTML = lines.map(function (l) {
+        return '<div class="cl">' + l.replace(/^ +/, function (s) { return new Array(s.length + 1).join('\u00A0'); }) + '</div>';
+      }).join('');
     }
     setHtml(highlight(src, lang));
     return {
@@ -835,7 +838,12 @@ window.P1Visuals = (function () {
     var fill = el('button', 'viz-seg-btn viz-toggle', 'Fill in T');
     fill.type = 'button';
     fill.setAttribute('aria-pressed', 'false');
-    fill.addEventListener('click', function () { filled = !filled; fill.setAttribute('aria-pressed', String(filled)); draw(); });
+    fill.addEventListener('click', function () {
+      filled = !filled;
+      fill.setAttribute('aria-pressed', String(filled));
+      fill.textContent = filled ? 'Show T again' : 'Fill in T';
+      draw();
+    });
     controls.appendChild(fill);
     body.appendChild(controls);
     var pane = codePane('java', spec.template.replace(/\{\{TYPE\}\}/g, 'T').replace(/\{\{VALUE\}\}/g, '0'), { output: true });
@@ -891,7 +899,7 @@ window.P1Visuals = (function () {
     stmt.root.classList.add('viz-seg-wrap');
     form2.appendChild(stmt.root);
     body.appendChild(form2);
-    var grid = el('div', 'viz-panes');
+    var grid = el('div', 'viz-typecheck');   // the verdict goes under the code, never squeezed beside it
     var paneBox = el('div');
     var verdict = el('div', 'viz-verdict');
     verdict.setAttribute('aria-live', 'polite');
@@ -904,9 +912,14 @@ window.P1Visuals = (function () {
       var pane = codePane('java', src, { label: 'Demo.java' });
       paneBox.textContent = '';
       paneBox.appendChild(pane.root);
-      pane.mark(pane.line(S.code), r.ok ? 'ok' : 'bad');
-      var h = '<p class="viz-big ' + (r.ok ? 'viz-good' : 'viz-bad') + '">' + (r.ok ? '✓ Compiles' : '✗ Does not compile: nothing runs') + '</p>';
-      if (r.javac) h += '<div class="viz-out-label">javac says</div><pre class="console-out viz-out' + (r.ok ? '' : ' is-error') + '">' + esc(r.javac) + '</pre>';
+      pane.mark(pane.line(S.code), r.warn ? 'now' : (r.ok ? 'ok' : 'bad'));
+      var tone = r.warn ? 'viz-warn' : (r.ok ? 'viz-good' : 'viz-bad');
+      var heading = r.verdict || (r.ok ? '✓ Compiles' : '✗ Does not compile: nothing runs');
+      var h = '<p class="viz-big ' + tone + '">' + esc(heading) + '</p>';
+      if (r.javac) {
+        var label = r.ok ? 'javac prints this note' : 'javac says (its first error' + (r.errors > 1 ? '; it reports ' + r.errors + ' errors in all' : '') + ')';
+        h += '<div class="viz-out-label">' + esc(label) + '</div><pre class="console-out viz-out' + (r.ok ? '' : ' is-error') + '">' + esc(r.javac) + '</pre>';
+      }
       h += '<p>' + r.say + '</p>';
       h += '<div class="viz-line"><span class="lang python">Python</span><span>' + S.py + '</span></div>';
       verdict.innerHTML = h;

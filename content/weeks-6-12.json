@@ -706,7 +706,7 @@
           {
             "kind": "list-ops",
             "title": "Watch the indexes: add, insert, set, remove",
-            "intro": "Press <strong>Next</strong> to run one line at a time, in Java and Python together. The small numbers under the boxes are <strong>indexes</strong>. They belong to the positions, not to the values, so watch which values move when something is inserted or removed.",
+            "intro": "Press <strong>Next</strong> to run one line at a time, in Java and Python together. The highlighted line is the one that has just run. The small numbers under the boxes are <strong>indexes</strong>. They belong to the positions, not to the values, so watch which values move when something is inserted or removed.",
             "var": "names",
             "programs": {
               "java": {
@@ -909,7 +909,7 @@
           {
             "kind": "filter",
             "title": "Removing while you loop: find the skipped value",
-            "intro": "The goal is to remove every even number from <code>[1, 2, 2, 3, 4]</code>. Pick a version, then step through it. The arrow above the boxes is the loop variable.",
+            "intro": "The goal is to remove every even number from <code>[1, 2, 2, 3, 4]</code>. Pick a version, then step through it. The arrow above the boxes is the loop variable, and the highlighted line is the one that has just run.",
             "values": [
               1,
               2,
@@ -1118,7 +1118,7 @@
           {
             "kind": "queue",
             "title": "A queue made of linked nodes",
-            "intro": "Each node holds a value and a link, <code>next</code>, to the node behind it. <code>head</code> is the front of the queue and <code>tail</code> is the back. Press <strong>Enqueue</strong> or <strong>Dequeue</strong> and watch the links change, one line at a time. The code is from the complete programs below.",
+            "intro": "Each node holds a value and a link, <code>next</code>, to the node behind it. <code>head</code> is the front of the queue and <code>tail</code> is the back. Press <strong>Enqueue</strong> or <strong>Dequeue</strong>, then press <strong>Next</strong> to step through the method one line at a time and watch the links change. The code is from the complete programs below.",
             "panes": {
               "java": {
                 "source": "A hand-built linked queue",
@@ -1363,7 +1363,7 @@
           {
             "kind": "typecheck",
             "title": "Ask the compiler: what does <Integer> buy you?",
-            "intro": "Declare the list, then try one line. This only asks the compiler whether the program is allowed: nothing runs. The messages are what <code>javac</code> prints on Ed.",
+            "intro": "Declare the list, then try one line. This only asks the compiler whether the program is allowed: nothing runs. The type in <code>&lt;\u2026&gt;</code> is called the <strong>type argument</strong>. The messages are what <code>javac</code> prints on Ed; the Run button in this browser uses the Eclipse compiler, which words its errors differently.",
             "template": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        {{DECL}}\n        {{STMT}}\n    }\n}\n",
             "decls": [
               {
@@ -1384,12 +1384,15 @@
                 "results": {
                   "typed": {
                     "ok": true,
-                    "say": "7 is an <code>int</code> and the list holds <code>Integer</code> objects, so Java wraps it for you. This is <strong>autoboxing</strong>: it does <code>Integer.valueOf(7)</code>."
+                    "say": "7 is an <code>int</code> and the type argument says the list holds <code>Integer</code> objects, so Java wraps it for you. This is <strong>autoboxing</strong>: it does <code>Integer.valueOf(7)</code>.",
+                    "errors": 0
                   },
                   "raw": {
                     "ok": true,
                     "javac": "Note: Demo.java uses unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.",
-                    "say": "Allowed, with a warning note. A list without a type argument holds <code>Object</code>, so anything at all can go in."
+                    "say": "Allowed, with a warning note. A list without a type argument (no <code>&lt;\u2026&gt;</code>) holds <code>Object</code>, so anything at all can go in.",
+                    "verdict": "\u2713 Compiles, with a warning note",
+                    "errors": 0
                   }
                 }
               },
@@ -1400,43 +1403,51 @@
                   "typed": {
                     "ok": false,
                     "javac": "Demo.java:6: error: incompatible types: String cannot be converted to Integer\n        nums.add(\"seven\");\n                 ^",
-                    "say": "Caught. A <code>String</code> is not an <code>Integer</code>, so the program does not compile and never runs. That is the point of the type in <code>&lt;\u2026&gt;</code>."
+                    "say": "Caught. A <code>String</code> is not an <code>Integer</code>, so the program does not compile and never runs. That is the point of the type argument, the type in <code>&lt;\u2026&gt;</code>.",
+                    "errors": 1
                   },
                   "raw": {
                     "ok": true,
                     "javac": "Note: Demo.java uses unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.",
-                    "say": "Allowed, so the mistake slips through. Later, a line such as <code>(Integer) nums.get(1)</code> crashes the running program with a <code>ClassCastException</code>."
+                    "say": "Allowed, so the mistake is not caught. If 7 had been added first, a later line such as <code>(Integer) nums.get(1)</code> would crash the running program with a <code>ClassCastException</code>.",
+                    "warn": true,
+                    "verdict": "\u26a0 Compiles (warning only): the bug slips through",
+                    "errors": 0
                   }
                 }
               },
               {
                 "code": "int first = nums.get(0);",
-                "py": "<code>first = nums[0]</code> runs: Python variables have no declared type.",
+                "py": "Python accepts <code>first = nums[0]</code>: nothing is checked before it runs, because Python variables have no declared type.",
                 "results": {
                   "typed": {
                     "ok": true,
-                    "say": "<code>get</code> gives back an <code>Integer</code>, and Java unwraps it into an <code>int</code> for you (<strong>unboxing</strong>). No cast is needed, because the compiler knows the type."
+                    "say": "<code>get</code> gives back an <code>Integer</code>, and Java unwraps it into an <code>int</code> for you (<strong>unboxing</strong>). No cast is needed, because the compiler knows the type.",
+                    "errors": 0
                   },
                   "raw": {
                     "ok": false,
                     "javac": "Demo.java:6: error: incompatible types: Object cannot be converted to int\n        int first = nums.get(0);\n                            ^",
-                    "say": "Without a type argument, <code>get</code> only promises an <code>Object</code>. The compiler cannot know it is a number, so you would need a cast: <code>(Integer) nums.get(0)</code>."
+                    "say": "Without a type argument, <code>get</code> only promises an <code>Object</code>. The compiler cannot know it is a number, so it refuses; you would need a cast: <code>(Integer) nums.get(0)</code>.",
+                    "errors": 1
                   }
                 }
               },
               {
                 "code": "String text = nums.get(0);",
-                "py": "<code>text = nums[0]</code> runs: the name <code>text</code> just refers to whatever is there.",
+                "py": "Python accepts <code>text = nums[0]</code>: nothing is checked before it runs. The name <code>text</code> just refers to whatever is there.",
                 "results": {
                   "typed": {
                     "ok": false,
                     "javac": "Demo.java:6: error: incompatible types: Integer cannot be converted to String\n        String text = nums.get(0);\n                              ^",
-                    "say": "Caught. Every element is an <code>Integer</code>, and an <code>Integer</code> is not a <code>String</code>."
+                    "say": "Caught. Every element is an <code>Integer</code>, and an <code>Integer</code> is not a <code>String</code>.",
+                    "errors": 1
                   },
                   "raw": {
                     "ok": false,
                     "javac": "Demo.java:6: error: incompatible types: Object cannot be converted to String\n        String text = nums.get(0);\n                              ^",
-                    "say": "Refused, but only because <code>Object</code> is too vague. A cast would silence the compiler, and the program would then crash while running."
+                    "say": "Refused, but only because <code>Object</code> is too vague. If the list holds numbers, a cast would silence the compiler and the program would then crash while running.",
+                    "errors": 1
                   }
                 }
               },
@@ -1447,12 +1458,14 @@
                   "typed": {
                     "ok": false,
                     "javac": "Demo.java:6: error: unexpected type\n        ArrayList<int> more = new ArrayList<int>();\n                  ^\n  required: reference\n  found:    int",
-                    "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>."
+                    "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>.",
+                    "errors": 2
                   },
                   "raw": {
                     "ok": false,
                     "javac": "Demo.java:6: error: unexpected type\n        ArrayList<int> more = new ArrayList<int>();\n                  ^\n  required: reference\n  found:    int",
-                    "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>."
+                    "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>.",
+                    "errors": 2
                   }
                 }
               }
