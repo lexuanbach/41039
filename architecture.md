@@ -366,7 +366,7 @@ Step-through pictures of what a program does to its data, used on Week 7. A page
 </div>
 ```
 
-- The spec is a section's `visuals[]` entry in `content/weeks-6-12.json`, serialised by the
+- The spec is a section's `visuals[]` entry in `content/weeks/week-N.json`, serialised by the
   generator (`</` escaped). Kinds: `list-ops` (scripted ArrayList / Python list program, one line
   per step, plus a *Your turn* sandbox), `filter` (removing while looping: forward bug, backwards,
   new list), `queue` (hand-built linked queue; Enqueue/Dequeue add steps), `box` (`Box<T>` with T
@@ -630,10 +630,17 @@ Seven later week pages now exist, each with four lecture panels, six auto-marked
 exercises, two team activities, twelve quiz questions and source/reference links.
 They reuse the existing explained-code, editor, console, exercise and quiz engines.
 
-- `content/weeks-6-12.json` holds the editable teaching material and verified outputs.
-- `scripts/build_week_pages.py` renders static HTML and `w6` through `w12` data files.
+- `content/weeks/week-N.json` (one file per week) holds the editable teaching material and
+  verified outputs; `scripts/week_content.py` loads them and saves atomically.
+- `scripts/build_week_pages.py` renders static HTML and `w6` through `w12` data files
+  (`--weeks N` rebuilds one week).
 - `scripts/check_week_content.py` executes all examples and solution/test pairs with
-  the browser's ECJ compiler and CPython; `--refresh` regenerates output expectations.
+  the browser's ECJ compiler and CPython; `--refresh` regenerates output expectations
+  (`--weeks N` checks or refreshes one week only).
+- A week can add its own diagram kinds in `assets/visuals-wN.js`
+  (`P1Visuals.register(kind, fn)`, with the shared helpers passed in) and their styles in
+  `assets/visuals-wN.css`; the generator loads both when they exist. A new kind lists the
+  programs it shows in `spec.programs`, and the checker runs each one.
 - All week pages have a course rail (`aside.side` in `.layout`), which becomes a
   disclosure on narrow screens. `initCourseNav()` opens it by default on wide screens.
 - The homepage links every new week in both the schedule and materials grid. Week 6

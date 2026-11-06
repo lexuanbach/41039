@@ -1,172 +1,163 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/q02-mcq-which-basket/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "750\n",
+    "stdout": "1000 800 500\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
+    "file": "examples/q03-mcq-safe-replacement/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "A 8\nB 8\nC 3\nD 8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-library-fines/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "6 5\n0 5\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-library-fines/capped/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "3 4 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-reminders/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "750\nTotal: 750 cents\n",
+    "stdout": "screen: Due: An\n2 Due: Binh\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q03/Demo.java",
+    "file": "examples/q06-find-the-bug-member/only-line-17-fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "800\n",
+    "stdout": "1\ntrue\n0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q04/main.py",
+    "file": "solutions/q06-find-the-bug-member/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0\nfalse\n3\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07-find-the-bug-checkout/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "800\n1000\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "1000\n",
+    "returncode": 1,
+    "error": "TypeError: can only concatenate str (not \"NoneType\") to str"
   },
   {
-    "file": "examples/q05/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "true\n2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q06/main.py",
+    "file": "examples/q07-find-the-bug-checkout/only-line-10-fixed/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "recorded\n['Ready']\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "",
+    "returncode": 1,
+    "error": "TypeError: can only concatenate str (not \"int\") to str"
   },
   {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "750\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "charging\n1000\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "500\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
+    "file": "solutions/q07-find-the-bug-checkout/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "1\n['F', 'P', 'P']\n",
+    "stdout": "Paid: 800\nPaid: 404\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "2\n['F', 'P', 'P']\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-1/Demo.java",
+    "file": "solutions/c1-cart/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "101\n50\n",
+    "stdout": "0\n1100\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/predict-2/main.py",
+    "file": "solutions/c2-gradebook/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "1\n2\n['Ready', 'Go'] True\n",
+    "stdout": "2 1\n0 1\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "solutions/c3-desk/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "2\n300 2\n150 1\n",
-    "stdout": "750\n",
+    "stdin": "",
+    "stdout": "An borrowed\nBinh: none left\nfalse\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c1-cart/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "0\n",
-    "stdout": "0\n",
+    "stdin": "",
+    "stdout": "0\n0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c2-gradebook/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0 0\n0 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-desk/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\n0 10\n100 0\n1 1\n",
-    "stdout": "1\n",
+    "stdin": "",
+    "stdout": "\n\nfalse\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
+    "file": "examples/bridge/one-function/main.py",
     "lang": "python",
     "release": 8,
-    "stdin": "2\n300 2\n150 1\n",
-    "stdout": "750\n",
-    "returncode": 0,
-    "error": ""
+    "stdin": "",
+    "stdout": "",
+    "returncode": 1,
+    "error": "ValueError: invalid literal for int() with base 10: 'abc'"
   },
   {
-    "file": "solutions/challenge.py",
+    "file": "examples/bridge/main.py",
     "lang": "python",
     "release": 8,
-    "stdin": "0\n",
-    "stdout": "0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\n0 10\n100 0\n1 1\n",
-    "stdout": "1\n",
+    "stdin": "",
+    "stdout": "Skipped: Chi,abc\nAverage: 70.0\n",
     "returncode": 0,
     "error": ""
   }

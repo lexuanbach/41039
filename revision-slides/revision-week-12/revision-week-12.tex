@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 12
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,650 +141,765 @@
 }
 
 
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 
 \title[41039 Programming 1 --- Revision of Week 12]{41039 Programming 1}
-\subtitle{Revision of Week 12: Review and integration}
+\subtitle{Revision of Week 12: review and integration}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 8 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Tracing, parsing, mutation, tests\\
+      Q2  & Multiple choice    & Which test reveals the bug?\\
+      Q3  & Multiple choice    & Where does \code{marks.add(mark)} go?\\
+      Q4  & Predict the output & A box in a list (Java)\\
+      Q5  & Predict the output & Items on sale (Python)\\
+      Q6  & Find the bug       & The gradebook (Java, 4 bugs)\\
+      Q7  & Find the bug       & Loading students (Python, 3 bugs)\\
+      Q8  & Write the code     & Parse one row (Java)\\
+      Q9  & Write the code     & Summarise a marks file (Python)\\
+      Q10 & Write the code     & Keep what passes a check (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+    {\footnotesize The last revision: questions also use Weeks 7--11.}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. A loop with an explicit invariant}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-int[] marks={49,50,85};
-int passed=0;
-for(int i=0;i<marks.length;i++) {
-    if(marks[i]>=50) passed++;
-}
-System.out.println(passed);
+\begin{frame}[fragile]{Week 12 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{Trace with meaning.} Say what a variable \emph{means}
+            after each step: \code{passed} = passes seen so far. A mark of exactly 50
+            tells \code{>=} from \code{>}.
+      \item[\textbf{2}] \textbf{Mutation vs rebinding.} \code{list.add(x)} and
+            \code{b.value = 7} change the \emph{shared} object: the caller sees it.
+            \code{b = new Box(9)} only moves the \emph{local} name.
+      \item[\textbf{3}] \textbf{A pipeline of stages.} Read, parse, validate, store,
+            report: one job each. A number is not yet a \emph{valid} mark.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{An error policy.} Say what happens to a bad row
+            (report and skip, or stop). A rejected row never enters the accepted
+            list; count from that list.
+      \item[\textbf{5}] \textbf{Tests that can fail.} Empty, one item, the exact
+            boundary, bad text, a blank line. A good test \emph{fails} when the rule
+            is broken.
+    \end{itemize}
+\begin{lstlisting}
+read      "Mai,50"
+parse     name "Mai", mark 50
+validate  is 0 <= 50 <= 100?  no: report, skip
+store     records.add(...)
+report    count,total,passed
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-2
-\end{lstlisting}
-\scriptsize\raggedright Exactly 50 is included, so the marks 50 and 85 pass.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. Mutation versus replacement, revisited}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def change(values):
-    values.append(3)
-    values=[9]
-    return values
-items=[1,2]
-result=change(items)
-print(items)
-print(result)
-\end{lstlisting}
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-[1, 2, 3]
-[9]
-\end{lstlisting}
-\scriptsize\raggedright Appending affects the shared list; assigning a new list to the local name does not rebind items.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Tracing, parsing, mutation and tests}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.57\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.35em]
+      \small\setlength{\baselineskip}{1.2\baselineskip}
+      \item In \code{if (m >= 50) passed++;} the running count \code{passed} is
+            the \blank{1}.
+      \item Turning \code{"85"} into 85 is \blank{2}. Checking that it is in 0..100
+            is \blank{3}.
+      \item A test with a mark of exactly 50 sits on the \blank{4}.
+      \item In a method, \code{list.add(9)} is a \blank{5} the caller can see. An
+            input that makes buggy code fail is a \blank{6}.
+    \end{itemize}
+    \column{0.39\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \footnotesize\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{0.6em}}l@{}}
+        \textbf{a)} validation   & \textbf{f)} boundary\\
+        \textbf{b)} iteration    & \textbf{g)} parsing\\
+        \textbf{c)} accumulator  & \textbf{h)} constructor\\
+        \textbf{d)} mutation     & \textbf{i)} counterexample\\
+        \textbf{e)} interface    & \textbf{j)} inheritance\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} c) accumulator\\[0.3em]
+      \textbf{(2)} g) parsing\quad \textbf{(3)} a) validation\\[0.3em]
+      \textbf{(4)} f) boundary\quad \textbf{(5)} d) mutation\\[0.3em]
+      \textbf{(6)} i) counterexample\\[0.3em]
+      Not used: b) iteration, e) interface, h) constructor, j) inheritance.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small Parse, \textbf{then} validate, \textbf{then} store.
+    \code{list = new ArrayList<>()} in a method only \textbf{rebinds} the local
+    name.}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{3. An end-to-end marks pipeline}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.io.*;
-String data="Linh,85\nAn,49\nMai,50";
-int count=0,passed=0;
-try(BufferedReader reader=new BufferedReader(new StringReader(data))) {
-    String line;
-    while((line=reader.readLine())!=null) {
-        String[] parts=line.split(",");
-        int mark=Integer.parseInt(parts[1]);
-        count++;
-        if(mark>=50) passed++;
-    }
-} catch(IOException e) { throw new RuntimeException(e); }
-System.out.println("records="+count+", passed="+passed);
-\end{lstlisting}
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-records=3, passed=2
-\end{lstlisting}
-\scriptsize\raggedright All three valid simple records are read, including the final line without a newline; two marks pass.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. Separate parse, validate and summarise}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def parse(line):
-    name,text=line.split(",")
-    mark=int(text)
-    if not 0<=mark<=100:
-        raise ValueError("range")
-    return name,mark
-records=[]
-for line in ["Linh,85","An,bad","Mai,50"]:
-    try: records.append(parse(line))
-    except ValueError: print("Invalid")
-print(sum(mark>=50 for name,mark in records))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Invalid
-2
-\end{lstlisting}
-\scriptsize\raggedright The bad record is not appended; Linh and Mai both pass.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. A contract can be tested at its boundaries}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Counter counter=new Counter(2);
-System.out.println(counter.take(0));
-System.out.println(counter.take(2));
-System.out.println(counter.take(1));
-System.out.println(counter.left());
-class Counter {
-    private int count;
-    Counter(int count) { this.count=count; }
-    boolean take(int n) {
-        if(n<=0 || n>count) return false;
-        count-=n;
-        return true;
-    }
-    int left() { return count; }
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which test reveals the bug?}
+  \neutrallabel{Rule:} {\small \code{countPassed} returns how many marks are
+  $\ge 50$. This version has \textbf{one} bug. Which test \textbf{fails} on it, and
+  so reveals the bug?}\\[0.1em]
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+\begin{lstlisting}[language=Java]
+static int countPassed(int[] marks) {
+    int count = 0;
+    for (int i = 0; i < marks.length; i++)
+        if (marks[i] > 50) count++;
+    return count;
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-false
-true
-false
-0
-\end{lstlisting}
-\scriptsize\raggedright Zero is rejected; taking exactly 2 succeeds; taking 1 from zero stock is rejected.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \begin{discussionbox}{Choose one (90 seconds)}
+      \small
+      \wrongopt{A}{marks \code{\{\}}, expect 0}\\[0.15em]
+      \wrongopt{B}{marks \code{\{49, 85\}}, expect 1}\\[0.15em]
+      \rightopt{C}{marks \code{\{50, 70\}}, expect 2}\\[0.15em]
+      \wrongopt{D}{marks \code{\{0, 100\}}, expect 1}
+    \end{discussionbox}
+    \column{0.50\textwidth}
+    \alt<1>{%
+    {\small \neutrallabel{Hint:} all four expected answers are right for the
+    \emph{rule}. Run each test through the code above. Which one gets a different
+    number?}}{%
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      \textbf{C} \yes{} the code gives \textbf{1}, not 2: \code{50 > 50} is false, so
+      the mark 50 is not counted. The bug: \code{>} should be \code{>=}.\\[0.3em]
+      \textbf{A, B, D} \no{} give 0, 1, 1: the right answers, \emph{even with the
+      bug}. None of them has a mark of exactly 50, and for every other mark
+      \code{>} and \code{>=} agree. A test that passes with the bug is weak
+      evidence.\\[0.3em]
+      Test \textbf{at} the boundary, not just near it.
+    \end{contextbox}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{6. Make a useful explanation from a trace}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-marks=[49,50,85]
-total=0
-for position,mark in enumerate(marks):
-    before=total
-    total+=mark
-    print(position,before,total)
-print("total",total)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-0 0 49
-1 49 99
-2 99 184
-total 184
-\end{lstlisting}
-\scriptsize\raggedright The accumulator moves 0 → 49 → 99 → 184; the trace connects each new state to its cause.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{7. Optional extension: filter, map, reduce}
-\srcline{Java 8 excerpt: main statements and supporting types; optional extension; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.*;
-List<Integer> marks=Arrays.asList(49,50,85);
-int total=marks.stream()
-    .filter(mark -> mark>=50)
-    .mapToInt(mark -> mark)
-    .sum();
-System.out.println(total);
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Where does \code{marks.add(mark)} go?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+\begin{lstlisting}[language=Java,breaklines=false]
+String[] rows = {"Linh,85", "An,abc", "Mai,50",
+                 "Tuan,120"};
+ArrayList<Integer> marks = new ArrayList<>();
+for (String row : rows) {
+    String[] parts = row.split(",");
+    try {
+        int mark = Integer.parseInt(parts[1]);
+        // (1)
+        if (mark >= 0 && mark <= 100) {
+            // (2)
+        } else {
+            System.out.println("Out of range");
+        }
+    } catch (NumberFormatException e) {
+        System.out.println("Not a number");
+        // (3)
+    }
+}
 System.out.println(marks);
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-135
-[49, 50, 85]
-\end{lstlisting}
-\scriptsize\raggedright The pipeline sums 50 and 85 without changing the source list. This uses Java 8-compatible APIs.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.42\textwidth}
+    {\small This is \code{main} in class \code{Demo}. The line
+    \code{marks.add(mark);} is missing. Where must it go so the \textbf{last} line
+    printed is \code{[85, 50]}?}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Choose one (90 seconds)}
+      \small
+      \wrongopt{A}{At \code{(1)}}\\[0.15em]
+      \rightopt{B}{At \code{(2)}}\\[0.15em]
+      \wrongopt{C}{At \code{(3)}}\\[0.15em]
+      \wrongopt{D}{In the \code{else}, after the \code{println}}
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: B}
+      \footnotesize\raggedright
+      \textbf{B} \yes{} only a row that was parsed \textbf{and} validated is
+      stored.\\[0.2em]
+      \textbf{A} \no{} stores before the range check: \code{[85, 50, 120]}.\\[0.2em]
+      \textbf{C} \no{} does not compile: \code{mark} exists only inside the
+      \code{try} block.
+      {\scriptsize\code{cannot find symbol ... variable mark}}\\[0.2em]
+      \textbf{D} \no{} stores only the rejected mark: \code{[120]}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{8. Optional extension: a pure transformation}
-\srcline{Python 3; optional extension; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def doubled(values):
-    return [value*2 for value in values]
-source=[2,3]
-print(doubled(source))
-print(source)
-print(doubled(source)==doubled(source))
-\end{lstlisting}
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-[4, 6]
-[2, 3]
-True
-\end{lstlisting}
-\scriptsize\raggedright For the same integer input this function returns the same result and does not modify its argument.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\section{Team round 1: draw the model}
-
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: The valid-record pipeline}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.*;
-String[] lines={"A,50","B,bad","C,85"};
-List<Integer> accepted=new ArrayList<Integer>();
-for(String line:lines) {
-    try { accepted.add(Integer.parseInt(line.split(",")[1])); }
-    catch(NumberFormatException e) { System.out.println("Invalid"); }
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}A box in a list}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.55\textwidth}
+\begin{lstlisting}[language=Java]
+class Box {
+    int value;
+    Box(int v) { value = v; }
 }
-int total=0; for(int mark:accepted) total+=mark;
-System.out.println(accepted.size()+" "+total);
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the flow and responsibilities after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (read) at (0,0) {3 input records};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (parse) at (3.3,0) {parse / validate};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (store) at (6.6,0) {accepted\\[0pt] [50, 85]};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (reject) at (3.3,-1.5) {B,bad\\[0pt] report Invalid};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (sum) at (6.6,-1.5) {summary\\[0pt] count 2, total 135};
-\draw[ref] (read) -- (parse);
-\draw[ref] (parse) -- node[above=8pt,font=\scriptsize]{valid} (store);
-\draw[ref] (parse) -- node[right=3pt,font=\scriptsize]{invalid} (reject);
-\draw[ref] (store) -- (sum);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-Invalid
-2 135
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small Attempted inputs and accepted records are different collections. Rejected data never contributes to a successful count or total. The shown numeric values are all within range.
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small Reject non-numeric and out-of-range marks. Count and sum only accepted records.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        String[] input={"A,50","B,bad","C,101"};
-        int total=0,passed=0;
-        for(String line:input) {
-            try {
-                int mark=Integer.parseInt(line.split(",")[1]);
-                total+=mark;
-                if(mark>50) passed++;
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=10,numbersep=0.7em]
-            } catch(NumberFormatException e) {
-                System.out.println("Invalid");
-            }
-        }
-        System.out.println("count,total,passed");
-        System.out.println(input.length+","+total+","+passed);
-    }
+// change and main are in class Demo
+static void change(Box b, ArrayList<Box> list) {
+    b.value = 7;
+    b = new Box(9);
+    list.add(b);
 }
+// in main
+Box x = new Box(1);
+ArrayList<Box> boxes = new ArrayList<>();
+boxes.add(x);
+change(x, boxes);
+System.out.println(x.value + " " + boxes.size());
+System.out.println(boxes.get(1).value);
+boxes.get(0).value++;
+System.out.println(x.value);
 \end{lstlisting}
-
-\end{columns}
-
+    \column{0.41\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{three} lines that are printed.\\[0.2em]
+      \textbf{2.} Which line of \code{change} affects the caller's box, and which
+      line affects only \code{change}?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{7 2}\\
+      \phantom{\textbf{1.}} \code{9}\\
+      \phantom{\textbf{1.}} \code{8}\\[0.2em]
+      \code{b} starts as a copy of the reference in \code{x}: one box, two names.
+      The list holds that box at index 0 and the new box (9) at index 1.
+      \code{boxes.get(0)} \emph{is} \code{x}'s box, so \code{++} makes it 8.\\[0.2em]
+      \textbf{2.} \code{b.value = 7} \textbf{mutates} the shared box, so \code{x}
+      sees 7. \code{b = new Box(9)} only \textbf{rebinds} the local \code{b};
+      \code{x} still refers to the old box.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L7:} After parsing, validate the domain range before updating any summary. Catch the validation failure too.\item \textbf{L9:} The pass boundary is inclusive: mark \textgreater{}= 50.\item \textbf{L15:} Count accepted records, not attempted input records.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-Invalid
-count,total,passed
-3,151,1
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Invalid
-Invalid
-count,total,passed
-1,50,1
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Reject malformed fields and invalid marks without stopping later records. Only valid marks contribute to the report.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-lines=["A,50","broken","C,101"]
-marks=[]
-for line in lines:
-    parts=line.split(",")
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}Items on sale}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py,breaklines=false]
+class Item:
+    def __init__(self, name, price):
+        self.name, self.price = name, price
+    def cost(self, n):
+        if n <= 0:
+            raise ValueError("bad n")
+        return self.price * n
+class Sale(Item):
+    def cost(self, n):
+        return super().cost(n) - 1
+orders = [(Item("pen", 2), 3),
+          (Sale("ink", 5), 2),
+          (Item("pad", 4), 0)]
+total = 0
+for item, n in orders:
     try:
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=6,numbersep=0.7em]
-        marks.append(int(parts[1]))
+        total += item.cost(n)
+        print(item.name, total)
     except ValueError:
-        print("Invalid")
-print("count,total,passed")
-print(f"{len(lines)},{sum(marks)},{sum(m>50 for m in marks)}")
+        print("skip", item.name)
 \end{lstlisting}
-
-\end{columns}
-
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{three} lines that are printed.\\[0.2em]
+      \textbf{2.} If the ink order had \code{n = 0} instead of 2, what would its line
+      be? Why?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{pen 6}\\
+      \phantom{\textbf{1.}} \code{ink 15}\\
+      \phantom{\textbf{1.}} \code{skip pad}\\[0.2em]
+      \code{item.cost(n)} runs the method of the object's \textbf{own} class. For
+      the \code{Sale}, that is $5 \times 2 - 1 = 9$, so the total is $6 + 9 = 15$.
+      For \code{pad}, \code{n} is 0: \code{cost} raises \emph{before}
+      \code{total +=} happens, so the total stays 15.\\[0.2em]
+      \textbf{2.} \code{skip ink}. \code{super().cost(0)} raises, so \code{- 1}
+      never runs. The exception passes up through \code{Sale.cost} to the
+      \code{except}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L6:} Check the number of fields and a non-empty name before indexing.\item \textbf{L6:} Parse and validate 0..100 before appending.\item \textbf{L10:} Count successful records with len(marks).\item \textbf{L10:} Include exactly 50 in the pass count.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-(no standard output)
-IndexError: list index out of range
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Invalid
-Invalid
-count,total,passed
-1,50,1
-\end{lstlisting}
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
 
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: References, collections and a boundary}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.*;
-public class Demo {
-    static int count(List<Integer> xs) { int n=0; for(int x:xs) if(x>=50) n++; return n; }
-    public static void main(String[] args) {
-        List<Integer> a=new ArrayList<Integer>(Arrays.asList(49,50,85));
-        List<Integer> b=a;
-        List<Integer> c=new ArrayList<Integer>(a);
-        b.remove(Integer.valueOf(49));
-        c.set(0,0);
-        System.out.println(a);
-        System.out.println(c);
-        System.out.println(count(a));
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The gradebook (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,breaklines=false,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+public class Gradebook {
+    private int count, total, passed;
+    public boolean add(int mark) {
+        count++;
+        if (mark < 0 || mark > 100) return false;
+        total += mark;
+        if (mark > 50) passed++;
+        return true;
+    }
+    public int getCount() { return count; }
+    public int getPassed() { return passed; }
+    public double average() {
+        double avg;
+        if (count > 0) avg = total / count;
+        return avg;
     }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors. Give each
+    line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the class should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item \code{add}: outside 0..100 $\to$ \code{false}, no change
+      \item \code{getCount}: accepted; \code{getPassed}: $\ge 50$
+      \item \code{average()}: exact average of accepted marks; 0.0 if none
+    \end{itemize}
+    \neutrallabel{Test} {\footnotesize (\code{main} in class \code{Demo})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Gradebook g = new Gradebook();
+System.out.println(g.add(50) + " "
+    + g.add(-5) + " " + g.add(75));
+System.out.println(g.getCount() + " "
+    + g.getPassed());
+System.out.println(g.average());
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+true false true
+2 2
+62.5
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 13} (compile error, reported at line 15:
+            \code{variable avg might not have been initialized}): if
+            \code{count} is 0, \code{avg} has no value. Use \code{double avg = 0;}
+      \item \textbf{Line 4}: counts \emph{before} it checks, so $-5$ counts. Move
+            \code{count++} below line 5.
+      \item \textbf{Line 7}: \code{> 50} misses exactly 50. Use \code{>= 50}.
+      \item \textbf{Line 14}: \code{int / int} drops the \code{.5}: $125 / 2$ is
+            62. Use \code{(double) total / count}.
+    \end{itemize}
+    {\footnotesize Fix only line 13 and the test prints \code{3 1} and
+    \code{41.0}.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-[50, 85]
-[0, 50, 85]
-2
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small Alias mutation affects a. The copied container c changes independently. count tests the inclusive boundary on the current a.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: A record either enters the model or does not}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def parse(text):
-    name,raw=text.split(",")
-    mark=int(raw)
-    if not 0<=mark<=100: raise ValueError("range")
-    return name,mark
-records=[]
-for line in ["A,50","B,bad","C,85"]:
-    try: records.append(parse(line))
-    except ValueError: print("Invalid")
-print(len(records),sum(mark for name,mark in records))
-print(sum(mark>=50 for name,mark in records))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-Invalid
-2 135
-2
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The failed conversion prevents append. The two accepted tuples supply both the valid-record count and numeric summary.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{A complete marks pipeline}\small Read n then n records name,mark. Require exactly two fields, a non-empty name, and an integer mark in 0..100. Print Invalid immediately for each rejected record. Store accepted Student objects. Finish with count,total,passed and the summary of valid records.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-4
-Linh,85
-An,bad
-Mai,50
-Tea,101
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-Invalid
-Invalid
-count,total,passed
-2,135,2
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (1/2)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.*;
-Scanner sc=new Scanner(System.in);
-int n=Integer.parseInt(sc.nextLine());
-List<Student> records=new ArrayList<Student>();
-for(int i=0;i<n;i++) {
-    String line=sc.nextLine();
-    String[] parts=line.split(",",-1);
-    try {
-        if(parts.length!=2 || parts[0].isEmpty()) throw new IllegalArgumentException();
-        int mark=Integer.parseInt(parts[1]);
-        if(mark<0 || mark>100) throw new IllegalArgumentException();
-        records.add(new Student(parts[0],mark));
-    } catch(IllegalArgumentException e) { System.out.println("Invalid"); }
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (2/2)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=14,numbersep=0.7em]
-}
-int total=0,passed=0;
-for(Student student:records) { total+=student.mark(); if(student.passed()) passed++; }
-System.out.println("count,total,passed");
-System.out.println(records.size()+","+total+","+passed);
-class Student {
-    private final String name;
-    private final int mark;
-    Student(String name,int mark) { this.name=name; this.mark=mark; }
-    int mark() { return mark; }
-    boolean passed() { return mark>=50; }
-}
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}Loading students (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,style=bad,breaklines=false,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
 class Student:
-    def __init__(self,name,mark): self.name,self.mark=name,mark
-    def passed(self): return self.mark>=50
-def parse(line):
-    parts=line.split(",")
-    if len(parts)!=2 or not parts[0]: raise ValueError("record")
-    mark=int(parts[1])
-    if not 0<=mark<=100: raise ValueError("range")
-    return Student(parts[0],mark)
-n=int(input())
-records=[]
-for _ in range(n):
-    try: records.append(parse(input()))
-    except ValueError: print("Invalid")
-print("count,total,passed")
-print(f"{len(records)},{sum(s.mark for s in records)},{sum(s.passed() for s in records)}")
+    def __init__(self, name, mark):
+        self.name = name
+        self.mark = mark
+    def passed(self):
+        return self.mark > 50
+def load(rows):
+    students = []
+    for row in rows:
+        name, text = row.split(",")
+        try:
+            mark = int(text)
+        except ValueError:
+            print("Invalid:", row)
+        students.append(Student(name, mark))
+    return students
+rows = ["Linh,85", "An,abc", "Mai,50", "Tuan"]
+kept = load(rows)
+print(len(kept), sum(s.passed() for s in kept))
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
-
+    \column{0.44\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 1--16 (3 min): line numbers and
+    fixes.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{What the program should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item A row that is not \code{name,<whole number>}: print
+            \code{Invalid: <row>}, do \textbf{not} store it, go on
+      \item \code{passed()}: \code{True} for a mark $\ge 50$; \code{sum} counts
+            the \code{True}s
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Invalid: An,abc
+Invalid: Tuan
+2 2
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 10)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+Invalid: An,abc
+ValueError: not enough values to unpack
+  (expected 2, got 1)
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 10}: \code{"Tuan"} has no comma, so the split gives one
+            value and the unpacking raises \code{ValueError} \emph{outside} the
+            \code{try}: crash. Move line 10 inside the \code{try}.
+      \item \textbf{Line 15}: runs even after the \code{except}, so a bad row is
+            stored with the previous row's values. Move it into the \code{try},
+            after line 12.
+      \item \textbf{Line 6}: \code{>} misses exactly 50 (Mai). Use \code{>=}.
+    \end{itemize}
+    {\footnotesize Fix only line 10 and it prints \code{4 2}: the bad rows were
+    stored.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{4 / Linh,85 / An,bad / Mai,50 / Tea,101}\par \textbf{Output:} \code{Invalid / Invalid / count,total,passed / 2,135,2}\par\medskip \textbf{Test 2}\par \code{0}\par \textbf{Output:} \code{count,total,passed / 0,0,0}\par\medskip \textbf{Test 3}\par \code{3 / A,0 / B,50 / C,100}\par \textbf{Output:} \code{count,total,passed / 3,150,2}\par\medskip \textbf{Test 4}\par \code{3 / missing / ,50 / a,b,c}\par \textbf{Output:} \code{Invalid / Invalid / Invalid / count,total,passed / 0,0,0}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+% ======================================================================
+\section{Write the code}
+% ======================================================================
+
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}Parse one row (Java)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min).} {\small A good row gives a
+  \code{Student}; a bad row \textbf{throws}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{parseInt("abc")} throws \code{NumberFormatException}, which
+          \textbf{is an} \code{IllegalArgumentException}.\\
+          So do not catch it inside \code{parse}: the test catches it.
+    \item One comma per row. Mark not in 0..100:
+          \code{throw new IllegalArgumentException("range")}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Student {
+    final String name;
+    final int mark;
+    Student(String name, int mark) {
+        this.name = name;
+        this.mark = mark;
+    }
+}
+// in class Demo, next to main
+static Student parse(String row) {
+    // TODO
+    return new Student("", 0);
+}
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+String[] rows = {"Linh,85", "Mai,150", "Tuan,abc"};
+for (String r : rows) {
+    try {
+        Student s = parse(r);
+        System.out.println(s.name + " " + s.mark);
+    } catch (IllegalArgumentException e) {
+        System.out.println("Invalid: " + r);
+    }
+}
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Linh 85
+Invalid: Mai,150
+Invalid: Tuan,abc
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer} {\footnotesize (\code{Student} is unchanged)}
+\begin{lstlisting}[language=Java,style=good]
+static Student parse(String row) {
+    String[] parts = row.split(",");
+    int mark = Integer.parseInt(parts[1]);
+    if (mark < 0 || mark > 100)
+        throw new IllegalArgumentException("range");
+    return new Student(parts[0], mark);
+}
+\end{lstlisting}
+    {\footnotesize Parse, validate, then build: no \code{Student} with a bad mark.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}Summarise a marks file (Python)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min).} {\small Each non-blank line
+  is \code{name,mark}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Skip blank lines. A mark that is not a whole number: print
+          \code{Invalid: <line>}.
+    \item Return \code{(count, passed)} for the \textbf{valid} lines (passed: mark
+          $\ge 50$).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+def summarise(path):
+    count, passed = 0, 0
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            # TODO
+    return count, passed
+\end{lstlisting}
+    {\footnotesize The file's last line has no \code{\textbackslash n}: it must still
+    count.}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+with open("marks.txt", "w") as f:
+    f.write("Linh,85\n\nAn,abc\nMai,50\nChi,7.5\nBinh,49")
+print(summarise("marks.txt"))
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+Invalid: An,abc
+Invalid: Chi,7.5
+(3, 2)
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.6}\selectfont]
+def summarise(path):
+    count, passed = 0, 0
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if line == "":
+                continue
+            try:
+                mark = int(line.split(",")[1])
+            except ValueError:
+                print("Invalid:", line)
+                continue
+            count += 1
+            if mark >= 50:
+                passed += 1
+    return count, passed
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Explain a program through state changes and call contracts.\item Combine validation, models, collections and report formatting.\item Choose tests that distinguish a plausible wrong implementation.\item Treat functional transformations and streams as optional follow-on material.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-12.html}{Course website: Week 12}. Complete programs accompany this deck.}
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}Keep what passes a check (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{interface Check \{ boolean ok(int mark); \}} is given.
+          \code{InRange.ok}: \code{true} if \code{lo}${}\le{}$\code{mark}${}\le{}$\code{hi}.
+    \item \code{keep} (\code{static}, in \code{Demo}): a \textbf{new} list of the
+          marks where \code{c.ok} is \code{true}. Leave \code{marks} unchanged.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class InRange implements Check {
+    private final int lo, hi;
+    InRange(int lo, int hi) {
+        this.lo = lo; this.hi = hi;
+    }
+    public boolean ok(int mark) {
+        return false;  // TODO
+    }
+}
+static ArrayList<Integer> keep(
+        ArrayList<Integer> marks, Check c) {
+    // TODO
+    return new ArrayList<>();
+}
+\end{lstlisting}
+    \column{0.49\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+ArrayList<Integer> marks = new ArrayList<>(
+    Arrays.asList(49, 50, 120, 85, -3));
+Check valid = new InRange(0, 100);
+Check pass = new InRange(50, 100);
+System.out.println(keep(marks, valid));
+System.out.println(keep(marks, pass));
+System.out.println(marks);
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+[49, 50, 85]
+[50, 85]
+[49, 50, 120, 85, -3]
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.6}\selectfont]
+class InRange implements Check {
+    private final int lo, hi;
+    InRange(int lo, int hi) {
+        this.lo = lo; this.hi = hi;
+    }
+    public boolean ok(int mark) {
+        return lo <= mark && mark <= hi;
+    }
+}
+static ArrayList<Integer> keep(
+        ArrayList<Integer> marks, Check c) {
+    ArrayList<Integer> result = new ArrayList<>();
+    for (int m : marks)
+        if (c.ok(m)) result.add(m);
+    return result;
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: preparing for the final assessment}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{What to practise next}
+    \begin{enumerate}[itemsep=0.1em, topsep=0.2em, leftmargin=1.3em]
+      \footnotesize
+      \item \textbf{Find your gaps.} Explain one example per week to a partner;
+            re-read the weeks you cannot.
+      \item \textbf{Build} the Week 12 marks report in Java \emph{and} Python.
+      \item \textbf{Test it} with the list on the right.
+      \item \textbf{Explain causes}: input, state, output. For a bug: a
+            counterexample, the first wrong state, the fix.
+    \end{enumerate}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright Which week would you least like to explain to a partner
+      today? Write it down: that is your first practice task.
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    {\footnotesize Current Canvas instructions govern assessment.}\\[0.3em]
+    \pause
+    \neutrallabel{A test list for any program}
+    \begin{itemize}[itemsep=0pt, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item no data; exactly one item
+      \item exactly the boundary (50) and one below (49)
+      \item bad text (\code{abc}, \code{7.5}); out of range (\code{-1}, \code{101})
+      \item a missing field; a blank line; a last line with no newline
+    \end{itemize}
+    \vspace{0.3em}
+    \neutrallabel{Optional: beyond the core}\\
+    {\footnotesize A filter loop like Q10's, as a Java 8 stream:}
+\begin{lstlisting}[language=Java,style=good]
+List<Integer> pass = marks.stream()
+    .filter(m -> m >= 50 && m <= 100)
+    .collect(Collectors.toList());
+\end{lstlisting}
+    {\footnotesize Python: {\scriptsize\code{[m for m in marks if 50 <= m <= 100]}}\\
+    Both give \code{[50, 85]} and leave \code{marks} unchanged.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Trace, explain and test}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] say what each variable means after every step (Q1, Q6)
+      \item[\yes] choose a test that can fail: exactly 50, bad text, a blank line
+            (Q2, Q6, Q9)
+      \item[\yes] tell mutation from rebinding (Q1, Q4)
+      \item[\yes] follow a call to the object's own method, through \code{super} and
+            exceptions (Q5, Q10)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Build a small pipeline}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] parse, then validate, then store, in that order (Q3, Q7, Q8)
+      \item[\yes] keep rejected rows out, and count from what you kept
+            (Q3, Q6, Q7, Q9)
+      \item[\yes] read a text file line by line, safely (Q9)
+      \item[\yes] throw and catch the right exception (Q5, Q7, Q8)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: the final assessment}
+    \footnotesize Current Canvas instructions govern assessment. Practise the
+    integrated marks report in both languages, and test it with the list from
+    Looking ahead.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

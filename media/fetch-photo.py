@@ -76,14 +76,18 @@ def fetch(name, title, width):
         "credit_line": m("Credit"),
         "description": m("ImageDescription")[:400],
     }
-    credits = {}
-    if os.path.exists(CREDITS):
-        with open(CREDITS) as f:
-            credits = json.load(f)
-    credits[name] = record
-    with open(CREDITS, "w") as f:
-        json.dump(credits, f, indent=1, sort_keys=True, ensure_ascii=False)
-        f.write("\n")
+    # lock, so two fetches running at once cannot lose each other's record
+    import fcntl
+    with open(CREDITS + ".lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        credits = {}
+        if os.path.exists(CREDITS):
+            with open(CREDITS) as f:
+                credits = json.load(f)
+        credits[name] = record
+        with open(CREDITS, "w") as f:
+            json.dump(credits, f, indent=1, sort_keys=True, ensure_ascii=False)
+            f.write("\n")
     print(f"{record['file']:34s} {os.path.getsize(out)//1024:5d} KB  "
           f"{record['licence'] or '?':16s} {record['artist'][:40]}")
 

@@ -5,7 +5,7 @@
  *     <div class="viz-fallback">…shown only without JavaScript…</div>
  *   </div>
  *
- * The spec is written by scripts/build_week_pages.py from content/weeks-6-12.json, where every
+ * The spec is written by scripts/build_week_pages.py from content/weeks/week-N.json, where every
  * program it shows is run by scripts/check_week_content.py, so the code and the output on the
  * page are real. Kinds:
  *
@@ -21,6 +21,15 @@
  * caption. Movement uses FLIP transforms and is skipped under prefers-reduced-motion.
  *
  * Depends on assets/highlight.js.
+ *
+ * A week can add its own kinds in assets/visuals-wN.js (loaded after this file by the generator):
+ *
+ *   P1Visuals.register('my-kind', function (host, spec, h) { … });
+ *
+ * h holds the shared helpers (el, esc, button, code, highlight, codePane, shell, segmented,
+ * stepper, flip, listTrack, moving). Diagrams mount on DOMContentLoaded, after every script has
+ * loaded, so registering at load time is enough. Its programs go in spec.programs so that
+ * scripts/check_week_content.py runs them.
  */
 window.P1Visuals = (function () {
   'use strict';
@@ -120,8 +129,9 @@ window.P1Visuals = (function () {
     head.appendChild(el('span', 'viz-kicker', 'Interactive'));
     head.appendChild(el('span', 'title', spec.title));
     var langs = el('span', 'viz-langs');
-    var kinds = spec.kind === 'box' || spec.kind === 'typecheck' ? ['java'] : ['java', 'python'];
-    if (spec.kind === 'typecheck') kinds.push('python');
+    // spec.langs (e.g. ['python']) names the badges; otherwise they follow the kind
+    var kinds = spec.langs || (spec.kind === 'box' || spec.kind === 'typecheck' ? ['java'] : ['java', 'python']);
+    if (!spec.langs && spec.kind === 'typecheck') kinds = kinds.concat('python');
     kinds.forEach(function (l) { langs.appendChild(el('span', 'lang ' + l, LANG[l])); });
     head.appendChild(langs);
     host.appendChild(head);
@@ -890,7 +900,7 @@ window.P1Visuals = (function () {
     var d = 0, s = 0;
     var form = el('div', 'viz-form');
     form.appendChild(el('span', 'viz-field-label', 'Declare:'));
-    var decl = segmented('Declare the list as', spec.decls.map(function (x) { return { label: x.label, mono: true }; }), function (n) { d = n; draw(); });
+    var decl = segmented(spec.declLabel || 'Declare the list as', spec.decls.map(function (x) { return { label: x.label, mono: true }; }), function (n) { d = n; draw(); });
     form.appendChild(decl.root);
     body.appendChild(form);
     var form2 = el('div', 'viz-form');
@@ -931,6 +941,15 @@ window.P1Visuals = (function () {
 
   var KINDS = { 'list-ops': mountListOps, filter: mountFilter, queue: mountQueue, box: mountBox, typecheck: mountTypecheck };
 
+  var helpers = { el: el, esc: esc, button: button, code: code, highlight: highlight, lineOf: lineOf,
+    codePane: codePane, shell: shell, segmented: segmented, stepper: stepper, flip: flip,
+    listTrack: listTrack, moving: moving, splitLines: splitLines };
+
+  function register(kind, mount) {
+    if (KINDS[kind]) throw new Error('P1Visuals: kind already registered: ' + kind);
+    KINDS[kind] = function (host, spec) { return mount(host, spec, helpers); };
+  }
+
   function mountAll(root) {
     (root || document).querySelectorAll('.p1-viz').forEach(function (host) {
       if (host.dataset.mounted) return;
@@ -949,5 +968,5 @@ window.P1Visuals = (function () {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { mountAll(); });
   else mountAll();
 
-  return { mountAll: mountAll };
+  return { mountAll: mountAll, register: register, helpers: helpers };
 })();

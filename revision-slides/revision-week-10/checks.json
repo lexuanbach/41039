@@ -1,190 +1,145 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/q02-mcq-append-mode/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "name,mark\nLinh,85\n",
+    "stdout": "A: new\nB: new\nC: old new\nD: old\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
+    "file": "examples/q03-mcq-with-and-exceptions/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "'teacoffee'\n",
+    "stdout": "closed? True\n'a\\n'\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q03/Demo.java",
+    "file": "examples/q04-predict-log-file/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "name,mark\nLinh,85\n",
+    "stdout": "1: AB\n2: CD\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q04/main.py",
+    "file": "examples/q04-predict-log-file/overwrite/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "1: D\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-quoted-name/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "name,mark\n\"An, Mai\",85\nAn, Mai\n",
+    "stdout": "\"Le, An\",85\n3\nLe, An\n['Binh', '49']\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q05/Demo.java",
+    "file": "examples/q06-find-the-bug-report/only-compile-fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "Linh,85\nAn,49\n",
+    "stdout": "",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q06/main.py",
+    "file": "solutions/q06-find-the-bug-report/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "name,mark\nAn,50\nBinh,49\nChi,90\npassed,2\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07-find-the-bug-save-twice/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "Linh\n175\nTrue\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "name,markAn,85\nBinh,49\nname,markAn,85\nBinh,49\n",
+    "returncode": 1,
+    "error": "TypeError: unsupported operand type(s) for +=: 'int' and 'str'"
   },
   {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "count,total,passed\n3,184,2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "name,markLinh85An49",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "name,mark\nLinh,85\nAn,49\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
+    "file": "solutions/q07-find-the-bug-save-twice/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "new",
+    "stdout": "name,mark\nAn,85\nBinh,49\n134\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "old\nnew\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-1/Demo.java",
+    "file": "solutions/c1-report-rows/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "AB\nC\nD\n",
+    "stdout": "An,50,pass\nBinh,49,fail\n2/3 passed\nno marks\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/predict-2/main.py",
+    "file": "solutions/c2-append-log/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "2\nAn, Mai True\n['Tea', '49']\n",
+    "stdout": "2\n3\n0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "solutions/c3-report-any-writer/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\n85 49 50\n",
-    "stdout": "count,total,passed\n3,184,2\n",
+    "stdin": "",
+    "stdout": "true\nname,mark\nAn,85\nBinh,49\ncount,2\nfalse\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c1-report-rows/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "0\n\n",
-    "stdout": "count,total,passed\n0,0,0\n",
+    "stdin": "",
+    "stdout": "\n\n\n\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c2-append-log/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0\n0\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-report-any-writer/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\n0 0 0\n",
-    "stdout": "count,total,passed\n3,0,0\n",
+    "stdin": "",
+    "stdout": "false\nfalse\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "examples/bridge/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "2\n100 50\n",
-    "stdout": "count,total,passed\n2,150,2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\n85 49 50\n",
-    "stdout": "count,total,passed\n3,184,2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "0\n\n",
-    "stdout": "count,total,passed\n0,0,0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\n0 0 0\n",
-    "stdout": "count,total,passed\n3,0,0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "2\n100 50\n",
-    "stdout": "count,total,passed\n2,150,2\n",
+    "stdin": "",
+    "stdout": "85\n49\n50\npassed,2\n85\n49\n50\npassed,2\n",
     "returncode": 0,
     "error": ""
   }

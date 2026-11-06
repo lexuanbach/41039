@@ -10,6 +10,7 @@ working directory, so file fixtures and static counters cannot contaminate anoth
 """
 from pathlib import Path
 import argparse
+import sys
 import hashlib
 import html
 import json
@@ -20,8 +21,10 @@ import subprocess
 import sys
 import tempfile
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from week_content import load_weeks, save_week
+
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / 'content/weeks-6-12.json'
 
 
 def normal(text):
@@ -60,6 +63,7 @@ def build_quiz(w):
 def main():
     refresh = argparse.ArgumentParser()
     refresh.add_argument('--refresh', action='store_true')
+    refresh.add_argument('--weeks', type=int, nargs='+', help='check (and refresh) only these weeks')
     args = refresh.parse_args()
     java = os.environ.get('JAVA_BIN') or shutil.which('java')
     if Path('/opt/homebrew/opt/openjdk@26/bin/java').exists() and not os.environ.get('JAVA_BIN'):
@@ -67,7 +71,7 @@ def main():
     if not java:
         raise SystemExit('Java is required; set JAVA_BIN to the JDK java executable.')
     javac = str(Path(java).resolve().parent / 'javac') if (Path(java).resolve().parent / 'javac').exists() else None
-    weeks = json.loads(DATA.read_text())
+    weeks = load_weeks(args.weeks)
     checks = 0
     compiled = {}
     with tempfile.TemporaryDirectory(prefix='p1-content-') as directory:
@@ -196,6 +200,9 @@ def main():
                 assert m['photo'] in credits, ('Photo has no credit record', m['photo'])
                 assert (ROOT / 'media' / credits[m['photo']]['file']).is_file(), ('Missing photo file', m['photo'])
                 assert m.get('alt'), ('Photo needs alt text', m['photo'])
+                if m['kind'] == 'did-you-know':
+                    # a fact carries the source it was checked against (architecture.md 3a)
+                    assert m.get('sources'), ('A did-you-know fact needs its source', w['week'], m['photo'])
 
         def check_visual(w, v):
             """Visual step-throughs show real programs: run them, and check every line marker exists."""
@@ -263,7 +270,14 @@ def main():
                                 assert result.get('javac', '') == shown, (label, decl['id'], stmt['code'], message)
                                 assert result.get('errors') == errors, (label, decl['id'], stmt['code'], 'error count')
             else:
-                raise AssertionError(('Unknown visual kind', v['kind']))
+                # A kind added by one week (assets/visuals-wN.js) lists every program it shows under
+                # 'programs': [{lang, code, stdin?, output, tokens?}]. Each is run and its output checked;
+                # every token (a line the diagram highlights) must appear in its code.
+                assert v.get('programs'), (label, 'a new visual kind must list the programs it shows')
+                for i, program in enumerate(v['programs']):
+                    check_output(program, run(program['lang'], program['code'], program.get('stdin', '')), label+(i,))
+                    for token in program.get('tokens', []):
+                        assert token in program['code'], (label, i, token)
 
         for w in weeks:
             for s in w['sections']:
@@ -309,7 +323,8 @@ def main():
             assert len(w['quiz'])==12
             print(f'Week {w["week"]}: verified examples, {len(w["exercises"])} exercise solutions and 12 quiz questions',flush=True)
     if args.refresh:
-        DATA.write_text(json.dumps(weeks,indent=2)+'\n')
+        for w in weeks:
+            save_week(w)
     print(f'{checks} program executions; {len(compiled)} distinct Java programs compiled with the browser ECJ jar.')
 
 

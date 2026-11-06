@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 5
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -141,676 +142,695 @@
 
 
 
-
+% --- Additions for the question-format decks (same spine as the CO1005 revisions) ---
+% A trace-table cell that stays empty until the answer step
+\newcommand{\ans}[1]{\uncover<2->{#1}}
 \title[41039 Programming 1 --- Revision of Week 5]{41039 Programming 1}
-\subtitle{Revision of Week 5: Classes, objects and enums}
+\subtitle{Revision of Week 5: classes, objects, static, enums and switch}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
+\AtBeginSection[]{%
+  \begin{frame}{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}%
+}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 8 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\section{Classes, objects and static}
+% ======================================================================
+
+\begin{frame}<1-2>{Fill the blanks: classes and objects}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \begin{itemize}[itemsep=0.6em]
+      \small
+      \item A class is a \blank{1} for objects. Each object made from it is an
+            \blank{2} of that class.
+      \item \code{new} creates the object on the \blank{3}, then runs its \blank{4}.
+      \item A \blank{5} field has one copy for the whole class. An instance field has
+            one copy per object.
+      \item In \code{this.size = size;} the left side names the \blank{6} and the
+            right side names the parameter.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} instance    & \textbf{f)} field\\
+        \textbf{b)} heap        & \textbf{g)} stack\\
+        \textbf{c)} static      & \textbf{h)} final\\
+        \textbf{d)} template    & \textbf{i)} method\\
+        \textbf{e)} constructor & \textbf{j)} private\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} d) template\quad \textbf{(2)} a) instance\\[0.3em]
+      \textbf{(3)} b) heap\quad \textbf{(4)} e) constructor\\[0.3em]
+      \textbf{(5)} c) static\quad \textbf{(6)} f) field
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small The variable holds only a \textbf{reference}. The object itself lives on
+    the heap.}}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. Class count and object count}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Counter {
-    private static int total = 0;
-    private int mine = 0;
-    public void click() {
-        total++;
-        mine++;
+\begin{frame}<1-2>[fragile]{What does each line hold?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+class Lamp {
+    static int made = 0;
+    boolean on;
+    String room;
+    Lamp(String room) {
+        this.room = room;
+        made++;
     }
-    public static void main(String[] args) {
-        Counter a = new Counter();
-        Counter b = new Counter();
-        a.click();
-        a.click();
-        b.click();
-        System.out.println(a.mine + " " + b.mine + " " + total);
+    void toggle() { on = !on; }
+}
+\end{lstlisting}
+    \neutrallabel{In \code{main}}
+\begin{lstlisting}[language=Java]
+Lamp a = new Lamp("hall");
+Lamp b = new Lamp("desk");
+Lamp c = a;
+a.toggle();
+c.toggle();
+b.toggle();
+\end{lstlisting}
+    {\small \textbf{Do not guess:} draw the objects and the arrows first.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Answer each one (90 seconds, alone)}
+      \small\raggedright
+      \begin{enumerate}[label=\textbf{(\alph*)}, itemsep=0.2em, topsep=0em]
+        \item \code{a.on}?
+        \item \code{b.on}?
+        \item \code{Lamp.made}?
+        \item \code{c.room}?
+        \item \code{a == c}? \code{a == b}?
+        \item Does \code{Lamp.toggle();} compile?
+      \end{enumerate}
+      \vspace{-0.3em}
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(a)} \code{false}: \code{a} and \code{c} are one lamp, toggled twice.\\[0.2em]
+      \textbf{(b)} \code{true}: \code{b} is a different lamp.\\[0.2em]
+      \textbf{(c)} \code{2}: two \code{new}, two constructor runs. \code{c = a}
+      makes no object.\\[0.2em]
+      \textbf{(d)} \code{hall}.\\[0.2em]
+      \textbf{(e)} \code{true}, \code{false}: \code{==} compares references.\\[0.2em]
+      \textbf{(f)} \textbf{No}: \code{toggle} is an instance method. Which lamp would
+      it toggle?
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Trace table: one shared total, two objects}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+\begin{lstlisting}[language=Java]
+class Tally {
+    static int total = 0;
+    int mine = 0;
+    void add(int n) { mine += n; total += n; }
+}
+Tally x = new Tally();
+Tally y = new Tally();
+for (int i = 1; i <= 4; i++) {
+    if (i % 2 == 1) x.add(i);
+    else y.add(i);
+    if (i == 2) y = x;
+}
+System.out.println(x.mine + " " + y.mine
+                   + " " + Tally.total);
+\end{lstlisting}
+    \column{0.48\textwidth}
+    \neutrallabel{Fill the table (2 minutes, alone)}\\
+    {\small Values at the \textbf{end} of each pass. What is printed?}\\[0.2em]
+    {\footnotesize
+    \renewcommand{\arraystretch}{1.08}
+    \begin{tabular}{@{}c@{\hspace{0.8em}}l@{\hspace{0.8em}}c@{\hspace{0.8em}}c@{\hspace{0.8em}}c@{}}
+      \toprule
+      \code{i} & call & \code{x.mine} & \code{y.mine} & \code{total}\\
+      \midrule
+      1 & \code{x.add(1)} & \ans{1} & \ans{0} & \ans{1}\\
+      2 & \ans{\code{y.add(2)}} & \ans{1} & \ans{\textbf{1}} & \ans{3}\\
+      3 & \ans{\code{x.add(3)}} & \ans{4} & \ans{4} & \ans{6}\\
+      4 & \ans{\code{y.add(4)}} & \ans{8} & \ans{8} & \ans{10}\\
+      \bottomrule
+    \end{tabular}}
+    \pause
+    \vspace{0.2em}
+    \begin{contextbox}{Answer}
+      \footnotesize\raggedright
+      Output: \code{8 8 10}. After \code{y = x}, both names reach \textbf{one}
+      object, so \code{y.mine} shows 1. The lost object's 2 stays in \code{total}:
+      static data belongs to the class.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Predict the output: the pizza that forgot its size}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Java]
+class Pizza {
+    String size;
+    int slices;
+    Pizza(String size, int slices) {
+        size = size;
+        this.slices = slices;
+    }
+    String describe() {
+        return size + " pizza, "
+               + slices + " slices";
+    }
+}
+// in main
+Pizza p = new Pizza("large", 8);
+System.out.println(p.describe());
+\end{lstlisting}
+    \column{0.44\textwidth}
+    \begin{discussionbox}{Predict (1 minute, alone)}
+      \small\raggedright
+      \textbf{1.} What is printed?\\[0.2em]
+      \textbf{2.} Change \textbf{one} thing to print \code{large pizza, 8 slices}.
+    \end{discussionbox}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{null pizza, 8 slices}.\\[0.3em]
+      Here \code{size} means the \textbf{parameter}, which hides the field. It is
+      copied onto itself; the field keeps its default, \code{null}. It compiles.\\[0.3em]
+      \textbf{2.} \code{this.size = size;} as on the next line.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Which of these methods compile?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.44\textwidth}
+\begin{lstlisting}[language=Java]
+public class Shop {
+    static int opened = 0;
+    String name;
+
+    void rename(String n) {        // (a)
+        name = n;
+        opened++;
+    }
+    static String label() {        // (b)
+        return name;
+    }
+    static String sample() {       // (c)
+        Shop s = new Shop();
+        return s.name;
     }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-2 1 3
-\end{lstlisting}
-\scriptsize\raggedright A static field has exactly one copy, on the class, shared by every object ;  so all three clicks count towards total. mine is an instance variable: each object has its own, so a counts 2 and b counts 1. Static fields are never copied into objects and never reset by a constructor.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.52\textwidth}
+    \begin{discussionbox}{Check (1 minute, alone)}
+      \small\raggedright Which methods compile? For each one that does not, what
+      does \code{javac} say?
+    \end{discussionbox}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(a) Compiles.} It runs for one shop: it sees that shop's \code{name}
+      \textbf{and} the shared \code{opened}.\\[0.3em]
+      \textbf{(b) No:} \emph{non-static variable name cannot be referenced from a
+      static context}. No \code{this}, so no shop.\\[0.3em]
+      \textbf{(c) Compiles} and returns \code{null}: it reads \code{name}
+      \textbf{through a reference} to an object.
+    \end{contextbox}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. A constructor that changes nothing}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class P {
-    private int x;
-    public P(int x) {
-        x = x;
-    }
-    public static void main(String[] args) {
-        System.out.println(new P(5).x);
-    }
-}
-\end{lstlisting}
+% ======================================================================
+\section{Python classes, enums and switch}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-0
-\end{lstlisting}
-\scriptsize\raggedright Inside the constructor, x means the parameter, which hides the field of the same name. So x = x copies the parameter onto itself, and the field keeps its default value, 0. It is legal (at most a compiler warning), which is exactly what makes it a nasty bug. this.x = x; is the fix ;  the first use of this in section 4.3.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{3. Two dogs, one list}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Dog:
-    tricks = []
-    def __init__(self, name):
-        self.name = name
-    def add(self, trick):
-        self.tricks.append(trick)
-a = Dog("Rex")
-b = Dog("Fido")
-a.add("sit")
-print(b.name, b.tricks)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Fido ['sit']
-\end{lstlisting}
-\scriptsize\raggedright name is set in \_\_init\_\_ through self, so each dog has its own. tricks is created once, in the class body: a class attribute, one list shared by every dog ;  like a Java static field. append mutates that shared list. Put self.tricks = [] in \_\_init\_\_ to give each dog its own.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. The implicit class argument}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Foo:
-    baz = "blue"
+\begin{frame}[fragile]{Predict the output: three kinds of method}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
+class Cup:
+    size = "M"
+    count = 0
+    def __init__(self, drink):
+        self.drink = drink
+        Cup.count += 1
+    def label(self):
+        return self.size + " " + self.drink
     @classmethod
-    def bar(cls):
-        print("The class says " + cls.baz)
-Foo.bar()
+    def made(cls): return cls.count
+    @staticmethod
+    def price(size):
+        return {"S": 3, "M": 4, "L": 5}[size]
+a = Cup("tea")
+b = Cup("coffee")
+b.size = "L"
+print(a.label(), b.label())
+print(Cup.made(), Cup.size)
+print(Cup.price(b.size))
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-The class says blue
-\end{lstlisting}
-\scriptsize\raggedright A @classmethod receives the class itself as its first parameter, conventionally named cls, and Python supplies it automatically ;  you do not pass it. Through cls the method can read class attributes such as baz. It is called from the class, like a Java static method.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.46\textwidth}
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} What is printed?\\[0.2em]
+      \textbf{2.} Which method gets \code{self}, which \code{cls}, which neither?
+    \end{discussionbox}
+    \pause
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{M tea L coffee}, then \code{2 M}, then \code{5}.\\[0.3em]
+      \code{b.size = "L"} creates a new attribute \textbf{on \code{b} only}. \code{a}
+      still finds the class's \code{"M"}.\\[0.3em]
+      \textbf{2.} \code{label} gets \code{self} (the object), \code{made} gets
+      \code{cls} (the class), \code{price} gets neither: a static method.
+    \end{contextbox}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{5. Enum identity}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Cards {
-    enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS; }
-    public static void main(String[] args) {
-        Suit a = Suit.HEARTS;
-        Suit b = Suit.values()[0];
-        System.out.println(a + " " + (a == b));
+\begin{frame}<1-2>[fragile]{Predict the output: an enum switch that falls through}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
+enum Size { SMALL, MEDIUM, LARGE }
+
+static int price(Size s) {
+    int p = 0;
+    switch (s) {
+        case SMALL:  p = 3;
+        case MEDIUM: p = 4; break;
+        case LARGE:  p = 5;
+    }
+    return p;
+}
+// in main
+for (Size s : Size.values())
+    System.out.print(s + "=" + price(s) + " ");
+System.out.println(
+    Size.valueOf("LARGE").ordinal());
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} What is printed?\\[0.2em]
+      \textbf{2.} Rewrite \code{price} with a switch \textbf{expression} (Java 14+).
+      What happens if you leave out \code{LARGE}?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{SMALL=4 MEDIUM=4 LARGE=5 2}. No \code{break} after
+      \code{SMALL}, so it falls into \code{MEDIUM}. \code{ordinal()} counts from 0.\\[0.2em]
+      \textbf{2.} Arrows never fall through, so \code{SMALL} gives 3:
+    \end{contextbox}
+\begin{lstlisting}[language=Java,style=good]
+return switch (s) {
+    case SMALL  -> 3;
+    case MEDIUM -> 4;
+    case LARGE  -> 5;
+};
+\end{lstlisting}
+    {\small Leave out \code{LARGE}: \textbf{compile error}, \emph{the switch expression
+    does not cover all possible input values}.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Spot the errors: the player score}
+  \badlabel{Task: each player has a name, points and a history.}
+  {\small Expected: \code{An: 7}, then \code{[]}.}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+class Player:
+    history = []
+    def __init__(name, points):
+        self.name = name
+        self.points = points
+    def add(self, n):
+        points += n
+        self.history.append(n)
+    def __str__(self):
+        print(self.name + ": " + str(self.points))
+an, binh = Player("An", 0), Player("Binh", 5)
+an.add(3)
+an.add(4)
+print(an)
+print(binh.history)
+\end{lstlisting}
+    {\small Find \textbf{4} problems. Python stops at the \textbf{first} one it meets.}
+    \column{0.44\textwidth}
+    \pause
+    \goodlabel{Fixes, in the order Python meets them}
+    \begin{itemize}[itemsep=0.2em]
+      \footnotesize
+      \item Line 3: no \code{self}, so \emph{TypeError: \_\_init\_\_() takes 2
+            positional arguments but 3 were given}.
+      \item Line 7: \code{points} is a new local: \emph{UnboundLocalError}. Use
+            \code{self.points}.
+      \item Line 10: \code{\_\_str\_\_} must \textbf{return} the text. It prints
+            \code{An: 7}, then a \emph{TypeError}.
+      \item Line 2: one list for \textbf{all} players. No error, but it prints
+            \code{[3, 4]}. Use \code{self.history = []}.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{Pair activity: break the player \timing{Pairs}{3 minutes}}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.52\textwidth}
+    \neutrallabel{The class (all 4 bugs fixed)}
+\begin{lstlisting}[language=Py,style=good]
+class Player:
+    def __init__(self, name, points):
+        self.name = name
+        self.points = points
+        self.history = []
+    def add(self, n):
+        self.points += n
+        self.history.append(n)
+    def __str__(self):
+        return self.name + ": " + str(self.points)
+\end{lstlisting}
+    \column{0.44\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Your task}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.2em, topsep=0em]
+        \item One call that leaves a player in a state no game should allow.
+        \item What does \code{Player("An", 0) == Player("An", 0)} print? Why?
+        \item Can other code give a player 1000 points without calling \code{add}?
+              Could it in Java?
+      \end{enumerate}
+      \vspace{-0.3em}
+    \end{discussionbox}}{%
+    \begin{contextbox}{One good answer}
+      \footnotesize\raggedright
+      \textbf{1.} \code{p.add(-50)} prints \code{An: -50}: nothing checks \code{n}.
+      \code{Player("", 0)} is another.\\[0.3em]
+      \textbf{2.} \code{False}. Without \code{\_\_eq\_\_}, \code{==} asks ``the
+      \textbf{same} object?'', like \code{is}. These are two objects.\\[0.3em]
+      \textbf{3.} Yes: \code{p.points = 1000} works. Python attributes are public.
+      In Java, a \code{private} field makes the compiler refuse it. That is today's
+      topic.
+    \end{contextbox}}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Which version would you rather debug?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \badlabel{Version 1}
+\begin{lstlisting}[language=Java,style=bad]
+static final int HEARTS = 0, SPADES = 1,
+                 DIAMONDS = 2, CLUBS = 3;
+static String colour(int suit) {
+    if (suit == HEARTS || suit == DIAMONDS)
+        return "red";
+    return "black";
+}
+System.out.println(colour(DIAMONDS));
+System.out.println(colour(7));
+\end{lstlisting}
+    \column{0.48\textwidth}
+    \goodlabel{Version 2}
+\begin{lstlisting}[language=Java,style=good]
+enum Suit {
+    HEARTS, SPADES, DIAMONDS, CLUBS;
+    String colour() {
+        if (this == HEARTS
+                || this == DIAMONDS)
+            return "red";
+        return "black";
+    }
+}
+System.out.println(Suit.DIAMONDS.colour());
+\end{lstlisting}
+  \end{columns}
+  \pause
+  \begin{contextbox}{Why version 2}
+    \footnotesize\raggedright
+    Version 1 prints \code{red}, then \code{black} for suit 7, which does not exist, and
+    nothing complains. With the enum, \code{colour(7)} does not compile (\emph{int cannot
+    be converted to Suit}). Only four suits can exist, \code{==} is safe, they print as
+    \code{DIAMONDS} rather than \code{2}, and the method lives with the data.
+  \end{contextbox}
+\end{frame}
+
+% ======================================================================
+\section{Write the code}
+% ======================================================================
+
+\begin{frame}<1-2>[t,fragile]{Write the code: a rectangle that counts itself}
+  \neutrallabel{Java \textbullet{} alone \textbullet{} 4 minutes.}
+  {\small Finish \code{Rectangle}: set the fields with \code{this}, count every rectangle made, and compute the area.}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class Rectangle {
+    static int count = 0;
+    private int width;
+    private int height;
+    Rectangle(int width, int height) {
+        // TODO: set the fields with this
+        // TODO: count this rectangle
+    }
+    int area() {
+        return 0;  // TODO
     }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-HEARTS true
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Java]
+Rectangle a = new Rectangle(3, 4);
+Rectangle b = new Rectangle(5, 5);
+System.out.println(a.area() + " " + b.area());
+System.out.println(Rectangle.count);
 \end{lstlisting}
-\scriptsize\raggedright An enum value prints as its name. There is exactly one object per enum value ;  no others can ever be created ;  so every reference to HEARTS is a reference to the same object, and == is true. values() returns an ordinary array, so indexing it is fine.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{6. An enum alias}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-from enum import Enum
-class Colour(Enum):
-    RED = 1
-    GREEN = 1
-    BLUE = 2
-print(Colour.GREEN)
-print(len(Colour))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Colour.RED
+    \neutrallabel{Must print}
+\begin{lstlisting}
+12 25
 2
 \end{lstlisting}
-\scriptsize\raggedright GREEN and RED have the same value, so GREEN aliases RED. Printing the member uses its canonical name, Colour.RED. len(Colour) counts RED and BLUE, giving 2. The alias does not create a third member.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{7. Switch expressions}
-\srcline{Java 14 excerpt: main statements and supporting types; use Ed or a matching local JDK; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-int n = 7;
-String s = switch (n % 3) {
-    case 0 -> "fizz";
-    case 1 -> "one";
-    default -> "other";
-};
-System.out.println(s);
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-one
-\end{lstlisting}
-\scriptsize\raggedright 7 \% 3 is 1, so the case 1 arm gives "one". With the arrow form there is no fall-through: the switch produces the value after the arrow and is finished, so no break is needed. Because it produces a value, it can be assigned ;  that is the whole point of a switch expression.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{8. Guard order in a pattern switch}
-\srcline{Java 21; use Ed or a matching local JDK; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Demo {
-record Student(String name, int mark) {}
-static String grade(Object o) {
-    return switch (o) {
-        case Student s when s.mark() >= 50 -> "P";
-        case Student s when s.mark() >= 85 -> "HD";
-        case Student s -> "Z";
-        default -> "not a student";
-    };
-}
- public static void main(String[] args) { System.out.println(grade(new Student("An",92))); }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-P
-\end{lstlisting}
-\scriptsize\raggedright Cases are tried in order, and the first whose pattern matches and whose when is true wins. 92 \textgreater{}= 50, so the first case answers "P" and the HD case is never reached ;  the same ordering rule as an else if ladder in Weeks 2+3. (Put the \textgreater{}= 85 case first.) Guarded cases like these are allowed to overlap.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\section{Team round 1: draw the model}
-
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: Two names and two accounts}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Account a=new Account(100);
-Account b=a;
-Account c=new Account(100);
-b.deposit(50);
-System.out.println(a.balance+" "+b.balance+" "+c.balance);
-System.out.println((a==b)+" "+(a==c));
-class Account {
-    int balance;
-    Account(int balance) { this.balance=balance; }
-    void deposit(int amount) { balance+=amount; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the object references after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (a) at (0,0) {a: Account};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (b) at (0,-1) {b: Account};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (c) at (0,-2) {c: Account};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o1) at (5,-0.3) {Account \#1\\[0pt] balance = 150};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o2) at (5,-2) {Account \#2\\[0pt] balance = 100};
-\draw[ref] (a) -- (o1);
-\draw[ref] (b) -- (o1);
-\draw[ref] (c) -- (o2);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-150 150 100
-true false
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small a and b share one object. c refers to a separately constructed account with its own balance.
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small After depositing 50 into a, balances must be 150 and 200.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        Account a=new Account(100);
-        Account b=new Account(200);
-        a.deposit(50);
-        System.out.println(a.balance()+" "+b.balance());
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good]
+class Rectangle {
+    static int count = 0;
+    private int width;
+    private int height;
+    Rectangle(int width, int height) {
+        this.width = width;
+        this.height = height;
+        count++;
     }
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=8,numbersep=0.7em]
-}
-class Account {
-    private static int cents;
-    Account(int cents) { cents=cents; }
-    void deposit(int amount) { cents=amount; }
-    int balance() { return cents; }
-}
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L10:} Use an instance field: different accounts need separate balances.\item \textbf{L11:} Assign the parameter to this.cents.\item \textbf{L12:} Add the deposit rather than replacing the balance.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-50 50
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-150 200
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small The accounts must have independent histories, and print(a) must produce 150.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Account:
-    deposits=[]
-    def __init__(self, cents): self.cents=cents
-    def deposit(self, amount):
-        self.deposits.append(amount)
-        self.cents=amount
-    def __str__(self): print(self.cents)
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=8,numbersep=0.7em]
-
-a=Account(100)
-b=Account(200)
-a.deposit(50)
-print(a.cents,b.cents)
-print(b.deposits)
-print(a)
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L2:} Allocate a fresh deposit list inside \_\_init\_\_ for each account.\item \textbf{L6:} Add to the current balance instead of replacing it.\item \textbf{L7:} Return a string from \_\_str\_\_; printing inside it returns None.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-50 200
-[50]
-50
-TypeError: __str__ returned non-string (type NoneType)
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-150 200
-[]
-150
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: Aliasing, then replacement}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Box a=new Box(2);
-Box b=a;
-b.side=3;
-System.out.println(a.volume());
-b=new Box(4);
-System.out.println(a.volume()+" "+b.volume());
-class Box {
-    int side;
-    Box(int side) { this.side=side; }
-    int volume() { return side*side*side; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-27
-27 64
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The first assignment shares a box. The later constructor creates a new box for b; a still refers to the side-3 box.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: A counter is not an identity}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Ticket:
-    issued=0
-    def __init__(self):
-        Ticket.issued+=1
-        self.number=Ticket.issued
-a,b=Ticket(),Ticket()
-c=a
-c.number=9
-print(a.number,b.number,Ticket.issued)
-print(a is c,a is b)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-9 2 2
-True False
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small issued counts constructor calls. c aliases a, so changing c.number changes a.number without creating a third ticket.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{A bank account with a precise contract}\small Read the initial non-negative balance. Then process D amount or W amount until Q. Refuse non-positive amounts and withdrawals above the balance. Print OK or Refused for every command, then Balance: N. Use integer cents.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-1000
-D 500
-W 200
-Q
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-OK
-OK
-Balance: 1300
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (1/3)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.Scanner;
-public class Bank {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        BankAccount acc = new BankAccount(sc.nextInt());
-        String command = sc.next();
-        while (!command.equals("Q")) {
-            int amount = sc.nextInt();
-            boolean ok;
-            if (command.equals("D")) {
-                ok = acc.deposit(amount);
-            } else {
-                ok = acc.withdraw(amount);
-            }
-            System.out.println(ok ? "OK" : "Refused");
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (2/3)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=16,numbersep=0.7em]
-            command = sc.next();
-        }
-        System.out.println("Balance: " + acc.getBalance());
+    int area() {
+        return width * height;
     }
 }
-class BankAccount {
-    private int balance;
-    public BankAccount(int startingBalance) {
-        this.balance = startingBalance;
-    }
-    public boolean deposit(int cents) {
-        if (cents <= 0) {
-            return false;
-        }
-        this.balance += cents;
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
+    {\footnotesize \code{count++} runs once per \code{new}. Without \code{this.}, both areas would be 0.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Code it: Java solution (3/3)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=31,numbersep=0.7em]
+\begin{frame}<1-2>[t,fragile]{Write the code: a temperature in Python}
+  \neutrallabel{Python \textbullet{} alone \textbullet{} 4 minutes.}
+  {\small Finish \code{Temperature}: keep the Celsius value, build one from Fahrenheit with $C = (F - 32) \times 5 / 9$, and print it to 1 decimal place.}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+class Temperature:
+    def __init__(self, celsius):
+        pass  # TODO: keep celsius
+    @classmethod
+    def from_fahrenheit(cls, f):
+        pass  # TODO: a new Temperature
+    def __str__(self):
+        return "?"  # TODO: like "21.5 C"
+\end{lstlisting}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+print(Temperature(21.5))
+print(Temperature.from_fahrenheit(212))
+print(Temperature.from_fahrenheit(70))
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+21.5 C
+100.0 C
+21.1 C
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good]
+class Temperature:
+    def __init__(self, celsius):
+        self.celsius = celsius
+    @classmethod
+    def from_fahrenheit(cls, f):
+        return cls((f - 32) * 5 / 9)
+    def __str__(self):
+        c = round(self.celsius, 1)
+        return str(c) + " C"
+\end{lstlisting}
+    {\footnotesize \code{cls(...)} calls the constructor. \code{\_\_str\_\_} \textbf{returns} the text.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{Write the code: an enum with data}
+  \neutrallabel{Java \textbullet{} alone \textbullet{} 4 minutes.}
+  {\small Finish \code{Size}: \code{SMALL}, \code{MEDIUM} and \code{LARGE} hold 250, 350 and 500 ml. \code{bigger()} gives the next size up; \code{LARGE} stays \code{LARGE}.}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+enum Size {
+    // TODO: give them 250, 350, 500 ml
+    SMALL, MEDIUM, LARGE;
+    // TODO: a private final field ml,
+    // and a constructor that sets it
+    int ml() {
+        return 0;  // TODO
+    }
+    Size bigger() {
+        return this;  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Java]
+System.out.println(Size.SMALL.ml());
+System.out.println(Size.SMALL.bigger());
+System.out.println(Size.LARGE.bigger().ml());
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+250
+MEDIUM
+500
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good]
+enum Size {
+    SMALL(250), MEDIUM(350), LARGE(500);
+    private final int ml;
+    Size(int ml) { this.ml = ml; }
+    int ml() { return ml; }
+    Size bigger() {
+        if (this == LARGE) return LARGE;
+        return values()[ordinal() + 1];
+    }
+}
+\end{lstlisting}
+    {\footnotesize Values first, then a \textbf{semicolon}. Each value calls the constructor once.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Warm-up for today}
+% ======================================================================
+
+\begin{frame}[fragile]{Bridge: when anyone can change the count}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.46\textwidth}
+    \neutrallabel{Last week: a field anyone can write}
+\begin{lstlisting}[language=Java]
+class Stock {
+    int count;
+}
+// anywhere in the program
+Stock s = new Stock();
+s.count = 5;
+s.count -= 8;
+System.out.println(s.count);   // -3
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright The rule is: \textbf{stock is never negative}. In a 2,000-line
+      shop program, where must you check it?
+    \end{discussionbox}
+    \column{0.50\textwidth}
+    \pause
+    {\small \textbf{Everywhere} \code{s.count} is written, and you cannot even find
+    them all. Instead, let the class keep its own rule:}
+\begin{lstlisting}[language=Java,style=good]
+class Stock {
+    private int count;
+    boolean take(int n) {
+        if (n <= 0 || n > count) return false;
+        count -= n;
         return true;
     }
-    public boolean withdraw(int cents) {
-        if (cents <= 0 || cents > this.balance) {
-            return false;
-        }
-        this.balance -= cents;
-        return true;
-    }
-    public int getBalance() {
-        return this.balance;
-    }
 }
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
+    {\small One place to check, and \code{s.count -= 8;} no longer compiles outside the
+    class. Today: \textbf{contracts}, \textbf{valid state}, and classes you can rely on.}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Code it: Python solution (1/2)}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class BankAccount:
-    def __init__(self, starting):
-        self.__balance = starting
-    def deposit(self, cents):
-        if cents <= 0:
-            return False
-        self.__balance += cents
-        return True
-    def withdraw(self, cents):
-        if cents <= 0 or cents > self.__balance:
-            return False
-        self.__balance -= cents
-        return True
-    def balance(self):
-        return self.__balance
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution (2/2)}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=16,numbersep=0.7em]
-acc = BankAccount(int(input()))
-line = input()
-while line != "Q":
-    parts = line.split()
-    amount = int(parts[1])
-    if parts[0] == "D":
-        ok = acc.deposit(amount)
-    else:
-        ok = acc.withdraw(amount)
-    if ok:
-        print("OK")
-    else:
-        print("Refused")
-    line = input()
-print("Balance: " + str(acc.balance()))
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{1000 / D 500 / W 200 / Q}\par \textbf{Output:} \code{OK / OK / Balance: 1300}\par\medskip \textbf{Test 2}\par \code{100 / W 500 / D -5 / D 50 / Q}\par \textbf{Output:} \code{Refused / Refused / OK / Balance: 150}\par\medskip \textbf{Test 3}\par \code{0 / Q}\par \textbf{Output:} \code{Balance: 0}\par\medskip \textbf{Test 4}\par \code{250 / W 250 / W 1 / D 0 / Q}\par \textbf{Output:} \code{OK / Refused / Refused / Balance: 0}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
-\end{frame}
-
-\section{Wrapping up}
-
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Distinguish class state from instance state.\item Trace references separately from objects.\item Use constructors, this/self, enums and string representations.\item Explain switch-expression values and the order of guarded cases.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-5.html}{Course website: Week 5}. Complete programs accompany this deck.}
-
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Classes, objects and static}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] write a class with fields, a constructor and methods
+      \item[\yes] use \code{this} to tell a field from a parameter
+      \item[\yes] draw \textbf{references} and \textbf{objects} separately
+      \item[\yes] tell \textbf{static} (one per class) from \textbf{instance} (one per object)
+      \item[\yes] say what a static method cannot see, and why
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Python classes, enums and switch}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] use \code{self}, \code{cls}, \code{@classmethod} and \code{@staticmethod}
+      \item[\yes] return a string from \code{\_\_str\_\_}
+      \item[\yes] give an enum fields, a constructor and methods
+      \item[\yes] spot fall-through, and use a switch expression (Java 14+)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 6 -- Building reliable classes}
+    \footnotesize Contracts and valid state, references and object lifetime, shared
+    versus instance data, and composition.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

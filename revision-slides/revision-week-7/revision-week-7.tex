@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 7
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,502 +141,1015 @@
 }
 
 
-
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 \title[41039 Programming 1 --- Revision of Week 7]{41039 Programming 1}
-\subtitle{Revision of Week 7: Lists and generics}
+\subtitle{Revision of Week 7: lists and generics}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 14 questions, about 50 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\footnotesize
+    \renewcommand{\arraystretch}{1.02}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Indexes, nodes, type parameters\\
+      Q2  & Multiple choice    & Which loop removes every negative?\\
+      Q3  & Multiple choice    & Which line does not compile?\\
+      Q4  & Predict the output & Insert, set and remove (Java)\\
+      Q5  & Predict the output & A chain of nodes (Python)\\
+      Q6  & Find the bug       & The mark book (Java, 4 bugs)\\
+      Q7  & Find the bug       & The basket (Python, 3 bugs)\\
+      Q8  & Write the code     & The last few, for any type (Java)\\
+      Q9  & Write the code     & A help-desk queue (Python)\\
+      Q10 & Write the code     & A queue of linked nodes (Java)\\
+      \midrule
+      Q11 & Predict the output & Splice the nodes (Java)\\
+      Q12 & Predict the output & Who holds the new head? (Python)\\
+      Q13 & Find the bug       & The linked queue (Java, 3 bugs)\\
+      Q14 & Find the bug       & The chain (Python, 3 bugs)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. Changing a resizable list}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.ArrayList;
-ArrayList<String> names = new ArrayList<String>();
-names.add("An");
-names.add("Mai");
-names.add(1,"Linh");
-names.set(0,"Binh");
-System.out.println(names);
-System.out.println(names.size());
+\begin{frame}[fragile]{Week 7 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{A list grows.} Indexes: 0 to \code{size()}$-1$.
+            \code{add(i,x)} \emph{inserts} (later elements shift right);
+            \code{set(i,x)} \emph{replaces}. Python: \code{insert},
+            \code{xs[i] = x}.
+      \item[\textbf{2}] \textbf{Index or value?} \code{remove(1)} removes
+            \textbf{index} 1; \code{remove(Integer.valueOf(1))} removes the
+            \textbf{value} 1. Python: \code{pop(i)}, \code{remove(x)}.
+      \item[\textbf{3}] \textbf{Removing while looping.} A removal shifts later
+            elements left, so a forward loop skips one. Loop backwards, use
+            \code{Iterator.remove()}, or build a new list.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{Nodes and queues.} A node holds a value and a link,
+            \code{next}. A queue is first in, first out: Java \code{LinkedList},
+            Python \code{deque}.
+      \item[\textbf{5}] \textbf{Generics.} In \code{class Box<T>}, \code{T} is the
+            \emph{type parameter}; in \code{Box<String>}, \code{String} is the
+            \emph{type argument}: a class, so \code{Integer}, not \code{int}.
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+List<Integer> xs = new ArrayList<Integer>();
+xs.add(7);                      // boxed
+xs.add(0, 4);                   // [4, 7]
+xs.remove(Integer.valueOf(7));  // [4]
+int first = xs.get(0);          // unboxed
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-[Binh, Linh, Mai]
-3
-\end{lstlisting}
-\scriptsize\raggedright add at an index inserts; set replaces. Three elements remain.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. The comparable Python operations}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-names = ["An", "Mai"]
-names.insert(1, "Linh")
-names[0] = "Binh"
-print(names)
-print(len(names))
-\end{lstlisting}
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-['Binh', 'Linh', 'Mai']
-3
-\end{lstlisting}
-\scriptsize\raggedright Python lists offer the same insert/replace distinction, with different syntax.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Indexes, nodes and type parameters}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.58\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.25em]
+      \small
+      \item An \code{ArrayList}'s spare room is its \blank{1}; \code{size()} counts
+            only the elements stored.
+      \item \code{set(i, x)} \blank{2} the element at index \code{i}; the size stays
+            the same.
+      \item On a \code{List<Integer>}, \code{remove(1)} treats 1 as an \blank{3}.
+      \item A linked list is a chain of \blank{4}, each with a value and a link.
+      \item In \code{class Box<T>}, \code{T} is a type \blank{5}, filled in later,
+            e.g.\ \code{Box<String>}.
+      \item Java turns an \code{int} into an \code{Integer} for you:
+            \blank{6}.
+    \end{itemize}
+    \column{0.38\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} capacity   & \textbf{f)} autoboxing\\
+        \textbf{b)} inserts    & \textbf{g)} nodes\\
+        \textbf{c)} argument   & \textbf{h)} replaces\\
+        \textbf{d)} index      & \textbf{i)} size\\
+        \textbf{e)} parameter  & \textbf{j)} iterator\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} a) capacity\quad \textbf{(2)} h) replaces\\[0.3em]
+      \textbf{(3)} d) index\quad \textbf{(4)} g) nodes\\[0.3em]
+      \textbf{(5)} e) parameter\\[0.3em]
+      \textbf{(6)} f) autoboxing\\[0.3em]
+      Not used: b) inserts, c) argument, i) size, j) iterator.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small \code{inserts} cannot be (2): inserting makes the list longer.
+    \code{String} in \code{Box<String>} is the type \textbf{argument}; \code{T} is the
+    \textbf{parameter} it fills.}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{3. Remove an index or remove a value?}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.ArrayList;
-import java.util.Arrays;
-ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));
-values.remove(1);
-values.remove(Integer.valueOf(4));
-System.out.println(values);
-\end{lstlisting}
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-[4]
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which loop removes every negative?}
+  \neutrallabel{Goal:} {\small remove \textbf{every} negative number from the
+  \code{List<Integer> xs}, which starts as \mbox{\code{[4, -1, -2, 5]}}.}\\[0.1em]
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 1}
+\begin{lstlisting}[language=Java]
+for (int i = 0;
+     i < xs.size(); i++)
+    if (xs.get(i) < 0)
+        xs.remove(i);
 \end{lstlisting}
-\scriptsize\raggedright The index removal leaves [4,4]; the value removal deletes only the first 4.
-\end{contextbox}\end{onlyenv}
-\end{columns}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 2}
+\begin{lstlisting}[language=Java]
+for (int i = xs.size() - 1;
+     i >= 0; i--)
+    if (xs.get(i) < 0)
+        xs.remove(i);
+\end{lstlisting}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 3}
+\begin{lstlisting}[language=Java]
+Iterator<Integer> it
+    = xs.iterator();
+while (it.hasNext())
+    if (it.next() < 0)
+        it.remove();
+\end{lstlisting}
+  \end{minipage}
 
+  \vspace{0.3em}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.36\textwidth}
+    \begin{discussionbox}{Choose one (90 seconds)}
+      \small
+      \wrongopt{A}{Version 1 only}\\[0.15em]
+      \wrongopt{B}{Version 2 only}\\[0.15em]
+      \rightopt{C}{Versions 2 and 3}\\[0.15em]
+      \wrongopt{D}{All three}
+    \end{discussionbox}
+    \column{0.60\textwidth}
+    \alt<1>{%
+    {\small \neutrallabel{Hint:} all three compile and run (with
+    \mbox{\code{import java.util.*;}}). \code{i} is an \code{int}, so
+    \code{xs.remove(i)} removes by index. Trace each version on
+    \mbox{\code{[4, -1, -2, 5]}}.}}{%
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      \textbf{V1} \no{} ends \code{[4, -2, 5]}: once $-1$ goes, $-2$ slides into
+      index 1 and \code{i++} skips it.\\[0.1em]
+      \textbf{V2} \yes{} backwards: a removal shifts only elements already checked.\\[0.1em]
+      \textbf{V3} \yes{} \code{it.remove()} removes what \code{next()} just gave.\\[0.1em]
+      A and B each miss a version that works; D includes V1.
+    \end{contextbox}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{4. Safe filtering produces a new list}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-values = [1, 2, 2, 3, 4]
-kept = [value for value in values if value % 2 == 1]
-print(kept)
-print(values)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-[1, 3]
-[1, 2, 2, 3, 4]
-\end{lstlisting}
-\scriptsize\raggedright Filtering leaves the source unchanged and keeps both order and only the matching values.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. A reusable, type-safe box}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Box<String> label = new Box<String>("tea");
-Box<Integer> count = new Box<Integer>(3);
-System.out.println(label.get() + " " + count.get());
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Which line does not compile?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
 class Box<T> {
-    private final T value;
+    private T value;
     Box(T value) { this.value = value; }
     T get() { return value; }
+    void set(T value) { this.value = value; }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-tea 3
+    \begin{discussionbox}{Choose one (60 seconds)}
+      \small
+      \wrongopt{A}{\code{int n = b.get() + 1;}}\\[0.15em]
+      \wrongopt{B}{\code{b.set(7);}}\\[0.15em]
+      \rightopt{C}{\code{b.set("7");}}\\[0.15em]
+      \wrongopt{D}{\code{Integer m = b.get();}}
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    {\small \code{main} is in another class, \code{Demo}, in the same file, and
+    starts with:}
+\begin{lstlisting}[language=Java]
+Box<Integer> b = new Box<Integer>(5);
 \end{lstlisting}
-\scriptsize\raggedright The class is reused with two types while each individual box retains a checked element type.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \begin{onlyenv}<1>
+    {\small Each option is the next line of \code{main}. Exactly \textbf{one} of them
+    does not compile.}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      In \code{b}, \code{T} is \code{Integer}, so \code{set} needs an
+      \code{Integer}:\\
+      {\scriptsize\code{incompatible types: String cannot be converted to Integer}}\\[0.2em]
+      \textbf{A}: \code{get()} gives an \code{Integer}; Java unboxes it to add 1.\\[0.1em]
+      \textbf{B}: the \code{int} 7 is autoboxed to an \code{Integer}.\\[0.1em]
+      \textbf{D}: \code{get()} returns \code{T}, which is \code{Integer} here.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{6. The same FIFO contract with deque}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-from collections import deque
-queue = deque(["An", "Mai"])
-print(queue.popleft())
-print(list(queue))
-\end{lstlisting}
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small Predict the output. Which Java list provides addLast/removeFirst? Why would repeated get(i) on that list be expensive?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-An
-['Mai']
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}Insert, set and remove}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+// in main (import java.util.*;)
+List<Integer> xs = new ArrayList<Integer>();
+xs.add(10);
+xs.add(20);
+xs.add(0, 30);
+xs.set(1, 20);
+xs.add(xs.size(), 2);
+System.out.println(xs + " " + xs.size());
+xs.remove(2);
+System.out.println(xs);
+xs.remove(Integer.valueOf(2));
+System.out.println(xs + " " + xs.get(1));
 \end{lstlisting}
-\scriptsize\raggedright popleft removes An, and Mai remains waiting. Java LinkedList provides addLast/removeFirst. Finding an arbitrary index requires traversing links, so repeatedly accessing every index can take quadratic time. Prefer sequential iteration for that access pattern.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{three} lines that are printed.\\[0.2em]
+      \textbf{2.} Line 7, \code{xs.add(xs.size(), 2)}, is allowed. Would
+      \code{xs.get(xs.size())} be allowed after line 12? Why?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{[30, 20, 20, 2] 4}\\
+      \phantom{\textbf{1.}} \code{[30, 20, 2]}\\
+      \phantom{\textbf{1.}} \code{[30, 20] 20}\\[0.2em]
+      Line 5 \textbf{inserts} 30 at the front; line 6 \textbf{replaces} the 10; line
+      7 adds at the end. On line 9, 2 is an \code{int}, so an \textbf{index}: the
+      second 20 goes. Line 11 removes the \textbf{value} 2.\\[0.2em]
+      \textbf{2.} No: \code{get} needs 0 to \code{size()}$-1$.
+      \code{add(size(), x)} means ``at the end''; \code{get(size())} is past it:\\
+      {\scriptsize\code{IndexOutOfBoundsException: Index 2 out of bounds for length 2}}
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Team round 1: draw the model}
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}A chain of nodes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+class Node:
+    def __init__(self, value, link=None):
+        self.value = value
+        self.next = link
 
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
+c = Node("C")
+a = Node("A", Node("B", c))
+a.next.next = Node("X", c)
+a.next = a.next.next
+names = []
+n = a
+while n is not None:
+    names.append(n.value)
+    n = n.next
+print(names)
+print(a.next.value, c.next)
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{two} lines that are printed.\\[0.2em]
+      \textbf{2.} After line 9, which node can no longer be reached from \code{a}?
+      Did any value have to move?
+    \end{discussionbox}
+    {\footnotesize Tip: draw each node as a box with an arrow for \code{next}.}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{['A', 'X', 'C']}\\
+      \phantom{\textbf{1.}} \code{X None}\\[0.2em]
+      Line 7 builds A $\to$ B $\to$ C. Line 8 changes B's link to a new node X that
+      links to C: A $\to$ B $\to$ X $\to$ C. Line 9 sets A's link to B's link (X):
+      A $\to$ X $\to$ C. C is the last node, so \code{c.next} is \code{None}.\\[0.2em]
+      \textbf{2.} B: no link leads to it any more. No value moved; only links
+      changed. That is why a linked list can insert and remove without shifting.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Draw it: A list copy and a reference copy}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.*;
-List<Integer> a=new ArrayList<Integer>(Arrays.asList(4,1,4));
-List<Integer> b=a;
-List<Integer> c=new ArrayList<Integer>(a);
-b.remove(Integer.valueOf(4));
-c.set(0,9);
-System.out.println(a);
-System.out.println(b);
-System.out.println(c);
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The mark book (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+import java.util.ArrayList;
+public class MarkBook {
+    private ArrayList<Integer> marks
+        = new ArrayList<Integer>();
+    void add(int m) { marks.add(0, m); }
+    void change(int i, int m) {
+        marks.add(i, m);
+    }
+    boolean removeMark(int m) {
+        return marks.remove(m);
+    }
+    int last() {
+        return marks.get(marks.size());
+    }
+    public String toString() { return "" + marks; }
+}
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the object references after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors (one of
+    them crashes). Give each line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the class should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item \code{add(m)} adds \code{m} at the \textbf{end}
+      \item \code{change(i, m)} replaces index \code{i}
+      \item \code{removeMark(m)} removes one \textbf{value} \code{m}; if there is
+            none, returns \code{false}
+      \item \code{last()} gives the last mark
+    \end{itemize}
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+MarkBook b = new MarkBook();
+b.add(70); b.add(40); b.add(90);
+b.change(1, 45);
+System.out.println(b.removeMark(90) + " "
+    + b.removeMark(12));
+System.out.println(b + " " + b.last());
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+true false
+[70, 45] 45
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 10} (compile error): \code{m} is an \code{int}, so this is
+            remove-at-\textbf{index}, which returns an \code{Integer}:
+            \code{Integer cannot be converted to boolean}. Use
+            \code{marks.remove(Integer.valueOf(m))}.
+      \item \textbf{Line 5}: \code{add(0, m)} inserts at the front. Use
+            \code{marks.add(m)}.
+      \item \textbf{Line 7}: \code{add(i, m)} inserts, so the list grows. Use
+            \code{marks.set(i, m)}.
+      \item \textbf{Line 13}: index \code{size()} is past the end. Use
+            \code{marks.size() - 1}.
+    \end{itemize}
+    {\footnotesize Fix only line 10: it prints \code{true false}, then crashes with
+    \code{IndexOutOfBoundsException} at line 13.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (a) at (0,0) {a: List\textless{}Integer\textgreater{}};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (b) at (0,-1) {b: List\textless{}Integer\textgreater{}};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (c) at (0,-2) {c: List\textless{}Integer\textgreater{}};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o1) at (5,-0.3) {ArrayList \#1\\[0pt] [1, 4]};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o2) at (5,-2) {ArrayList \#2\\[0pt] [9, 1, 4]};
-\draw[ref] (a) -- (o1);
-\draw[ref] (b) -- (o1);
-\draw[ref] (c) -- (o2);
-\end{tikzpicture}}
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}The basket (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+class Basket:
+    def __init__(self, items):
+        self.items = items
+    def take_out(self, item):
+        if item in self.items:
+            self.items.pop(item)
+    def remove_all(self, item):
+        for thing in self.items:
+            if thing == item:
+                self.items.remove(thing)
 
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-[1, 4]
-[1, 4]
-[9, 1, 4]
+shop = ["egg", "milk", "milk", "tea"]
+b = Basket(shop)
+b.remove_all("milk")
+print(b.items)
+b.take_out("egg")
+print(b.items, shop)
 \end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small new ArrayList(a) creates a distinct list container. The elements here are immutable Integer values, so a shallow copy is sufficient for independent changes to list positions.
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
+    \column{0.44\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 1--10 (3 min). Give each line number and
+    its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{What the class should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Each basket keeps its \textbf{own copy} of the list it is given
+      \item \code{take\_out(item)}: remove one \code{item}, if it is there
+      \item \code{remove\_all(item)}: remove \textbf{every} copy of \code{item}
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}
+['egg', 'tea']
+['tea'] ['egg', 'milk', 'milk', 'tea']
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 6)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+['egg', 'milk', 'tea']
+TypeError: 'str' object cannot be
+interpreted as an integer
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 3}: shares the caller's list, so \code{shop} changes too.
+            Copy it: \code{list(items)}.
+      \item \textbf{Line 6}: \code{pop} takes an \textbf{index}, so
+            \code{pop("egg")} crashes. By \textbf{value}:
+            \code{self.items.remove(item)}.
+      \item \textbf{Lines 8--10}: removing while looping: the 2nd \code{"milk"}
+            slides into the place just checked and is skipped. Build a new list:
+            \code{self.items = [t for t in}\\\code{self.items if t != item]}.
+    \end{itemize}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Team round 2: spot the errors}
+% ======================================================================
+\section{Write the code}
+% ======================================================================
 
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small Remove one occurrence of target by value, then every 9. Expected final list: [2]. Test target values that differ from their positions.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.*;
-public class Broken {
-    public static void main(String[] args) {
-        ArrayList<Integer> xs=new ArrayList<Integer>(Arrays.asList(9,1,9,2));
-        int target=1;
-        xs.remove(target);
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=7,numbersep=0.7em]
-        for(int i=0;i<xs.size();i++) {
-            if(xs.get(i)==9) xs.remove(i);
-        }
-        System.out.println(xs);
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}The last few, for any type (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small A \code{Recent<T>}
+  keeps only the last \code{max} items added.}
+  \begin{itemize}[itemsep=0pt, topsep=0.05em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{add(item)}: add at the end; if there are now more than \code{max}
+          items, remove the oldest (index 0).
+    \item \code{latest()}: return the item added last, or \code{null} if there is
+          none.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class Recent<T> {
+    private final int max;
+    private final ArrayList<T> items
+        = new ArrayList<T>();
+    Recent(int max) { this.max = max; }
+    void add(T item) { /* TODO */ }
+    T latest() {
+        return null;  // TODO
+    }
+    public String toString() {
+        return items.toString();
     }
 }
 \end{lstlisting}
-
-\end{columns}
-
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+Recent<String> r = new Recent<String>(3);
+r.add("tea"); r.add("milk");
+r.add("jam"); r.add("egg");
+System.out.println(r + " " + r.latest());
+Recent<Integer> n = new Recent<Integer>(2);
+System.out.println(n.latest());
+n.add(7); n.add(8); n.add(9);
+System.out.println(n + " " + n.latest());
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+[milk, jam, egg] egg
+null
+[8, 9] 9
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer (the two \code{TODO} methods)}
+\begin{lstlisting}[language=Java,style=good]
+void add(T item) {
+    items.add(item);
+    if (items.size() > max)
+        items.remove(0);
+}
+T latest() {
+    if (items.isEmpty()) return null;
+    return items.get(items.size() - 1);
+}
+\end{lstlisting}
+    {\footnotesize \code{remove(0)} removes by \textbf{index} even in
+    \code{Recent<Integer>}: 0 is an \code{int}. That is why the test gives
+    \code{[8, 9]}.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L6:} An int selects index removal; wrap target to select removal by value. This data initially hides the mistake.\item \textbf{L7:} Removing while increasing i skips an adjacent match after elements shift. Traverse indices backwards.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-[9, 2]
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-[2]
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Keep odd values in a new list, preserving order and leaving values unchanged.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-values=[2,2,3,4,4,5]
-kept=values
-for value in kept:
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=4,numbersep=0.7em]
-    if value%2==0: kept.remove(value)
-print(kept)
-print(values)
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L2:} Keep the original list unchanged by building a new result.\item \textbf{L3:} Removing from the list being traversed skips adjacent even values. Filter into a separate list.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-[2, 3, 4, 5]
-[2, 3, 4, 5]
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-[3, 5]
-[2, 2, 3, 4, 4, 5]
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: Three operations, two overloads}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.util.*;
-List<Integer> xs=new ArrayList<Integer>(Arrays.asList(1,2,1));
-xs.remove(1);
-xs.add(1,4);
-System.out.println(xs);
-xs.remove(Integer.valueOf(1));
-System.out.println(xs);
-System.out.println(xs.size());
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-[1, 4, 1]
-[4, 1]
-2
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The first remove selects an index. add inserts without overwriting, then the Integer argument selects first-value removal.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: Queue order after mixed operations}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}A help-desk queue (Python)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small First come, first
+  served. Use the \code{deque}: \code{append} adds at the back, \code{popleft}
+  removes from the front.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{join(name)}: add \code{name} at the back; return how many are now
+          waiting.
+    \item \code{serve()}: remove and return the \textbf{front} name, or \code{None}
+          if nobody is waiting.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
 from collections import deque
-q=deque(["An","Mai"])
-q.append("Linh")
-served=q.popleft()
-q.appendleft("Tea")
-print(served)
-print(list(q))
-print(len(q))
+
+class HelpDesk:
+    def __init__(self):
+        self.waiting = deque()
+    def join(self, name):
+        return 0  # TODO
+    def serve(self):
+        return None  # TODO
+    def size(self):
+        return len(self.waiting)
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+q = HelpDesk()
+print(q.join("An"), q.join("Binh"), q.join("Chi"))
+print(q.serve(), q.serve())
+print(q.join("Dung"), q.size())
+print(q.serve(), q.serve(), q.serve())
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+1 2 3
+An Binh
+2 2
+Chi Dung None
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer (the two \code{TODO} methods)}
+\begin{lstlisting}[language=Py,style=good]
+def join(self, name):
+    self.waiting.append(name)
+    return len(self.waiting)
+def serve(self):
+    if len(self.waiting) == 0:
+        return None
+    return self.waiting.popleft()
+\end{lstlisting}
+    {\footnotesize Why not a list and \code{pop(0)}? It works, but every
+    \code{pop(0)} shifts all the others left. \code{popleft} does not.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-An
-['Tea', 'Mai', 'Linh']
-3
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small popleft serves the oldest entry. appendleft then puts Tea before the remaining names.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{First occurrences, in order}\small Read n and n integers. Print each distinct value once in first-occurrence order, separated by single spaces. Empty input produces an empty line. Explain why sorting changes the contract.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-5
-4 1 4 2 1
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-4 1 2
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.*;
-Scanner sc=new Scanner(System.in);
-int n=sc.nextInt();
-List<Integer> result=new ArrayList<Integer>();
-for(int i=0;i<n;i++) {
-    int x=sc.nextInt();
-    if(!result.contains(x)) result.add(x);
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}A queue of linked nodes (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small \code{head} is the
+  front node, \code{tail} the back.}
+  \begin{itemize}[itemsep=0pt, topsep=0.05em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{dequeue()}: remove the front node and return its value. Empty queue:
+          \code{tail} is \code{null} too.
+    \item \code{size()}: count the nodes by following \code{next} from \code{head}.
+  \end{itemize}
+  \vspace{-0.2em}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Node {
+    int value; Node next;
+    Node(int v) { value = v; }
 }
-for(int i=0;i<result.size();i++) {
-    if(i>0) System.out.print(" ");
-    System.out.print(result.get(i));
+class IntQueue {
+    private Node head, tail;
+    void enqueue(int v) {
+        Node n = new Node(v);
+        if (tail == null) head = n;
+        else tail.next = n;
+        tail = n;
+    }
+    int dequeue() { return 0; }  // TODO
+    int size() { return 0; }     // TODO
 }
-System.out.println();
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-n=int(input())
-values=list(map(int,input().split()))
-result=[]
-for x in values[:n]:
-    if x not in result: result.append(x)
-print(*result)
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+IntQueue q = new IntQueue();
+q.enqueue(5); q.enqueue(6); q.enqueue(7);
+System.out.println(q.dequeue() + " " + q.size());
+System.out.println(q.dequeue() + " "
+    + q.dequeue() + " " + q.size());
+q.enqueue(8);
+System.out.println(q.dequeue() + " " + q.size());
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
-
+    \neutrallabel{Must print}
+\begin{lstlisting}
+5 2
+6 7 0
+8 0
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer (the two \code{TODO} methods)}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+int dequeue() {
+    int v = head.value;
+    head = head.next;
+    if (head == null) tail = null;
+    return v;
+}
+int size() {
+    int count = 0;
+    for (Node n = head; n != null; n = n.next)
+        count++;
+    return count;
+}
+\end{lstlisting}
+    {\footnotesize Without \code{tail = null}, the last test line crashes with a
+    \code{NullPointerException}: 8 is linked behind the old 7.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{5 / 4 1 4 2 1}\par \textbf{Output:} \code{4 1 2}\par\medskip \textbf{Test 2}\par \code{0 / (blank)}\par \textbf{Output:} \code{(empty line)}\par\medskip \textbf{Test 3}\par \code{4 / 7 7 7 7}\par \textbf{Output:} \code{7}\par\medskip \textbf{Test 4}\par \code{3 / -1 0 -1}\par \textbf{Output:} \code{-1 0}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+% ======================================================================
+\section{Linked lists: predict and find the bug}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{11}{Predict the output}Splice the nodes (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.60\textwidth}
+\begin{lstlisting}[language=Java,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.7}{7.9}\selectfont]
+class Node {
+    int value; Node next;
+    Node(int v, Node n) { value = v; next = n; }
+}
+// in main
+Node head = new Node(1, new Node(2, new Node(3, null)));
+head = new Node(0, head);
+head.next.next = head.next.next.next;
+Node p = head.next;
+p.value = 5;
+p = p.next;
+p = new Node(7, null);
+String s = "";
+for (Node n = head; n != null; n = n.next)
+    s += n.value + " ";
+System.out.println(s);
+System.out.println(p.value + " " + head.next.next.value);
+\end{lstlisting}
+    \column{0.37\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (2 minutes, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{two} lines that are printed.\\[0.2em]
+      \textbf{2.} Line 10 changed the list, but line 12 did not add 7 to it. Why
+      not?
+    \end{discussionbox}
+    {\footnotesize Tip: draw each node as a box with an arrow for \code{next}, and
+    redraw after every line.}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{0 5 3}\\
+      \phantom{\textbf{1.}} \code{7 3}\\[0.2em]
+      Line 6: 1 $\to$ 2 $\to$ 3. Line 7 puts a new 0 in front:
+      0 $\to$ 1 $\to$ 2 $\to$ 3. Line 8 links node 1 past node 2:
+      0 $\to$ 1 $\to$ 3. Line 10 changes the value \textbf{inside} node 1:
+      0 $\to$ 5 $\to$ 3.\\[0.2em]
+      \textbf{2.} \code{p} only points at a node. Line 10 changes \textbf{that
+      node}, so the list sees it. Line 12 points \code{p} at a \textbf{new} node
+      that no \code{next} leads to. To add 7 at the end, write
+      \code{p.next = new Node(7, null);} instead.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+\begin{frame}<1-2>[fragile]{\qb{12}{Predict the output}Who holds the new head? (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Node:
+    def __init__(self, value, next=None):
+        self.value = value
+        self.next = next
+def show(head):
+    out = []
+    while head is not None:
+        out.append(head.value)
+        head = head.next
+    return out
+def push_front(head, value):
+    return Node(value, head)
+def remove_after(node):
+    if node.next is not None:
+        node.next = node.next.next
+h = Node("b", Node("c"))
+push_front(h, "z")
+h = push_front(h, "a")
+remove_after(h.next)
+print(show(h))
+print(h.value, h.next.next)
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (2 minutes, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{two} lines that are printed.\\[0.2em]
+      \textbf{2.} Where did \code{"z"} go?\\[0.2em]
+      \textbf{3.} \code{show} moves \code{head} until it is \code{None}. Is
+      \code{h} \code{None} after line 20?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{['a', 'b']}\\
+      \phantom{\textbf{1.}} \code{a None}\\[0.2em]
+      Line 16: b $\to$ c. Line 18: a $\to$ b $\to$ c. Line 19 is called on
+      \code{h.next}, node b, so it removes the node \textbf{after} b (c):
+      a $\to$ b. b is now last, so \code{h.next.next} is \code{None}.\\[0.2em]
+      \textbf{2.} Line 17 makes a z node that links to b, but nobody keeps the
+      returned node. Nothing leads to z, so it is lost. Line 18 keeps it:
+      \code{h = push\_front(\ldots)}.\\[0.2em]
+      \textbf{3.} No. Inside \code{show}, \code{head} is a separate name for the
+      same first node. Moving that name never changes \code{h}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Distinguish append, insert, replace and both remove overloads.\item Explain aliasing versus a copied list container.\item Choose ArrayList, LinkedList or deque from the required operations.\item Use wrapper types and type parameters without discarding type safety.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-7.html}{Course website: Week 7}. Complete programs accompany this deck.}
+\begin{frame}<1-2>[fragile]{\qb{13}{Find the bug}The linked queue (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.4}{7.4}\selectfont]
+class Node {
+    String value; Node next;
+    Node(String v) { value = v; }
+}
+class LinkedQueue {
+    private Node head, tail;
+    void enqueue(String v) {
+        Node n = new Node(v);
+        if (tail == null) { head = n; tail = n; }
+        else tail.next = n;
+    }
+    String dequeue() {
+        String v = head.value;
+        head = head.next;
+        return v;
+    }
+    int size() {
+        int count = 0;
+        for (Node n = head; n.next != null; n = n.next)
+            count++;
+        return count;
+    }
+}
+\end{lstlisting}
+    \column{0.48\textwidth}
+    {\small \badlabel{Find 3 bugs} (3 min). Give each line number and its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+LinkedQueue q = new LinkedQueue();
+q.enqueue("An"); q.enqueue("Mai"); q.enqueue("Tuan");
+System.out.println(q.dequeue() + " " + q.size());
+System.out.println(q.dequeue() + " " + q.dequeue());
+q.enqueue("Linh");
+System.out.println(q.dequeue() + " " + q.size());
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+An 2
+Mai Tuan
+Linh 0
+\end{lstlisting}
+    \badlabel{Actual output}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+An 0
+java.lang.NullPointerException
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.1em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 10}: \code{tail} never moves, so each new node replaces
+            An's link (Mai is lost). Use
+            \code{else \{ tail.next = n; tail = n; \}}
+      \item \textbf{After line 14}: when the last node leaves, \code{tail} still
+            points at it, and the next \code{enqueue} links behind it. Add
+            \code{if (head == null) tail = null;}
+      \item \textbf{Line 19}: \code{n.next != null} stops one node early, and
+            crashes on an empty queue. Use \code{n != null}.
+    \end{itemize}
+    {\footnotesize Fix only line 10: it prints \code{An 1} and \code{Mai Tuan},
+    then crashes on the last line: \code{head} is still \code{null}.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+\begin{frame}<1-2>[fragile]{\qb{14}{Find the bug}The chain (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.6}{7.6}\selectfont]
+class Node:
+    def __init__(self, value):
+        self.value, self.next = value, None
+class Chain:
+    def __init__(self):
+        self.head = None
+    def add_last(self, value):
+        node = Node(value)
+        if self.head is None:
+            self.head = node
+            return
+        cur = self.head
+        while cur is not None:
+            cur = cur.next
+        cur.next = node
+    def remove(self, value):
+        prev, cur = None, self.head
+        while cur is not None and cur.value != value:
+            prev, cur = cur, cur.next
+        if cur is not None:
+            prev.next = cur
+    # values() returns the values in order
+\end{lstlisting}
+    \column{0.47\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 7--21 (3 min). Give each line number
+    and its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{Test} {\footnotesize (\code{values()}, lines 22--27, is correct)}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+c = Chain()
+for v in ["a", "b", "c", "d"]:
+    c.add_last(v)
+c.remove("c")
+c.remove("a")
+c.remove("z")
+print(c.values())
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+['b', 'd']
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 15, adding \code{"b"})}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+AttributeError: 'NoneType' object
+has no attribute 'next'
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.1em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 13}: the loop runs past the last node, so line 15 has
+            no node to link from. Stop \textbf{at} it:
+            \code{while cur.next is not None:}
+      \item \textbf{Line 21}: \code{prev.next = cur} keeps the link it already
+            had, so nothing is removed. Skip the node: \code{prev.next = cur.next}
+      \item \textbf{Line 21 again}: if the value is in the first node,
+            \code{prev} is \code{None}. Move the head instead:
+            \code{if prev is None: self.head = cur.next}
+    \end{itemize}
+    {\footnotesize Fix only line 13: \code{remove("c")} does nothing, then
+    \code{remove("a")} crashes.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: one method, two kinds of list}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{This week: program to \code{List}}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+static int total(List<Integer> xs) {
+    int sum = 0;
+    for (int x : xs) sum += x;
+    return sum;
+}
+// in main
+List<Integer> a = new ArrayList<Integer>();
+a.add(2); a.add(3);
+List<Integer> b = new LinkedList<Integer>(a);
+b.add(5);
+System.out.println(total(a) + " " + total(b));
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright This prints \code{5 10}. \code{ArrayList} and
+      \code{LinkedList} are different classes. Why can \code{total} accept
+      \textbf{both}?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    {\small \code{List} is an \textbf{interface}: methods (\code{add}, \code{get},
+    \code{size}, \ldots) that a class promises to have. It stores nothing
+    itself.}\\[0.3em]
+    {\small \code{ArrayList} (a backing array) and \code{LinkedList} (linked nodes)
+    both \textbf{implement} \code{List}.}\\[0.3em]
+    {\small \code{total} uses only what \code{List} promises, so it works with
+    both.}
+    \vspace{0.3em}
+    \begin{contextbox}{Next: Week 8}
+      \footnotesize Write your \textbf{own} interface, let several classes keep it,
+      reuse code with \textbf{inheritance}, and trace which method runs.
+    \end{contextbox}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Lists and indexes}
+    \begin{itemize}[itemsep=0.02em, topsep=0.1em]
+      \footnotesize
+      \item[\yes] insert, replace and remove at indexes 0 to \code{size()}$-1$
+            (Q1, Q4, Q6)
+      \item[\yes] tell remove-by-index from remove-by-value, in Java and Python
+            (Q4, Q6, Q7)
+      \item[\yes] remove while looping, safely (Q2, Q7)
+      \item[\yes] copy a list when an object needs its own (Q7)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Nodes, queues and generics}
+    \begin{itemize}[itemsep=0.02em, topsep=0.1em]
+      \footnotesize
+      \item[\yes] trace and change the links between nodes (Q5, Q10--Q12)
+      \item[\yes] tell changing a node from re-pointing a variable (Q11, Q12)
+      \item[\yes] build and debug a first-in, first-out queue (Q9, Q10, Q13)
+      \item[\yes] add and remove at the ends of a chain, including the head (Q14)
+      \item[\yes] write and use a generic class like \code{Box<T>} (Q3, Q8)
+      \item[\yes] use \code{Integer}, not \code{int}, as a type argument (Q1, Q3)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 8 -- Inheritance, interfaces and polymorphism}
+    \footnotesize Describe a shared contract, implement it in several classes, and
+    trace which method runs.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

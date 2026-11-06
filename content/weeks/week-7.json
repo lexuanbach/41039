@@ -1,0 +1,2038 @@
+{
+  "week": 7,
+  "title": "Lists and Generics",
+  "short": "Lists and generics",
+  "lede": "Replace fixed-size arrays with collections, compare ArrayList and LinkedList, distinguish positions from values, and use type parameters to reuse code without giving up type checking.",
+  "sections": [
+    {
+      "title": "ArrayList and Python lists",
+      "concepts": [
+        [
+          "A sequence that grows",
+          "<p>An array has a fixed length. An ArrayList manages a backing array and its capacity for you, so adding an element does not require you to allocate a replacement yourself. <code>size()</code> is the number of stored elements; capacity is internal storage, not a set of elements you can already access.</p>"
+        ],
+        [
+          "Insert, replace and inspect",
+          "<p>Use <code>add(value)</code> to append, <code>add(index,value)</code> to insert and <code>set(index,value)</code> to replace. Valid access indices run from 0 through size\u22121. Insertion also permits size, which appends. Python uses append, insert and bracket assignment for the corresponding jobs.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Changing a resizable list",
+          "lang": "java",
+          "code": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<String>();\n        names.add(\"An\");\n        names.add(\"Mai\");\n        names.add(1,\"Linh\");\n        names.set(0,\"Binh\");\n        System.out.println(names);\n        System.out.println(names.size());\n    }\n}\n",
+          "notes": [
+            [
+              "names.add(1,\"Linh\")",
+              "Insert at index 1 and shift the later elements right."
+            ],
+            [
+              "names.set(0,\"Binh\")",
+              "Replace an existing element; the list size stays unchanged."
+            ]
+          ],
+          "wrong": [
+            "[Binh, Linh]\n2\n",
+            "[An, Linh, Mai]\n3\n",
+            "[Binh, Mai, Linh]\n3\n"
+          ],
+          "why": "add at an index inserts; set replaces. Three elements remain.",
+          "stdin": "",
+          "static": false,
+          "output": "[Binh, Linh, Mai]\n3\n"
+        },
+        {
+          "title": "The comparable Python operations",
+          "lang": "python",
+          "code": "names = [\"An\", \"Mai\"]\nnames.insert(1, \"Linh\")\nnames[0] = \"Binh\"\nprint(names)\nprint(len(names))\n",
+          "notes": [
+            [
+              "names.insert(1, \"Linh\")",
+              "Insert rather than overwrite the existing index."
+            ],
+            [
+              "names[0] = \"Binh\"",
+              "Replace one list element."
+            ]
+          ],
+          "wrong": [
+            "['Binh', 'Mai', 'Linh']\n3\n",
+            "['An', 'Linh', 'Mai']\n3\n",
+            "['Binh', 'Linh']\n2\n"
+          ],
+          "why": "Python lists offer the same insert/replace distinction, with different syntax.",
+          "stdin": "",
+          "static": false,
+          "output": "['Binh', 'Linh', 'Mai']\n3\n"
+        }
+      ],
+      "try": "Insert at the current size, then try get(size) in Java. Explain why the first operation is valid and the second is outside the list.",
+      "visuals": [
+        {
+          "kind": "grow",
+          "title": "Room to grow: size versus capacity",
+          "intro": "How can a list grow when an array cannot? This small <code>GrowList</code> does what <code>ArrayList</code> does inside: it keeps an ordinary array with some spare slots, and when the array is full it makes a bigger one and copies everything across. Press <strong>Next</strong> and watch <code>size</code> (the elements) and the capacity (the slots).",
+          "start": 4,
+          "values": [
+            "An",
+            "Mai",
+            "Tuan",
+            "Linh",
+            "Binh"
+          ],
+          "get": 4,
+          "max": 9,
+          "pool": [
+            "Lan",
+            "Hoa",
+            "Quan",
+            "Thu",
+            "Vy"
+          ],
+          "lines": {
+            "java": {
+              "new": "GrowList names = new GrowList();",
+              "call": "names.add(\"{v}\");",
+              "check": "if (size == items.length)",
+              "bigger": "String[] bigger = new",
+              "copy": "bigger[i] = items[i];",
+              "swap": "items = bigger;",
+              "store": "items[size] = value;",
+              "inc": "size++;",
+              "size": "names.capacity()",
+              "get": "names.get(4)",
+              "getcheck": "if (index >= size)",
+              "getret": "return items[index];"
+            },
+            "python": {
+              "new": "names = GrowList()",
+              "call": "names.add(\"{v}\")",
+              "check": "if self.size == len(self.items):",
+              "bigger": "bigger = [None] *",
+              "copy": "bigger[i] = self.items[i]",
+              "swap": "self.items = bigger",
+              "store": "self.items[self.size] = value",
+              "inc": "self.size += 1",
+              "size": "len(names.items))",
+              "get": "names.get(4)",
+              "getcheck": "if index >= self.size:",
+              "getret": "return self.items[index]"
+            }
+          },
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        GrowList names = new GrowList();\n        names.add(\"An\");\n        names.add(\"Mai\");\n        names.add(\"Tuan\");\n        names.add(\"Linh\");\n        names.add(\"Binh\");\n        System.out.println(names.size() + \" of \" + names.capacity());\n        System.out.println(names.get(4));\n    }\n}\n\nclass GrowList {\n    private String[] items = new String[4];\n    private int size = 0;\n\n    void add(String value) {\n        if (size == items.length) {\n            String[] bigger = new String[items.length + items.length / 2];\n            for (int i = 0; i < size; i++) {\n                bigger[i] = items[i];\n            }\n            items = bigger;\n        }\n        items[size] = value;\n        size++;\n    }\n\n    String get(int index) {\n        if (index >= size) {\n            throw new IndexOutOfBoundsException(\"index \" + index + \", size \" + size);\n        }\n        return items[index];\n    }\n\n    int size() { return size; }\n    int capacity() { return items.length; }\n}\n",
+              "output": "5 of 6\nBinh\n",
+              "tokens": [
+                "GrowList names = new GrowList();",
+                "if (size == items.length)",
+                "String[] bigger = new",
+                "bigger[i] = items[i];",
+                "items = bigger;",
+                "items[size] = value;",
+                "size++;",
+                "names.capacity()",
+                "names.get(4)",
+                "if (index >= size)",
+                "return items[index];",
+                "names.add(\"An\");",
+                "names.add(\"Mai\");",
+                "names.add(\"Tuan\");",
+                "names.add(\"Linh\");",
+                "names.add(\"Binh\");"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class GrowList:\n    def __init__(self):\n        self.items = [None] * 4\n        self.size = 0\n\n    def add(self, value):\n        if self.size == len(self.items):\n            bigger = [None] * (len(self.items) + len(self.items) // 2)\n            for i in range(self.size):\n                bigger[i] = self.items[i]\n            self.items = bigger\n        self.items[self.size] = value\n        self.size += 1\n\n    def get(self, index):\n        if index >= self.size:\n            raise IndexError(\"index \" + str(index) + \", size \" + str(self.size))\n        return self.items[index]\n\n\nnames = GrowList()\nnames.add(\"An\")\nnames.add(\"Mai\")\nnames.add(\"Tuan\")\nnames.add(\"Linh\")\nnames.add(\"Binh\")\nprint(names.size, \"of\", len(names.items))\nprint(names.get(4))\n",
+              "output": "5 of 6\nBinh\n",
+              "tokens": [
+                "names = GrowList()",
+                "if self.size == len(self.items):",
+                "bigger = [None] *",
+                "bigger[i] = self.items[i]",
+                "self.items = bigger",
+                "self.items[self.size] = value",
+                "self.size += 1",
+                "len(names.items))",
+                "names.get(4)",
+                "if index >= self.size:",
+                "return self.items[index]",
+                "names.add(\"An\")",
+                "names.add(\"Mai\")",
+                "names.add(\"Tuan\")",
+                "names.add(\"Linh\")",
+                "names.add(\"Binh\")"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "list-ops",
+          "title": "Watch the indexes: add, insert, set, remove",
+          "intro": "Press <strong>Next</strong> to run one line at a time, in Java and Python together. The highlighted line is the one that has just run. The small numbers under the boxes are <strong>indexes</strong>. They belong to the positions, not to the values, so watch which values move when something is inserted or removed. The program is the example below with one more name, a <code>remove</code> and a <code>get</code>.",
+          "var": "names",
+          "programs": {
+            "java": {
+              "lang": "java",
+              "code": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<String>();\n        names.add(\"An\");\n        names.add(\"Mai\");\n        names.add(\"Tuan\");\n        names.add(1, \"Linh\");\n        names.set(0, \"Binh\");\n        String gone = names.remove(2);\n        System.out.println(gone + \" left\");\n        System.out.println(names + \" size \" + names.size());\n        System.out.println(names.get(1));\n    }\n}\n",
+              "output": "Mai left\n[Binh, Linh, Tuan] size 3\nLinh\n"
+            },
+            "python": {
+              "lang": "python",
+              "code": "names = []\nnames.append(\"An\")\nnames.append(\"Mai\")\nnames.append(\"Tuan\")\nnames.insert(1, \"Linh\")\nnames[0] = \"Binh\"\ngone = names.pop(2)\nprint(gone + \" left\")\nprint(names, \"size\", len(names))\nprint(names[1])\n",
+              "output": "Mai left\n['Binh', 'Linh', 'Tuan'] size 3\nLinh\n"
+            }
+          },
+          "steps": [
+            {
+              "op": "new",
+              "j": "new ArrayList<String>()",
+              "p": "names = []",
+              "say": "An empty list. Its size is 0, so there is no valid index yet."
+            },
+            {
+              "op": "add",
+              "value": "An",
+              "j": "names.add(\"An\");",
+              "p": "names.append(\"An\")",
+              "say": "<code>An</code> goes on the end, at index 0. The size is now 1."
+            },
+            {
+              "op": "add",
+              "value": "Mai",
+              "j": "names.add(\"Mai\");",
+              "p": "names.append(\"Mai\")",
+              "say": "<code>Mai</code> goes on the end, at index 1. The list grows by itself: no fixed length, unlike an array."
+            },
+            {
+              "op": "add",
+              "value": "Tuan",
+              "j": "names.add(\"Tuan\");",
+              "p": "names.append(\"Tuan\")",
+              "say": "<code>Tuan</code> goes on the end, at index 2. The size is 3, so the valid indexes are 0, 1 and 2."
+            },
+            {
+              "op": "insert",
+              "index": 1,
+              "value": "Linh",
+              "j": "names.add(1, \"Linh\");",
+              "p": "names.insert(1, \"Linh\")",
+              "say": "<code>Linh</code> goes <em>into</em> index 1. Mai and Tuan each move one place right, so their indexes go up by 1. The size is 4."
+            },
+            {
+              "op": "set",
+              "index": 0,
+              "value": "Binh",
+              "j": "names.set(0, \"Binh\");",
+              "p": "names[0] = \"Binh\"",
+              "say": "<code>set</code> replaces the value at index 0: An is gone and Binh takes its place. Nothing moves and the size stays 4."
+            },
+            {
+              "op": "remove",
+              "index": 2,
+              "j": "names.remove(2);",
+              "p": "names.pop(2)",
+              "say": "Remove index 2. <code>Mai</code> comes out and is stored in <code>gone</code>. Tuan moves left into index 2. The size is 3."
+            },
+            {
+              "op": "print",
+              "j": "System.out.println(gone + \" left\");",
+              "p": "print(gone + \" left\")",
+              "say": "Print the value that was removed. Both languages give it back to you."
+            },
+            {
+              "op": "print",
+              "j": "System.out.println(names + \" size \"",
+              "p": "print(names, \"size\", len(names))",
+              "say": "The same list, printed two ways: Java shows <code>[Binh, Linh, Tuan]</code>, Python shows the quotes, <code>['Binh', 'Linh', 'Tuan']</code>."
+            },
+            {
+              "op": "print",
+              "read": 1,
+              "j": "System.out.println(names.get(1));",
+              "p": "print(names[1])",
+              "say": "<code>get(1)</code> in Java, <code>names[1]</code> in Python: read index 1 without changing anything."
+            }
+          ],
+          "sandbox": {
+            "start": [
+              "An",
+              "Mai",
+              "Tuan"
+            ],
+            "pool": [
+              "Lan",
+              "Duc",
+              "Hoa",
+              "Khoa",
+              "Nam",
+              "Vy",
+              "Quan",
+              "Thu"
+            ],
+            "max": 8
+          }
+        }
+      ],
+      "media": [
+        {
+          "kind": "media-row",
+          "photo": "photo-w7-egg-tray",
+          "alt": "A clear plastic carton for 24 eggs lying open on a wooden floor, holding 21 brown eggs with three empty cups at the front",
+          "lead": "Room for 24, holding 21.",
+          "caption": "This carton has cups for 24 eggs but holds 21. The cups are the <em>capacity</em>: storage the ArrayList has set aside. The eggs are the <code>size()</code>: the elements actually in the list, at indexes 0 to 20 &mdash; an empty cup is not an element, so <code>get(21)</code> fails even though there is room. When a 25th egg arrives, ArrayList fetches a bigger carton and moves every egg across for you; with a plain array you would have to do that yourself.",
+          "place": "concept-1",
+          "width": "20rem"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w7-bookshelf",
+          "alt": "A tightly packed shelf of hardback books of different heights and colours, editions of Aristotle's Metaphysics and Physics",
+          "lead": "Make room, and everything to the right moves.",
+          "caption": "Push a new book in between two others and every book to its right slides along one place. That is <code>add(i, x)</code>: the new element takes index <code>i</code> and every later element's index goes up by one. Swapping one book for another moves nothing else &mdash; that is <code>set(i, x)</code>. You can only take down a book that is there (positions 0 to <code>size()</code>&minus;1), but you may add one at position <code>size()</code>, the very end. Where it breaks: you shove a row of books in one push, but the list moves each element separately, so inserting near the front of a long list is real work.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "comic",
+          "num": 163,
+          "title": "Donald Knuth",
+          "year": "2006",
+          "alt": "xkcd comic: one programmer tells another he is being inconsistent with his array indices, some starting from one and some from zero. The other replies that different tasks call for different conventions, and quotes algorithms expert Donald Knuth as saying \u201cWho are you? How did you get in my house?\u201d \u2014 which is what Knuth said when he asked him about it.",
+          "caption": "Java and Python both count from <code>0</code>, so the last index is the size minus 1. Mixing 0 and 1 is how off-by-one bugs start.",
+          "size": "fig-wide",
+          "place": "after-visuals"
+        },
+        {
+          "kind": "did-you-know",
+          "place": "end",
+          "photo": "photo-w7-hermit-crab",
+          "alt": "A red hermit crab walking on sand, carrying a large striped snail shell as its home",
+          "text": "A real <code>ArrayList</code> grows just like the <code>GrowList</code> above. In OpenJDK's source code, when the backing array is full, <code>grow()</code> makes a new array about 1.5 times as big (the old capacity plus <code>oldCapacity &gt;&gt; 1</code>, which is half of it) and copies every element across, like a hermit crab moving into a bigger shell. A <code>new ArrayList&lt;&gt;()</code> gets room for 10 elements the first time you <code>add</code>. The official Javadoc promises only that <code>add</code> has \"constant amortized time cost\", so this exact rule belongs to the implementation, not the specification.",
+          "sources": [
+            [
+              "OpenJDK ArrayList.java (JDK 21), grow()",
+              "https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/ArrayList.java#L224-L240"
+            ],
+            [
+              "Java SE 21 API: ArrayList",
+              "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/ArrayList.html"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Removal and safe traversal",
+      "concepts": [
+        [
+          "Overloading can change meaning",
+          "<p>On <code>ArrayList&lt;Integer&gt;</code>, <code>remove(1)</code> removes index 1; <code>remove(Integer.valueOf(1))</code> removes the first value equal to 1. The argument type decides the overload. A value removal that finds no match returns false; a position outside the list is an error.</p>"
+        ],
+        [
+          "Do not shift the ground under your loop",
+          "<p>Removing from a list while an enhanced for-loop is traversing it can invalidate the traversal. Use an Iterator and its remove method, iterate indices backwards, or create a filtered result. The Python example creates a new list, so repeated adjacent rejected values are handled correctly.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Remove an index or remove a value?",
+          "lang": "java",
+          "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));\n        values.remove(1);\n        values.remove(Integer.valueOf(4));\n        System.out.println(values);\n    }\n}\n",
+          "notes": [
+            [
+              "values.remove(1)",
+              "The int argument selects the index overload, removing the element 1 at index 1."
+            ],
+            [
+              "Integer.valueOf(4)",
+              "Pass an Integer object to select removal by value."
+            ]
+          ],
+          "wrong": [
+            "[1]\n",
+            "[]\n",
+            "[4, 4]\n"
+          ],
+          "why": "The index removal leaves [4,4]; the value removal deletes only the first 4.",
+          "stdin": "",
+          "static": false,
+          "output": "[4]\n"
+        },
+        {
+          "title": "Safe filtering produces a new list",
+          "lang": "python",
+          "code": "values = [1, 2, 2, 3, 4]\nkept = [value for value in values if value % 2 == 1]\nprint(kept)\nprint(values)\n",
+          "notes": [
+            [
+              "value % 2 == 1",
+              "Keep only odd values."
+            ],
+            [
+              "kept =",
+              "The comprehension builds a new list instead of editing the list being traversed."
+            ]
+          ],
+          "wrong": [
+            "[1, 3]\n[1, 3]\n",
+            "[2, 2, 4]\n[1, 2, 2, 3, 4]\n",
+            "[1, 2, 3]\n[1, 2, 2, 3, 4]\n"
+          ],
+          "why": "Filtering leaves the source unchanged and keeps both order and only the matching values.",
+          "stdin": "",
+          "static": false,
+          "output": "[1, 3]\n[1, 2, 2, 3, 4]\n"
+        }
+      ],
+      "try": "Change the Java values to [1,4,1]. Predict both removals. In Python, explain why two adjacent even values are both removed by the comprehension.",
+      "visuals": [
+        {
+          "kind": "overload",
+          "title": "remove(1): an index or a value? Predict, then step",
+          "intro": "<code>ArrayList</code> has two methods named <code>remove</code>: <code>remove(int index)</code> and <code>remove(Object o)</code>. Java picks one from the <em>type</em> of the argument. At each remove, choose your prediction, then press <strong>Next</strong>. The first program is the example below; the second is the change the <em>Predict</em> tip suggests.",
+          "scripts": [
+            {
+              "id": "example",
+              "label": "The example: [4, 1, 4]",
+              "steps": [
+                {
+                  "op": "new",
+                  "values": [
+                    4,
+                    1,
+                    4
+                  ],
+                  "j": "Arrays.asList(4,1,4)",
+                  "p": "values = [4, 1, 4]"
+                },
+                {
+                  "op": "at",
+                  "arg": 1,
+                  "j": "values.remove(1);",
+                  "p": "values.pop(1)"
+                },
+                {
+                  "op": "value",
+                  "arg": 4,
+                  "j": "values.remove(Integer.valueOf(4));",
+                  "p": "values.remove(4)"
+                },
+                {
+                  "op": "print",
+                  "j": "System.out.println(values);",
+                  "p": "print(values)",
+                  "pj": true,
+                  "pp": true,
+                  "say": "Print the list: <code>[4]</code>. Index 1 happened to hold the value 1, so the first remove looks the same either way. The <strong>Try [1, 4, 1]</strong> program tells them apart."
+                }
+              ]
+            },
+            {
+              "id": "try",
+              "label": "Try [1, 4, 1]",
+              "steps": [
+                {
+                  "op": "new",
+                  "values": [
+                    1,
+                    4,
+                    1
+                  ],
+                  "j": "Arrays.asList(1,4,1)",
+                  "p": "values = [1, 4, 1]"
+                },
+                {
+                  "op": "at",
+                  "arg": 1,
+                  "j": "values.remove(1));",
+                  "p": "values.pop(1)",
+                  "pj": true,
+                  "pp": true
+                },
+                {
+                  "op": "value",
+                  "arg": 1,
+                  "j": "values.remove(Integer.valueOf(1))",
+                  "p": "values.remove(1)",
+                  "pj": true,
+                  "pp": false
+                },
+                {
+                  "op": "value",
+                  "arg": 7,
+                  "j": "values.remove(Integer.valueOf(7))",
+                  "p": "7 in values",
+                  "pj": true,
+                  "pp": true
+                },
+                {
+                  "op": "print",
+                  "j": "System.out.println(values);",
+                  "p": "print(values)",
+                  "pj": true,
+                  "pp": true
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));\n        values.remove(1);\n        values.remove(Integer.valueOf(4));\n        System.out.println(values);\n    }\n}\n",
+              "output": "[4]\n",
+              "tokens": [
+                "Arrays.asList(4,1,4)",
+                "values.remove(1);",
+                "values.remove(Integer.valueOf(4));",
+                "System.out.println(values);"
+              ],
+              "id": "example"
+            },
+            {
+              "lang": "python",
+              "code": "values = [4, 1, 4]\nvalues.pop(1)\nvalues.remove(4)\nprint(values)\n",
+              "output": "[4]\n",
+              "tokens": [
+                "values = [4, 1, 4]",
+                "values.pop(1)",
+                "values.remove(4)",
+                "print(values)"
+              ],
+              "id": "example"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1,4,1));\n        System.out.println(values.remove(1));\n        System.out.println(values.remove(Integer.valueOf(1)));\n        System.out.println(values.remove(Integer.valueOf(7)));\n        System.out.println(values);\n    }\n}\n",
+              "output": "4\ntrue\nfalse\n[1]\n",
+              "tokens": [
+                "Arrays.asList(1,4,1)",
+                "values.remove(1));",
+                "values.remove(Integer.valueOf(1))",
+                "values.remove(Integer.valueOf(7))",
+                "System.out.println(values);"
+              ],
+              "id": "try"
+            },
+            {
+              "lang": "python",
+              "code": "values = [1, 4, 1]\nprint(values.pop(1))\nvalues.remove(1)\nprint(7 in values)\nprint(values)\n",
+              "output": "4\nFalse\n[1]\n",
+              "tokens": [
+                "values = [1, 4, 1]",
+                "values.pop(1)",
+                "values.remove(1)",
+                "7 in values",
+                "print(values)"
+              ],
+              "id": "try"
+            }
+          ]
+        },
+        {
+          "kind": "filter",
+          "title": "Removing while you loop: find the skipped value",
+          "intro": "The goal is to remove every even number from <code>[1, 2, 2, 3, 4]</code>. Pick a version, then step through it. The arrow above the boxes is the loop variable, and the highlighted line is the one that has just run.",
+          "values": [
+            1,
+            2,
+            2,
+            3,
+            4
+          ],
+          "strategies": [
+            {
+              "id": "forward",
+              "label": "Forward loop (bug)",
+              "programs": {
+                "java": {
+                  "lang": "java",
+                  "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 2, 2, 3, 4));\n        for (int i = 0; i < values.size(); i++) {\n            if (values.get(i) % 2 == 0) {\n                values.remove(i);\n            }\n        }\n        System.out.println(values);\n    }\n}\n",
+                  "output": "[1, 2, 3]\n"
+                },
+                "python": {
+                  "lang": "python",
+                  "code": "values = [1, 2, 2, 3, 4]\ni = 0\nwhile i < len(values):\n    if values[i] % 2 == 0:\n        values.pop(i)\n    i += 1\nprint(values)\n",
+                  "output": "[1, 2, 3]\n"
+                }
+              },
+              "lines": {
+                "java": {
+                  "init": "Arrays.asList",
+                  "start": "for (int i = 0",
+                  "test": "values.get(i) % 2 == 0",
+                  "remove": "values.remove(i);",
+                  "step": "for (int i = 0",
+                  "print": "System.out.println(values);",
+                  "loop": "for (int i = 0"
+                },
+                "python": {
+                  "init": "values = [1, 2, 2, 3, 4]",
+                  "start": "i = 0",
+                  "test": "if values[i] % 2 == 0:",
+                  "remove": "values.pop(i)",
+                  "step": "i += 1",
+                  "print": "print(values)",
+                  "loop": "while i < len(values):"
+                }
+              },
+              "end": "The output is <code>[1, 2, 3]</code>: one 2 survived. After each removal the next value slides into the index the loop has just checked, and the next step of <code>i</code> jumps past it. Python's <code>for v in values:</code> with <code>values.remove(v)</code> skips values in exactly the same way."
+            },
+            {
+              "id": "backward",
+              "label": "Backwards loop (fix)",
+              "programs": {
+                "java": {
+                  "lang": "java",
+                  "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 2, 2, 3, 4));\n        for (int i = values.size() - 1; i >= 0; i--) {\n            if (values.get(i) % 2 == 0) {\n                values.remove(i);\n            }\n        }\n        System.out.println(values);\n    }\n}\n",
+                  "output": "[1, 3]\n"
+                },
+                "python": {
+                  "lang": "python",
+                  "code": "values = [1, 2, 2, 3, 4]\nfor i in range(len(values) - 1, -1, -1):\n    if values[i] % 2 == 0:\n        values.pop(i)\nprint(values)\n",
+                  "output": "[1, 3]\n"
+                }
+              },
+              "lines": {
+                "java": {
+                  "init": "Arrays.asList",
+                  "start": "int i = values.size() - 1",
+                  "test": "values.get(i) % 2 == 0",
+                  "remove": "values.remove(i);",
+                  "step": "int i = values.size() - 1",
+                  "print": "System.out.println(values);",
+                  "loop": "int i = values.size() - 1"
+                },
+                "python": {
+                  "init": "values = [1, 2, 2, 3, 4]",
+                  "start": "for i in range(",
+                  "test": "if values[i] % 2 == 0:",
+                  "remove": "values.pop(i)",
+                  "step": "for i in range(",
+                  "print": "print(values)",
+                  "loop": "for i in range("
+                }
+              },
+              "end": "The output is <code>[1, 3]</code>. Removing at <code>i</code> only moves the values to the right of <code>i</code>, and the loop has already checked those. Nothing is skipped."
+            },
+            {
+              "id": "newlist",
+              "label": "Build a new list (fix)",
+              "programs": {
+                "java": {
+                  "lang": "java",
+                  "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(1, 2, 2, 3, 4));\n        ArrayList<Integer> kept = new ArrayList<Integer>();\n        for (int value : values) {\n            if (value % 2 != 0) {\n                kept.add(value);\n            }\n        }\n        System.out.println(kept);\n    }\n}\n",
+                  "output": "[1, 3]\n"
+                },
+                "python": {
+                  "lang": "python",
+                  "code": "values = [1, 2, 2, 3, 4]\nkept = []\nfor value in values:\n    if value % 2 != 0:\n        kept.append(value)\nprint(kept)\n",
+                  "output": "[1, 3]\n"
+                }
+              },
+              "lines": {
+                "java": {
+                  "init": "Arrays.asList",
+                  "start": "ArrayList<Integer> kept",
+                  "loop": "for (int value : values)",
+                  "test": "value % 2 != 0",
+                  "add": "kept.add(value);",
+                  "print": "System.out.println(kept);"
+                },
+                "python": {
+                  "init": "values = [1, 2, 2, 3, 4]",
+                  "start": "kept = []",
+                  "loop": "for value in values:",
+                  "test": "if value % 2 != 0:",
+                  "add": "kept.append(value)",
+                  "print": "print(kept)"
+                }
+              },
+              "end": "The output is <code>[1, 3]</code>. The original list never changes while the loop reads it, so nothing can shift. This is also what the list comprehension below does."
+            }
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "banner",
+          "photo": "photo-w7-numbered-seats",
+          "alt": "Rows of light-blue stadium seats, each with a number painted on it; the second row from the front reads 219, 217, 215, 213, 211, 209",
+          "lead": "Position 1 is not seat 1.",
+          "caption": "Every seat here has two numbers: its position in the row, counted from 0 at the left, and the number painted on it. In the second row from the front (219, 217, 215, 213&hellip;), position 1 holds the seat painted 217. On an <code>ArrayList&lt;Integer&gt;</code>, <code>remove(1)</code> means &ldquo;the seat at position 1&rdquo;, while <code>remove(Integer.valueOf(211))</code> means &ldquo;the seat with 211 painted on it&rdquo;, wherever it is. Java chooses between them from the argument's type: a plain <code>int</code> is a position, an <code>Integer</code> is a value.",
+          "place": "top",
+          "position": "center 70%"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w7-coloured-seats",
+          "alt": "Numbered folding stadium seats in white, yellow, blue and red; in the front row seats 21 and 22 are both yellow, between a white 20 and a blue 23",
+          "lead": "Remove 21, and 22 slides into the place you just checked.",
+          "caption": "Walk along the front row removing every yellow seat, with everything to its right sliding one place left to close the gap (real seats are bolted down; a list's elements are not). At 21 you find yellow and remove it, so yellow 22 slides into the place you have just checked; you step on and find 23, and 22 is never looked at. That is what removing inside a forward loop over indexes does to two neighbouring matches. Walk from the right-hand end instead, let an Iterator do the removing, or copy the seats you keep into a new list.",
+          "place": "concept-2",
+          "width": "20rem"
+        }
+      ]
+    },
+    {
+      "title": "Linked nodes and queues",
+      "concepts": [
+        [
+          "Follow links instead of shifting values",
+          "<p>A linked list stores nodes with links between them. Java LinkedList is doubly linked. Adding or removing at an end does not shift a backing array, but reaching the node at an arbitrary index still requires traversal. A fast unlink after finding a node does not make every remove(index) constant time.</p>"
+        ],
+        [
+          "Choose from the access pattern",
+          "<p>ArrayList is a sound default for indexed access and ordinary traversal. LinkedList offers operations at both ends. Repeated get(i) in a loop can make a linked-list traversal quadratic; an enhanced for-loop visits it sequentially. For a Python FIFO queue, collections.deque avoids repeatedly shifting the front of a list.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "A queue built with LinkedList",
+          "lang": "java",
+          "code": "import java.util.LinkedList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        LinkedList<String> queue = new LinkedList<String>();\n        queue.addLast(\"An\");\n        queue.addLast(\"Mai\");\n        System.out.println(queue.removeFirst());\n        System.out.println(queue);\n    }\n}\n",
+          "notes": [
+            [
+              "queue.addLast",
+              "Add to the tail of the queue."
+            ],
+            [
+              "queue.removeFirst()",
+              "Remove and return the head, giving first-in-first-out service."
+            ]
+          ],
+          "wrong": [
+            "Mai\n[An]\n",
+            "An\n[An, Mai]\n",
+            "An\n[]\n"
+          ],
+          "why": "The first name to arrive is the first to leave.",
+          "stdin": "",
+          "static": false,
+          "output": "An\n[Mai]\n"
+        },
+        {
+          "title": "The same FIFO contract with deque",
+          "lang": "python",
+          "code": "from collections import deque\nqueue = deque([\"An\", \"Mai\"])\nprint(queue.popleft())\nprint(list(queue))\n",
+          "notes": [
+            [
+              "deque",
+              "Use the standard double-ended queue for efficient operations at either end."
+            ],
+            [
+              "queue.popleft()",
+              "Remove the leftmost, oldest entry."
+            ]
+          ],
+          "wrong": [
+            "Mai\n['An']\n",
+            "An\n['An', 'Mai']\n",
+            "An\n[]\n"
+          ],
+          "why": "popleft removes An, and Mai remains waiting.",
+          "stdin": "",
+          "static": false,
+          "output": "An\n['Mai']\n"
+        }
+      ],
+      "try": "Add a third person and remove two people. Draw the waiting order after each operation; then describe the result without discussing either implementation.",
+      "visuals": [
+        {
+          "kind": "queue",
+          "title": "A queue made of linked nodes",
+          "intro": "Each node holds a value and a link, <code>next</code>, to the node behind it. <code>head</code> is the front of the queue and <code>tail</code> is the back. Press <strong>Enqueue</strong> or <strong>Dequeue</strong>, then press <strong>Next</strong> to step through the method one line at a time and watch the links change. The code is from the complete programs below.",
+          "panes": {
+            "java": {
+              "source": "A hand-built linked queue",
+              "code": "    void enqueue(String value) {\n        Node node = new Node(value);\n        if (tail == null) {\n            head = node;\n        } else {\n            tail.next = node;\n        }\n        tail = node;\n    }\n\n    String dequeue() {\n        String value = head.value;\n        head = head.next;\n        if (head == null) {\n            tail = null;\n        }\n        return value;\n    }\n",
+              "first": 29
+            },
+            "python": {
+              "source": "The same queue in Python",
+              "code": "    def enqueue(self, value):\n        node = Node(value)\n        if self.tail is None:\n            self.head = node\n        else:\n            self.tail.next = node\n        self.tail = node\n\n    def dequeue(self):\n        value = self.head.value\n        self.head = self.head.next\n        if self.head is None:\n            self.tail = None\n        return value\n",
+              "first": 12
+            }
+          },
+          "lines": {
+            "java": {
+              "new": "Node node = new Node(value);",
+              "check": "if (tail == null)",
+              "head": "head = node;",
+              "link": "tail.next = node;",
+              "tail": "tail = node;",
+              "read": "String value = head.value;",
+              "advance": "head = head.next;",
+              "empty": "if (head == null)",
+              "clear": "tail = null;",
+              "ret": "return value;"
+            },
+            "python": {
+              "new": "node = Node(value)",
+              "check": "if self.tail is None:",
+              "head": "self.head = node",
+              "link": "self.tail.next = node",
+              "tail": "self.tail = node",
+              "read": "value = self.head.value",
+              "advance": "self.head = self.head.next",
+              "empty": "if self.head is None:",
+              "clear": "self.tail = None",
+              "ret": "return value"
+            }
+          },
+          "pool": [
+            "An",
+            "Mai",
+            "Tuan",
+            "Linh",
+            "Khoa",
+            "Vy",
+            "Nam",
+            "Hoa"
+          ],
+          "max": 5
+        },
+        {
+          "kind": "access",
+          "title": "Same loop, different work: ArrayList beside LinkedList",
+          "intro": "Both lists hold the same names and every program prints the same thing. What differs is the work inside. Pick a loop, then step through it and compare the counters. An ArrayList finds any index in one step; a LinkedList has to walk along its links (Java's LinkedList starts from whichever end is nearer). In Python, <code>list</code> is an array like ArrayList, and <code>collections.deque</code> is linked like LinkedList: quick at both ends, slower in the middle. <strong>Code for</strong> switches the programs: only the line that creates the list changes.",
+          "values": [
+            "An",
+            "Mai",
+            "Tuan",
+            "Linh",
+            "Binh",
+            "Lan"
+          ],
+          "big": 1000,
+          "modes": [
+            {
+              "id": "index",
+              "label": "for loop with get(i)"
+            },
+            {
+              "id": "each",
+              "label": "for-each loop"
+            },
+            {
+              "id": "front",
+              "label": "take from the front"
+            }
+          ],
+          "impls": [
+            {
+              "id": "array",
+              "label": "ArrayList \u00b7 list"
+            },
+            {
+              "id": "linked",
+              "label": "LinkedList \u00b7 deque"
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        for (int i = 0; i < names.size(); i++) {\n            System.out.println(names.get(i));\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for (int i = 0; i < names.size(); i++)",
+                "names.get(i)",
+                "new ArrayList<String>("
+              ],
+              "id": "index-array",
+              "loop": "for (int i = 0; i < names.size(); i++)",
+              "body": "names.get(i)"
+            },
+            {
+              "lang": "python",
+              "code": "names = [\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"]\nfor i in range(len(names)):\n    print(names[i])\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for i in range(len(names)):",
+                "print(names[i])"
+              ],
+              "id": "index-array",
+              "loop": "for i in range(len(names)):",
+              "body": "print(names[i])"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new LinkedList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        for (int i = 0; i < names.size(); i++) {\n            System.out.println(names.get(i));\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for (int i = 0; i < names.size(); i++)",
+                "names.get(i)",
+                "new LinkedList<String>("
+              ],
+              "id": "index-linked",
+              "loop": "for (int i = 0; i < names.size(); i++)",
+              "body": "names.get(i)"
+            },
+            {
+              "lang": "python",
+              "code": "from collections import deque\n\nnames = deque([\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"])\nfor i in range(len(names)):\n    print(names[i])\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for i in range(len(names)):",
+                "print(names[i])"
+              ],
+              "id": "index-linked",
+              "loop": "for i in range(len(names)):",
+              "body": "print(names[i])"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for (String name : names)",
+                "System.out.println(name);",
+                "new ArrayList<String>("
+              ],
+              "id": "each-array",
+              "loop": "for (String name : names)",
+              "body": "System.out.println(name);"
+            },
+            {
+              "lang": "python",
+              "code": "names = [\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"]\nfor name in names:\n    print(name)\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for name in names:",
+                "print(name)"
+              ],
+              "id": "each-array",
+              "loop": "for name in names:",
+              "body": "print(name)"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new LinkedList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for (String name : names)",
+                "System.out.println(name);",
+                "new LinkedList<String>("
+              ],
+              "id": "each-linked",
+              "loop": "for (String name : names)",
+              "body": "System.out.println(name);"
+            },
+            {
+              "lang": "python",
+              "code": "from collections import deque\n\nnames = deque([\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"])\nfor name in names:\n    print(name)\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "for name in names:",
+                "print(name)"
+              ],
+              "id": "each-linked",
+              "loop": "for name in names:",
+              "body": "print(name)"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        while (!names.isEmpty()) {\n            System.out.println(names.remove(0));\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "while (!names.isEmpty())",
+                "names.remove(0)",
+                "new ArrayList<String>("
+              ],
+              "id": "front-array",
+              "loop": "while (!names.isEmpty())",
+              "body": "names.remove(0)"
+            },
+            {
+              "lang": "python",
+              "code": "names = [\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"]\nwhile names:\n    print(names.pop(0))\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "while names:",
+                "print(names.pop(0))"
+              ],
+              "id": "front-array",
+              "loop": "while names:",
+              "body": "print(names.pop(0))"
+            },
+            {
+              "lang": "java",
+              "code": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<String> names = new LinkedList<String>(\n                Arrays.asList(\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"));\n        while (!names.isEmpty()) {\n            System.out.println(names.remove(0));\n        }\n    }\n}\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "while (!names.isEmpty())",
+                "names.remove(0)",
+                "new LinkedList<String>("
+              ],
+              "id": "front-linked",
+              "loop": "while (!names.isEmpty())",
+              "body": "names.remove(0)"
+            },
+            {
+              "lang": "python",
+              "code": "from collections import deque\n\nnames = deque([\"An\", \"Mai\", \"Tuan\", \"Linh\", \"Binh\", \"Lan\"])\nwhile names:\n    print(names.popleft())\n",
+              "output": "An\nMai\nTuan\nLinh\nBinh\nLan\n",
+              "tokens": [
+                "while names:",
+                "print(names.popleft())"
+              ],
+              "id": "front-linked",
+              "loop": "while names:",
+              "body": "print(names.popleft())"
+            }
+          ]
+        }
+      ],
+      "extras": [
+        {
+          "title": "A hand-built linked queue",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        LinkedQueue queue = new LinkedQueue();\n        queue.enqueue(\"An\");\n        queue.enqueue(\"Mai\");\n        queue.enqueue(\"Tuan\");\n        System.out.println(queue.dequeue());\n        System.out.println(queue.dequeue());\n        queue.enqueue(\"Linh\");\n        System.out.println(queue.dequeue());\n        System.out.println(queue.dequeue());\n        System.out.println(queue.isEmpty());\n    }\n}\n\nclass Node {\n    String value;\n    Node next;\n\n    Node(String value) {\n        this.value = value;\n    }\n}\n\nclass LinkedQueue {\n    private Node head;\n    private Node tail;\n\n    void enqueue(String value) {\n        Node node = new Node(value);\n        if (tail == null) {\n            head = node;\n        } else {\n            tail.next = node;\n        }\n        tail = node;\n    }\n\n    String dequeue() {\n        String value = head.value;\n        head = head.next;\n        if (head == null) {\n            tail = null;\n        }\n        return value;\n    }\n\n    boolean isEmpty() {\n        return head == null;\n    }\n}\n",
+          "stdin": "",
+          "static": false,
+          "output": "An\nMai\nTuan\nLinh\ntrue\n",
+          "notes": [
+            [
+              "Node next;",
+              "The link: a reference to the node behind this one, or <code>null</code> for the last node.",
+              "The link"
+            ],
+            [
+              "private Node head;",
+              "The front of the queue: the next node to leave.",
+              "The front"
+            ],
+            [
+              "private Node tail;",
+              "The back of the queue. Keeping it means <code>enqueue</code> never has to walk along the whole chain.",
+              "The back"
+            ],
+            [
+              "tail.next = node;",
+              "Link the old back node to the new one. No value moves anywhere.",
+              "Add a link"
+            ],
+            [
+              "head = head.next;",
+              "Move the front along by one node. Nothing refers to the old front any more, so Java can reclaim its memory.",
+              "Follow the link"
+            ],
+            [
+              "tail = null;",
+              "If the queue is now empty, <code>tail</code> must not keep pointing at the node that just left.",
+              "Empty again"
+            ]
+          ]
+        },
+        {
+          "title": "The same queue in Python",
+          "lang": "python",
+          "code": "class Node:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n\n\nclass LinkedQueue:\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def enqueue(self, value):\n        node = Node(value)\n        if self.tail is None:\n            self.head = node\n        else:\n            self.tail.next = node\n        self.tail = node\n\n    def dequeue(self):\n        value = self.head.value\n        self.head = self.head.next\n        if self.head is None:\n            self.tail = None\n        return value\n\n    def is_empty(self):\n        return self.head is None\n\n\nqueue = LinkedQueue()\nqueue.enqueue(\"An\")\nqueue.enqueue(\"Mai\")\nqueue.enqueue(\"Tuan\")\nprint(queue.dequeue())\nprint(queue.dequeue())\nqueue.enqueue(\"Linh\")\nprint(queue.dequeue())\nprint(queue.dequeue())\nprint(queue.is_empty())\n",
+          "stdin": "",
+          "static": false,
+          "output": "An\nMai\nTuan\nLinh\nTrue\n",
+          "notes": [
+            [
+              "self.next = None",
+              "<code>None</code> plays the part of Java's <code>null</code>: no node after this one yet.",
+              "No link yet"
+            ],
+            [
+              "self.tail.next = node",
+              "Link the old back node to the new one.",
+              "Add a link"
+            ],
+            [
+              "self.head = self.head.next",
+              "Move the front along by one node.",
+              "Follow the link"
+            ],
+            [
+              "if self.head is None:",
+              "Use <code>is None</code> to test for \"no node\".",
+              "Is it empty?"
+            ]
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "banner",
+          "photo": "photo-w7-treasure-clue",
+          "alt": "A handwritten treasure-hunt note propped beside a wrapped sweet, reading \u201cA lantern named Jack will light the way to clue #3!\u201d, with a glowing jack-o'-lantern blurred in front",
+          "lead": "A value, and the way to the next one.",
+          "caption": "Each clue in a treasure hunt holds a small prize and says where the next clue is &mdash; this one leads to clue #3. That is a linked-list node: one value plus a link to the next node, and the nodes can sit anywhere. To reach clue 5 you cannot jump there; you start at the first clue and follow every link, which is why reaching index <code>i</code> in a LinkedList means walking. Once you are standing at the right clue, adding a new one only means rewriting one note &mdash; nothing else has to shift. Where it breaks: Java's LinkedList nodes also point back to the previous node, so it can be walked from either end.",
+          "place": "top",
+          "position": "center 45%"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w7-bus-queue",
+          "alt": "A line of people waiting inside a chain barrier to board a shuttle bus at Grand Canyon; an ENTER HERE sign marks the back of the line",
+          "lead": "First in, first out.",
+          "caption": "People join at the back, where the sign says ENTER HERE, and board at the front, so whoever has waited longest gets on first: first in, first out. A queue only ever uses its two ends, which is why a LinkedList or Python's <code>collections.deque</code> suits it. Taking the first element out of an ArrayList or Python list is like making everyone in this line step forward one place each time the bus takes a passenger. Where it breaks: in a real line people do step forward; in a deque or linked list nothing moves &mdash; only the record of who is at the front changes.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "comic",
+          "num": 2483,
+          "title": "Linked List Interview Problem",
+          "year": "2021",
+          "alt": "xkcd comic: at a coding interview, asked to traverse a linked list, a candidate writes a function on the whiteboard that emails the list\u2019s head pointer to a technology museum as an item donation. The interviewer says \u201cHey.\u201d Caption: Coding interview tip: interviewers get really mad when you try to donate their linked lists to a technology museum.",
+          "caption": "A linked list is reached only through its head. Hand that one reference away and the whole list goes with it.",
+          "size": "fig-narrow",
+          "place": "after-visuals"
+        },
+        {
+          "kind": "did-you-know",
+          "place": "end",
+          "photo": "photo-w7-johnniac",
+          "alt": "The JOHNNIAC computer: a wall of tall cabinets packed with vacuum tubes and wiring, with its control consoles in front",
+          "text": "Linked lists go back to 1956, when Allen Newell, Cliff Shaw and Herbert Simon described IPL, a list-processing language for the RAND Corporation's JOHNNIAC computer, built for their Logic Theorist program. In IPL each list was a chain of \"location words\": one address pointed at the item, the other at the next location word, and a negative number ended the list. To delete B from the list A, B, C they simply changed A's link to point at C, the same relinking trick Java's <code>LinkedList</code> uses in <code>remove</code>.",
+          "sources": [
+            [
+              "Newell &amp; Shaw, \u201cProgramming the Logic Theory Machine\u201d, RAND P-954 (1957), scan",
+              "https://archive.org/details/bitsavers_randiplP95cTheoryMachineFeb57_1503981"
+            ],
+            [
+              "John McCarthy, \u201cHistory of Lisp\u201d (1979)",
+              "http://jmc.stanford.edu/articles/lisp/lisp.pdf"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Type parameters and programming to List",
+      "concepts": [
+        [
+          "Reuse behaviour while retaining types",
+          "<p><code>Box&lt;T&gt;</code> describes one class parameterised by a reference type. <code>Box&lt;String&gt;</code> accepts strings and returns a String. A raw Box would discard useful checking. Primitive types cannot be type arguments: use Integer rather than int. Boxing and unboxing bridge the two, but unboxing a null Integer fails.</p>"
+        ],
+        [
+          "Separate the operation from storage",
+          "<p>A method accepting <code>List&lt;Integer&gt;</code> can work with ArrayList or LinkedList when it needs only the List operations. Neither <code>List&lt;Integer&gt;</code> nor <code>List&lt;Double&gt;</code> is a subtype of <code>List&lt;Number&gt;</code>. Generic type arguments are invariant. This page introduces the idea; wildcard bounds and type erasure are further reading.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "A reusable, type-safe box",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Box<String> label = new Box<String>(\"tea\");\n        Box<Integer> count = new Box<Integer>(3);\n        System.out.println(label.get() + \" \" + count.get());\n    }\n}\nclass Box<T> {\n    private final T value;\n    Box(T value) { this.value = value; }\n    T get() { return value; }\n}\n",
+          "notes": [
+            [
+              "Box<T>",
+              "T names a reference type supplied when the box is used."
+            ],
+            [
+              "T get()",
+              "The return type is the same type parameter as the stored value."
+            ]
+          ],
+          "wrong": [
+            "tea null\n",
+            "null 3\n",
+            "3 tea\n"
+          ],
+          "why": "The class is reused with two types while each individual box retains a checked element type.",
+          "stdin": "",
+          "static": false,
+          "output": "tea 3\n"
+        },
+        {
+          "title": "A list contract with two implementations",
+          "lang": "java",
+          "code": "import java.util.*;\n\npublic class Demo {\n    static int total(List<Integer> xs) {\n        int sum=0;\n        for(int x:xs) sum+=x;\n        return sum;\n    }\n    public static void main(String[] args) {\n        List<Integer> a = new ArrayList<Integer>(Arrays.asList(2,3));\n        List<Integer> b = new LinkedList<Integer>(a);\n        System.out.println(total(a));\n        System.out.println(total(b));\n    }\n}\n// Both lists satisfy the same operations used here.\n",
+          "notes": [
+            [
+              "List<Integer> a",
+              "Expose only the list contract to callers."
+            ],
+            [
+              "for(int x:xs)",
+              "Traverse elements without repeated indexed lookup, which would be expensive for a linked list."
+            ]
+          ],
+          "wrong": [
+            "2\n3\n",
+            "5\n0\n",
+            "0\n5\n"
+          ],
+          "why": "The total uses only iteration; the storage implementation does not change the result.",
+          "stdin": "",
+          "static": false,
+          "output": "5\n5\n"
+        }
+      ],
+      "try": "Change only the concrete list construction in the total example. Explain which lines depend on the storage choice and which lines depend only on the contract.",
+      "visuals": [
+        {
+          "kind": "box",
+          "title": "What does T mean? Fill it in",
+          "intro": "Choose the type to put in the box, then press <strong>Fill in T</strong> to see the class the way the compiler checks your code.",
+          "template": "public class Demo {\n    public static void main(String[] args) {\n        Box<{{TYPE}}> box = new Box<{{TYPE}}>({{VALUE}});\n        {{TYPE}} inside = box.get();\n        System.out.println(inside);\n    }\n}\n\nclass Box<T> {\n    private final T value;\n\n    Box(T value) {\n        this.value = value;\n    }\n\n    T get() {\n        return value;\n    }\n}\n",
+          "variants": [
+            {
+              "type": "String",
+              "value": "\"tea\"",
+              "output": "tea\n"
+            },
+            {
+              "type": "Integer",
+              "value": "3",
+              "output": "3\n"
+            },
+            {
+              "type": "Double",
+              "value": "2.5",
+              "output": "2.5\n"
+            }
+          ]
+        },
+        {
+          "kind": "typecheck",
+          "title": "Ask the compiler: what does <Integer> buy you?",
+          "intro": "Declare the list, then try one line. This only asks the compiler whether the program is allowed: nothing runs. The type in <code>&lt;\u2026&gt;</code> is called the <strong>type argument</strong>. The messages are what <code>javac</code> prints on Ed; the Run button in this browser uses the Eclipse compiler, which words its errors differently.",
+          "template": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        {{DECL}}\n        {{STMT}}\n    }\n}\n",
+          "decls": [
+            {
+              "id": "typed",
+              "label": "ArrayList<Integer>",
+              "code": "ArrayList<Integer> nums = new ArrayList<Integer>();"
+            },
+            {
+              "id": "raw",
+              "label": "ArrayList (no <\u2026>)",
+              "code": "ArrayList nums = new ArrayList();"
+            }
+          ],
+          "stmts": [
+            {
+              "code": "nums.add(7);",
+              "py": "<code>nums.append(7)</code> runs. Python has no separate <code>int</code> and <code>Integer</code>.",
+              "results": {
+                "typed": {
+                  "ok": true,
+                  "say": "7 is an <code>int</code> and the type argument says the list holds <code>Integer</code> objects, so Java wraps it for you. This is <strong>autoboxing</strong>: it does <code>Integer.valueOf(7)</code>.",
+                  "errors": 0
+                },
+                "raw": {
+                  "ok": true,
+                  "javac": "Note: Demo.java uses unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.",
+                  "say": "Allowed, with a warning note. A list without a type argument (no <code>&lt;\u2026&gt;</code>) holds <code>Object</code>, so anything at all can go in.",
+                  "verdict": "\u2713 Compiles, with a warning note",
+                  "errors": 0
+                }
+              }
+            },
+            {
+              "code": "nums.add(\"seven\");",
+              "py": "<code>nums.append(\"seven\")</code> runs too. Python only finds the problem later, while running, when a line uses the value as a number: <code>sum(nums)</code> raises <code>TypeError</code>.",
+              "results": {
+                "typed": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: incompatible types: String cannot be converted to Integer\n        nums.add(\"seven\");\n                 ^",
+                  "say": "Caught. A <code>String</code> is not an <code>Integer</code>, so the program does not compile and never runs. That is the point of the type argument, the type in <code>&lt;\u2026&gt;</code>.",
+                  "errors": 1
+                },
+                "raw": {
+                  "ok": true,
+                  "javac": "Note: Demo.java uses unchecked or unsafe operations.\nNote: Recompile with -Xlint:unchecked for details.",
+                  "say": "Allowed, so the mistake is not caught. If 7 had been added first, a later line such as <code>(Integer) nums.get(1)</code> would crash the running program with a <code>ClassCastException</code>.",
+                  "warn": true,
+                  "verdict": "\u26a0 Compiles (warning only): the bug slips through",
+                  "errors": 0
+                }
+              }
+            },
+            {
+              "code": "int first = nums.get(0);",
+              "py": "Python accepts <code>first = nums[0]</code>: nothing is checked before it runs, because Python variables have no declared type.",
+              "results": {
+                "typed": {
+                  "ok": true,
+                  "say": "<code>get</code> gives back an <code>Integer</code>, and Java unwraps it into an <code>int</code> for you (<strong>unboxing</strong>). No cast is needed, because the compiler knows the type.",
+                  "errors": 0
+                },
+                "raw": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: incompatible types: Object cannot be converted to int\n        int first = nums.get(0);\n                            ^",
+                  "say": "Without a type argument, <code>get</code> only promises an <code>Object</code>. The compiler cannot know it is a number, so it refuses; you would need a cast: <code>(Integer) nums.get(0)</code>.",
+                  "errors": 1
+                }
+              }
+            },
+            {
+              "code": "String text = nums.get(0);",
+              "py": "Python accepts <code>text = nums[0]</code>: nothing is checked before it runs. The name <code>text</code> just refers to whatever is there.",
+              "results": {
+                "typed": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: incompatible types: Integer cannot be converted to String\n        String text = nums.get(0);\n                              ^",
+                  "say": "Caught. Every element is an <code>Integer</code>, and an <code>Integer</code> is not a <code>String</code>.",
+                  "errors": 1
+                },
+                "raw": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: incompatible types: Object cannot be converted to String\n        String text = nums.get(0);\n                              ^",
+                  "say": "Refused, but only because <code>Object</code> is too vague. If the list holds numbers, a cast would silence the compiler and the program would then crash while running.",
+                  "errors": 1
+                }
+              }
+            },
+            {
+              "code": "ArrayList<int> more = new ArrayList<int>();",
+              "py": "Not needed in Python: there are no primitive types, every value is an object.",
+              "results": {
+                "typed": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: unexpected type\n        ArrayList<int> more = new ArrayList<int>();\n                  ^\n  required: reference\n  found:    int",
+                  "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>.",
+                  "errors": 2
+                },
+                "raw": {
+                  "ok": false,
+                  "javac": "Demo.java:6: error: unexpected type\n        ArrayList<int> more = new ArrayList<int>();\n                  ^\n  required: reference\n  found:    int",
+                  "say": "A type argument must be a class type, not a primitive. Use the wrapper class: <code>ArrayList&lt;Integer&gt;</code>.",
+                  "errors": 2
+                }
+              }
+            }
+          ]
+        },
+        {
+          "kind": "typecheck",
+          "title": "Program to List: which lines does the compiler accept?",
+          "after": "A list contract with two implementations",
+          "intro": "This is the example above, with <code>total</code> asking for a <code>List&lt;Integer&gt;</code>. Choose how <code>a</code> is declared, then try a line. Nothing runs: this asks <code>javac</code> whether the program is allowed. Look for the two rules: any <code>List&lt;Integer&gt;</code> fits <code>total</code>, and a <code>List&lt;Integer&gt;</code> is <em>not</em> a <code>List&lt;Number&gt;</code>.",
+          "template": "import java.util.*;\n\npublic class Demo {\n    static int total(List<Integer> xs) {\n        int sum=0;\n        for(int x:xs) sum+=x;\n        return sum;\n    }\n    public static void main(String[] args) {\n        {{DECL}}\n        {{STMT}}\n    }\n}\n",
+          "decls": [
+            {
+              "id": "list",
+              "label": "List<Integer> = new ArrayList",
+              "code": "List<Integer> a = new ArrayList<Integer>(Arrays.asList(2,3));"
+            },
+            {
+              "id": "linked",
+              "label": "LinkedList<Integer>",
+              "code": "LinkedList<Integer> a = new LinkedList<Integer>(Arrays.asList(2,3));"
+            },
+            {
+              "id": "doubles",
+              "label": "List<Double>",
+              "code": "List<Double> a = new ArrayList<Double>(Arrays.asList(2.0,3.0));"
+            }
+          ],
+          "stmts": [
+            {
+              "code": "System.out.println(total(a));",
+              "py": "Python's <code>total(a)</code> runs for any list, or anything else a <code>for</code> loop can walk through. Nothing is checked before it runs; adding floats would just give <code>5.0</code>.",
+              "results": {
+                "list": {
+                  "ok": true,
+                  "say": "The parameter asks for a <code>List&lt;Integer&gt;</code>, and <code>a</code> is exactly that. As in the example, running it would print <code>5</code>.",
+                  "errors": 0
+                },
+                "linked": {
+                  "ok": true,
+                  "say": "A <code>LinkedList&lt;Integer&gt;</code> <em>is a</em> <code>List&lt;Integer&gt;</code>, so it fits the parameter, just as the example passes <code>b</code>. <code>total</code> only uses what every List can do.",
+                  "errors": 0
+                },
+                "doubles": {
+                  "ok": false,
+                  "say": "A <code>List&lt;Double&gt;</code> is not a <code>List&lt;Integer&gt;</code>: the type argument must match exactly. <code>total</code> would read each element into an <code>int</code>.",
+                  "javac": "Demo.java:11: error: incompatible types: List<Double> cannot be converted to List<Integer>\n        System.out.println(total(a));\n                                 ^",
+                  "errors": 1
+                }
+              }
+            },
+            {
+              "code": "List<Number> n = a;",
+              "py": "Python has nothing to compare: <code>n = a</code> just makes a second name for the same list.",
+              "results": {
+                "list": {
+                  "ok": false,
+                  "say": "Every Integer is a Number, but a <code>List&lt;Integer&gt;</code> is <strong>not</strong> a <code>List&lt;Number&gt;</code>. If it were, <code>n.add(2.5)</code> would put a Double into a list of Integers. Type arguments are <em>invariant</em>.",
+                  "javac": "Demo.java:11: error: incompatible types: List<Integer> cannot be converted to List<Number>\n        List<Number> n = a;\n                         ^",
+                  "errors": 1
+                },
+                "linked": {
+                  "ok": false,
+                  "say": "The same rule: the list type can change (LinkedList to List), but the type argument may not (Integer to Number).",
+                  "javac": "Demo.java:11: error: incompatible types: LinkedList<Integer> cannot be converted to List<Number>\n        List<Number> n = a;\n                         ^",
+                  "errors": 1
+                },
+                "doubles": {
+                  "ok": false,
+                  "say": "Neither <code>List&lt;Integer&gt;</code> nor <code>List&lt;Double&gt;</code> is a <code>List&lt;Number&gt;</code>, even though Double is a Number.",
+                  "javac": "Demo.java:11: error: incompatible types: List<Double> cannot be converted to List<Number>\n        List<Number> n = a;\n                         ^",
+                  "errors": 1
+                }
+              }
+            },
+            {
+              "code": "ArrayList<Integer> c = a;",
+              "py": "Python never checks this: <code>c = a</code> works whatever <code>a</code> refers to.",
+              "results": {
+                "list": {
+                  "ok": false,
+                  "say": "The object really is an ArrayList, but the compiler only knows the declared type, <code>List&lt;Integer&gt;</code>. Not every List is an ArrayList, so this is refused. Code written to List does not depend on the storage.",
+                  "javac": "Demo.java:11: error: incompatible types: List<Integer> cannot be converted to ArrayList<Integer>\n        ArrayList<Integer> c = a;\n                               ^",
+                  "errors": 1
+                },
+                "linked": {
+                  "ok": false,
+                  "say": "A LinkedList is not an ArrayList: they are two different implementations of List.",
+                  "javac": "Demo.java:11: error: incompatible types: LinkedList<Integer> cannot be converted to ArrayList<Integer>\n        ArrayList<Integer> c = a;\n                               ^",
+                  "errors": 1
+                },
+                "doubles": {
+                  "ok": false,
+                  "say": "Refused: a List is not necessarily an ArrayList, and Double is not Integer either. javac reports both in one incompatible-types error.",
+                  "javac": "Demo.java:11: error: incompatible types: List<Double> cannot be converted to ArrayList<Integer>\n        ArrayList<Integer> c = a;\n                               ^",
+                  "errors": 1
+                }
+              }
+            },
+            {
+              "code": "a.push(1);",
+              "py": "Python's list has no <code>push</code> either: it would raise <strong>AttributeError</strong> when the line runs. A <code>deque</code> has <code>appendleft</code>.",
+              "results": {
+                "list": {
+                  "ok": false,
+                  "say": "<code>push</code> belongs to LinkedList, not to List. Declared as <code>List&lt;Integer&gt;</code>, <code>a</code> offers only List's methods: that is what lets you swap the storage later.",
+                  "javac": "Demo.java:11: error: cannot find symbol\n        a.push(1);\n         ^\n  symbol:   method push(int)\n  location: variable a of type List<Integer>",
+                  "errors": 1
+                },
+                "linked": {
+                  "ok": true,
+                  "say": "Declared as a <code>LinkedList</code>, <code>a</code> offers LinkedList's extra methods, such as <code>push</code> (add at the front). Using them ties this code to LinkedList.",
+                  "errors": 0
+                },
+                "doubles": {
+                  "ok": false,
+                  "say": "List has no <code>push</code> method, whatever the element type.",
+                  "javac": "Demo.java:11: error: cannot find symbol\n        a.push(1);\n         ^\n  symbol:   method push(int)\n  location: variable a of type List<Double>",
+                  "errors": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "kind": "pair",
+          "title": "Pair<A, B>: two type parameters, filled in per object",
+          "after": "Two type parameters: Pair<A, B>",
+          "intro": "Step through the program above. Each <code>Pair</code> object gets its own types for <code>A</code> and <code>B</code>. Turn on <strong>Fill in A and B</strong> to see the class as the compiler checks it for the object being used.",
+          "lines": {
+            "ctor": "Pair(A first, B second)",
+            "getFirst": "A getFirst()",
+            "getSecond": "B getSecond()"
+          },
+          "steps": [
+            {
+              "op": "new",
+              "var": "score",
+              "A": "String",
+              "B": "Integer",
+              "args": "\"An\", 87",
+              "first": "\"An\"",
+              "second": "87",
+              "j": "Pair<String, Integer> score =",
+              "note": "The <code>87</code> is an <code>int</code>, so Java boxes it into an <code>Integer</code> object."
+            },
+            {
+              "op": "get",
+              "of": "score",
+              "method": "getFirst",
+              "field": "first",
+              "type": "String",
+              "var": "name",
+              "value": "\"An\"",
+              "j": "String name = score.getFirst();"
+            },
+            {
+              "op": "get",
+              "of": "score",
+              "method": "getSecond",
+              "field": "second",
+              "type": "int",
+              "var": "mark",
+              "value": "87",
+              "j": "int mark = score.getSecond();",
+              "note": "<code>getSecond()</code> returns an <code>Integer</code>; storing it in an <code>int</code> unboxes it."
+            },
+            {
+              "op": "print",
+              "j": "System.out.println(name + \" scored \" + mark);",
+              "say": "Join the name and the mark."
+            },
+            {
+              "op": "new",
+              "var": "result",
+              "A": "String",
+              "B": "Boolean",
+              "args": "\"passed\", mark >= 50",
+              "first": "\"passed\"",
+              "second": "true",
+              "j": "Pair<String, Boolean> result =",
+              "note": "<code>mark &gt;= 50</code> is <code>87 &gt;= 50</code>, which is <code>true</code>, boxed into a <code>Boolean</code>."
+            },
+            {
+              "op": "print",
+              "of": "result",
+              "j": "System.out.println(result.getFirst()",
+              "say": "Here <code>getFirst()</code> gives a String and <code>getSecond()</code> a Boolean."
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Pair<String, Integer> score = new Pair<String, Integer>(\"An\", 87);\n        String name = score.getFirst();\n        int mark = score.getSecond();\n        System.out.println(name + \" scored \" + mark);\n        Pair<String, Boolean> result = new Pair<String, Boolean>(\"passed\", mark >= 50);\n        System.out.println(result.getFirst() + \"? \" + result.getSecond());\n    }\n}\n\nclass Pair<A, B> {\n    private final A first;\n    private final B second;\n\n    Pair(A first, B second) {\n        this.first = first;\n        this.second = second;\n    }\n\n    A getFirst() {\n        return first;\n    }\n\n    B getSecond() {\n        return second;\n    }\n}\n",
+              "output": "An scored 87\npassed? true\n",
+              "tokens": [
+                "Pair<String, Integer> score =",
+                "String name = score.getFirst();",
+                "int mark = score.getSecond();",
+                "System.out.println(name + \" scored \" + mark);",
+                "Pair<String, Boolean> result =",
+                "System.out.println(result.getFirst()",
+                "Pair(A first, B second)",
+                "A getFirst()",
+                "B getSecond()"
+              ]
+            }
+          ]
+        }
+      ],
+      "extras": [
+        {
+          "title": "The compiler checks the type in <\u2026>",
+          "lang": "java",
+          "code": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> marks = new ArrayList<Integer>();\n        marks.add(87);\n        marks.add(\"ninety\");\n        int first = marks.get(0);\n        System.out.println(first);\n    }\n}\n",
+          "stdin": "",
+          "static": false,
+          "compile_error": true,
+          "ecj_error": "The method add(Integer) in the type ArrayList<Integer> is not applicable for the arguments (String)",
+          "javac_error": "Demo.java:7: error: incompatible types: String cannot be converted to Integer",
+          "fixed_output": "87\n",
+          "output": "",
+          "notes": [
+            [
+              "ArrayList<Integer>",
+              "A promise: this list only holds <code>Integer</code> objects. The compiler checks every use of <code>marks</code> against it.",
+              "The type argument"
+            ],
+            [
+              "marks.add(87);",
+              "87 is an <code>int</code>. Java boxes it into an <code>Integer</code> automatically, so this is allowed.",
+              "Autoboxing"
+            ],
+            [
+              "marks.add(\"ninety\");",
+              "A <code>String</code> is not an <code>Integer</code>, so the compiler rejects this line. Press Run: nothing runs at all, not even line 6.",
+              "Compile error"
+            ],
+            [
+              "int first = marks.get(0);",
+              "<code>get</code> gives back an <code>Integer</code>, and Java unboxes it into an <code>int</code>. No cast: the compiler already knows the type.",
+              "Unboxing"
+            ]
+          ]
+        },
+        {
+          "title": "Python does not check list[int] when it runs",
+          "lang": "python",
+          "code": "marks: list[int] = []\nmarks.append(87)\nmarks.append(\"ninety\")\nprint(marks)\nprint(type(marks[1]).__name__)\n",
+          "stdin": "",
+          "static": false,
+          "output": "[87, 'ninety']\nstr\n",
+          "notes": [
+            [
+              "list[int]",
+              "A <strong>type hint</strong>: a note for readers and for checking tools such as mypy. Python itself does not enforce it.",
+              "A hint, not a rule"
+            ],
+            [
+              "marks.append(\"ninety\")",
+              "Runs without complaint. A Java <code>ArrayList&lt;Integer&gt;</code> would refuse to compile this line.",
+              "Nothing stops it"
+            ],
+            [
+              "type(marks[1]).__name__",
+              "Shows that the element really is a <code>str</code>.",
+              "Check the type"
+            ]
+          ]
+        },
+        {
+          "title": "Two type parameters: Pair<A, B>",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Pair<String, Integer> score = new Pair<String, Integer>(\"An\", 87);\n        String name = score.getFirst();\n        int mark = score.getSecond();\n        System.out.println(name + \" scored \" + mark);\n        Pair<String, Boolean> result = new Pair<String, Boolean>(\"passed\", mark >= 50);\n        System.out.println(result.getFirst() + \"? \" + result.getSecond());\n    }\n}\n\nclass Pair<A, B> {\n    private final A first;\n    private final B second;\n\n    Pair(A first, B second) {\n        this.first = first;\n        this.second = second;\n    }\n\n    A getFirst() {\n        return first;\n    }\n\n    B getSecond() {\n        return second;\n    }\n}\n",
+          "stdin": "",
+          "static": false,
+          "output": "An scored 87\npassed? true\n",
+          "notes": [
+            [
+              "Pair<String, Integer>",
+              "Choose both types: <code>A</code> is <code>String</code> and <code>B</code> is <code>Integer</code>.",
+              "Two type arguments"
+            ],
+            [
+              "int mark = score.getSecond();",
+              "<code>getSecond</code> returns <code>B</code>, which is <code>Integer</code> here, so it unboxes straight into an <code>int</code>.",
+              "B is Integer here"
+            ],
+            [
+              "class Pair<A, B>",
+              "Two type parameters, separated by a comma. Each is a placeholder for a class type.",
+              "Two placeholders"
+            ],
+            [
+              "A getFirst()",
+              "Returns whatever type <code>A</code> was chosen to be.",
+              "Returns A"
+            ]
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "banner",
+          "photo": "photo-w7-labelled-jars",
+          "alt": "A row of identical amber glass apothecary jars with stoppers on a glass shelf, each with an ornate paper label naming a different chemical",
+          "lead": "The same jar; the label says what goes in.",
+          "caption": "Every jar on this shelf is made to the same design; only the label changes. <code>Box&lt;T&gt;</code> is the design and the type argument is the label: <code>Box&lt;String&gt;</code>, <code>ArrayList&lt;Book&gt;</code>. Because the label is part of the type, the compiler refuses to put the wrong thing in, and you know exactly what comes out without checking. Where it breaks: a paper label cannot stop anyone pouring in the wrong powder, but the compiler does stop you &mdash; and the label must name a class, so it is <code>Integer</code>, not <code>int</code>.",
+          "place": "top",
+          "position": "center 50%"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w7-power-socket",
+          "alt": "A white Australian double power point on a wall, with two switches and two three-pin sockets",
+          "lead": "Any plug of the standard shape fits.",
+          "caption": "This power point does not care whether a kettle, a lamp or a phone charger is plugged in, as long as the plug has the standard shape. A method whose parameter is <code>List&lt;Integer&gt;</code> is the socket: an ArrayList or a LinkedList both fit, because the method uses only the operations every List promises. One thing does not follow: a <code>List&lt;Integer&gt;</code> is not a <code>List&lt;Number&gt;</code>. If it were, code holding it as a list of Numbers could add a Double to it &mdash; like pouring rice into the sugar jar because both are &ldquo;food&rdquo;.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "comic",
+          "num": 1172,
+          "title": "Workflow",
+          "year": "2013",
+          "alt": "xkcd comic: a software changelog for version 10.17 reads \u201cThe CPU no longer overheats when you hold down spacebar.\u201d A long-time user complains the update broke his workflow, because he holds spacebar instead of the hard-to-reach Control key and configured his editor to treat the rapid temperature rise as Control. The admin replies \u201cThat\u2019s horrifying.\u201d Caption: Every change breaks someone\u2019s workflow.",
+          "caption": "He relied on behaviour nobody promised. Code that uses only what <code>List</code> promises keeps working when the implementation changes.",
+          "size": "fig-narrow",
+          "place": "after-visuals"
+        },
+        {
+          "kind": "did-you-know",
+          "place": "end",
+          "photo": "photo-w7-tiger",
+          "alt": "A Bengal tiger walking through long grass in front of green bushes",
+          "text": "Java only got generics in J2SE 5.0, code-named \"Tiger\", finalised in September 2004 through JSR 14, \"Add Generic Types to the Java Programming Language\", a request first approved back in 1999. Before that a collection held plain <code>Object</code>s, so every <code>get</code> needed a cast like <code>(String) list.get(0)</code>, and a wrong cast only failed when the program ran. The release notes said generics \"eliminates the drudgery of casting\": now the compiler checks your <code>ArrayList&lt;String&gt;</code> for you.",
+          "sources": [
+            [
+              "JCP: JSR 14, Add Generic Types",
+              "https://jcp.org/en/jsr/detail?id=14"
+            ],
+            [
+              "JCP: JSR 176, J2SE 5.0 (Tiger) Release Contents",
+              "https://jcp.org/en/jsr/detail?id=176"
+            ],
+            [
+              "J2SE 5.0 New Features and Enhancements",
+              "https://docs.oracle.com/javase/1.5.0/docs/relnotes/features.html"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "q": "Which declaration uses an allowed element type?",
+      "correct": "ArrayList<Integer> values = new ArrayList<Integer>();",
+      "wrong": [
+        "ArrayList<int> values = new ArrayList<int>(); // use primitive int directly",
+        "ArrayList<double> values = new ArrayList<double>(); // primitive doubles",
+        "ArrayList<boolean> values = new ArrayList<boolean>(); // primitive booleans"
+      ],
+      "why": "Generic arguments are reference types; wrapper classes represent primitives."
+    },
+    {
+      "q": "Why can remove(index) on LinkedList take linear time?",
+      "correct": "Finding the node at that index may require traversal.",
+      "wrong": [
+        "Every linked-list removal must shift all later values into adjacent array slots.",
+        "Java always copies the whole list into an ArrayList before removing a single node.",
+        "Every linked-list node is sorted numerically whenever an index is supplied."
+      ],
+      "why": "Relinking is cheap once positioned, but an index is not a direct node reference."
+    },
+    {
+      "q": "A list has size 3. Which index is valid for add(index,value) but not get(index)?",
+      "correct": "3",
+      "wrong": [
+        "2, because a list of size 3 has no element at any even numbered index.",
+        "1, because insertion positions and element indices always have opposite parity.",
+        "0, because inserting before the first item makes index zero inaccessible."
+      ],
+      "why": "Insertion at size appends; element access requires an existing element."
+    },
+    {
+      "q": "Why should total accept List<Integer> instead of ArrayList<Integer>?",
+      "correct": "It needs iteration, not one particular storage implementation.",
+      "wrong": [
+        "It makes every implementation automatically use exactly the same amount of memory.",
+        "It forces LinkedList to store its elements in a contiguous backing array.",
+        "It disables compile-time type checking so mixed element types can be accepted freely."
+      ],
+      "why": "Using the required abstraction admits multiple implementations without requiring irrelevant details."
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "import java.util.ArrayList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<String> names = new ArrayList<String>();\n        names.add(\"An\");\n        names.add(\"Mai\");\n        names.add(1,\"Linh\");\n        names.set(0,\"Binh\");\n        System.out.println(names);\n        System.out.println(names.size());\n    }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>[Binh, Linh]<br>2</code>",
+        "<code>[An, Linh, Mai]<br>3</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced.",
+        "<code>[Binh, Linh, Mai]<br>3</code>"
+      ],
+      "a": 3,
+      "why": "add at an index inserts; set replaces. Three elements remain."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "names = [\"An\", \"Mai\"]\nnames.insert(1, \"Linh\")\nnames[0] = \"Binh\"\nprint(names)\nprint(len(names))\n",
+      "lang": "python",
+      "opts": [
+        "<code>[&#x27;Binh&#x27;, &#x27;Linh&#x27;, &#x27;Mai&#x27;]<br>3</code>",
+        "<code>[&#x27;Binh&#x27;, &#x27;Mai&#x27;, &#x27;Linh&#x27;]<br>3</code>",
+        "<code>[&#x27;An&#x27;, &#x27;Linh&#x27;, &#x27;Mai&#x27;]<br>3</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 0,
+      "why": "Python lists offer the same insert/replace distinction, with different syntax."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "import java.util.ArrayList;\nimport java.util.Arrays;\n\npublic class Demo {\n    public static void main(String[] args) {\n        ArrayList<Integer> values = new ArrayList<Integer>(Arrays.asList(4,1,4));\n        values.remove(1);\n        values.remove(Integer.valueOf(4));\n        System.out.println(values);\n    }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>[1]</code>",
+        "<code>[4]</code>",
+        "<code>[]</code>",
+        "<code>[4, 4]</code>"
+      ],
+      "a": 1,
+      "why": "The index removal leaves [4,4]; the value removal deletes only the first 4."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "values = [1, 2, 2, 3, 4]\nkept = [value for value in values if value % 2 == 1]\nprint(kept)\nprint(values)\n",
+      "lang": "python",
+      "opts": [
+        "<code>[1, 3]<br>[1, 3]</code>",
+        "<code>[2, 2, 4]<br>[1, 2, 2, 3, 4]</code>",
+        "<code>[1, 3]<br>[1, 2, 2, 3, 4]</code>",
+        "<code>[1, 2, 3]<br>[1, 2, 2, 3, 4]</code>"
+      ],
+      "a": 2,
+      "why": "Filtering leaves the source unchanged and keeps both order and only the matching values."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "import java.util.LinkedList;\n\npublic class Demo {\n    public static void main(String[] args) {\n        LinkedList<String> queue = new LinkedList<String>();\n        queue.addLast(\"An\");\n        queue.addLast(\"Mai\");\n        System.out.println(queue.removeFirst());\n        System.out.println(queue);\n    }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>Mai<br>[An]</code>",
+        "<code>An<br>[An, Mai]</code>",
+        "<code>An<br>[]</code>",
+        "<code>An<br>[Mai]</code>"
+      ],
+      "a": 3,
+      "why": "The first name to arrive is the first to leave."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "from collections import deque\nqueue = deque([\"An\", \"Mai\"])\nprint(queue.popleft())\nprint(list(queue))\n",
+      "lang": "python",
+      "opts": [
+        "<code>An<br>[&#x27;Mai&#x27;]</code>",
+        "<code>Mai<br>[&#x27;An&#x27;]</code>",
+        "<code>An<br>[&#x27;An&#x27;, &#x27;Mai&#x27;]</code>",
+        "<code>An<br>[]</code>"
+      ],
+      "a": 0,
+      "why": "popleft removes An, and Mai remains waiting."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Box<String> label = new Box<String>(\"tea\");\n        Box<Integer> count = new Box<Integer>(3);\n        System.out.println(label.get() + \" \" + count.get());\n    }\n}\nclass Box<T> {\n    private final T value;\n    Box(T value) { this.value = value; }\n    T get() { return value; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>tea null</code>",
+        "<code>tea 3</code>",
+        "<code>null 3</code>",
+        "<code>3 tea</code>"
+      ],
+      "a": 1,
+      "why": "The class is reused with two types while each individual box retains a checked element type."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "import java.util.*;\n\npublic class Demo {\n    static int total(List<Integer> xs) {\n        int sum=0;\n        for(int x:xs) sum+=x;\n        return sum;\n    }\n    public static void main(String[] args) {\n        List<Integer> a = new ArrayList<Integer>(Arrays.asList(2,3));\n        List<Integer> b = new LinkedList<Integer>(a);\n        System.out.println(total(a));\n        System.out.println(total(b));\n    }\n}\n// Both lists satisfy the same operations used here.\n",
+      "lang": "java",
+      "opts": [
+        "<code>2<br>3</code>",
+        "<code>5<br>0</code>",
+        "<code>5<br>5</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 2,
+      "why": "The total uses only iteration; the storage implementation does not change the result."
+    },
+    {
+      "q": "Which declaration uses an allowed element type?",
+      "opts": [
+        "ArrayList&lt;int&gt; values = new ArrayList&lt;int&gt;(); // use primitive int directly",
+        "ArrayList&lt;double&gt; values = new ArrayList&lt;double&gt;(); // primitive doubles",
+        "ArrayList&lt;boolean&gt; values = new ArrayList&lt;boolean&gt;(); // primitive booleans",
+        "ArrayList&lt;Integer&gt; values = new ArrayList&lt;Integer&gt;();"
+      ],
+      "a": 3,
+      "why": "Generic arguments are reference types; wrapper classes represent primitives."
+    },
+    {
+      "q": "Why can remove(index) on LinkedList take linear time?",
+      "opts": [
+        "Finding the node at that index may require traversal.",
+        "Every linked-list removal must shift all later values into adjacent array slots.",
+        "Java always copies the whole list into an ArrayList before removing a single node.",
+        "Every linked-list node is sorted numerically whenever an index is supplied."
+      ],
+      "a": 0,
+      "why": "Relinking is cheap once positioned, but an index is not a direct node reference."
+    },
+    {
+      "q": "A list has size 3. Which index is valid for add(index,value) but not get(index)?",
+      "opts": [
+        "2, because a list of size 3 has no element at any even numbered index.",
+        "3",
+        "1, because insertion positions and element indices always have opposite parity.",
+        "0, because inserting before the first item makes index zero inaccessible."
+      ],
+      "a": 1,
+      "why": "Insertion at size appends; element access requires an existing element."
+    },
+    {
+      "q": "Why should total accept List<Integer> instead of ArrayList<Integer>?",
+      "opts": [
+        "It makes every implementation automatically use exactly the same amount of memory.",
+        "It forces LinkedList to store its elements in a contiguous backing array.",
+        "It needs iteration, not one particular storage implementation.",
+        "It disables compile-time type checking so mixed element types can be accepted freely."
+      ],
+      "a": 2,
+      "why": "Using the required abstraction admits multiple implementations without requiring irrelevant details."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "e1",
+      "title": "Remove duplicates in Java",
+      "lang": "java",
+      "brief": "Read n, then n integers on the next line (possibly empty when n is 0). Print the values with duplicates removed, preserving first occurrence, separated by single spaces. Print an empty line for an empty result.",
+      "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // collect first occurrences and print with single spaces\n    }\n}\n",
+      "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        List<Integer> result=new ArrayList<Integer>();\n        for(int i=0;i<n;i++) {\n            int x=sc.nextInt();\n            if(!result.contains(x)) result.add(x);\n        }\n        for(int i=0;i<result.size();i++) {\n            if(i>0) System.out.print(\" \");\n            System.out.print(result.get(i));\n        }\n        System.out.println();\n    }\n}\n",
+      "tests": [
+        {
+          "stdin": "5\n4 1 4 2 1\n",
+          "expect": "4 1 2\n"
+        },
+        {
+          "stdin": "0\n\n",
+          "expect": "\n"
+        },
+        {
+          "stdin": "4\n7 7 7 7\n",
+          "expect": "7\n"
+        },
+        {
+          "stdin": "3\n-1 0 -1\n",
+          "expect": "-1 0\n"
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "title": "Remove duplicates in Python",
+      "lang": "python",
+      "brief": "Read n, then n integers on the next line (possibly empty when n is 0). Print the values with duplicates removed, preserving first occurrence, separated by single spaces. Print an empty line for an empty result.",
+      "starter": "n=int(input())\nvalues=list(map(int,input().split()))\n# preserve the first occurrence of each value\n",
+      "solution": "n=int(input())\nvalues=list(map(int,input().split()))\nresult=[]\nfor x in values[:n]:\n    if x not in result: result.append(x)\nprint(*result)\n",
+      "tests": [
+        {
+          "stdin": "5\n4 1 4 2 1\n",
+          "expect": "4 1 2\n"
+        },
+        {
+          "stdin": "0\n\n",
+          "expect": "\n"
+        },
+        {
+          "stdin": "4\n7 7 7 7\n",
+          "expect": "7\n"
+        },
+        {
+          "stdin": "3\n-1 0 -1\n",
+          "expect": "-1 0\n"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "title": "Delete one occurrence by value",
+      "lang": "java",
+      "brief": "Read n, then n integers, then a target integer. Remove only its first occurrence by value and print the remaining list using Java list formatting.",
+      "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // build the list, read target, remove one value, print\n    }\n}\n",
+      "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        ArrayList<Integer> xs=new ArrayList<Integer>();\n        for(int i=0;i<n;i++) xs.add(sc.nextInt());\n        int target=sc.nextInt();\n        xs.remove(Integer.valueOf(target));\n        System.out.println(xs);\n    }\n}\n",
+      "tests": [
+        {
+          "stdin": "3\n4 1 4\n4\n",
+          "expect": "[1, 4]\n"
+        },
+        {
+          "stdin": "0\n\n2\n",
+          "expect": "[]\n"
+        },
+        {
+          "stdin": "3\n1 2 3\n9\n",
+          "expect": "[1, 2, 3]\n"
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "title": "A waiting queue",
+      "lang": "python",
+      "brief": "Read n names, one per line, then k (0 \u2264 k \u2264 n). Serve and print the first k names in arrival order. Finally print <code>Waiting: N</code> for the number left. Use deque.",
+      "starter": "from collections import deque\nn=int(input())\n# read names and serve k people\n",
+      "solution": "from collections import deque\nn=int(input())\nqueue=deque(input() for _ in range(n))\nk=int(input())\nfor _ in range(k): print(queue.popleft())\nprint(f\"Waiting: {len(queue)}\")\n",
+      "tests": [
+        {
+          "stdin": "3\nAn\nMai\nLinh\n2\n",
+          "expect": "An\nMai\nWaiting: 1\n"
+        },
+        {
+          "stdin": "0\n0\n",
+          "expect": "Waiting: 0\n"
+        },
+        {
+          "stdin": "1\nAn\n1\n",
+          "expect": "An\nWaiting: 0\n"
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "title": "One typed pair",
+      "lang": "java",
+      "brief": "Read a name on one line and an integer on the next. Implement <code>Pair&lt;A,B&gt;</code> with a constructor and two getters; store the input in <code>Pair&lt;String,Integer&gt;</code>. Print <code>name: number</code>.",
+      "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        String name=sc.nextLine();\n        int number=Integer.parseInt(sc.nextLine());\n        // use a typed Pair and its getters\n    }\n}\n",
+      "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        Pair<String,Integer> p=new Pair<String,Integer>(sc.nextLine(),Integer.parseInt(sc.nextLine()));\n        System.out.println(p.first()+\": \"+p.second());\n    }\n}\nclass Pair<A,B> {\n    private final A a; private final B b;\n    Pair(A a,B b) { this.a=a; this.b=b; }\n    A first() { return a; }\n    B second() { return b; }\n}\n",
+      "tests": [
+        {
+          "stdin": "Linh\n9\n",
+          "expect": "Linh: 9\n"
+        },
+        {
+          "stdin": "An Mai\n0\n",
+          "expect": "An Mai: 0\n"
+        },
+        {
+          "stdin": "Tea\n-3\n",
+          "expect": "Tea: -3\n"
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "title": "Keep passing marks",
+      "lang": "python",
+      "brief": "Read one line of integer marks, possibly empty. Print only marks \u2265 50 in their original order, separated by single spaces; use an empty line if none pass.",
+      "starter": "marks=list(map(int,input().split()))\n# build a filtered list and print it\n",
+      "solution": "marks=list(map(int,input().split()))\npassed=[mark for mark in marks if mark>=50]\nprint(*passed)\n",
+      "tests": [
+        {
+          "stdin": "49 50 85 20 50\n",
+          "expect": "50 85 50\n"
+        },
+        {
+          "stdin": "\n",
+          "expect": "\n"
+        },
+        {
+          "stdin": "1 2 3\n",
+          "expect": "\n"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    [
+      "Java Lists 1 - ArrayLists",
+      "https://edstem.org/au/courses/41298/lessons/118753",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Java Lists 2 - LinkedLists",
+      "https://edstem.org/au/courses/41298/lessons/118754",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Generics",
+      "https://edstem.org/au/courses/41298/lessons/118755",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Java Lists 3 - The List Interface",
+      "https://edstem.org/au/courses/41298/lessons/118763",
+      "Read the lesson and trace its examples on Ed."
+    ]
+  ],
+  "reading": [
+    [
+      "ArrayList API",
+      "https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html",
+      "Method overloads and the cost of list operations."
+    ],
+    [
+      "LinkedList API",
+      "https://docs.oracle.com/javase/8/docs/api/java/util/LinkedList.html",
+      "The doubly linked List and Deque implementation."
+    ],
+    [
+      "Python deque",
+      "https://docs.python.org/3/library/collections.html#collections.deque",
+      "Double-ended queues and their operations."
+    ]
+  ],
+  "activities": [
+    [
+      "Choose a collection",
+      "<p>Compare a marks register (frequent indexed reads), a printer queue (append and serve from the front), and a playlist (sequential traversal). Choose the operations first, then a collection. Explain one poor choice and its cost.</p>"
+    ],
+    [
+      "Trace a removal bug",
+      "<p>Write down the result of remove(1) and remove(Integer.valueOf(1)) on [1,4,1]. Swap roles: one person predicts, one runs, one explains overload selection and the size change.</p>"
+    ]
+  ],
+  "study": "Read ArrayLists, LinkedLists and Generics on Ed, then practise the List interface example. Solve a removal task and explain why the argument type changes its meaning."
+}

@@ -1,6 +1,7 @@
 # Weeks 6–12 authoring notes
 
-`weeks-6-12.json` is the editable source for the seven later week pages. The checked-in
+`weeks/week-N.json` (one file per week, 6–12) is the editable source for the seven later week
+pages; `scripts/week_content.py` loads and saves them. The checked-in
 HTML and per-week JavaScript files work directly on GitHub Pages; visitors do not run a build.
 
 The topic sequence was checked against the **Canvas course 42626 Subject Schedule** and
@@ -36,6 +37,13 @@ Technical corrections applied when adapting the readings:
 Week 7 also carries `visuals` (interactive diagrams drawn by `assets/visuals.js`), `extras`
 (explained examples that are not quiz questions) and optional `media` (photographs and comics);
 see architecture.md, *Interactive diagrams*. The checker verifies all of them.
+
+A week may also carry `misc`: side panels shown in a second *Miscellaneous* rail, as on
+Weeks 1–5 (history, stories, Java/Python references). Each entry is
+`{"title", "meta", "html"}`; panels get the ids `m01`, `m02`, …. An activity may give its own
+meta as a third element (`[title, html, "15 min · pairs"]`). Code blocks inside concept or
+panel HTML go in `<div class="code-card"><pre>…</pre></div>`, so long lines scroll inside
+the card instead of widening the page.
 
 Run from the repository root after editing the content:
 

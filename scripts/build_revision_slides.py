@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Build Week 5--12 revision packages in the existing Beamer format.
+"""Build generated revision packages in the existing Beamer format (legacy).
 
-The source is revision-slides/content/revisions.json. Every program is executed
-before its output is inserted into a deck. Requires a JDK and XeLaTeX.
+Weeks 5--12 are now hand-written in the question format (1 fill-in-the-blank, 2 MCQ,
+2 predict-the-output, 2 find-the-bug, 3 coding questions) and are NOT built here: this
+script refuses to overwrite them unless --overwrite-hand-written is given. It remains the
+home of the Runner that scripts/check_revision_slides.py uses to verify every deck.
+
+The old generated source is revision-slides/content/revisions.json. Every program is
+executed before its output is inserted into a deck. Requires a JDK and XeLaTeX.
 """
 from pathlib import Path
 import argparse, concurrent.futures, hashlib, html, json, math, os, re, shutil, subprocess, sys, tempfile, textwrap
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/'revision-slides'
+HAND_WRITTEN=set(range(5,13))
 
 def text(value):
     value=str(value).replace('\u2014','; ').replace('\u2013','-').replace('\u2019',"'").replace('\u2018',"'").replace('\u201c','"').replace('\u201d','"').replace('\u2265','>=').replace('\u2264','<=')
@@ -330,7 +336,12 @@ def compile_pdf(folder):
     return {'week':int(n),'warnings':warnings,'pdf':str(folder/(stem+'.pdf'))}
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--weeks',type=int,nargs='+',default=list(range(5,13)));parser.add_argument('--no-pdf',action='store_true');parser.add_argument('--reuse-checks',action='store_true');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--weeks',type=int,nargs='+',default=[]);parser.add_argument('--no-pdf',action='store_true');parser.add_argument('--reuse-checks',action='store_true');parser.add_argument('--overwrite-hand-written',action='store_true');args=parser.parse_args()
+    hand_written=[w for w in args.weeks if w in HAND_WRITTEN]
+    if hand_written and not args.overwrite_hand_written:
+        raise SystemExit(f'Weeks {hand_written} are hand-written decks; building would overwrite them (use --overwrite-hand-written).')
+    if not args.weeks:
+        raise SystemExit('Nothing to build: every revision deck (Weeks 5-12) is hand-written. Verify them with scripts/check_revision_slides.py.')
     decks=json.loads((BASE/'content/revisions.json').read_text())
     preamble=(BASE/'content/revision-template.tex').read_text()
     folders=[]

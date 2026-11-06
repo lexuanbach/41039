@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Render the later week pages from the editable content/weeks-6-12.json.
+"""Render the later week pages from the editable content/weeks/week-N.json files.
+
+    python3 scripts/build_week_pages.py              # every week
+    python3 scripts/build_week_pages.py --weeks 8    # only Week 8
 
 The generated HTML is committed and served directly; no build is needed by visitors.
 Run check_week_content.py --refresh first when changing runnable examples or solutions.
@@ -7,10 +10,12 @@ Run check_week_content.py --refresh first when changing runnable examples or sol
 from pathlib import Path
 import html
 import json
+import argparse
 import re
 
+from week_content import load_weeks
+
 ROOT = Path(__file__).resolve().parents[1]
-CONTENT = ROOT / 'content/weeks-6-12.json'
 
 
 def esc(value):
@@ -142,7 +147,7 @@ def credits_tables(w):
 
 def course_nav(current):
     titles = [(1, 'First programs'), ('2-3', 'Choosing and repeating'), (4, 'Methods and records'), (5, 'Classes and enums')]
-    titles += [(w['week'], w['short']) for w in json.loads(CONTENT.read_text())]
+    titles += [(w['week'], w['short']) for w in load_weeks()]
     links = ''.join(f'<a href="week-{num}.html"'+(' aria-current="page"' if str(num) == str(current) else '')+f'><span class="ch-num">{num}</span>{esc(title)}</a>' for num, title in titles)
     return f'''<aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a>{links}<a href="../playground.html">Java + Python playground</a></nav></details></aside>'''
 
@@ -153,6 +158,8 @@ def render(w):
     head = template.split('<body>')[0]
     head = re.sub(r'<title>.*?</title>', f'<title>Week {n} · {esc(w["title"])} · 41039</title>', head)
     head = re.sub(r'<meta name="description" content="[^"]*">', f'<meta name="description" content="{esc(w["lede"])}">', head)
+    if (ROOT / f'assets/visuals-w{n}.css').exists():
+        head = head.replace('</head>', f'<link rel="stylesheet" href="../assets/visuals-w{n}.css">\n</head>')
     header = template.split('<body>')[1].split('</header>')[0] + '</header>'
     header = re.sub(r'<nav class="topnav".*?</nav>', f'''<nav class="topnav" aria-label="Page navigation"><a href="../index.html#materials">All weeks</a><a href="#concepts">Lecture</a><a href="#quiz">Quiz</a><a href="#thisweek">This week</a><a href="../playground.html">Playground</a></nav>''', header, flags=re.S)
     def section_meta(s):
@@ -160,7 +167,7 @@ def render(w):
         visuals = len(s.get('visuals', []))
         return f"{count} examples · " + (f"{visuals} interactive · " if visuals else '') + 'Java + Python'
     sections = [(s['title'], section_meta(s)) for s in w['sections']]
-    sections += [('Coding exercises', f"{len(w['exercises'])} tasks · auto-marked"), ('Team activity', '2 activities · discussion'), ('Quiz', f"{len(w['quiz'])} questions · explained"), ('Further reading', 'Ed + Canvas + documentation')]
+    sections += [('Coding exercises', f"{len(w['exercises'])} tasks · auto-marked"), ('Team activity', f"{len(w['activities'])} activities · discussion"), ('Quiz', f"{len(w['quiz'])} questions · explained"), ('Further reading', 'Ed + Canvas + documentation')]
     tabs = []
     panels = []
     for i, (title, meta) in enumerate(sections, 1):
@@ -188,7 +195,7 @@ def render(w):
         elif title == 'Coding exercises':
             body = '<p>These are new practice tasks for this website. Read the input and output contract, complete the starter, then run the tests. They are not assessment submissions.</p><div id="exercises-root"></div>'
         elif title == 'Team activity':
-            body = ''.join(f'<div class="team-card"><div class="team-meta">Activity {j} · 12 min · groups of 3</div><h4>{a[0]}</h4>{a[1]}</div>' for j,a in enumerate(w['activities'],1))
+            body = ''.join(f'<div class="team-card"><div class="team-meta">Activity {j} · {a[2] if len(a) > 2 else '12 min · groups of 3'}</div><h4>{a[0]}</h4>{a[1]}</div>' for j,a in enumerate(w['activities'],1))
         elif title == 'Quiz':
             body = '<div id="quiz"><p>Predict the behaviour before running a program. Answer every question, then grade to see explanations. Nothing here is recorded or submitted.</p><div id="quiz-root"></div></div>'
         else:
@@ -197,6 +204,13 @@ def render(w):
                 body += f'<a class="read-card" href="{esc(url)}"><span class="kind">Course source / reference</span><h4>{esc(title_)}</h4><p>{description}</p><span class="host">{esc(url.split("/")[2])}</span></a>'
             body += '</div>' + credits_tables(w)
         panels.append(f'''<section class="lesson-panel" role="tabpanel" id="panel-{key}" aria-labelledby="tab-{key}" tabindex="0"{'' if i == 1 else ' hidden'}><h3 class="panel-head"><span class="panel-num">{i:02}</span>{esc(title)}</h3>{body}</section>''')
+    # optional side panels (history, references, stories): a second rail like Weeks 1-5's Miscellaneous
+    misc_tabs = ''
+    for i, m in enumerate(w.get('misc', []), 1):
+        key = f'm{i:02}'
+        misc_tabs += f'''<button class="lesson-tab" role="tab" id="tab-{key}" aria-controls="panel-{key}" aria-selected="false" tabindex="-1" data-target="{key}"><span class="t-num">M{i}</span><span class="t-text"><span class="t-title">{esc(m['title'])}</span><span class="t-meta">{esc(m['meta'])}</span></span></button>'''
+        panels.append(f'''<section class="lesson-panel" role="tabpanel" id="panel-{key}" aria-labelledby="tab-{key}" tabindex="0" hidden><h3 class="panel-head"><span class="panel-num">M{i}</span>{esc(m['title'])}</h3>{m['html']}</section>''')
+    misc_nav = f'<nav class="lesson-nav misc" role="tablist" aria-label="Miscellaneous" aria-orientation="vertical"><div class="nav-group-label">Miscellaneous</div>{misc_tabs}</nav>' if misc_tabs else ''
     first = w['sections'][0]['examples'][0]
     hero_code = '<pre>' + esc('\n'.join(first['code'].splitlines()[:15])) + '</pre>'
     source_links = ''.join(f'<li><a href="{esc(url)}">{esc(title)}</a></li>' for title,url,_ in w['sources'])
@@ -204,11 +218,14 @@ def render(w):
     next_ = f'week-{n+1}.html' if n < 12 else '../index.html#materials'
     visual_count = sum(len(s.get('visuals', [])) for s in w['sections'])
     interactive_chip = f'<span class="chip">{visual_count} interactive diagrams</span>' if visual_count else ''
-    names = ['runtime','highlight','editor','console-ui','explain'] + (['visuals'] if visual_count else []) + [f'w{n}-data',f'w{n}-exercises','exercises','course']
+    # a week may add its own diagram kinds (assets/visuals-wN.js, registered with P1Visuals.register)
+    # and their styles (assets/visuals-wN.css)
+    own_js = (ROOT / f'assets/visuals-w{n}.js').exists()
+    names = ['runtime','highlight','editor','console-ui','explain'] + (['visuals'] if visual_count else []) + ([f'visuals-w{n}'] if own_js and visual_count else []) + [f'w{n}-data',f'w{n}-exercises','exercises','course']
     scripts = ''.join(f'<script src="../assets/{name}.js"></script>\n' for name in names)
     return f'''{head}<body>{header}<div class="layout">{course_nav(n)}<main>
 <section class="hero"><div class="wrap"><div><span class="eyebrow">Week {n} · 41039 Programming 1</span><h1>{esc(w['title'])}</h1><p class="lede">{esc(w['lede'])}</p><div class="meta-chips"><span class="chip">{len(w['sections'])} lecture sections</span><span class="chip">{sum(not e.get('static',False) for s in w['sections'] for e in s['examples'] + s.get('extras', []))} runnable examples</span>{interactive_chip}<span class="chip">{len(w['exercises'])} exercises · {len(w['quiz'])} MCQs</span><span class="chip"><span class="lang java">Java</span> <span class="lang python">Python</span></span></div></div><div class="code-card" aria-hidden="true"><div class="bar"><span class="file">{esc(first['title'])}</span></div>{hero_code}</div></div></section>
-<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week {n} · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">{''.join(tabs)}</nav></div><div class="lesson-content">{''.join(panels)}</div></div></div></section>
+<section class="block" id="concepts"><div class="wrap"><div class="sec-head"><span class="eyebrow">Week {n} · Interactive</span><h2>The lecture, then the practice</h2><p>Choose a section, or use the arrow keys in the section list. Hover or tap an underlined part of a program for its explanation. Run it, then use Edit to test a prediction of your own.</p></div><div class="lesson"><div class="lesson-side"><nav class="lesson-nav" role="tablist" aria-label="Lecture sections" aria-orientation="vertical">{''.join(tabs)}</nav>{misc_nav}</div><div class="lesson-content">{''.join(panels)}</div></div></div></section>
 <section class="block" id="thisweek"><div class="wrap"><div class="sec-head"><span class="eyebrow">This week</span><h2>Read, practise, explain</h2><p>{w['study']}</p></div><ol>{source_links}</ol><div class="note"><span class="tag">Course schedule and assessment</span><p>These pages follow the topic sequence in <a href="https://canvas.uts.edu.au/courses/42626/pages/subject-schedule">Canvas Subject Schedule</a> and the Ed lessons. Some topics were introduced earlier on this website, so Week 6 consolidates Week 5 before collections. Use current announcements and Canvas assignments for deadlines. Practice here is independent of graded labs, code comprehension, assignments and exams.</p></div></div></section>
 <div class="wrap pagenav"><a href="{previous}"><span class="dir">Previous</span>Week {n-1}</a><a href="{next_}"><span class="dir">Next</span>{'Week '+str(n+1) if n < 12 else 'All course materials'}</a></div>
 <footer><div class="wrap"><p>41039 Programming 1 · Week {n} · {esc(w['title'])}</p></div></footer>
@@ -216,7 +233,9 @@ def render(w):
 
 
 def main():
-    weeks = json.loads(CONTENT.read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--weeks', type=int, nargs='+', help='rebuild only these weeks')
+    weeks = load_weeks(parser.parse_args().weeks)
     for w in weeks:
         n = w['week']
         (ROOT / f'weeks/week-{n}.html').write_text(render(w))

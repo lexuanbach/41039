@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 6
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,576 +141,776 @@
 }
 
 
-
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 \title[41039 Programming 1 --- Revision of Week 6]{41039 Programming 1}
-\subtitle{Revision of Week 6: Building reliable classes}
+\subtitle{Revision of Week 6: building reliable classes}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Contracts, \code{private}, references\\
+      Q2  & Multiple choice    & Which \code{take(n)} keeps the contract?\\
+      Q3  & Multiple choice    & Which line does not compile?\\
+      Q4  & Predict the output & Ticket numbers (Java)\\
+      Q5  & Predict the output & A shelf has a book (Python)\\
+      Q6  & Find the bug       & The car park (Java, 4 bugs)\\
+      Q7  & Find the bug       & The team (Python, 3 bugs)\\
+      Q8  & Write the code     & A counter with a ceiling (Java)\\
+      Q9  & Write the code     & A playlist of its own (Python)\\
+      Q10 & Write the code     & Order numbers (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
+\begin{frame}[fragile]{Week 6 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{Contract.} An \emph{invariant} is a rule that is true
+            for every object, e.g.\ $0 \le \code{fuel} \le \code{capacity}$. Each
+            method \textbf{checks before it changes}, so a refused call returns
+            \code{false} and changes nothing.
+      \item[\textbf{2}] \textbf{\code{private} vs \code{\_}.} Java \code{private}: the
+            compiler refuses access from outside the class. Python \code{self.\_x}:
+            only a \emph{convention} (``please do not touch'').
+      \item[\textbf{3}] \textbf{References.} \code{new} makes an object.
+            \code{b = a} copies the \emph{reference}, not the object: both names now
+            reach the same object.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{Shared vs per-object data.}
+            Java \code{static} field / Python class attribute: \textbf{one} copy for
+            the whole class. Instance field / \code{self.x = ...} in
+            \code{\_\_init\_\_}: one copy \textbf{per object}.
+      \item[\textbf{5}] \textbf{Composition.} An object can \emph{have} another object
+            as a field: a \code{Shelf} has a \code{Book}. Two holders may share one
+            object.
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+class Ticket {
+    static int issued;  // one, shared
+    final int number;   // one per ticket
+    private Seat seat;  // has a Seat
+}
+\end{lstlisting}
+  \end{columns}
+\end{frame}
 
-\begin{frame}[fragile]{1. A stock invariant}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Stock item = new Stock(4);
-System.out.println(item.take(3));
-System.out.println(item.take(2));
-System.out.println(item.getStock());
-class Stock {
-    private int stock;
-    Stock(int stock) { this.stock = stock; }
-    boolean take(int amount) {
-        if (amount <= 0 || amount > stock) return false;
-        stock = stock - amount;
-        return true;
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
+
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Contracts and references}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.35em]
+      \small\setlength{\baselineskip}{1.2\baselineskip}
+      \item A rule that must hold for every object, before and after each public
+            method, is an \blank{1}.
+      \item A method that only reports state is a \blank{2}. One that changes state
+            is a \blank{3}.
+      \item Java's \blank{4} makes the compiler refuse any use of a field from
+            outside its class. Python's leading \code{\_} is only a \blank{5}.
+      \item \code{b = a} copies a \blank{6}, so both names reach one object.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} invariant  & \textbf{f)} getter\\
+        \textbf{b)} mutator    & \textbf{g)} static\\
+        \textbf{c)} convention & \textbf{h)} object\\
+        \textbf{d)} reference  & \textbf{i)} public\\
+        \textbf{e)} private    & \textbf{j)} constructor\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} a) invariant\\[0.3em]
+      \textbf{(2)} f) getter\quad \textbf{(3)} b) mutator\\[0.3em]
+      \textbf{(4)} e) private\quad \textbf{(5)} c) convention\\[0.3em]
+      \textbf{(6)} d) reference\\[0.3em]
+      Not used: g) static, h) object, i) public, j) constructor.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small The constructor must \textbf{establish} the invariant. Every public method
+    must \textbf{keep} it.}}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which \code{take(n)} keeps the contract?}
+  \neutrallabel{Contract:} {\small accept only $0 < n \le$ \code{stock}; a refused
+  request returns \code{false} and changes \textbf{nothing}. \code{stock} starts at
+  4.}\\[0.1em]
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 1}
+\begin{lstlisting}[language=Java]
+boolean take(int n) {
+    if (n <= 0 || n > stock)
+        return false;
+    stock -= n;
+    return true;
+}
+\end{lstlisting}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 2}
+\begin{lstlisting}[language=Java]
+boolean take(int n) {
+    stock -= n;
+    if (stock < 0)
+        return false;
+    return true;
+}
+\end{lstlisting}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 3}
+\begin{lstlisting}[language=Java]
+boolean take(int n) {
+    if (n > stock)
+        return false;
+    stock -= n;
+    return true;
+}
+\end{lstlisting}
+  \end{minipage}
+
+  \vspace{0.3em}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.36\textwidth}
+    \begin{discussionbox}{Choose one (90 seconds)}
+      \small
+      \rightopt{A}{Version 1 only}\\[0.15em]
+      \wrongopt{B}{Versions 1 and 3}\\[0.15em]
+      \wrongopt{C}{Versions 2 and 3}\\[0.15em]
+      \wrongopt{D}{All three}
+    \end{discussionbox}
+    \column{0.60\textwidth}
+    \alt<1>{%
+    {\small \neutrallabel{Hint:} all three compile. Try \code{take(9)} (too many),
+    then \code{take(-5)} (negative) on each version, and watch \code{stock}.}}{%
+    \begin{contextbox}{Answer: A}
+      \footnotesize\raggedright
+      \textbf{V1} \yes{} \code{take(9)}, \code{take(-5)}: both \code{false}, stock
+      stays 4.\\[0.1em]
+      \textbf{V2} \no{} changes \emph{before} it checks: \code{take(9)} says
+      \code{false} but stock is now $-5$.\\[0.1em]
+      \textbf{V3} \no{} forgets $n > 0$: \code{take(-5)} says \code{true} and stock
+      \emph{grows} to 9.
+    \end{contextbox}}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Which line does not compile?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
+class Account {
+    private int balance = 0;
+    static int created = 0;
+    Account() { created++; }
+    void deposit(int n) {
+        if (n > 0) balance += n;
     }
-    int getStock() { return stock; }
+    int getBalance() { return balance; }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-true
-false
-1
+    \begin{discussionbox}{Choose one (60 seconds)}
+      \small
+      \wrongopt{A}{\code{a.deposit(50);}}\\[0.15em]
+      \wrongopt{B}{\code{Account.created = 7;}}\\[0.15em]
+      \rightopt{C}{\code{a.balance = 100;}}\\[0.15em]
+      \wrongopt{D}{\code{int b = a.getBalance();}}
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    {\small \code{main} is in a \textbf{different} class, \code{Demo}, in the same
+    file, and starts with:}
+\begin{lstlisting}[language=Java]
+Account a = new Account();
 \end{lstlisting}
-\scriptsize\raggedright The first request leaves 1. The second request fails before changing the field, so it stays 1.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    {\small Each option is the next line of \code{main}. Exactly \textbf{one} of them
+    does not compile.}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      \code{balance} is \code{private}: only code inside \code{Account} may use it.
+      The compiler says:\\
+      {\scriptsize\code{balance has private access in Account}}\\[0.25em]
+      \textbf{A, D} compile: methods are the normal way in.\\[0.15em]
+      \textbf{B} compiles too, because \code{created} is not \code{private}.
+      \code{static} means ``shared'', not ``hidden''.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. The same contract in Python}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Stock:
-    def __init__(self, stock):
-        self._stock = stock
-    def take(self, amount):
-        if amount <= 0 or amount > self._stock:
-            return False
-        self._stock -= amount
-        return True
-    def available(self):
-        return self._stock
-item = Stock(4)
-print(item.take(3))
-print(item.take(2))
-print(item.available())
-\end{lstlisting}
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-True
-False
-1
-\end{lstlisting}
-\scriptsize\raggedright Both languages implement the same rule. Python prints booleans with initial capitals.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{3. One object, two references}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Stock a = new Stock(5);
-Stock b = a;
-b.take(2);
-System.out.println(a.getStock());
-System.out.println(a == b);
-class Stock {
-    private int stock;
-    Stock(int stock) { this.stock = stock; }
-    void take(int amount) { stock -= amount; }
-    int getStock() { return stock; }
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}Ticket numbers}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java]
+class Ticket {
+    static int issued = 0;
+    final int number;
+    Ticket() {
+        issued++;
+        number = issued;
+    }
 }
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-3
-true
-\end{lstlisting}
-\scriptsize\raggedright Assignment makes two names for one stock object. The mutation through b is visible through a.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. Separate objects, separate state}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Basket:
-    def __init__(self):
-        self.items = []
-a = Basket()
-b = Basket()
-a.items.append("tea")
-print(a.items)
-print(b.items)
-print(a is b)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-['tea']
-[]
-False
-\end{lstlisting}
-\scriptsize\raggedright Each constructor call allocates a separate items list; only a receives tea.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. Class count and instance number}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
+// in main, in another class Demo
 Ticket a = new Ticket();
 Ticket b = new Ticket();
-System.out.println(a.number + " " + b.number + " " + Ticket.count);
-class Ticket {
-    static int count = 0;
-    final int number;
-    Ticket() { number = ++count; }
-}
+Ticket.issued = 10;
+Ticket c = new Ticket();
+Ticket d = b;
+System.out.println(a.number + " " + b.number);
+System.out.println(c.number + " " + d.number);
+System.out.println(Ticket.issued);
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-1 2 2
-\end{lstlisting}
-\scriptsize\raggedright The shared counter reaches 2; a keeps its previously assigned number 1.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{three} lines that are printed.\\[0.2em]
+      \textbf{2.} Which line lets other code break the numbering? How do you stop it?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{1 2}\\
+      \phantom{\textbf{1.}} \code{11 2}\\
+      \phantom{\textbf{1.}} \code{11}\\[0.2em]
+      \code{issued} is \code{static}: \textbf{one} counter for all tickets.
+      \code{number} is per ticket and set once, so \code{a}, \code{b} keep 1 and 2.
+      \code{Ticket.issued = 10} moved the shared counter, so \code{c}'s constructor
+      makes it 11. \code{d = b} makes no ticket: \code{d} \emph{is} \code{b}.\\[0.2em]
+      \textbf{2.} \code{Ticket.issued = 10;} jumps from 2 to 10. Make \code{issued}
+      \code{private}: then only code inside \code{Ticket} can change it.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{6. A class attribute can share too much}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Basket:
-    items = []
-a = Basket()
-b = Basket()
-a.items.append("tea")
-print(b.items)
-print(a.items is b.items)
-\end{lstlisting}
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}A shelf has a book}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
+class Book:
+    def __init__(self, title):
+        self.title = title
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-['tea']
-True
-\end{lstlisting}
-\scriptsize\raggedright Both objects find the class attribute. Move the list into \_\_init\_\_ to give each basket its own storage.
-\end{contextbox}\end{onlyenv}
-\end{columns}
+class Shelf:
+    def __init__(self, book):
+        self.book = book
+    def __str__(self):
+        return "Shelf with " + self.book.title
 
+b = Book("Dune")
+s1 = Shelf(b)
+s2 = Shelf(b)
+s2.book.title = "Emma"
+s3 = Shelf(Book("Dune"))
+print(s1)
+print(s3)
+print(s1.book is s2.book, s1.book is s3.book)
+\end{lstlisting}
+    {\footnotesize \code{x is y} is \code{True} only when \code{x} and \code{y} are the
+    \textbf{same object}.}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{three} lines that are printed.\\[0.2em]
+      \textbf{2.} Change the line \code{s2 = Shelf(b)} so that \code{s2} gets its
+      \textbf{own} book.
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{Shelf with Emma}\\
+      \phantom{\textbf{1.}} \code{Shelf with Dune}\\
+      \phantom{\textbf{1.}} \code{True False}\\[0.2em]
+      A shelf \textbf{has a} book. \code{s1} and \code{s2} hold \textbf{the same}
+      \code{Book}, so renaming it through \code{s2} shows through \code{s1}.
+      \code{s3}'s book is a different object with the same title.\\[0.2em]
+      \textbf{2.} \code{s2 = Shelf(Book(b.title))}: a \textbf{new} \code{Book} object.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Team round 1: draw the model}
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
 
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: References inside a composed object}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Book book=new Book("Tea");
-Shelf a=new Shelf(book);
-Shelf b=a;
-Shelf c=new Shelf(new Book("Coffee"));
-b.book.title="Water";
-System.out.println(a.book.title+" "+c.book.title);
-System.out.println(a==b);
-class Book { String title; Book(String t) { title=t; } }
-class Shelf { Book book; Shelf(Book b) { book=b; } }
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the object references after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (a) at (0,0) {a};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (b) at (0,-1) {b};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (c) at (0,-2.5) {c};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (s1) at (2.9,-0.4) {Shelf \#1\\[0pt] book};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (s2) at (2.9,-2.5) {Shelf \#2\\[0pt] book};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o1) at (6.2,-0.4) {Book \#1\\[0pt] title = Water};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o2) at (6.2,-2.5) {Book \#2\\[0pt] title = Coffee};
-\draw[ref] (a) -- (s1);
-\draw[ref] (b) -- (s1);
-\draw[ref] (c) -- (s2);
-\draw[ref] (s1) -- (o1);
-\draw[ref] (s2) -- (o2);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-Water Coffee
-true
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small Two shelf objects and two book objects remain. a and b share the first shelf, which holds the renamed book.
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small take accepts a positive amount no larger than stock, preserves state on rejection, and reports success truthfully.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        Stock s=new Stock(4);
-        System.out.println(s.take(0));
-        System.out.println(s.take(4));
-        System.out.println(s.take(1));
-        System.out.println(s.left());
-    }
-}
-class Stock {
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=11,numbersep=0.7em]
-    private int count;
-    Stock(int count) { this.count=count; }
-    boolean take(int n) {
-        if(n<0 || n>=count) return false;
-        count-=n;
-        return false;
-    }
-    int left() { return count; }
-}
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L14:} Reject n \textless{}= 0, but allow n exactly equal to the available stock.\item \textbf{L16:} The successful mutation must return true. The rejection branch still returns false.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-false
-false
-false
-3
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-false
-true
-false
-0
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small copy must make an independent basket. Adding milk to b must leave a with tea only.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Basket:
-    def __init__(self): self.items=[]
-    def copy(self): return self
-    def add(self,name): self.items.append(name)
-    def count(self): print(len(self.items))
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=7,numbersep=0.7em]
-a=Basket()
-a.add("tea")
-b=a.copy()
-b.add("milk")
-print(a.items,b.items)
-print(a.count())
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L3:} Construct a distinct basket and copy the items list.\item \textbf{L5:} Return the count instead of printing and returning None.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-['tea', 'milk'] ['tea', 'milk']
-2
-None
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-['tea'] ['tea', 'milk']
-1
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: Shared count, separate counts}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Counter a=new Counter();
-Counter b=new Counter();
-a.click(); b.click(); b.click();
-Counter c=b;
-c.click();
-System.out.println(a.mine+" "+b.mine+" "+Counter.total);
-System.out.println(c==b);
-class Counter {
-    static int total=0;
-    int mine=0;
-    void click() { total++; mine++; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-1 3 4
-true
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small There are two Counter objects and four clicks. c aliases b rather than constructing another counter.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: Mutation followed by shadowing}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Basket:
-    items=[]
-a,b=Basket(),Basket()
-a.items.append("tea")
-b.items=["coffee"]
-a.items.append("milk")
-print(a.items)
-print(b.items)
-print(Basket.items)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-['tea', 'milk']
-['coffee']
-['tea', 'milk']
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small Appending changes the shared class list. Assigning b.items creates a separate instance attribute for b.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{An inventory that preserves its invariant}\small Read the initial stock, n, then n requests, with each input value on a separate line. Accept positive requests no larger than the remaining stock. Print OK or Refused after each request, then the final stock. Rejecting a request must leave stock unchanged.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-5
-4
-2
-4
-0
-3
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-OK
-Refused
-Refused
-OK
-0
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-java.util.Scanner sc = new java.util.Scanner(System.in);
-Inventory item = new Inventory(sc.nextInt());
-int n = sc.nextInt();
-for (int i=0;i<n;i++) System.out.println(item.take(sc.nextInt()) ? "OK" : "Refused");
-System.out.println(item.available());
-class Inventory {
-    private int stock;
-    Inventory(int stock) { this.stock = stock; }
-    boolean take(int amount) {
-        if (amount <= 0 || amount > stock) return false;
-        stock -= amount;
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The car park (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+public class CarPark {
+    private int capacity;
+    private static int parked;
+    public CarPark(int cap) { capacity = cap; }
+    public boolean park() {
+        if (parked > capacity) return false;
+        parked++;
         return true;
     }
-    int available() { return stock; }
+    public boolean leave() {
+        parked--;
+        return true;
+    }
+    public static int free() {
+        return capacity - parked;
+    }
 }
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Inventory:
-    def __init__(self, stock): self._stock = stock
-    def take(self, amount):
-        if amount <= 0 or amount > self._stock: return False
-        self._stock -= amount
-        return True
-    def available(self): return self._stock
-item = Inventory(int(input()))
-n = int(input())
-for _ in range(n):
-    print("OK" if item.take(int(input())) else "Refused")
-print(item.available())
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors. Give each
+    line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the class should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em]
+      \footnotesize
+      \item \code{park()} returns \code{false} when full
+      \item \code{leave()} returns \code{false} when empty
+      \item \code{free()} gives the number of free spaces
+      \item Two car parks never share their counts
+    \end{itemize}
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+CarPark a = new CarPark(2);
+CarPark b = new CarPark(5);
+System.out.println(a.park() + " "
+    + a.park() + " " + a.park());
+System.out.println(b.free());
+System.out.println(b.leave() + " "
+    + b.leave() + " " + b.free());
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
-
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+true true false
+5
+false false 5
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 14} (compile error, reported at line 15): a \code{static}
+            method has no object, so it cannot read \code{capacity}. Remove
+            \code{static}.
+      \item \textbf{Line 3}: \code{static} gives \textbf{all} car parks one shared
+            count. Remove \code{static}.
+      \item \textbf{Line 6}: \code{>} lets a 3rd car into 2 spaces. Use \code{>=}.
+      \item \textbf{Line 11}: no check, so \code{parked} can go negative. Add
+            \code{if (parked == 0) return false;} first.
+    \end{itemize}
+    {\footnotesize Fix only line 14 and \code{a} still takes 3 cars.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{5 / 4 / 2 / 4 / 0 / 3}\par \textbf{Output:} \code{OK / Refused / Refused / OK / 0}\par\medskip \textbf{Test 2}\par \code{0 / 2 / 1 / -1}\par \textbf{Output:} \code{Refused / Refused / 0}\par\medskip \textbf{Test 3}\par \code{3 / 0}\par \textbf{Output:} \code{3}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}The team (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+class Team:
+    members = []
+    def __init__(self, name, size):
+        self.name = name
+        self.size = size
+    def join(self, person):
+        self.members.append(person)
+        if len(self.members) > self.size:
+            return False
+        return True
+    def leave(self, person):
+        self.members.remove(person)
+        return True
+
+red = Team("red", 2)
+blue = Team("blue", 3)
+print(red.join("An"), red.join("Binh"),
+      red.join("Chi"))
+print(red.members, blue.members)
+print(red.leave("Dung"))
+\end{lstlisting}
+    \column{0.44\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 1--13 (3 min). Give each line number and
+    its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{What the class should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Each team has its \textbf{own} list of members
+      \item \code{join}: if the team is full, return \code{False} and change nothing
+      \item \code{leave}: if the person is not in the team, return \code{False}
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}
+True True False
+['An', 'Binh'] []
+False
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 12)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+True True False
+['An', 'Binh', 'Chi'] ['An', 'Binh', 'Chi']
+ValueError: list.remove(x): x not in list
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 2}: a list in the class body is \textbf{one} list shared by
+            every team, so \code{blue} sees \code{red}'s members. Delete it; write
+            \code{self.members = []} in \code{\_\_init\_\_}.
+      \item \textbf{Lines 7--8}: adds \emph{before} it checks, so the refused
+            \code{"Chi"} stays in. Check first, with \code{>=}:
+            \code{if len(self.members) >= self.size:} \code{return False}, then
+            \code{append}.
+      \item \textbf{Line 12}: \code{remove} crashes when the person is absent. First:
+            \code{if person not in self.members:} \code{return False}.
+    \end{itemize}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+% ======================================================================
+\section{Write the code}
+% ======================================================================
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item State an invariant and check every mutating path.\item Distinguish copying a reference from copying a model.\item Place per-object mutable data in each instance.\item Use composition and narrow methods to preserve rules.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-6.html}{Course website: Week 6}. Complete programs accompany this deck.}
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}A counter with a ceiling (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small \code{value} starts at 0 and must
+  \textbf{never} go above \code{max}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{increment()}: at \code{max}, return \code{false} and change nothing;
+          otherwise add 1 and return \code{true}.
+    \item \code{reset()}: set \code{value} back to 0.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class BoundedCounter {
+    private final int max;
+    private int value = 0;
+    BoundedCounter(int max) {
+        this.max = max;
+    }
+    boolean increment() {
+        // TODO
+        return false;
+    }
+    void reset() { /* TODO */ }
+    int getValue() { return value; }
+}
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+BoundedCounter c = new BoundedCounter(2);
+System.out.println(c.increment() + " "
+    + c.increment() + " " + c.increment());
+System.out.println(c.getValue());
+c.reset();
+System.out.println(c.getValue());
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+true true false
+2
+0
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good]
+class BoundedCounter {
+    private final int max;
+    private int value = 0;
+    BoundedCounter(int max) {
+        this.max = max;
+    }
+    boolean increment() {
+        if (value >= max) return false;
+        value++;
+        return true;
+    }
+    void reset() { value = 0; }
+    int getValue() { return value; }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}A playlist of its own (Python)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{\_\_init\_\_}: give \textbf{each} playlist its own empty list (not a
+          class attribute: see Q7).
+    \item \code{add(song)}: return \code{False} if \code{song} is \code{""} or already
+          in the list; otherwise add it and return \code{True}.
+    \item \code{\_\_str\_\_}: \code{"<n> songs: <names>"}, e.g.\ \code{"2 songs: A, B"};
+          if empty, just \code{"0 songs"}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+class Playlist:
+    def __init__(self):
+        pass  # TODO
+    def add(self, song):
+        # TODO
+        return False
+    def __str__(self):
+        # TODO
+        return "0 songs"
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+a = Playlist()
+b = Playlist()
+print(a.add("Hello"), a.add("Hello"))
+print(a.add(""))
+a.add("Yesterday")
+print(a)
+print(b)
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+True False
+False
+2 songs: Hello, Yesterday
+0 songs
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good]
+class Playlist:
+    def __init__(self):
+        self._songs = []
+    def add(self, song):
+        if song == "" or song in self._songs:
+            return False
+        self._songs.append(song)
+        return True
+    def __str__(self):
+        text = str(len(self._songs)) + " songs"
+        if self._songs:
+            text += ": " + ", ".join(self._songs)
+        return text
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}Order numbers (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item One counter \textbf{shared} by all orders, starting at 1. No other class may
+          change it.
+    \item Constructor: give this order the counter's current value, then add 1 to the
+          counter.
+    \item \code{toString()}: return \code{"Order \#<number>: <item>"}
+          (\code{println(a)} calls it for you).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class Order {
+    // TODO: the shared counter
+    private final int number;
+    private final String item;
+    Order(String item) {
+        this.item = item;
+        this.number = 0;  // TODO
+    }
+    public String toString() {
+        return "";  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+Order a = new Order("tea");
+Order b = new Order("coffee");
+System.out.println(a);
+System.out.println(b);
+System.out.println(new Order("cake"));
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+Order #1: tea
+Order #2: coffee
+Order #3: cake
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good]
+class Order {
+    private static int nextNumber = 1;
+    private final int number;
+    private final String item;
+    Order(String item) {
+        this.item = item;
+        this.number = nextNumber;
+        nextNumber++;
+    }
+    public String toString() {
+        return "Order #" + number + ": " + item;
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: when a shelf needs more than three books}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Last week: one field per book}
+\begin{lstlisting}[language=Java]
+class Shelf {
+    private Book first, second, third;
+    boolean add(Book b) {
+        if (first == null) first = b;
+        else if (second == null) second = b;
+        else if (third == null) third = b;
+        else return false;
+        return true;
+    }
+}
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright The library wants shelves of \textbf{40} books, and to take a
+      book out of the \textbf{middle}. What must change?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    {\small 40 fields and 40 \code{if}s, and taking out a middle book leaves a
+    \textbf{hole} to manage by hand. Instead, keep the books in a list that grows:}
+\begin{lstlisting}[language=Java,style=good]
+class Shelf {
+    private final ArrayList<Book> books
+        = new ArrayList<>();
+    boolean add(Book b) {
+        books.add(b);
+        return true;
+    }
+    int size() { return books.size(); }
+}
+\end{lstlisting}
+    {\small Python: \code{self.books = []}. Today: \textbf{lists} in Java and Python,
+    and the type in \code{<Book>}: \textbf{generics}.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Contracts and references}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] state a class's \textbf{invariant} and each method's contract (Q1, Q2)
+      \item[\yes] check \textbf{before} you change, so a refusal changes nothing
+            (Q2, Q6, Q7, Q8)
+      \item[\yes] use \code{private} (Java) and \code{\_} (Python) for what they are
+            (Q1, Q3)
+      \item[\yes] trace names and objects separately: \code{b = a} copies a reference
+            (Q4, Q5)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Shared data and composition}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] choose shared (\code{static}, class attribute) or per-object data
+            (Q4, Q6, Q7, Q10)
+      \item[\yes] give each Python object its own list in \code{\_\_init\_\_}
+            (Q7, Q9)
+      \item[\yes] build a class that \textbf{has} another object (Q5)
+      \item[\yes] write \code{toString} / \code{\_\_str\_\_} that returns text (Q9, Q10)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 7 -- Lists and generics}
+    \footnotesize \code{ArrayList} and Python lists, removing safely while you loop,
+    linked nodes and queues, and type parameters.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

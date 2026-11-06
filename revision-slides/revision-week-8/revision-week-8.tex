@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 8
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,555 +141,774 @@
 }
 
 
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 
 \title[41039 Programming 1 --- Revision of Week 8]{41039 Programming 1}
-\subtitle{Revision of Week 8: Inheritance and interfaces}
+\subtitle{Revision of Week 8: inheritance and interfaces}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & \code{extends}, \code{super}, overriding\\
+      Q2  & Multiple choice    & Which line does not compile?\\
+      Q3  & Multiple choice    & Overloading or overriding?\\
+      Q4  & Predict the output & Bikes and vehicles (Java)\\
+      Q5  & Predict the output & Lamps and a fan (Python)\\
+      Q6  & Find the bug       & Cinema tickets (Java, 4 bugs)\\
+      Q7  & Find the bug       & Staff pay (Python, 3 bugs)\\
+      Q8  & Write the code     & A toll gate (Java)\\
+      Q9  & Write the code     & An account with a fee (Python)\\
+      Q10 & Write the code     & Greeters (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
+\begin{frame}[fragile]{Week 8 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.3em]
+      \small
+      \item[\textbf{1}] \textbf{Is-a.} \code{class Dog extends Animal}: a \code{Dog}
+            \emph{is an} \code{Animal} and inherits its fields and methods. Python:
+            \code{class Dog(Animal):}.
+      \item[\textbf{2}] \textbf{\code{super}.} A constructor first runs
+            \code{super(...)} to build the parent part (Python:
+            \code{super().\_\_init\_\_(...)}). \code{super.m()} runs the
+            \textbf{parent's} \code{m}.
+      \item[\textbf{3}] \textbf{Override vs overload.} Same name \textbf{and}
+            parameters: it \emph{overrides} (\code{@Override} makes the compiler
+            check). Different parameters: it \emph{overloads}, a separate method.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.3em]
+      \small
+      \item[\textbf{4}] \textbf{Declared type vs object.} \code{Animal a = new Dog();}
+            The declared type decides what you may \textbf{call}; the object decides
+            which override \textbf{runs}.
+      \item[\textbf{5}] \textbf{Promises.} An \code{abstract} class cannot be
+            \code{new}ed. An \code{interface} lists public methods; a class may
+            \code{implement} many. Python: \code{ABC}, or \emph{duck typing}.
+    \end{itemize}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+interface Priced { int cost(); }
+abstract class Item implements Priced {
+    final String name;
+    Item(String n) { name = n; }
+}
+class Book extends Item {
+    Book(String n) { super(n); }
+    @Override public int cost() { return 20; }
+}
+\end{lstlisting}
+  \end{columns}
+\end{frame}
 
-\begin{frame}[fragile]{1. Overriding chooses the object method}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Animal pet = new Dog("Milo");
-System.out.println(pet.speak());
-class Animal {
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
+
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Inheritance words}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.3em]
+      \small\setlength{\baselineskip}{1.2\baselineskip}
+      \item A Java class names its superclass with \blank{1}.
+      \item \blank{2}\code{(...)}, first in a constructor, runs the superclass
+            constructor.
+      \item Same name and parameters as a parent method: it \blank{3} it.
+            Different parameters: it \blank{4} it.
+      \item An \blank{5} class cannot be created with \code{new}.
+      \item Python \blank{6} only asks if an object has the method.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} extends    & \textbf{f)} overloads\\
+        \textbf{b)} implements & \textbf{g)} abstract\\
+        \textbf{c)} super      & \textbf{h)} final\\
+        \textbf{d)} this       & \textbf{i)} duck typing\\
+        \textbf{e)} overrides  & \textbf{j)} static\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} a) extends\quad \textbf{(2)} c) super\\[0.3em]
+      \textbf{(3)} e) overrides\quad \textbf{(4)} f) overloads\\[0.3em]
+      \textbf{(5)} g) abstract\quad \textbf{(6)} i) duck typing\\[0.3em]
+      Not used: b) implements (for interfaces), d) this (calls a constructor of the
+      \emph{same} class), h) final (a \code{final} class \emph{can} be created, but not
+      extended), j) static.
+    \end{contextbox}}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which line does not compile?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+interface Speaker { String speak(); }
+abstract class Pet implements Speaker {
     protected final String name;
-    Animal(String name) { this.name=name; }
-    String speak() { return name+" is quiet"; }
+    Pet(String name) { this.name = name; }
+}
+class Cat extends Pet {
+    Cat(String name) { super(name); }
+    public String speak() { return name + ": meow"; }
+    void purr() { System.out.println("purr"); }
+}
+\end{lstlisting}
+    \begin{discussionbox}{Choose one (60 seconds)}
+      \small
+      \wrongopt{A}{\code{Speaker s = p;}}\\[0.15em]
+      \wrongopt{B}{\code{String t = p.speak();}}\\[0.15em]
+      \rightopt{C}{\code{p.purr();}}\\[0.15em]
+      \wrongopt{D}{\code{new Cat("Mo").purr();}}
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    {\small \code{main} is in another class, \code{Demo}, in the same file, and
+    starts with:}
+\begin{lstlisting}[language=Java]
+Pet p = new Cat("Tom");
+\end{lstlisting}
+    \begin{onlyenv}<1>
+    {\small Each option is the next line of \code{main}. Exactly \textbf{one} of them
+    does not compile.}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      The object is a \code{Cat}, but the compiler checks the \textbf{declared}
+      type, \code{Pet}, which has no \code{purr}:
+      {\scriptsize\code{cannot find symbol}}\\[0.2em]
+      \textbf{A}: \code{Pet implements Speaker}: a \code{Pet} \emph{is a}
+      \code{Speaker}.\\[0.1em]
+      \textbf{B}: \code{Pet} promises \code{speak()} through \code{Speaker}.\\[0.1em]
+      \textbf{D}: here the declared type is \code{Cat}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Overloading or overriding?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Animal {
+    String sound() { return "..."; }
 }
 class Dog extends Animal {
-    Dog(String name) { super(name); }
-    @Override String speak() { return name+" says woof"; }
+    @Override String sound() { return "woof"; }
 }
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Milo says woof
-\end{lstlisting}
-\scriptsize\raggedright The variable type permits speak, while the object type selects Dog.speak at runtime.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{2. Calling the parent in Python}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Animal:
-    def __init__(self, name):
-        self.name = name
-    def speak(self):
-        return self.name + " is quiet"
-class Dog(Animal):
-    def speak(self):
-        return super().speak() + "; then woof"
-print(Dog("Milo").speak())
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Milo is quiet; then woof
-\end{lstlisting}
-\scriptsize\raggedright Dog extends the behaviour by calling the inherited implementation first.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{3. Fields and methods are resolved differently}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Parent value = new Child();
-System.out.println(value.label);
-System.out.println(value.describe());
-class Parent {
-    String label="parent field";
-    String describe() { return "parent method"; }
-}
-class Child extends Parent {
-    String label="child field";
-    @Override String describe() { return "child method"; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-parent field
-child method
-\end{lstlisting}
-\scriptsize\raggedright The field name is selected from Parent, but the overridden instance method comes from Child.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. A Python abstract base class}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-from abc import ABC, abstractmethod
-class Shape(ABC):
-    @abstractmethod
-    def area(self):
-        pass
-class Square(Shape):
-    def __init__(self, side):
-        self.side = side
-    def area(self):
-        return self.side * self.side
-shape = Square(3)
-print(shape.area())
-print(isinstance(shape, Shape))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-9
-True
-\end{lstlisting}
-\scriptsize\raggedright Square implements area and is a subtype of Shape; the area is 3×3.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. An interface is a useful promise}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Shape[] shapes = {new Square(3), new Rectangle(2,4)};
-for(Shape shape:shapes) System.out.println(shape.area());
-interface Shape { int area(); }
-class Square implements Shape {
-    private final int side;
-    Square(int side) { this.side=side; }
-    public int area() { return side*side; }
-}
-class Rectangle implements Shape {
-    private final int w,h;
-    Rectangle(int w,int h) { this.w=w; this.h=h; }
-    public int area() { return w*h; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-9
-8
-\end{lstlisting}
-\scriptsize\raggedright Square computes 9, Rectangle computes 8, and the caller needs only the common interface.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{6. Duck typing uses a behavioural contract}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Email:
-    def send(self, text):
-        return "email: " + text
-class Screen:
-    def send(self, text):
-        return "screen: " + text
-def notify(channel):
-    print(channel.send("Hello"))
-notify(Email())
-notify(Screen())
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-email: Hello
-screen: Hello
-\end{lstlisting}
-\scriptsize\raggedright Each object implements send; Python calls the method available on the received object.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\section{Team round 1: draw the model}
-
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: Declared type, object type and an alias}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Animal a=new Dog();
-Animal b=a;
-Animal c=new Cat();
-System.out.println(a.speak()+" "+b.speak()+" "+c.speak());
-System.out.println(a==b);
-class Animal { String speak() { return "animal"; } }
-class Dog extends Animal { String speak() { return "woof"; } }
-class Cat extends Animal { String speak() { return "meow"; } }
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the object references after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (a) at (0,0) {a: Animal};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (b) at (0,-1) {b: Animal};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (c) at (0,-2) {c: Animal};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o1) at (5,-0.3) {actual Dog\\[0pt] speak = woof};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (o2) at (5,-2) {actual Cat\\[0pt] speak = meow};
-\draw[ref] (a) -- (o1);
-\draw[ref] (b) -- (o1);
-\draw[ref] (c) -- (o2);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-woof woof meow
-true
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small The declared type permits speak(). Each actual object selects the overridden instance method. b aliases a, so no third animal is created.
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small Through an Animal reference, the Dog named Milo must say Dog Milo.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        Animal pet=new Dog("Milo");
-        System.out.println(pet.speak());
+class Vet {
+    static String check(Animal a) {
+        return "animal " + a.sound();
+    }
+    static String check(Dog d) {
+        return "dog " + d.sound();
     }
 }
-class Animal {
-    protected final String name;
+// in main, in another class Demo
+Animal pet = new Dog();
+System.out.println(Vet.check(pet));
 \end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{discussionbox}{What is printed? (90 seconds)}
+      \small
+      \wrongopt{A}{\code{dog woof}}\\[0.05em]
+      \rightopt{B}{\code{animal woof}}\\[0.05em]
+      \wrongopt{C}{\code{animal ...}}\\[0.05em]
+      \wrongopt{D}{\code{dog ...}}
+    \end{discussionbox}
+    \begin{onlyenv}<1>
+    {\small \neutrallabel{Hint:} two different choices happen here. Which
+    \code{check}? Then, inside it, which \code{sound}?}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: B}
+      \footnotesize\raggedright
+      \textbf{Which \code{check}} (overload): the compiler picks it from
+      \code{pet}'s declared type, \code{Animal}.\\[0.1em]
+      \textbf{Which \code{sound}} (override): picked as it runs, from the object, a
+      \code{Dog}.\\[0.1em]
+      \textbf{A}, \textbf{D}: an overload does not follow the object.
+      \textbf{C}: an override does.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=9,numbersep=0.7em]
-    Animal(String name) { this.name=name; }
-    String speak() { return "Animal "+name; }
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}Bikes and vehicles}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Vehicle {
+    protected int wheels;
+    Vehicle(int wheels) {
+        this.wheels = wheels;
+        System.out.println("Vehicle " + wheels);
+    }
+    String info() { return wheels + " wheels"; }
 }
-class Dog extends Animal {
-    Dog(String name) { super("unknown"); }
-    String speak(int unused) { return "Dog "+name; }
+class Bike extends Vehicle {
+    Bike() {
+        super(2);
+        System.out.println("Bike");
+    }
+    @Override String info() {
+        return "Bike, " + super.info();
+    }
 }
+// in main, in another class Demo
+Vehicle[] vs = { new Bike(), new Vehicle(4) };
+for (Vehicle v : vs) System.out.println(v.info());
 \end{lstlisting}
-
-\end{columns}
-
+    \column{0.42\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down \textbf{every} line that is printed, in order.\\[0.2em]
+      \textbf{2.} Delete the line \code{super(2);}. Does the program still compile?
+      Why?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{Vehicle 2}\\
+      \phantom{\textbf{1.}} \code{Bike}\\
+      \phantom{\textbf{1.}} \code{Vehicle 4}\\
+      \phantom{\textbf{1.}} \code{Bike, 2 wheels}\\
+      \phantom{\textbf{1.}} \code{4 wheels}\\[0.2em]
+      \code{super(2)} runs \textbf{first}, so the parent part is built before
+      \code{"Bike"} prints. Each object runs its own \code{info()}.\\[0.2em]
+      \textbf{2.} No. Java then calls \code{super()} with no arguments, and
+      \code{Vehicle} has no such constructor:
+      {\scriptsize\code{constructor Vehicle in class Vehicle cannot be applied to
+      given types}}
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L13:} Pass the provided name to the superclass constructor.\item \textbf{L14:} This overload does not override speak(). Use the same parameter list and add @Override to check it.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-Animal unknown
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Dog Milo
-\end{lstlisting}
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}Lamps and a fan}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Lamp:
+    def __init__(self, room):
+        self.room = room
+    def status(self):
+        return self.room + " lamp"
 
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
+class SmartLamp(Lamp):
+    def status(self):
+        return super().status() + " (smart)"
 
+class Fan:
+    def status(self):
+        return "fan"
+
+for d in [Lamp("hall"), SmartLamp("bed"), Fan()]:
+    print(d.status())
+print(isinstance(SmartLamp("x"), Lamp),
+      isinstance(Fan(), Lamp))
+\end{lstlisting}
+    {\footnotesize \code{isinstance(x, C)}: is \code{x} a \code{C} (or a subclass)?}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{four} lines that are printed.\\[0.2em]
+      \textbf{2.} Rename \code{Fan}'s method from \code{status} to \code{power}.
+      What happens now?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{hall lamp}\\
+      \phantom{\textbf{1.}} \code{bed lamp (smart)}\\
+      \phantom{\textbf{1.}} \code{fan}\\
+      \phantom{\textbf{1.}} \code{True False}\\[0.2em]
+      \code{SmartLamp} uses \code{Lamp}'s \code{\_\_init\_\_}. A \code{Fan} is
+      \textbf{not} a \code{Lamp}, but the loop only needs \code{status()}:
+      \textbf{duck typing}.\\[0.2em]
+      \textbf{2.} Two lines print, then it stops:
+      {\scriptsize\code{AttributeError: 'Fan' object has no attribute 'status'}}.
+      Python checks only when the call runs.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Student("Linh").greet() must return Hello Linh! while retaining its mark.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Person:
-    def __init__(self,name): self.name=name
-    def greet(self): return "Hello "+self.name
-class Student(Person):
-    def __init__(self,name): self.mark=85
-\end{lstlisting}
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
 
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=6,numbersep=0.7em]
-    def greet(self): return super().greet+"!"
-
-s=Student("Linh")
-print(s.greet())
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L5:} Initialise the Person part with super().\_\_init\_\_(name).\item \textbf{L6:} Call the inherited method before concatenating its returned string.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-(no standard output)
-TypeError: unsupported operand type(s) for +: 'method' and 'str'
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Hello Linh!
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: Fields beside dynamic methods}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Parent x=new Child();
-System.out.println(x.label+" "+x.name());
-Parent y=x;
-System.out.println(y.name());
-class Parent {
-    String label="parent";
-    String name() { return "P"; }
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}Cinema tickets (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+interface Priced { int price(); }
+public class Ticket implements Priced {
+    protected final String film;
+    Ticket(String film) { this.film = film; }
+    int price() { return 15; }
+    String label() {
+        return film + " $" + price();
+    }
 }
-class Child extends Parent {
-    String label="child";
-    @Override String name() { return "C"; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-parent C
-C
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small Field access uses the declared Parent type; the overridden instance method uses the actual Child object. Assigning another reference changes neither.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: Following super through a hierarchy}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class A:
-    def label(self): return "A"
-class B(A):
-    def label(self): return super().label()+"B"
-class C(B):
-    def label(self): return super().label()+"C"
-print(C().label())
-print(isinstance(C(),A))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-ABC
-True
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small C calls the next implementation B, which calls A. The strings are extended while calls return. A C is also an A.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{One area contract, two shapes}\small Read S side or R width height using positive integer dimensions. Implement Square and Rectangle behind a shared area contract. Print the integer area. Explain why the caller does not need a shape-specific branch after construction.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-S 3
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-9
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (1/2)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.Scanner;
-Scanner sc=new Scanner(System.in);
-String kind=sc.next();
-Shape shape;
-if(kind.equals("S")) shape=new Square(sc.nextInt());
-else shape=new Rectangle(sc.nextInt(),sc.nextInt());
-System.out.println(shape.area());
-interface Shape { int area(); }
-class Square implements Shape {
-\end{lstlisting}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution (2/2)}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=10,numbersep=0.7em]
-    private final int s;
-    Square(int s) { this.s=s; }
-    public int area() { return s*s; }
-}
-class Rectangle implements Shape {
-    private final int w,h;
-    Rectangle(int w,int h) { this.w=w; this.h=h; }
-    public int area() { return w*h; }
+class Student extends Ticket {
+    Student(String film) { super("film"); }
+    public int price() { return price() - 5; }
+    String label(int seat) {
+        return "Student " + super.label();
+    }
 }
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Shape:
-    def area(self): raise NotImplementedError
-class Square(Shape):
-    def __init__(self,s): self.s=s
-    def area(self): return self.s*self.s
-class Rectangle(Shape):
-    def __init__(self,w,h): self.w,self.h=w,h
-    def area(self): return self.w*self.h
-parts=input().split()
-shape=Square(int(parts[1])) if parts[0]=="S" else Rectangle(int(parts[1]),int(parts[2]))
-print(shape.area())
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors. Give each
+    line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the classes should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item A ticket costs 15; a student ticket 5 \textbf{less}
+      \item \code{Student}'s \code{label()} starts \code{"Student "}
+    \end{itemize}
+    \neutrallabel{Test} {\footnotesize (\code{main} in class \code{Demo})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Ticket a = new Ticket("Dune");
+Ticket b = new Student("Emma");
+System.out.println(a.label());
+System.out.println(b.label());
+Priced p = b;
+System.out.println(p.price());
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
-
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Dune $15
+Student Emma $10
+10
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.2em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 5} (compile error): interface methods are \code{public},
+            and an implementation may not be less visible:
+            \code{attempting to assign weaker access privileges; was public}. Add
+            \code{public}.
+      \item \textbf{Line 11}: passes the text \code{"film"}, not the parameter. Use
+            \code{super(film)}.
+      \item \textbf{Line 12}: \code{price()} calls this same method again, forever
+            (\code{StackOverflowError}). Use \code{super.price() - 5}.
+      \item \textbf{Line 13}: different parameters, so it \emph{overloads}:
+            \code{b.label()} still runs \code{Ticket}'s. Write
+            \code{@Override String label()}.
+    \end{itemize}
+    {\footnotesize Fix only line 5: \code{Dune \$15}, then a crash.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{S 3}\par \textbf{Output:} \code{9}\par\medskip \textbf{Test 2}\par \code{R 2 4}\par \textbf{Output:} \code{8}\par\medskip \textbf{Test 3}\par \code{S 1}\par \textbf{Output:} \code{1}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}Staff pay (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Employee:
+    def __init__(self, name, salary):
+        self.name = name
+        self.salary = salary
+    def pay(self):
+        return self.salary
+    def __str__(self):
+        return self.name + ": " + str(self.pay())
+
+class Manager(Employee):
+    def __init__(self, name, salary, bonus):
+        self.bonus = bonus
+    def Pay(self):
+        return super().pay + self.bonus
+
+staff = [Employee("An", 100),
+         Manager("Binh", 100, 50)]
+for e in staff:
+    print(e)
+\end{lstlisting}
+    \column{0.44\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 10--14 (3 min). Give each line number and
+    its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{What the classes should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item A \code{Manager} is an \code{Employee} with a \code{bonus}
+      \item A manager's \code{pay()} is salary + bonus
+      \item Printing anyone shows \code{"<name>: <pay>"}
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}
+An: 100
+Binh: 150
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 8)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+An: 100
+AttributeError: 'Manager' object has no
+  attribute 'name'
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 12}: \code{Manager}'s \code{\_\_init\_\_} replaces
+            \code{Employee}'s, so \code{name} and \code{salary} are never set. Add
+            \code{super().\_\_init\_\_(name, salary)} first.
+      \item \textbf{Line 13}: \code{Pay} is not \code{pay} (case matters), so nothing
+            is overridden: it would print \code{Binh: 100}. Rename it
+            \code{pay}.
+      \item \textbf{Line 14}: \code{super().pay} without \code{()} is the method, not
+            its result: \code{TypeError} (method + int). Write
+            \code{super().pay() + self.bonus}.
+    \end{itemize}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+% ======================================================================
+\section{Write the code}
+% ======================================================================
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Trace declared types separately from actual object types.\item Distinguish overriding, overloading and field hiding.\item Initialise the inherited part of an object.\item Use an interface or duck-typed capability to keep callers general.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-8.html}{Course website: Week 8}. Complete programs accompany this deck.}
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}A toll gate (Java)}
+  \neutrallabel{Finish \code{Truck} (alone, 4 min).} {\small \code{toll()}: 4 per axle,
+  but at least 10.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Constructor: pass \code{plate} up to \code{Vehicle} (it is \code{private}
+          there); keep \code{axles} in a new field.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.4}\selectfont]
+abstract class Vehicle {
+    private final String plate;
+    Vehicle(String plate) { this.plate = plate; }
+    abstract int toll();
+    public String toString() {
+        return plate + " pays " + toll();
+    }
+}
+class Car extends Vehicle {
+    Car(String plate) { super(plate); }
+    int toll() { return 5; }
+}
+class Truck extends Vehicle {
+    Truck(String plate, int axles) {
+        super("?");  // TODO
+    }
+    int toll() { return 0; }  // TODO
+}
+\end{lstlisting}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Vehicle[] queue = { new Car("CAR-1"),
+    new Truck("TRK-2", 2), new Truck("TRK-7", 3) };
+int total = 0;
+for (Vehicle v : queue) {
+    System.out.println(v);
+    total += v.toll();
+}
+System.out.println("Total " + total);
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+CAR-1 pays 5
+TRK-2 pays 10
+TRK-7 pays 12
+Total 27
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Truck extends Vehicle {
+    private int axles;
+    Truck(String plate, int axles) {
+        super(plate);
+        this.axles = axles;
+    }
+    int toll() { return Math.max(10, 4 * axles); }
+}
+\end{lstlisting}
+    {\footnotesize \code{super(plate)} comes first. The loop never asks which kind
+    of vehicle it has: each object runs its own \code{toll()}.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}An account with a fee (Python)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{\_\_init\_\_}: keep the \code{fee}. \code{withdraw(amount)}: take
+          \code{amount + fee} by \code{Account}'s rule. \textbf{Reuse} its
+          \code{withdraw} with \code{super()}; do not copy it.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.4}\selectfont]
+class Account:
+    def __init__(self, owner, balance):
+        self.owner = owner
+        self.balance = balance
+    def withdraw(self, amount):
+        if amount > self.balance:
+            return False
+        self.balance -= amount
+        return True
+
+class FeeAccount(Account):
+    def __init__(self, owner, balance, fee):
+        super().__init__(owner, balance)
+        # TODO: keep the fee
+    def withdraw(self, amount):
+        # TODO
+        return False
+\end{lstlisting}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+a = Account("An", 10)
+f = FeeAccount("Binh", 10, 2)
+for acc in [a, f]:
+    print(acc.owner, acc.withdraw(8), acc.balance)
+print(f.withdraw(1), f.balance)
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+An True 2
+Binh True 0
+False 0
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good]
+class FeeAccount(Account):
+    def __init__(self, owner, balance, fee):
+        super().__init__(owner, balance)
+        self.fee = fee
+    def withdraw(self, amount):
+        total = amount + self.fee
+        return super().withdraw(total)
+\end{lstlisting}
+    {\footnotesize Binh: $8 + 2 = 10$, so 0 is left. Then $1 + 2 = 3 > 0$: refused,
+    nothing changes. The rule lives in one place, \code{Account}.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}Greeters (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small \code{Vietnamese}
+  says \code{"Xin chao, <name>"}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{Loud} \textbf{has a} \code{Greeter}: return its greeting in capitals,
+          plus \code{"!"} (use \code{s.toUpperCase()}).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.4}\selectfont]
+interface Greeter { String greet(String name); }
+class English implements Greeter {
+    public String greet(String name) {
+        return "Hello, " + name;
+    }
+}
+class Vietnamese implements Greeter {
+    public String greet(String name) {
+        return "";  // TODO
+    }
+}
+class Loud implements Greeter {
+    private final Greeter inner;
+    Loud(Greeter inner) { this.inner = inner; }
+    public String greet(String name) {
+        return "";  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Greeter[] gs = { new English(), new Vietnamese(),
+    new Loud(new English()),
+    new Loud(new Vietnamese()) };
+for (Greeter g : gs)
+    System.out.println(g.greet("Lan"));
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+Hello, Lan
+Xin chao, Lan
+HELLO, LAN!
+XIN CHAO, LAN!
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Vietnamese implements Greeter {
+    public String greet(String name) {
+        return "Xin chao, " + name;
+    }
+}
+class Loud implements Greeter {
+    private final Greeter inner;
+    Loud(Greeter inner) { this.inner = inner; }
+    public String greet(String name) {
+        String g = inner.greet(name);
+        return g.toUpperCase() + "!";
+    }
+}
+\end{lstlisting}
+    {\footnotesize \code{Loud} never asks which class \code{inner} is: any
+    \code{Greeter} works.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: when the input is not a number}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Count the axles in some lines of text}
+\begin{lstlisting}[language=Java]
+String[] lines = {"3", "two", "5"};
+int axles = 0;
+for (String s : lines)
+    axles += Integer.parseInt(s);
+System.out.println(axles);
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright What happens at \code{"two"}? How could the program
+      \textbf{skip} a bad line and still print a total?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    {\small It stops, and prints no total:}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+java.lang.NumberFormatException:
+  For input string: "two"
+\end{lstlisting}
+    {\small Instead, \textbf{catch} the failure:}
+\begin{lstlisting}[language=Java,style=good]
+for (String s : lines) {
+    try {
+        axles += Integer.parseInt(s);
+    } catch (NumberFormatException e) {
+        System.out.println("skip " + s);
+    }
+}
+\end{lstlisting}
+    {\small Now it prints \code{skip two}, then \code{8}. Exceptions are
+    \textbf{objects} in a class hierarchy, so inheritance is back. Python:
+    \code{except ValueError}. Today: \textbf{exceptions} and \textbf{reading text}.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Inheritance}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] write \code{extends} and \code{super(...)} so the parent part is
+            built first (Q1, Q4, Q8)
+      \item[\yes] reuse the parent's version with \code{super.m()} /
+            \code{super().m()} (Q4, Q5, Q7, Q9)
+      \item[\yes] tell overriding from overloading, and use \code{@Override}
+            (Q1, Q3, Q6, Q7)
+      \item[\yes] predict which method runs: declared type vs object (Q2, Q3, Q4)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Abstract classes and interfaces}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] use an \code{abstract} class: no \code{new}, subclasses fill in
+            (Q1, Q8)
+      \item[\yes] implement an interface with \code{public} methods (Q2, Q6, Q10)
+      \item[\yes] give an object a collaborator through an interface (Q10)
+      \item[\yes] explain Python duck typing, and when it fails (Q5)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 9 -- Exceptions and reading text}
+    \footnotesize \code{try}/\code{catch} and \code{except}, throwing and passing on
+    exceptions, \code{finally}, and reading tokens and lines until the input ends.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

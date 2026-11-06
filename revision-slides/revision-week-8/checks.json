@@ -1,172 +1,181 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/five-ideas/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "Milo says woof\n",
+    "stdout": "20\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
+    "file": "examples/q02-mcq-which-line-fails/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "purr\nTom: meow / Tom: meow\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03-mcq-overload-or-override/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "animal woof\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-vehicles/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Vehicle 2\nBike\nVehicle 4\nBike, 2 wheels\n4 wheels\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-devices/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "Milo is quiet; then woof\n",
+    "stdout": "hall lamp\nbed lamp (smart)\nfan\nTrue False\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q03/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "parent field\nchild method\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q04/main.py",
+    "file": "examples/q05-predict-devices/renamed/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "9\nTrue\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "hall lamp\nbed lamp (smart)\n",
+    "returncode": 1,
+    "error": "AttributeError: 'Fan' object has no attribute 'status'"
   },
   {
-    "file": "examples/q05/Demo.java",
+    "file": "examples/q06-find-the-bug-tickets/only-line-5-fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "9\n8\n",
+    "stdout": "Dune $15\n",
+    "returncode": 1,
+    "error": "\tat Student.price(Demo.java:22)"
+  },
+  {
+    "file": "solutions/q06-find-the-bug-tickets/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Dune $15\nStudent Emma $10\n10\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q06/main.py",
+    "file": "examples/q07-find-the-bug-staff/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "email: Hello\nscreen: Hello\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "An: 100\n",
+    "returncode": 1,
+    "error": "AttributeError: 'Manager' object has no attribute 'name'"
   },
   {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "woof woof meow\ntrue\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Animal unknown\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Dog Milo\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
+    "file": "examples/q07-find-the-bug-staff/only-line-12-fixed/main.py",
     "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "An: 100\nBinh: 100\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07-find-the-bug-staff/lines-12-13-fixed/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "An: 100\n",
+    "returncode": 1,
+    "error": "TypeError: unsupported operand type(s) for +: 'method' and 'int'"
+  },
+  {
+    "file": "solutions/q07-find-the-bug-staff/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "An: 100\nBinh: 150\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c1-toll-gate/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "CAR-1 pays 5\n? pays 0\n? pays 0\nTotal 5\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c1-toll-gate/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "CAR-1 pays 5\nTRK-2 pays 10\nTRK-7 pays 12\nTotal 27\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c2-fee-account/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "An True 2\nBinh False 10\nFalse 10\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c2-fee-account/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "An True 2\nBinh True 0\nFalse 0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-greeters/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Hello, Lan\n\n\n\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c3-greeters/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Hello, Lan\nXin chao, Lan\nHELLO, LAN!\nXIN CHAO, LAN!\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/bridge/Demo.java",
+    "lang": "java",
     "release": 8,
     "stdin": "",
     "stdout": "",
     "returncode": 1,
-    "error": "TypeError: unsupported operand type(s) for +: 'method' and 'str'"
+    "error": "\tat Demo.main(Demo.java:6)"
   },
   {
-    "file": "solutions/broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Hello Linh!\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-1/Demo.java",
+    "file": "examples/bridge/fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "parent C\nC\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-2/main.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "ABC\nTrue\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "S 3\n",
-    "stdout": "9\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "R 2 4\n",
-    "stdout": "8\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "S 1\n",
-    "stdout": "1\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "S 3\n",
-    "stdout": "9\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "R 2 4\n",
-    "stdout": "8\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "S 1\n",
-    "stdout": "1\n",
+    "stdout": "skip two\n8\n",
     "returncode": 0,
     "error": ""
   }

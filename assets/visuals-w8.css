@@ -1,0 +1,182 @@
+/* Week 8 diagram kinds (assets/visuals-w8.js). Tokens from assets/style.css only.
+   Colours follow the diagram convention: teal = being looked at, green = found / added / allowed,
+   amber = skipped or waiting, red = refused. Every state also changes a border or a label,
+   so nothing depends on colour alone. */
+
+/* ── class diagram: boxes on a grid, inheritance arrows drawn in SVG ── */
+.w8-graph { position: relative; min-width: 0; }
+.w8-links { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.w8-link { stroke: var(--ink-soft); stroke-width: 1.5; }
+.w8-tri { fill: var(--surface); stroke: var(--ink-soft); stroke-width: 1.2; }
+.w8-graph-grid { position: relative; display: grid; gap: 2.2rem 0.9rem; justify-items: center; align-items: start; }
+.w8-cls {
+  width: 100%; max-width: 15rem; min-width: 0;
+  background: var(--surface); border: 1.5px solid var(--ink-soft); border-radius: 8px;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; line-height: 1.35;
+  transition: border-color 200ms ease, background-color 200ms ease, opacity 200ms ease;
+}
+.w8-cls-name { padding: 0.35rem 0.55rem; font-weight: 700; color: var(--ink); border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.w8-ext { font-weight: 500; color: var(--ink-soft); }
+.w8-cls-methods { padding: 0.3rem 0.55rem 0.4rem; display: grid; gap: 0.15rem; }
+.w8-cls-m { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem; color: var(--ink); padding: 0.05rem 0.25rem; border-radius: 4px; }
+.w8-cls-m.is-none { color: var(--ink-soft); font-style: italic; }
+.w8-tag { font-size: 0.62rem; letter-spacing: 0.04em; color: var(--ink-soft); }
+.w8-cls[data-state="declared"] { border-style: dashed; border-color: var(--teal); }
+.w8-cls[data-state="declared"] .w8-cls-name::after { content: "  ← declared type"; font-weight: 500; color: var(--teal-ink); }
+.w8-cls[data-state="look"] { border-color: var(--teal); border-width: 2.5px; background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
+.w8-cls[data-state="look"] .w8-cls-name::after { content: "  ← looking here"; font-weight: 500; color: var(--teal-ink); }
+.w8-cls[data-state="skip"] { opacity: 0.55; border-style: dashed; }
+.w8-cls[data-state="found"] { border-color: var(--green); border-width: 2.5px; background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+.w8-cls[data-state="found"] .w8-cls-name::after { content: "  ✓ runs"; font-weight: 600; color: var(--green); }
+.w8-cls[data-state="waiting"] { border-color: var(--amber); border-style: dashed; }
+.w8-cls[data-state="waiting"] .w8-cls-name::after { content: "  … waiting"; font-weight: 500; color: var(--amber); }
+.w8-cls[data-state="done"] { opacity: 0.7; }
+.w8-cls[data-state="refused"] { border-color: var(--red); border-width: 2.5px; background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w8-cls[data-state="refused"] .w8-cls-name::after { content: "  ✗ refused"; font-weight: 600; color: var(--red); }
+.w8-cls-m[data-state="found"] { background: color-mix(in srgb, var(--green) 20%, transparent); font-weight: 600; }
+.w8-cls-m[data-state="missing"] { background: color-mix(in srgb, var(--red) 16%, transparent); text-decoration: underline wavy var(--red); text-underline-offset: 3px; }
+.w8-dispatch-stage .w8-graph { padding: 0.2rem 0; }
+
+/* the class diagram must fit its stage; only a wide strip of cells may scroll, inside its own box */
+.viz-stage.w8-stage { grid-template-columns: minmax(0, 1fr); overflow-x: hidden; }
+.w8-scroll { overflow-x: auto; min-width: 0; }
+
+/* ── predict strip ── */
+.w8-predict { display: grid; gap: 0.4rem; border: 1px dashed var(--line); border-radius: 10px; padding: 0.6rem 0.75rem; }
+.w8-predict-q { font-size: 0.93rem; }
+
+/* ── call stack and objects ── */
+.w8-trace { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); align-items: start; gap: 0.9rem; }
+.w8-col { display: grid; gap: 0.4rem; min-width: 0; align-content: start; }
+.w8-col-title { font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+.w8-stack { display: grid; gap: 0.3rem; }
+.w8-frame {
+  border: 1.5px solid var(--line); border-radius: 7px; background: var(--surface);
+  padding: 0.35rem 0.55rem; font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; min-width: 0;
+}
+.w8-frame.is-top { border-color: var(--teal); border-width: 2.5px; background: color-mix(in srgb, var(--teal) 9%, var(--surface)); }
+.w8-frame.is-top .w8-frame-name::after { content: "  ← running"; color: var(--teal-ink); font-weight: 500; }
+.w8-frame:not(.is-top) { opacity: 0.8; }
+.w8-frame-name { font-weight: 700; overflow-wrap: anywhere; }
+.w8-frame-vars { color: var(--ink-soft); overflow-wrap: anywhere; }
+.w8-heap { display: grid; gap: 0.5rem; }
+.w8-obj {
+  border: 1.5px solid var(--ink-soft); border-radius: 9px; background: var(--surface);
+  padding: 0.45rem 0.55rem; display: grid; gap: 0.35rem; min-width: 0;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+.w8-obj[data-mark="look"] { border-color: var(--teal); box-shadow: 0 0 0 2px color-mix(in srgb, var(--teal) 30%, transparent); }
+.w8-obj[data-mark="new"] { border-color: var(--green); }
+.w8-obj-title { font-size: 0.85rem; overflow-wrap: anywhere; }
+.w8-layers { display: grid; gap: 0.3rem; }
+.w8-layer {
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.45rem;
+  background: color-mix(in srgb, var(--teal) 4%, var(--surface)); display: grid; gap: 0.15rem;
+}
+.w8-layer[data-mark="new"] { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); }
+.w8-layer[data-mark="busy"] { border-color: var(--teal); border-style: dashed; }
+.w8-layer-label { font-family: "IBM Plex Mono", monospace; font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+.w8-field {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.1rem 0.6rem;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; padding: 0.08rem 0.3rem; border-radius: 4px;
+}
+.w8-fname { color: var(--ink); overflow-wrap: anywhere; }
+.w8-fname em { font-style: normal; color: var(--ink-soft); font-size: 0.9em; }
+.w8-fval { color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
+.w8-field[data-mark="new"] { background: color-mix(in srgb, var(--green) 18%, transparent); }
+.w8-field[data-mark="read"] { background: color-mix(in srgb, var(--teal) 18%, transparent); box-shadow: inset 3px 0 0 var(--teal); }
+.w8-field[data-mark="found"] { background: color-mix(in srgb, var(--green) 18%, transparent); box-shadow: inset 3px 0 0 var(--green); }
+.w8-field[data-mark="skip"] { opacity: 0.55; text-decoration: line-through; text-decoration-color: var(--ink-soft); }
+
+/* ── declared type: variable → object ── */
+.w8-declared { grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: 0.7rem; }
+.w8-var {
+  display: grid; justify-items: center; gap: 0.1rem; padding: 0.45rem 0.7rem;
+  border: 1.5px solid var(--ink-soft); border-radius: 8px; background: var(--surface);
+  font-family: "IBM Plex Mono", monospace; transition: border-color 200ms ease;
+}
+.w8-var[data-mark="look"] { border-color: var(--teal); border-width: 2.5px; }
+.w8-var-type { font-size: 0.72rem; color: var(--teal-ink); font-weight: 700; }
+.w8-var-name { font-size: 0.95rem; font-weight: 600; }
+.w8-arrow { font-size: 1.3rem; color: var(--ink-soft); }
+@media (max-width: 560px) {
+  .w8-declared { grid-template-columns: 1fr; justify-items: start; }
+  .w8-arrow { transform: rotate(90deg); }
+  .w8-obj-wide { width: 100%; }
+}
+
+/* ── overload quiz ── */
+.w8-quiz { display: grid; gap: 0.6rem; }
+.w8-quiz-head { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-ink); }
+.w8-quiz-call { font-size: 0.95rem; }
+.w8-quiz-call .w8-big { font-size: 0.95em; overflow-wrap: anywhere; }
+.w8-quiz-part { display: grid; gap: 0.3rem; }
+.w8-quiz-label { font-size: 0.9rem; font-weight: 600; }
+.w8-quiz-verdict { font-size: 0.9rem; }
+.w8-quiz-verdict:empty { display: none; }
+.w8-quiz .viz-seg-btn[data-verdict="right"] { border-color: var(--green); color: var(--green); background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+.w8-quiz .viz-seg-btn[data-verdict="right"]::after { content: " ✓"; }
+.w8-quiz .viz-seg-btn[data-verdict="wrong"] { border-color: var(--red); color: var(--red); background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w8-quiz .viz-seg-btn[data-verdict="wrong"]::after { content: " ✗"; }
+.w8-quiz .viz-seg-btn:disabled { cursor: default; }
+.w8-quiz .viz-seg-btn:disabled:not([data-verdict]) { opacity: 0.6; }
+.w8-aside { border-top: 1px dashed var(--line); padding-top: 0.8rem; display: grid; gap: 0.6rem; font-size: 0.93rem; }
+
+/* ── abstract gate ── */
+.w8-gate {
+  font-size: 0.9rem; padding: 0.45rem 0.65rem; border-radius: 8px;
+  border: 1.5px dashed var(--line); background: var(--surface);
+}
+.w8-gate:empty { display: none; }
+.w8-gate[data-verdict="ok"] { border-style: solid; border-color: var(--green); }
+.w8-gate[data-verdict="bad"] { border-style: solid; border-color: var(--red); }
+
+/* ── socket: one contract, many objects ── */
+.w8-socket-stage { gap: 0.8rem; }
+.w8-socket {
+  display: grid; gap: 0.4rem; justify-items: start;
+  border: 2px solid var(--teal); border-radius: 10px; padding: 0.55rem 0.7rem;
+  background: var(--surface); transition: border-color 200ms ease;
+}
+.w8-socket-title { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; overflow-wrap: anywhere; }
+.w8-socket-slot {
+  min-width: 12rem; max-width: 100%; min-height: 2.3rem; display: flex; align-items: center; justify-content: center;
+  border: 2px dashed var(--line); border-radius: 8px; padding: 0.2rem 0.6rem;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--ink-soft);
+}
+.w8-socket[data-state="in"] .w8-socket-slot, .w8-socket[data-state="run"] .w8-socket-slot { border-style: solid; border-color: var(--teal); color: var(--ink); }
+.w8-socket[data-state="run"] .w8-socket-slot { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); }
+.w8-socket[data-state="bad"] { border-color: var(--red); }
+.w8-socket[data-state="bad"] .w8-socket-slot { border-style: solid; border-color: var(--red); color: var(--ink); background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w8-plugs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.w8-plug {
+  display: grid; gap: 0.1rem; text-align: left; cursor: pointer; min-width: 0; max-width: 100%;
+  border: 1.5px solid var(--ink-soft); border-radius: 8px; background: var(--surface); color: var(--ink);
+  padding: 0.35rem 0.6rem; font-family: "IBM Plex Mono", monospace; font-size: 0.78rem;
+  transition: transform 260ms ease, border-color 200ms ease, opacity 200ms ease;
+}
+.w8-plug:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.w8-plug-name { font-weight: 700; overflow-wrap: anywhere; }
+.w8-plug-has { color: var(--ink-soft); font-size: 0.72rem; overflow-wrap: anywhere; }
+.w8-plug[data-state="next"], .w8-plug[data-state="in"] { border-color: var(--teal); border-width: 2.5px; }
+.w8-plug[data-state="run"] { border-color: var(--green); border-width: 2.5px; background: color-mix(in srgb, var(--green) 10%, var(--surface)); }
+.w8-plug[data-state="bad"] { border-color: var(--red); border-width: 2.5px; background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w8-plug[data-state="done"] { opacity: 0.6; }
+@media (prefers-reduced-motion: no-preference) {
+  .w8-plug[data-state="in"], .w8-plug[data-state="run"] { transform: translateY(-0.35rem); }
+  .w8-plug[data-state="bad"] { animation: w8-shake 380ms ease; }
+  @keyframes w8-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w8-cls, .w8-obj, .w8-plug, .w8-var, .w8-socket { transition: none; }
+}
+
+/* the MRO track reuses the list cells; names are longer than list values */
+.viz .w8-mro-track { --cw: 4.6rem; }
+@media (max-width: 560px) { .viz .w8-mro-track { --cw: 3.9rem; } }
+.viz .w8-mro-track .viz-ptr::before { content: none; }
+@media (max-width: 560px) {
+  .w8-graph-grid { gap: 1.8rem 0.5rem; }
+  .w8-cls { font-size: 0.72rem; }
+  .w8-cls-name, .w8-cls-methods { padding-left: 0.4rem; padding-right: 0.4rem; }
+}

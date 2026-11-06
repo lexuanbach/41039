@@ -1,0 +1,260 @@
+/* Week 12's own diagram kinds (assets/visuals-w12.js). Design tokens only: teal = looked at,
+   green = passed / added, amber = moved or warning, red = rejected / thrown. Works in both site
+   themes; nothing may be cut off at 390px — panels stack and long text wraps. */
+
+.w12-choices { display: grid; gap: 0.45rem; }
+.w12-choice { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.6rem; min-width: 0; }
+.w12-choice .viz-seg { min-width: 0; }
+.w12-choice .viz-seg-btn { max-width: 100%; white-space: normal; text-align: left; }
+
+/* predict first */
+.w12-predict {
+  display: grid; gap: 0.45rem; padding: 0.65rem 0.75rem; border-radius: 10px;
+  border: 1px dashed color-mix(in srgb, var(--teal) 55%, var(--line));
+  background: color-mix(in srgb, var(--teal) 4%, var(--surface));
+}
+.w12-predict-q { font-weight: 600; font-size: 0.92rem; }
+.w12-predict-opts { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.w12-predict-opts.w12-stack { display: grid; justify-items: start; }
+.w12-predict-opts .viz-seg-btn { white-space: normal; text-align: left; }
+.w12-predict-opts .viz-seg-btn code { background: transparent; padding: 0; }
+.viz-seg-btn.is-right { border-color: var(--green); color: var(--green); background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+.viz-seg-btn.is-wrong { border-color: var(--red); color: var(--red); background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w12-predict > .btn { justify-self: start; }
+.w12-predict-verdict { font-size: 0.9rem; font-weight: 600; min-height: 0; }
+.w12-predict-verdict:empty { display: none; }
+
+/* the panels of a w12-trace */
+.w12-stage { overflow-x: visible; }
+.w12-panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.6rem; align-items: start; }
+.w12-panel-refs, .w12-panel-array { grid-column: 1 / -1; }
+.w12-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 9px;
+  padding: 0.5rem 0.6rem 0.6rem; display: grid; gap: 0.4rem; min-width: 0;
+}
+.w12-card-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem; }
+.w12-card-title { font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.w12-card-state {
+  margin-left: auto; font-family: "IBM Plex Mono", monospace; font-size: 0.66rem; letter-spacing: 0.04em;
+  color: var(--ink-soft); padding: 0.05rem 0.45rem; border: 1px solid var(--line); border-radius: 999px;
+}
+.w12-empty { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; font-style: italic; color: var(--ink-soft); }
+.w12-legend { font-size: 0.74rem; color: var(--ink-soft); }
+
+/* array with a processed prefix */
+.w12-arr { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.w12-cell {
+  width: 3.6rem; display: grid; justify-items: center; gap: 0.05rem; font-family: "IBM Plex Mono", monospace;
+}
+.w12-cell .w12-ptr { height: 1rem; font-size: 0.72rem; font-weight: 700; color: var(--teal-ink); }
+.w12-cell .w12-ptr:not(:empty)::after { content: " ▼"; font-size: 0.6rem; }
+.w12-cell .w12-v {
+  width: 100%; height: 2.6rem; display: flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--ink-soft); border-radius: 7px; background: var(--surface);
+  font-weight: 600; font-size: 0.95rem; color: var(--ink);
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.w12-cell .w12-ix { font-size: 0.7rem; color: var(--ink-soft); }
+.w12-cell .w12-m { font-size: 0.62rem; min-height: 0.8rem; font-weight: 600; }
+.w12-cell.is-done .w12-v { background: color-mix(in srgb, var(--teal) 14%, var(--surface)); }
+.w12-cell.is-at .w12-v { border-color: var(--teal); border-width: 2.5px; }
+.w12-cell[data-mark="pass"] .w12-m { color: var(--green); }
+.w12-cell[data-mark="fail"] .w12-m { color: var(--red); }
+.w12-cell.is-end .w12-v { border-style: dashed; color: var(--ink-soft); }
+.w12-cell.is-end .w12-m { color: var(--ink-soft); font-weight: 500; }
+
+/* variables */
+.w12-vars { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.w12-var {
+  font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; padding: 0.15rem 0.55rem; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink); overflow-wrap: anywhere;
+}
+.w12-var .n { font-weight: 600; }
+.w12-var .eq { color: var(--ink-soft); }
+.w12-var.is-changed { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 14%, var(--surface)); }
+
+/* an input file with its read position */
+.w12-file { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; counter-reset: fl; }
+.w12-fline {
+  counter-increment: fl; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.1rem 0.5rem;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; padding: 0.15rem 0.45rem; border-radius: 6px;
+  border-left: 3px solid transparent;
+}
+.w12-fline::before { content: counter(fl); color: var(--ink-soft); font-size: 0.7rem; min-width: 1ch; }
+.w12-ftext { color: var(--ink); overflow-wrap: anywhere; }
+.w12-nl { color: var(--ink-soft); font-size: 0.68rem; }
+.w12-fline.is-read { opacity: 0.55; }
+.w12-fline.is-at { border-left-color: var(--teal); background: color-mix(in srgb, var(--teal) 12%, var(--surface)); }
+.w12-reading { margin-left: auto; color: var(--teal-ink); font-size: 0.7rem; font-weight: 700; }
+
+/* a list of objects */
+.w12-objs { display: grid; gap: 0.35rem; }
+.w12-obj {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.5rem; padding: 0.3rem 0.5rem;
+  border: 1.5px solid var(--ink-soft); border-radius: 8px; background: var(--surface);
+  font-family: "IBM Plex Mono", monospace; font-size: 0.76rem;
+}
+.w12-obj-ix { color: var(--ink-soft); font-size: 0.7rem; }
+.w12-obj-type { font-weight: 700; color: var(--teal-ink); }
+.w12-obj-f .n { color: var(--ink-soft); }
+.w12-obj-f .n::after { content: ": "; }
+.w12-obj-f .v { color: var(--ink); font-weight: 600; }
+.w12-obj.is-new { border-color: var(--green); background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+
+/* exception */
+.w12-exc-card { border-width: 1.5px; }
+.w12-exc-card.is-thrown, .w12-exc-card.is-propagating { border-color: var(--red); background: color-mix(in srgb, var(--red) 8%, var(--surface)); }
+.w12-exc-card.is-caught { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 8%, var(--surface)); }
+.w12-exc-type { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 0.86rem; color: var(--red); overflow-wrap: anywhere; }
+.w12-exc-card.is-caught .w12-exc-type { color: var(--amber); }
+.w12-exc-msg { font-family: "IBM Plex Mono", monospace; font-size: 0.76rem; color: var(--ink); overflow-wrap: anywhere; }
+.w12-exc-note { font-size: 0.8rem; color: var(--ink-soft); }
+
+/* an output file */
+.w12-outfile {
+  margin: 0; padding: 0.4rem 0.55rem; border-radius: 6px; background: var(--paper); border: 1px solid var(--line);
+  font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.w12-out-card.is-open .w12-outfile { border-style: dashed; opacity: 0.75; }
+.w12-out-card.is-closed { border-color: var(--green); }
+.w12-out-card.is-never { border-style: dashed; }
+
+/* names → objects, with arrows */
+.w12-refs { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem 3.2rem; align-items: start; }
+.w12-frames, .w12-heap { display: grid; gap: 0.5rem; min-width: 0; position: relative; z-index: 1; }
+.w12-frame { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); padding: 0.35rem 0.5rem; display: grid; gap: 0.25rem; }
+.w12-frame-name { font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; color: var(--ink-soft); letter-spacing: 0.04em; }
+.w12-name { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; }
+.w12-name .n { font-weight: 600; color: var(--ink); }
+.w12-slot { padding: 0.1rem 0.45rem; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 0.76rem; }
+.w12-slot.is-ref { border-color: var(--teal); color: var(--teal-ink); font-weight: 700; }
+.w12-heapobj { border: 1.5px solid var(--ink-soft); border-radius: 8px; background: var(--surface); padding: 0.35rem 0.5rem; display: grid; gap: 0.3rem; }
+.w12-heapobj.is-new { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); }
+.w12-heapobj.is-changed { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 10%, var(--surface)); }
+.w12-heap-head { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; }
+.w12-heap-id { font-family: "Archivo", sans-serif; font-weight: 800; color: var(--teal-ink); }
+.w12-heap-kind { font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; color: var(--ink-soft); }
+.w12-heap-cells { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.w12-heap-cell {
+  min-width: 2rem; text-align: center; padding: 0.2rem 0.35rem; border: 1px solid var(--line); border-radius: 5px;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; font-weight: 600; color: var(--ink); background: var(--paper);
+}
+.w12-arrows { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.w12-arrow { fill: none; stroke: var(--teal); stroke-width: 2; }
+.w12-arrow-tip { fill: var(--teal); }
+@media (max-width: 640px) {
+  .w12-refs { grid-template-columns: minmax(0, 1fr); gap: 1rem; padding-right: 1.9rem; }
+}
+
+/* stages: which one rejects the row? */
+.w12-lanes { display: grid; gap: 0.7rem; overflow-x: visible; }
+.w12-lane { display: grid; gap: 0.35rem; min-width: 0; }
+.w12-lane-head { display: flex; gap: 0.4rem; align-items: center; }
+.w12-track { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; }
+.w12-st {
+  position: relative; display: grid; gap: 0.1rem; padding: 0.4rem 0.45rem; border-radius: 8px; min-width: 0;
+  border: 1.5px solid var(--line); background: var(--surface); transition: background-color 220ms ease, border-color 220ms ease, opacity 220ms ease;
+}
+.w12-st-label { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 0.84rem; color: var(--ink); }
+.w12-st-job { font-size: 0.72rem; color: var(--ink-soft); line-height: 1.3; }
+.w12-st-mark { position: absolute; top: 0.25rem; right: 0.4rem; font-weight: 800; }
+.w12-st.is-pass { border-color: var(--green); background: color-mix(in srgb, var(--green) 12%, var(--surface)); }
+.w12-st.is-pass .w12-st-mark { color: var(--green); }
+.w12-st.is-stop { border-color: var(--red); background: color-mix(in srgb, var(--red) 12%, var(--surface)); }
+.w12-st.is-stop .w12-st-mark { color: var(--red); }
+.w12-st.is-skip { opacity: 0.45; border-style: dashed; }
+.viz .w12-lane-out { min-height: 2rem; border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.viz .w12-lane-out:empty::before { content: "Pick a stage (or Just show me) to run this row."; }
+@media (max-width: 560px) {
+  .w12-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* mutants matrix */
+.w12-own { display: grid; gap: 0.35rem; }
+.w12-matrix-wrap { min-width: 0; }
+.w12-matrix th, .w12-matrix td { white-space: nowrap; }
+.w12-matrix th.mono, .w12-ttable th { text-transform: none; letter-spacing: 0; }
+.w12-matrix td.is-diff { color: var(--red); font-weight: 700; background: color-mix(in srgb, var(--red) 10%, transparent); }
+.w12-matrix tr.is-viewing th { box-shadow: inset 3px 0 0 var(--teal); }
+.w12-matrix .w12-ref { color: var(--ink-soft); font-style: italic; }
+.w12-linkbtn {
+  font: inherit; font-weight: 600; color: var(--teal-ink); background: none; border: 0; padding: 0.1rem 0;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-align: left;
+}
+.w12-linkbtn[aria-pressed="true"] { color: var(--ink); text-decoration-thickness: 2px; }
+.w12-linkbtn:focus-visible, .w12-rowbtn:focus-visible, .w12-symptom:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* two traces side by side */
+.w12-traces { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: 0.7rem; }
+.w12-trace { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.w12-trace-title { padding: 0.4rem 0.6rem; font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; font-weight: 600; border-bottom: 1px solid var(--line); }
+.w12-trace.is-good .w12-trace-title { color: var(--green); }
+.w12-trace.is-bad .w12-trace-title { color: var(--red); }
+.w12-ttable { width: 100%; margin: 0; }
+.w12-ttable td, .w12-ttable th { text-align: center; }
+.w12-ttable tbody:empty::after { content: "No rows printed yet"; display: block; padding: 0.6rem; color: var(--ink-soft); font-size: 0.8rem; font-style: italic; }
+.w12-rowbtn {
+  font: inherit; font-family: "IBM Plex Mono", monospace; cursor: pointer; color: var(--teal-ink); font-weight: 700;
+  background: color-mix(in srgb, var(--teal) 10%, var(--surface)); border: 1px solid var(--teal); border-radius: 5px; padding: 0 0.45rem;
+}
+.w12-ttable tr.is-first td { background: color-mix(in srgb, var(--red) 14%, transparent); }
+.w12-ttable tr.is-picked-wrong td { background: color-mix(in srgb, var(--amber) 14%, transparent); }
+.w12-feedback { font-size: 0.92rem; }
+.w12-feedback:empty { display: none; }
+.w12-feedback.viz-good, .w12-feedback.viz-bad { color: var(--ink); border-left: 3px solid var(--green); padding: 0.45rem 0.75rem; border-radius: 0 8px 8px 0; background: color-mix(in srgb, var(--green) 8%, transparent); }
+.w12-feedback.viz-bad { border-left-color: var(--red); background: color-mix(in srgb, var(--red) 8%, transparent); }
+
+/* pipeline: tokens flowing through stages */
+.w12-pipe { overflow-x: visible; }
+.w12-flow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr); gap: 0.3rem; align-items: stretch; }
+.w12-flow-arrow { align-self: center; color: var(--ink-soft); font-weight: 700; }
+.w12-zone { display: grid; grid-template-rows: auto 1fr; gap: 0.3rem; min-width: 0; padding: 0.4rem; border: 1.5px solid var(--line); border-radius: 9px; background: var(--surface); }
+.w12-zone-title { font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; font-weight: 600; color: var(--ink-soft); overflow-wrap: anywhere; }
+.w12-zone-box { display: flex; flex-wrap: wrap; gap: 0.25rem; align-content: flex-start; min-height: 2.1rem; }
+.w12-zone.is-sum { border-color: var(--teal); }
+.w12-zone.is-missing { border-style: dashed; opacity: 0.6; }
+.w12-zone.is-drop { border-style: dashed; }
+.w12-under { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+.w12-under .w12-zone { min-width: 10rem; }
+.w12-acc { font-family: "IBM Plex Mono", monospace; font-size: 0.85rem; color: var(--ink); }
+.w12-tok {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 2.3rem; height: 1.9rem; padding: 0 0.35rem;
+  border-radius: 999px; border: 1.5px solid var(--ink-soft); background: var(--paper); color: var(--ink);
+  font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 0.82rem;
+  transition: transform 420ms ease, background-color 200ms ease, border-color 200ms ease;
+}
+.w12-tok.is-hot { border-color: var(--teal); background: color-mix(in srgb, var(--teal) 18%, var(--surface)); }
+.w12-zone.is-drop .w12-tok { border-color: var(--red); color: var(--red); text-decoration: line-through; }
+.w12-zone.is-sum .w12-tok { border-color: var(--green); }
+@media (max-width: 640px) {
+  .w12-flow { grid-template-columns: minmax(0, 1fr); }
+  .w12-flow-arrow { transform: rotate(90deg); justify-self: center; line-height: 0.8; }
+}
+
+/* where does this bug live? */
+.w12-count { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--ink-soft); }
+.w12-symptoms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: 0.4rem; }
+.w12-symptom {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 0.5rem; align-items: start; text-align: left; cursor: pointer;
+  font: inherit; font-size: 0.86rem; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--line); border-radius: 9px; padding: 0.5rem 0.6rem;
+}
+.w12-symptom:hover { border-color: var(--ink-soft); }
+.w12-symptom[aria-pressed="true"] { border-color: var(--teal); box-shadow: inset 3px 0 0 var(--teal); background: color-mix(in srgb, var(--teal) 7%, var(--surface)); }
+.w12-symptom-n { font-family: "IBM Plex Mono", monospace; font-weight: 700; color: var(--teal-ink); }
+.w12-symptom-ok { color: var(--green); font-weight: 800; }
+.w12-bug { display: grid; gap: 0.6rem; border-top: 1px dashed var(--line); padding-top: 0.75rem; min-width: 0; }
+.w12-bug-symptom { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 1.02rem; }
+.w12-bug-reveal { display: grid; gap: 0.55rem; min-width: 0; }
+.w12-bug-cause { font-size: 0.92rem; }
+.w12-bug-links { font-size: 0.88rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .w12-obj.is-new, .w12-heapobj.is-new, .w12-var.is-changed { animation: w12-pop 420ms ease both; }
+  .w12-exc-card.is-thrown { animation: w12-shake 380ms ease both; }
+  @keyframes w12-pop { from { transform: scale(0.94); opacity: 0.4; } }
+  @keyframes w12-shake { 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w12-tok, .w12-st, .w12-cell .w12-v { transition: none; }
+}

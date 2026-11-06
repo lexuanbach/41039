@@ -1,0 +1,634 @@
+{
+  "week": 6,
+  "title": "Building Reliable Classes",
+  "short": "Reliable classes",
+  "lede": "Turn Week 5's class syntax into working models: define valid state, preserve it through methods, trace references, separate shared data from instance data, and connect objects through composition.",
+  "sections": [
+    {
+      "title": "Contracts and valid state",
+      "concepts": [
+        [
+          "Start with a promise",
+          "<p>A class is useful when it gives the rest of the program a dependable promise. A stock item starts with a non-negative quantity; a successful withdrawal reduces it by exactly the requested positive amount; a rejected withdrawal changes nothing. These rules are its <strong>invariant</strong> and method contract.</p><p>Write down the inputs, result and state change before writing the method body. Test zero, negative amounts, exactly the available quantity and one too many. A getter reports a value; a mutator changes the model. Keeping these jobs clear makes a failing test easier to explain.</p>"
+        ],
+        [
+          "Hide the path around the rule",
+          "<p>Java <code>private</code> prevents an outside caller from assigning a field directly. Python <code>_stock</code> communicates intended use but does not enforce privacy. In either language, public methods should be the normal route for changing state. Constructor validation must establish the same invariant that later methods preserve; these small examples assume a valid starting quantity.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "A stock invariant",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock item = new Stock(4);\n        System.out.println(item.take(3));\n        System.out.println(item.take(2));\n        System.out.println(item.getStock());\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    boolean take(int amount) {\n        if (amount <= 0 || amount > stock) return false;\n        stock = stock - amount;\n        return true;\n    }\n    int getStock() { return stock; }\n}\n",
+          "notes": [
+            [
+              "this.stock",
+              "Use this to name the object field, rather than the parameter."
+            ],
+            [
+              "stock - amount",
+              "Compute a new balance only after the request has been validated."
+            ]
+          ],
+          "wrong": [
+            "true\ntrue\n-1\n",
+            "false\ntrue\n2\n",
+            "true\nfalse\n4\n"
+          ],
+          "why": "The first request leaves 1. The second request fails before changing the field, so it stays 1.",
+          "stdin": "",
+          "static": false,
+          "output": "true\nfalse\n1\n"
+        },
+        {
+          "title": "The same contract in Python",
+          "lang": "python",
+          "code": "class Stock:\n    def __init__(self, stock):\n        self._stock = stock\n    def take(self, amount):\n        if amount <= 0 or amount > self._stock:\n            return False\n        self._stock -= amount\n        return True\n    def available(self):\n        return self._stock\n\nitem = Stock(4)\nprint(item.take(3))\nprint(item.take(2))\nprint(item.available())\n",
+          "notes": [
+            [
+              "self._stock",
+              "Each object owns its own stock count; the underscore is a convention."
+            ],
+            [
+              "return False",
+              "Reject the request without changing the stock."
+            ]
+          ],
+          "wrong": [
+            "True\nTrue\n-1\n",
+            "False\nTrue\n2\n",
+            "True\nFalse\n4\n"
+          ],
+          "why": "Both languages implement the same rule. Python prints booleans with initial capitals.",
+          "stdin": "",
+          "static": false,
+          "output": "True\nFalse\n1\n"
+        }
+      ],
+      "try": "Change a request to 0 and then to the exact remaining stock. Explain why the field changes in one case and stays unchanged in the other."
+    },
+    {
+      "title": "References and object lifetime",
+      "concepts": [
+        [
+          "Draw objects separately from names",
+          "<p><code>b = a</code> copies a reference in both languages. Draw two arrows to one object, then trace a mutating call through either arrow. Creating another object requires another constructor call. Two objects with equal field values need not be the same object.</p>"
+        ],
+        [
+          "Instance collections belong in the constructor",
+          "<p>A Python list in the class body is shared. A list assigned to <code>self.items</code> in <code>__init__</code> is created for each instance. Compare that rule with Java instance fields and <code>static</code> fields. Before explaining output, count allocations, not variable names.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "One object, two references",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock a = new Stock(5);\n        Stock b = a;\n        b.take(2);\n        System.out.println(a.getStock());\n        System.out.println(a == b);\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    void take(int amount) { stock -= amount; }\n    int getStock() { return stock; }\n}\n",
+          "notes": [
+            [
+              "Stock b = a",
+              "Copy the reference, not the object."
+            ],
+            [
+              "a == b",
+              "Ask whether these references identify the same object."
+            ]
+          ],
+          "wrong": [
+            "5\nfalse\n",
+            "3\nfalse\n",
+            "5\ntrue\n"
+          ],
+          "why": "Assignment makes two names for one stock object. The mutation through b is visible through a.",
+          "stdin": "",
+          "static": false,
+          "output": "3\ntrue\n"
+        },
+        {
+          "title": "Separate objects, separate state",
+          "lang": "python",
+          "code": "class Basket:\n    def __init__(self):\n        self.items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(a.items)\nprint(b.items)\nprint(a is b)\n",
+          "notes": [
+            [
+              "self.items = []",
+              "Create a fresh list whenever __init__ runs."
+            ],
+            [
+              "a is b",
+              "Compare object identity, not the contents of the baskets."
+            ]
+          ],
+          "wrong": [
+            "['tea']\n['tea']\nFalse\n",
+            "[]\n[]\nTrue\n",
+            "['tea']\n[]\nTrue\n"
+          ],
+          "why": "Each constructor call allocates a separate items list; only a receives tea.",
+          "stdin": "",
+          "static": false,
+          "output": "['tea']\n[]\nFalse\n"
+        }
+      ],
+      "try": "Make b refer to a in the Python example. Predict which output lines change before running it."
+    },
+    {
+      "title": "Shared data and instance data",
+      "concepts": [
+        [
+          "A counter is a deliberate shared responsibility",
+          "<p>A shared ticket counter is appropriate when every new ticket must receive the next number. The ticket's own number is instance data. Updating the shared counter later does not rewrite existing ticket numbers.</p>"
+        ],
+        [
+          "Mutation differs from rebinding",
+          "<p>Appending to a shared class list changes that one list. Assigning <code>a.items = []</code> instead creates an instance attribute that shadows the class attribute for a. This is why the location of allocation matters more than whether the expression contains an object name.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Class count and instance number",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Ticket a = new Ticket();\n        Ticket b = new Ticket();\n        System.out.println(a.number + \" \" + b.number + \" \" + Ticket.count);\n    }\n}\nclass Ticket {\n    static int count = 0;\n    final int number;\n    Ticket() { number = ++count; }\n}\n",
+          "notes": [
+            [
+              "static int count",
+              "One shared counter belongs to the class."
+            ],
+            [
+              "final int number",
+              "Assign an individual number once for this ticket."
+            ]
+          ],
+          "wrong": [
+            "1 1 1\n",
+            "2 2 2\n",
+            "1 2 1\n"
+          ],
+          "why": "The shared counter reaches 2; a keeps its previously assigned number 1.",
+          "stdin": "",
+          "static": false,
+          "output": "1 2 2\n"
+        },
+        {
+          "title": "A class attribute can share too much",
+          "lang": "python",
+          "code": "class Basket:\n    items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(b.items)\nprint(a.items is b.items)\n",
+          "notes": [
+            [
+              "items = []",
+              "This list is constructed in the class body and shared by these instances."
+            ],
+            [
+              "a.items.append",
+              "Mutate the shared list; this does not assign a new instance attribute."
+            ]
+          ],
+          "wrong": [
+            "[]\nFalse\n",
+            "['tea']\nFalse\n",
+            "[]\nTrue\n"
+          ],
+          "why": "Both objects find the class attribute. Move the list into __init__ to give each basket its own storage.",
+          "stdin": "",
+          "static": false,
+          "output": "['tea']\nTrue\n"
+        }
+      ],
+      "try": "Repair the shared Python basket by writing __init__. Construct two baskets and prove that adding to one does not change the other."
+    },
+    {
+      "title": "Composition and a small public interface",
+      "concepts": [
+        [
+          "A has-a relationship",
+          "<p>A shelf holds a book; it is not a special kind of book. A field that refers to another object expresses this <strong>composition</strong>. Give the class with the data the job that uses it: Book knows its title, while Shelf decides how to describe its contents.</p>"
+        ],
+        [
+          "Make observations easy",
+          "<p>A useful string representation helps a person inspect state while debugging. Return a string from <code>__str__</code>; do not print inside it. In Java the corresponding method is <code>toString()</code>. Keep presentation separate from the operations that update the model, so a formatting change does not change the rules.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Composition: a library contains books",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Book book = new Book(\"Tea\");\n        Shelf shelf = new Shelf(book);\n        System.out.println(shelf.describe());\n    }\n}\nclass Book {\n    private final String title;\n    Book(String title) { this.title = title; }\n    String title() { return title; }\n}\nclass Shelf {\n    private final Book book;\n    Shelf(Book book) { this.book = book; }\n    String describe() { return \"On shelf: \" + book.title(); }\n}\n",
+          "notes": [
+            [
+              "private final Book book",
+              "A Shelf has a Book; it does not need to inherit from Book."
+            ],
+            [
+              "book.title()",
+              "Ask the contained object for the information it owns."
+            ]
+          ],
+          "wrong": [
+            "On shelf: Book\n",
+            "Tea\n",
+            "On shelf: null\n"
+          ],
+          "why": "The shelf delegates to its book for the title, then formats its own description.",
+          "stdin": "",
+          "static": false,
+          "output": "On shelf: Tea\n"
+        },
+        {
+          "title": "Representing an object for people",
+          "lang": "python",
+          "code": "class Book:\n    def __init__(self, title):\n        self.title = title\n    def __str__(self):\n        return f\"Book: {self.title}\"\n\nbook = Book(\"Tea\")\nprint(book)\nprint(book.title)\n",
+          "notes": [
+            [
+              "__str__",
+              "Return the text that print should use for this object."
+            ],
+            [
+              "self.title",
+              "Read data from the current book."
+            ]
+          ],
+          "wrong": [
+            "Tea\nTea\n",
+            "Book: Tea\nBook: Tea\n",
+            "Book\nTea\n"
+          ],
+          "why": "print(book) uses __str__; reading title directly produces only the title.",
+          "stdin": "",
+          "static": false,
+          "output": "Book: Tea\nTea\n"
+        }
+      ],
+      "try": "Extend Shelf to contain two books. Decide which object should know a book title and which should know the number of occupied slots."
+    }
+  ],
+  "questions": [
+    {
+      "q": "Which input best tests the lower boundary of take(amount)?",
+      "correct": "Zero, because the contract requires a positive amount.",
+      "wrong": [
+        "A very large positive number, because it tests only the upper limit of available stock.",
+        "Any positive number smaller than the stock, because ordinary success proves all boundaries.",
+        "A second object with the same quantity, because identity always determines numeric validity."
+      ],
+      "why": "Zero tests the positive-amount condition; negative values are also useful. A valid ordinary amount does not test rejection."
+    },
+    {
+      "q": "What does Java private contribute to the stock model?",
+      "correct": "It prevents outside code from directly assigning the field.",
+      "wrong": [
+        "It automatically rejects every negative value passed to any method of the class.",
+        "It guarantees that every method in the class preserves the correct stock invariant.",
+        "It makes all stock objects share one common copy of the private field."
+      ],
+      "why": "The compiler restricts field access. The constructor and methods must still implement the validation."
+    },
+    {
+      "q": "Which relationship is best represented by composition?",
+      "correct": "A shelf has a book.",
+      "wrong": [
+        "A triangle is a polygon, so it must contain a polygon instead of being one.",
+        "Every Java object is a String because print can display its representation.",
+        "Two variables refer to one object, so one variable inherits from the other."
+      ],
+      "why": "A has-a relationship is represented by a member referring to a collaborator."
+    },
+    {
+      "q": "How should you check a state-changing method?",
+      "correct": "Check its return value and the resulting observable state.",
+      "wrong": [
+        "Check only that it printed a success message, ignoring changes to the object state.",
+        "Check only that it compiled, because the type checker proves every business rule.",
+        "Check only one successful call, since a rejection cannot possibly change any data."
+      ],
+      "why": "A method can return the expected flag while corrupting its state. Rejected operations also need state checks."
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock item = new Stock(4);\n        System.out.println(item.take(3));\n        System.out.println(item.take(2));\n        System.out.println(item.getStock());\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    boolean take(int amount) {\n        if (amount <= 0 || amount > stock) return false;\n        stock = stock - amount;\n        return true;\n    }\n    int getStock() { return stock; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>true<br>true<br>-1</code>",
+        "<code>false<br>true<br>2</code>",
+        "<code>true<br>false<br>1</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 2,
+      "why": "The first request leaves 1. The second request fails before changing the field, so it stays 1."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Stock:\n    def __init__(self, stock):\n        self._stock = stock\n    def take(self, amount):\n        if amount <= 0 or amount > self._stock:\n            return False\n        self._stock -= amount\n        return True\n    def available(self):\n        return self._stock\n\nitem = Stock(4)\nprint(item.take(3))\nprint(item.take(2))\nprint(item.available())\n",
+      "lang": "python",
+      "opts": [
+        "<code>True<br>True<br>-1</code>",
+        "<code>False<br>True<br>2</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced.",
+        "<code>True<br>False<br>1</code>"
+      ],
+      "a": 3,
+      "why": "Both languages implement the same rule. Python prints booleans with initial capitals."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock a = new Stock(5);\n        Stock b = a;\n        b.take(2);\n        System.out.println(a.getStock());\n        System.out.println(a == b);\n    }\n}\nclass Stock {\n    private int stock;\n    Stock(int stock) { this.stock = stock; }\n    void take(int amount) { stock -= amount; }\n    int getStock() { return stock; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>3<br>true</code>",
+        "<code>5<br>false</code>",
+        "<code>3<br>false</code>",
+        "<code>5<br>true</code>"
+      ],
+      "a": 0,
+      "why": "Assignment makes two names for one stock object. The mutation through b is visible through a."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Basket:\n    def __init__(self):\n        self.items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(a.items)\nprint(b.items)\nprint(a is b)\n",
+      "lang": "python",
+      "opts": [
+        "<code>[&#x27;tea&#x27;]<br>[&#x27;tea&#x27;]<br>False</code>",
+        "<code>[&#x27;tea&#x27;]<br>[]<br>False</code>",
+        "<code>[]<br>[]<br>True</code>",
+        "<code>[&#x27;tea&#x27;]<br>[]<br>True</code>"
+      ],
+      "a": 1,
+      "why": "Each constructor call allocates a separate items list; only a receives tea."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Ticket a = new Ticket();\n        Ticket b = new Ticket();\n        System.out.println(a.number + \" \" + b.number + \" \" + Ticket.count);\n    }\n}\nclass Ticket {\n    static int count = 0;\n    final int number;\n    Ticket() { number = ++count; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>1 1 1</code>",
+        "<code>2 2 2</code>",
+        "<code>1 2 2</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 2,
+      "why": "The shared counter reaches 2; a keeps its previously assigned number 1."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Basket:\n    items = []\n\na = Basket()\nb = Basket()\na.items.append(\"tea\")\nprint(b.items)\nprint(a.items is b.items)\n",
+      "lang": "python",
+      "opts": [
+        "<code>[]<br>False</code>",
+        "<code>[&#x27;tea&#x27;]<br>False</code>",
+        "<code>[]<br>True</code>",
+        "<code>[&#x27;tea&#x27;]<br>True</code>"
+      ],
+      "a": 3,
+      "why": "Both objects find the class attribute. Move the list into __init__ to give each basket its own storage."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Book book = new Book(\"Tea\");\n        Shelf shelf = new Shelf(book);\n        System.out.println(shelf.describe());\n    }\n}\nclass Book {\n    private final String title;\n    Book(String title) { this.title = title; }\n    String title() { return title; }\n}\nclass Shelf {\n    private final Book book;\n    Shelf(Book book) { this.book = book; }\n    String describe() { return \"On shelf: \" + book.title(); }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>On shelf: Tea</code>",
+        "<code>On shelf: Book</code>",
+        "<code>Tea</code>",
+        "<code>On shelf: null</code>"
+      ],
+      "a": 0,
+      "why": "The shelf delegates to its book for the title, then formats its own description."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Book:\n    def __init__(self, title):\n        self.title = title\n    def __str__(self):\n        return f\"Book: {self.title}\"\n\nbook = Book(\"Tea\")\nprint(book)\nprint(book.title)\n",
+      "lang": "python",
+      "opts": [
+        "<code>Tea<br>Tea</code>",
+        "<code>Book: Tea<br>Tea</code>",
+        "<code>Book: Tea<br>Book: Tea</code>",
+        "<code>Book<br>Tea</code>"
+      ],
+      "a": 1,
+      "why": "print(book) uses __str__; reading title directly produces only the title."
+    },
+    {
+      "q": "Which input best tests the lower boundary of take(amount)?",
+      "opts": [
+        "A very large positive number, because it tests only the upper limit of available stock.",
+        "Any positive number smaller than the stock, because ordinary success proves all boundaries.",
+        "Zero, because the contract requires a positive amount.",
+        "A second object with the same quantity, because identity always determines numeric validity."
+      ],
+      "a": 2,
+      "why": "Zero tests the positive-amount condition; negative values are also useful. A valid ordinary amount does not test rejection."
+    },
+    {
+      "q": "What does Java private contribute to the stock model?",
+      "opts": [
+        "It automatically rejects every negative value passed to any method of the class.",
+        "It guarantees that every method in the class preserves the correct stock invariant.",
+        "It makes all stock objects share one common copy of the private field.",
+        "It prevents outside code from directly assigning the field."
+      ],
+      "a": 3,
+      "why": "The compiler restricts field access. The constructor and methods must still implement the validation."
+    },
+    {
+      "q": "Which relationship is best represented by composition?",
+      "opts": [
+        "A shelf has a book.",
+        "A triangle is a polygon, so it must contain a polygon instead of being one.",
+        "Every Java object is a String because print can display its representation.",
+        "Two variables refer to one object, so one variable inherits from the other."
+      ],
+      "a": 0,
+      "why": "A has-a relationship is represented by a member referring to a collaborator."
+    },
+    {
+      "q": "How should you check a state-changing method?",
+      "opts": [
+        "Check only that it printed a success message, ignoring changes to the object state.",
+        "Check its return value and the resulting observable state.",
+        "Check only that it compiled, because the type checker proves every business rule.",
+        "Check only one successful call, since a rejection cannot possibly change any data."
+      ],
+      "a": 1,
+      "why": "A method can return the expected flag while corrupting its state. Rejected operations also need state checks."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "e1",
+      "title": "An inventory that refuses invalid requests",
+      "lang": "java",
+      "brief": "Read an initial stock, a request count, then that many amounts. Print <code>OK</code> or <code>Refused</code> per request, then the remaining stock. Accept only positive amounts no larger than the current stock. The initial stock is non-negative.",
+      "starter": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int stock = sc.nextInt(), n = sc.nextInt();\n        for (int i = 0; i < n; i++) {\n            int amount = sc.nextInt();\n            // validate, update stock, and print a result\n        }\n        System.out.println(stock);\n    }\n}\n",
+      "solution": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        Inventory item = new Inventory(sc.nextInt());\n        int n = sc.nextInt();\n        for (int i=0;i<n;i++) System.out.println(item.take(sc.nextInt()) ? \"OK\" : \"Refused\");\n        System.out.println(item.available());\n    }\n}\nclass Inventory {\n    private int stock;\n    Inventory(int stock) { this.stock = stock; }\n    boolean take(int amount) {\n        if (amount <= 0 || amount > stock) return false;\n        stock -= amount;\n        return true;\n    }\n    int available() { return stock; }\n}\n",
+      "tests": [
+        {
+          "stdin": "5 4\n2 4 0 3\n",
+          "expect": "OK\nRefused\nRefused\nOK\n0\n"
+        },
+        {
+          "stdin": "0 2\n1 -1\n",
+          "expect": "Refused\nRefused\n0\n"
+        },
+        {
+          "stdin": "3 0\n",
+          "expect": "3\n"
+        },
+        {
+          "stdin": "4 2\n4 1\n",
+          "expect": "OK\nRefused\n0\n"
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "title": "Inventory in Python",
+      "lang": "python",
+      "brief": "Implement the same stock contract as exercise 1. Input: initial stock, request count, then one amount per line. Print <code>OK</code> or <code>Refused</code> for each request, then the stock. Store the stock on an Inventory instance.",
+      "starter": "class Inventory:\n    # __init__, take and available\n    pass\n\nstock = int(input())\nn = int(input())\n# process n requests\n",
+      "solution": "class Inventory:\n    def __init__(self, stock): self._stock = stock\n    def take(self, amount):\n        if amount <= 0 or amount > self._stock: return False\n        self._stock -= amount\n        return True\n    def available(self): return self._stock\n\nitem = Inventory(int(input()))\nn = int(input())\nfor _ in range(n):\n    print(\"OK\" if item.take(int(input())) else \"Refused\")\nprint(item.available())\n",
+      "tests": [
+        {
+          "stdin": "5\n4\n2\n4\n0\n3\n",
+          "expect": "OK\nRefused\nRefused\nOK\n0\n"
+        },
+        {
+          "stdin": "0\n2\n1\n-1\n",
+          "expect": "Refused\nRefused\n0\n"
+        },
+        {
+          "stdin": "3\n0\n",
+          "expect": "3\n"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "title": "Construct valid rectangles",
+      "lang": "java",
+      "brief": "Read two positive integers width and height. Write a Rectangle class with private dimensions, a constructor and area(). Print area and perimeter, separated by a space.",
+      "starter": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int width=sc.nextInt(), height=sc.nextInt();\n        // construct a Rectangle and print area and perimeter\n    }\n}\n",
+      "solution": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        Rectangle r = new Rectangle(sc.nextInt(),sc.nextInt());\n        System.out.println(r.area()+\" \"+r.perimeter());\n    }\n}\nclass Rectangle {\n    private final int w,h;\n    Rectangle(int w,int h) { this.w=w; this.h=h; }\n    int area() { return w*h; }\n    int perimeter() { return 2*(w+h); }\n}\n",
+      "tests": [
+        {
+          "stdin": "3 4\n",
+          "expect": "12 14\n"
+        },
+        {
+          "stdin": "1 1\n",
+          "expect": "1 4\n"
+        },
+        {
+          "stdin": "10 2\n",
+          "expect": "20 24\n"
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "title": "Fresh baskets",
+      "lang": "python",
+      "brief": "Read two lines of space-separated item names; a line may be empty. Put each line in a separate Basket instance, using a fresh list per object. Print the number of items in the first basket and then in the second.",
+      "starter": "class Basket:\n    # create a separate list for every instance\n    pass\n\nfirst = input().split()\nsecond = input().split()\n# put names in their corresponding baskets and print sizes\n",
+      "solution": "class Basket:\n    def __init__(self): self.items=[]\n    def add(self,name): self.items.append(name)\n\na,b=Basket(),Basket()\nfor name in input().split(): a.add(name)\nfor name in input().split(): b.add(name)\nprint(len(a.items))\nprint(len(b.items))\n",
+      "tests": [
+        {
+          "stdin": "tea milk\nbread\n",
+          "expect": "2\n1\n"
+        },
+        {
+          "stdin": "\ncoffee\n",
+          "expect": "0\n1\n"
+        },
+        {
+          "stdin": "\n\n",
+          "expect": "0\n0\n"
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "title": "Ticket numbering",
+      "lang": "java",
+      "brief": "Read n (0 to 20). Construct n Ticket objects, each with a shared counter and its own number. Print their numbers one per line, then <code>Total: n</code>.",
+      "starter": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int n = sc.nextInt();\n        // construct and number the tickets\n    }\n}\n",
+      "solution": "public class Demo {\n    public static void main(String[] args) {\n        java.util.Scanner sc = new java.util.Scanner(System.in);\n        int n=sc.nextInt();\n        for(int i=0;i<n;i++) System.out.println(new Ticket().number);\n        System.out.println(\"Total: \"+Ticket.count);\n    }\n}\nclass Ticket {\n    static int count=0;\n    final int number;\n    Ticket() { number=++count; }\n}\n",
+      "tests": [
+        {
+          "stdin": "3\n",
+          "expect": "1\n2\n3\nTotal: 3\n"
+        },
+        {
+          "stdin": "0\n",
+          "expect": "Total: 0\n"
+        },
+        {
+          "stdin": "1\n",
+          "expect": "1\nTotal: 1\n"
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "title": "A readable book",
+      "lang": "python",
+      "brief": "Read a title, then a non-negative page count. Implement Book.__str__ so printing the object produces exactly <code>Title (N pages)</code>. The title may contain spaces.",
+      "starter": "class Book:\n    # __init__ and __str__\n    pass\n\ntitle=input()\npages=int(input())\n# construct and print the book\n",
+      "solution": "class Book:\n    def __init__(self,title,pages): self.title,self.pages=title,pages\n    def __str__(self): return f\"{self.title} ({self.pages} pages)\"\n\nprint(Book(input(),int(input())))\n",
+      "tests": [
+        {
+          "stdin": "Learning Java\n120\n",
+          "expect": "Learning Java (120 pages)\n"
+        },
+        {
+          "stdin": "Empty\n0\n",
+          "expect": "Empty (0 pages)\n"
+        },
+        {
+          "stdin": "A\n1\n",
+          "expect": "A (1 pages)\n"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    [
+      "Classes and Objects in Java",
+      "https://edstem.org/au/courses/41298/lessons/118745",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Classes and Objects in Python",
+      "https://edstem.org/au/courses/41298/lessons/118747",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Fundamentals of Object Oriented Programming",
+      "https://edstem.org/au/courses/41298/lessons/118748",
+      "Read the lesson and trace its examples on Ed."
+    ]
+  ],
+  "reading": [
+    [
+      "Python classes",
+      "https://docs.python.org/3/tutorial/classes.html",
+      "Class and instance attributes, methods and object identity."
+    ],
+    [
+      "Oracle: classes",
+      "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html",
+      "Fields, methods and constructors in Java."
+    ]
+  ],
+  "activities": [
+    [
+      "Design a lending counter",
+      "<p>Write a contract for borrow() and returnBook(). Identify the fields, valid states and rejected requests. One person proposes edge cases, another draws object references, and a third explains how the methods preserve the rules.</p>"
+    ],
+    [
+      "Find the shared-state bug",
+      "<p>Use the two Basket versions above. Predict the result for two empty baskets and for two baskets receiving one item each. Repair the class and show a counterexample that failed before the repair.</p>"
+    ]
+  ],
+  "study": "Consolidate the classes and objects lessons already introduced in Week 5. Complete at least one Java and one Python exercise, then explain a rejected operation without relying on a printed success message."
+}

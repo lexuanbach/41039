@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 9
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,535 +141,764 @@
 }
 
 
-
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 \title[41039 Programming 1 --- Revision of Week 9]{41039 Programming 1}
-\subtitle{Revision of Week 9: Exceptions and reading text}
+\subtitle{Revision of Week 9: exceptions and reading text}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Checked, \code{finally}, end of input\\
+      Q2  & Multiple choice    & Which \code{main} compiles?\\
+      Q3  & Multiple choice    & Which loops read every line?\\
+      Q4  & Predict the output & Marks through calls (Java)\\
+      Q5  & Predict the output & A file of marks (Python)\\
+      Q6  & Find the bug       & The mark reader (Java, 4 bugs)\\
+      Q7  & Find the bug       & Average of a file (Python, 3 bugs)\\
+      Q8  & Write the code     & Parse a mark or say why (Java)\\
+      Q9  & Write the code     & Ask again until it is valid (Python)\\
+      Q10 & Write the code     & Add up the numbers (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. Catching exactly the invalid conversion}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-String[] values={"12","bad","7"};
-for(String text:values) {
-    try { System.out.println(Integer.parseInt(text)+1); }
-    catch(NumberFormatException e) { System.out.println("Invalid: "+text); }
-}
+\begin{frame}[fragile]{Week 9 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{An exception jumps.} A failing statement skips the
+            rest of the \code{try}; control goes to the first matching \code{catch} /
+            \code{except}. No match: the program stops with a \emph{stack trace}.
+      \item[\textbf{2}] \textbf{Catch what you expect.} \code{Integer.parseInt}
+            throws \code{NumberFormatException}; Python's \code{int()} raises
+            \code{ValueError}. Python's \code{else:} runs only if nothing failed.
+      \item[\textbf{3}] \textbf{Checked or unchecked.} \code{IOException} is
+            \emph{checked}: catch it or declare \code{throws}. Others, like
+            \code{NumberFormatException}, are unchecked.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{Throw and clean up.} \code{throw} / \code{raise}
+            reports a broken rule to the caller. \code{finally} runs on success
+            \textbf{and} on failure. try-with-resources and \code{with} close a
+            reader for you.
+      \item[\textbf{5}] \textbf{Know the reading contract.} \code{Scanner} reads
+            tokens, skipping spaces and newlines. \code{readLine()}: \code{""} is a
+            blank line, \code{null} is the end. Python \code{readline()}:
+            \code{"\textbackslash n"} is a blank line, \code{""} is the end.
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+String line;
+while ((line = in.readLine()) != null)
+    System.out.println(line);  // "" if blank
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-13
-Invalid: bad
-8
-\end{lstlisting}
-\scriptsize\raggedright The failed conversion jumps to the matching catch; the next loop iteration still runs.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. Conversion errors in Python}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-for text in ["12", "bad", "7"]:
-    try:
-        value = int(text)
-    except ValueError:
-        print("Invalid:", text)
-    else:
-        print(value + 1)
-\end{lstlisting}
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-13
-Invalid: bad
-8
-\end{lstlisting}
-\scriptsize\raggedright The else suite runs only for successfully parsed values; a ValueError produces the diagnostic.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Exceptions and end of input}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.35em]
+      \small\setlength{\baselineskip}{1.2\baselineskip}
+      \item \code{IOException} must be caught or declared: it is \blank{1}.
+            \code{NumberFormatException} need not be: it is \blank{2}.
+      \item A \blank{3} block runs whether the \code{try} succeeded or failed.
+      \item Python's \blank{4} block closes the file when it ends.
+      \item At the end of input, \code{readLine()} returns \blank{5}. A blank line
+            gives an \blank{6} string.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} checked    & \textbf{f)} empty\\
+        \textbf{b)} unchecked  & \textbf{g)} else\\
+        \textbf{c)} finally    & \textbf{h)} ready\\
+        \textbf{d)} with       & \textbf{i)} throws\\
+        \textbf{e)} null       & \textbf{j)} catch\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} a) checked\quad \textbf{(2)} b) unchecked\\[0.3em]
+      \textbf{(3)} c) finally\\[0.3em]
+      \textbf{(4)} d) with\\[0.3em]
+      \textbf{(5)} e) null\quad \textbf{(6)} f) empty\\[0.3em]
+      Not used: g) else, h) ready, i) throws, j) catch.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small \code{catch} runs only on failure, Python's \code{else} only on success,
+    \code{finally} on both. \code{ready()} is \textbf{not} an end test: loop until
+    \code{null}.}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{3. Propagation and cleanup}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Demo {
-    static void parse() { Integer.parseInt("x"); }
-    public static void main(String[] args) {
-        try {
-            parse();
-            System.out.println("after parse");
-        } catch(NumberFormatException e) {
-            System.out.println("caught");
-        } finally {
-            System.out.println("cleanup");
-        }
-        System.out.println("done");
-    }
-}
-\end{lstlisting}
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What prints? Would adding throws to a method catch the failure? Which exception category is shown here?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-caught
-cleanup
-done
-\end{lstlisting}
-\scriptsize\raggedright The line after parse is skipped. The matching catch runs, then finally, then the following statement. The failure is an unchecked NumberFormatException. A throws declaration allows propagation; it does not handle an exception. Checked exceptions such as IOException must be caught or declared.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. Raise at the point a rule is broken}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def mark(text):
-    value = int(text)
-    if not 0 <= value <= 100:
-        raise ValueError("mark out of range")
-    return value
-try:
-    print(mark("120"))
-except ValueError as error:
-    print(error)
-finally:
-    print("checked")
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-mark out of range
-checked
-\end{lstlisting}
-\scriptsize\raggedright The conversion succeeds, but the range check raises before returning a mark.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. BufferedReader stops at null, not ready()}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which \code{main} compiles?}
+\begin{lstlisting}[language=Java,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
 import java.io.*;
-try(BufferedReader reader=new BufferedReader(new StringReader("tea\n\ncoffee"))) {
-    String line;
-    int count=0;
-    while((line=reader.readLine())!=null) {
-        count++;
-        System.out.println(count+": "+line);
-    }
-} catch(IOException e) { System.out.println("Read failed"); }
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-1: tea
-2: 
-3: coffee
-\end{lstlisting}
-\scriptsize\raggedright The reader returns an empty string for the middle line, and null only after coffee.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{6. Line input has a different contract}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-from io import StringIO
-with StringIO("tea\n\ncoffee\n") as source:
-    for line_number, line in enumerate(source, 1):
-        print(f"{line_number}: {line.rstrip(chr(10))}")
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-1: tea
-2: 
-3: coffee
-\end{lstlisting}
-\scriptsize\raggedright A blank line still exists; stripping its newline does not remove the line from iteration.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\section{Team round 1: draw the model}
-
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: The exception path for the middle record}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-int total=0;
-for(String text:new String[]{"12","bad","7"}) {
-    try { total+=Integer.parseInt(text); }
-    catch(NumberFormatException e) { System.out.println("Invalid"); }
-}
-System.out.println(total);
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the flow and responsibilities after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (read) at (0,0) {next token};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (parse) at (3,0) {parseInt(text)};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (add) at (6,0) {add value to total};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (catch) at (3,-1.5) {matching catch\\[0pt] print Invalid};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (next) at (6,-1.5) {next iteration};
-\draw[ref] (read) -- (parse);
-\draw[ref] (parse) -- node[above=8pt,font=\scriptsize]{success} (add);
-\draw[ref] (parse) -- node[right=3pt,font=\scriptsize]{failure} (catch);
-\draw[ref] (add) -- (next);
-\draw[ref] (catch) -- (next);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-Invalid
-19
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small For bad, parsing throws before addition. The catch runs once, total remains 12, and the following iteration adds 7.
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small Print Invalid for the bad token, then the count and sum of valid tokens: 2 19.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        String[] input={"12","bad","7"};
-        int total=0,count=0;
-        try {
-            for(String text:input) {
-                count++;
-                total+=Integer.parseInt(text);
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=9,numbersep=0.7em]
-            }
-        } catch(NumberFormatException e) {
-            System.out.println("Invalid");
+public class Demo {
+    static String firstLine(String path) throws IOException {
+        try (BufferedReader in = new BufferedReader(new FileReader(path))) {
+            return in.readLine();
         }
-        System.out.println(count+" "+total);
+    }
+    public static void main(String[] args) {
+        System.out.println(firstLine("notes.txt"));
     }
 }
 \end{lstlisting}
-
-\end{columns}
-
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{discussionbox}{Only one compiles. Which? (90 s)}
+      \footnotesize
+      \wrongopt{A}{\code{main} as shown}\\[0.15em]
+      \wrongopt{B}{catch \code{NumberFormatException} around line 9}\\[0.15em]
+      \rightopt{C}{add \code{throws IOException} to line 8}\\[0.15em]
+      \wrongopt{D}{\code{try}/\code{finally} around line 9}
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \alt<1>{%
+    {\small \neutrallabel{Hint:} \code{firstLine} never changes. For each \code{main},
+    ask: is the \code{IOException} that \code{firstLine} may throw \textbf{caught}, or
+    \textbf{declared}?}}{%
+    \begin{contextbox}{Answer: C}
+      \scriptsize\raggedright
+      \code{IOException} is \textbf{checked}: catch it or declare it. A, B, D
+      give \code{unreported exception IOException; must be caught or declared to be
+      thrown}. B catches the wrong type; \code{finally} catches nothing. C declares
+      it, so \code{main} passes it on.
+    \end{contextbox}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L5:} Handling outside the entire loop stops later records after the first failure. Put handling inside each iteration.\item \textbf{L7:} Count successful records after conversion succeeds.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-Invalid
-2 12
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Invalid
-2 19
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Report each invalid number, continue to later lines, and print the total of valid input. Use a context manager for the reader.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-from io import StringIO
-source=StringIO("12\nbad\n7\n")
-for line in source:
-    total=0
-    try:
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=6,numbersep=0.7em]
-        total+=int(line)
-    except FileNotFoundError:
-        print("Invalid")
-print(total)
-source.close()
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L4:} Initialise the accumulator before the loop.\item \textbf{L7:} int(line) raises ValueError for bad text; catch that specific failure.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-(no standard output)
-ValueError: invalid literal for int() with base 10: 'bad\n'
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-Invalid
-19
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: A caught failure and finally}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-try {
-    System.out.println("A");
-    Integer.parseInt("bad");
-    System.out.println("B");
-} catch(NumberFormatException e) {
-    System.out.println("C");
-} finally { System.out.println("D"); }
-System.out.println("E");
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-A
-C
-D
-E
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The failed conversion skips B. The matching catch prints C, finally prints D, and the handled exception allows E.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: Finally before return or propagation}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def parse(text):
-    try:
-        return int(text)
-    finally:
-        print("checked",text)
-for text in ["4","x","2"]:
-    try: print(parse(text))
-    except ValueError: print("bad")
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-checked 4
-4
-checked x
-bad
-checked 2
-2
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small finally runs when parse returns and when its exception propagates. The caller handles x, then continues with 2.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{Continue after an invalid record}\small Read n then n lines. A line is integer text or an invalid word. Print Invalid for each failed conversion, keep processing, and finish with Total: N. Keep the try block around the conversion that may fail.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-4
-12
-bad
--2
-7
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-Invalid
-Total: 17
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.Scanner;
-Scanner sc=new Scanner(System.in);
-int n=Integer.parseInt(sc.nextLine());
-int total=0;
-for(int i=0;i<n;i++) {
-    try { total+=Integer.parseInt(sc.nextLine()); }
-    catch(NumberFormatException e) { System.out.println("Invalid"); }
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Which loops read every line?}
+  \neutrallabel{Goal:} {\small print every line of \code{in}, a \code{BufferedReader}
+  over \code{"tea\textbackslash n\textbackslash ncoffee"} (middle line blank, no
+  newline at the end), then stop.}\\[0.1em]
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 1}
+\begin{lstlisting}[language=Java]
+String line;
+while ((line = in.readLine())
+        != null) {
+    System.out.println(line);
 }
-System.out.println("Total: "+total);
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-n=int(input())
-total=0
-for _ in range(n):
-    try: total+=int(input())
-    except ValueError: print("Invalid")
-print(f"Total: {total}")
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 2}
+\begin{lstlisting}[language=Java]
+String line = in.readLine();
+while (!line.isEmpty()) {
+    System.out.println(line);
+    line = in.readLine();
+}
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 3}
+\begin{lstlisting}[language=Java]
+String line = in.readLine();
+while (line != null) {
+    System.out.println(line);
+    line = in.readLine();
+}
+\end{lstlisting}
+  \end{minipage}
 
+  \vspace{0.3em}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.36\textwidth}
+    \begin{discussionbox}{Choose one (90 seconds)}
+      \small
+      \wrongopt{A}{Version 1 only}\\[0.15em]
+      \rightopt{B}{Versions 1 and 3}\\[0.15em]
+      \wrongopt{C}{Versions 2 and 3}\\[0.15em]
+      \wrongopt{D}{All three}
+    \end{discussionbox}
+    \column{0.60\textwidth}
+    \alt<1>{%
+    {\small \neutrallabel{Hint:} all three compile. Write down what each
+    \code{readLine()} call returns: three lines, then the end.}}{%
+    \begin{contextbox}{Answer: B}
+      \footnotesize\raggedright
+      \textbf{V1} \yes{} \code{tea}, empty line, \code{coffee}: \code{null}
+      comes only after \code{coffee}, newline or not.\\[0.1em]
+      \textbf{V2} \no{} takes the blank line (\code{""}) for the end: only
+      \code{tea}.\\[0.1em]
+      \textbf{V3} \yes{} same as V1, with the read written twice.
+    \end{contextbox}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{4 / 12 / bad / -2 / 7}\par \textbf{Output:} \code{Invalid / Total: 17}\par\medskip \textbf{Test 2}\par \code{0}\par \textbf{Output:} \code{Total: 0}\par\medskip \textbf{Test 3}\par \code{2 / x / y}\par \textbf{Output:} \code{Invalid / Invalid / Total: 0}\par\medskip \textbf{Test 4}\par \code{2 / 0 / 100}\par \textbf{Output:} \code{Total: 100}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}Marks through method calls}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.4}{7.3}\selectfont]
+static int mark(String s) {
+    int m = Integer.parseInt(s);
+    if (m > 100)
+        throw new IllegalArgumentException("too big");
+    return m;
+}
+static int total(String[] marks) {
+    int sum = 0;
+    for (String s : marks) {
+        try {
+            sum += mark(s);
+        } catch (NumberFormatException e) {
+            System.out.println("skip " + s);
+        } finally {
+            System.out.println("checked " + s);
+        }
+    }
+    return sum;
+}
+\end{lstlisting}
+    \column{0.47\textwidth}
+    {\footnotesize All \code{static}, in class \code{Demo}. In \code{main}:}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.4}{7.3}\selectfont]
+String[] a = {"40", "x"};
+String[] b = {"120", "9"};
+try {
+  System.out.println(total(a));
+  System.out.println(total(b));
+} catch (IllegalArgumentException e) {
+  System.out.println("main: " + e.getMessage());
+}
+\end{lstlisting}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{six} lines that are printed.\\[0.2em]
+      \textbf{2.} Add one \code{catch} to \code{total} so that \code{"120"} is skipped
+      like \code{"x"}. What does the second call print then?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \scriptsize\raggedright
+      \textbf{1.} \code{checked 40}\quad \code{skip x}\quad \code{checked x}\\
+      \phantom{\textbf{1.}} \code{40}\quad \code{checked 120}\quad \code{main: too big}\\[0.1em]
+      \code{"120"} is not a \code{NumberFormatException}. \code{finally} prints,
+      then it leaves \code{total} for \code{main}'s catch: \code{"9"} is never read.\\[0.1em]
+      \textbf{2.} Add \code{catch (IllegalArgumentException e)} printing
+      \code{"skip " + s}. Then: \code{skip 120}, \code{checked 120},
+      \code{checked 9}, \code{9}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}A file of marks}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+with open("marks.txt", "w", encoding="utf-8") as f:
+    f.write("Linh,85\n\nAn,abc\nMai,70")
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Trace the first statement skipped by an exception.\item Distinguish handling from a throws declaration.\item Recognise blank lines, EOF and token boundaries.\item Close a reader while preserving the intended recovery policy.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-9.html}{Course website: Week 9}. Complete programs accompany this deck.}
+count = 0
+total = 0
+with open("marks.txt", encoding="utf-8") as f:
+    for line in f:
+        count += 1
+        try:
+            name, mark = line.strip().split(",")
+            total += int(mark)
+        except ValueError:
+            print("line", count, "skipped")
+        else:
+            print(name, "ok")
+print(count, total)
+\end{lstlisting}
+    {\footnotesize Lines 1--2 make the input file: 4 lines, the second one blank.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{five} lines that are printed.\\[0.2em]
+      \textbf{2.} File lines 2 and 3 both raise \code{ValueError}, but in different
+      statements. Which, and why?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{Linh ok}\\
+      \phantom{\textbf{1.}} \code{line 2 skipped}\\
+      \phantom{\textbf{1.}} \code{line 3 skipped}\\
+      \phantom{\textbf{1.}} \code{Mai ok}\\
+      \phantom{\textbf{1.}} \code{4 155}\\[0.2em]
+      \textbf{2.} Blank line: \code{"".split(",")} is \code{['']}, one piece for
+      two names, so \code{name, mark = ...} fails (\code{not enough values to
+      unpack}). \code{An,abc} splits fine, then \code{int("abc")} fails.\\[0.2em]
+      \code{Mai,70} has no \code{"\textbackslash n"} but is still read.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The mark reader (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+import java.io.*;
+public class MarkReader {
+    static int sumMarks(BufferedReader in) {
+        int total = 0, n = 0;
+        String line;
+        try {
+            while ((line = in.readLine()) != null) {
+                if (line.isEmpty()) break;
+                n++;
+                total += Integer.parseInt(line);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("bad line " + n);
+        }
+        return total;
+    }
+}
+\end{lstlisting}
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors. Give each
+    line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the method should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em]
+      \footnotesize
+      \item One mark per line; read to the end
+      \item Skip blank lines, but count them (from 1)
+      \item Not a number: print \code{bad line N}, \textbf{go on}
+      \item Return the total of the good marks
+    \end{itemize}
+    \neutrallabel{Test} {\footnotesize (\code{main} in \code{Demo}, with
+    \code{throws IOException})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+String text = "50\n\nabc\n30\nxyz\n20";
+BufferedReader in = new BufferedReader(
+    new StringReader(text));
+System.out.println(MarkReader.sumMarks(in));
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+bad line 3
+bad line 5
+100
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.2em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 3} (compile error, reported at line 7:
+            {\scriptsize\code{unreported exception IOException; must be caught or
+            declared to be thrown}}): add \code{throws IOException}.
+      \item \textbf{Line 8}: \code{break} stops at the blank line. Use
+            \code{continue}.
+      \item \textbf{Line 9}: blank lines are not counted. Move \code{n++} above
+            line 8.
+      \item \textbf{Lines 6, 12}: the \code{try} wraps the whole loop, so the first
+            bad line ends the reading. Put \code{try}/\code{catch} around line 10
+            only.
+    \end{itemize}
+    {\footnotesize Fix only line 3 and it prints just \code{50}.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}Average of a file (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+def average(path):
+    try:
+        f = open(path)
+    except ValueError:
+        print("no file:", path)
+        return None
+    total, count = 0, 0
+    line = f.readline().strip()
+    while line != "":
+        total += int(line)
+        count += 1
+        line = f.readline().strip()
+    f.close()
+    return total / count
+with open("nums.txt", "w") as out:
+    out.write("4\n6\n\n8\n")
+open("empty.txt", "w").close()
+print(average("nums.txt"))
+print(average("empty.txt"))
+print(average("missing.txt"))
+\end{lstlisting}
+    {\small \badlabel{Find 3 bugs} in lines 1--14 (3 min). Give each line number and
+    its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What \code{average} should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Return the average of the numbers, one per line
+      \item Skip blank lines. No numbers: return \code{None}
+      \item No such file: print \code{no file: <path>}, return \code{None}
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+6.0
+None
+no file: missing.txt
+None
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (stack trace trimmed)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.6}{7.8}\selectfont]
+5.0
+Traceback (most recent call last):
+  File "main.py", line 19, in <module>
+  File "main.py", line 14, in average
+ZeroDivisionError: division by zero
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 4}: \code{open} raises \code{FileNotFoundError}, not
+            \code{ValueError}. Catch \code{FileNotFoundError}.
+      \item \textbf{Lines 8, 12}: \code{strip()} \emph{before} the test makes the
+            blank line \code{""}, which looks like the end: \code{8} is never read.
+            Use \code{for line in f:}, and \code{continue} if
+            \code{line.strip() == ""}.
+      \item \textbf{Line 14}: no numbers, so \code{count} is 0. First:
+            \code{if count == 0:} \code{return None}.
+    \end{itemize}
+    {\footnotesize Read a Python trace from the \textbf{bottom}: the error, where it
+    happened (line 14), who called (line 19).}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Write the code}
+% ======================================================================
+
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}Parse a mark or say why (Java)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min).} {\small \code{trim()} first, as
+  \code{Integer.parseInt(" 85")} throws.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Not a whole number: throw \code{IllegalArgumentException("not a number: <trimmed text>")}.
+    \item Below 0 or above 100: throw \code{IllegalArgumentException("out of range: <mark>")}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class Marks {
+    // " 85" gives 85
+    static int parseMark(String text) {
+        // TODO
+        return 0;
+    }
+}
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+String[] inputs = {" 85", "abc", "120", "0"};
+for (String s : inputs) {
+    try {
+        System.out.println(Marks.parseMark(s));
+    } catch (IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+    }
+}
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+85
+not a number: abc
+out of range: 120
+0
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.4}{7.3}\selectfont]
+class Marks {
+    static int parseMark(String text) {
+        String t = text.trim();
+        int m;
+        try {
+            m = Integer.parseInt(t);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(
+                "not a number: " + t);
+        }
+        if (m < 0 || m > 100) throw new
+            IllegalArgumentException("out of range: " + m);
+        return m;
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}Ask again until it is valid (Python)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min)} {\small so that the test prints
+  the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Read lines with \code{input()}. A whole number from \code{low} to
+          \code{high}: return it.
+    \item Otherwise print \code{not a number: <text>} or \code{out of range: <n>},
+          and read the next line.
+    \item At the end of the input, \code{input()} raises \code{EOFError}: return
+          \code{None}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+def ask_number(low, high):
+    # TODO
+    return None
+\end{lstlisting}
+    \neutrallabel{Input} {\footnotesize (typed, or piped in)}
+\begin{lstlisting}
+abc
+42
+7
+x
+\end{lstlisting}
+    {\footnotesize \ldots then the input ends.}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+print(ask_number(1, 10))
+print(ask_number(1, 10))
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+not a number: abc
+out of range: 42
+7
+not a number: x
+None
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good,basicstyle=\ttfamily\fontsize{6.4}{7.3}\selectfont]
+def ask_number(low, high):
+    while True:
+        try:
+            text = input()
+        except EOFError:
+            return None
+        try:
+            n = int(text)
+        except ValueError:
+            print("not a number:", text)
+            continue
+        if low <= n <= high:
+            return n
+        print("out of range:", n)
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}Add up the numbers (Java)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min)} {\small so that the test prints
+  the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Read tokens (words between spaces or newlines) while \code{in.hasNext()}.
+    \item A whole number (\code{in.hasNextInt()}): add \code{in.nextInt()}.
+    \item Any other word: print \code{skip <word>}, reading it with \code{in.next()}
+          (\code{nextInt()} would throw \code{InputMismatchException}).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java]
+class Tokens {
+    static int sumInts(Scanner in) {
+        int total = 0;
+        // TODO
+        return total;
+    }
+}
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+try (Scanner in = new Scanner("10 x 20\n\ny 5")) {
+    System.out.println(Tokens.sumInts(in));
+}
+System.out.println(Tokens.sumInts(new Scanner("")));
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+skip x
+skip y
+35
+0
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Tokens {
+    static int sumInts(Scanner in) {
+        int total = 0;
+        while (in.hasNext()) {
+            if (in.hasNextInt()) {
+                total += in.nextInt();
+            } else {
+                System.out.println("skip " + in.next());
+            }
+        }
+        return total;
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: from reading marks to saving a report}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{This week: read, then print}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+// in reads "Linh,85\nMai,70"
+int total = 0, n = 0;
+String line;
+while ((line = in.readLine()) != null) {
+    total += Integer.parseInt(line.split(",")[1]);
+    n++;
+}
+System.out.println(n + " marks, total " + total);
+\end{lstlisting}
+    {\footnotesize Prints \code{2 marks, total 155}.}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright The office wants this \textbf{saved} in \code{report.txt},
+      for another program to read tomorrow. What new things can go wrong?
+    \end{discussionbox}
+    \column{0.48\textwidth}
+    \pause
+    {\small Opening for writing \textbf{replaces} an old file. The text is only safe
+    once the file is \textbf{closed}. The format must be one the next program can
+    split.}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+PrintWriter out =
+    new PrintWriter("report.txt", "UTF-8");
+out.println("marks," + n);
+out.println("total," + total);
+// read it back now: 0 lines (still buffered)
+out.close();
+// read it back now: 2 lines
+\end{lstlisting}
+    {\small Python's \code{f.write(...)} adds \textbf{no} newline of its own. Today:
+    \textbf{writing files and reliable reports}.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Exceptions}
+    \begin{itemize}[itemsep=0.1em]
+      \small
+      \item[\yes] trace what is skipped and what runs (Q4--Q6)
+      \item[\yes] catch the exact exception (Q6, Q7, Q8)
+      \item[\yes] checked or unchecked? \code{throws} (Q1, Q2, Q6)
+      \item[\yes] \code{throw} / \code{raise} with a clear message, clean up with
+            \code{finally} (Q1, Q4, Q8)
+      \item[\yes] read a Python stack trace (Q7)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Reading text}
+    \begin{itemize}[itemsep=0.1em]
+      \small
+      \item[\yes] read lines until \code{null}, not a blank line (Q1, Q3, Q6)
+      \item[\yes] Python: test for the end \textbf{before} you strip (Q5, Q7)
+      \item[\yes] read tokens: \code{hasNextInt()} first (Q10)
+      \item[\yes] go on after bad input; stop at the end (Q5, Q6, Q9)
+      \item[\yes] close readers: try-with-resources, \code{with} (Q1, Q2)
+    \end{itemize}
+  \end{columns}
+  \begin{contextbox}{Next: Week 10 -- Writing files and reliable reports}
+    \footnotesize \code{PrintWriter} and \code{write}, overwrite versus append, closing
+    before you check, delimited records (CSV), and testing a report in layers.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

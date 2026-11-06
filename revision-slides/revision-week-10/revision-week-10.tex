@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 10
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,523 +141,762 @@
 }
 
 
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 
 \title[41039 Programming 1 --- Revision of Week 10]{41039 Programming 1}
-\subtitle{Revision of Week 10: Writing files and reliable reports}
+\subtitle{Revision of Week 10: writing files and reliable reports}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.66\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Newlines, modes, closing, quoting\\
+      Q2  & Multiple choice    & Keep the old line, add one (Java)\\
+      Q3  & Multiple choice    & \code{with} and an exception (Python)\\
+      Q4  & Predict the output & \code{print}, \code{println}, append (Java)\\
+      Q5  & Predict the output & A name with a comma (Python)\\
+      Q6  & Find the bug       & The report file (Java, 4 bugs)\\
+      Q7  & Find the bug       & Saving twice (Python, 3 bugs)\\
+      Q8  & Write the code     & Report rows, no file needed (Java)\\
+      Q9  & Write the code     & A log that only grows (Python)\\
+      Q10 & Write the code     & One report, any writer (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.30\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. A writer can target memory}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.io.*;
-StringWriter buffer=new StringWriter();
-try(PrintWriter writer=new PrintWriter(buffer)) {
-    writer.println("name,mark");
-    writer.println("Linh,85");
-}
-System.out.print(buffer.toString());
+\begin{frame}[fragile]{Week 10 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{Output is a contract.} Fix the field order, the
+            delimiter and the line ending. \code{println} ends the line;
+            \code{print} and Python's \code{write} add \textbf{nothing}.
+      \item[\textbf{2}] \textbf{Overwrite or append.} \code{"w"} and
+            \code{new PrintWriter(name)} \textbf{empty} an existing file.
+            \code{"a"} and \code{new FileWriter(name, true)} add to the end.
+      \item[\textbf{3}] \textbf{Close it.} Output waits in a buffer until it is
+            flushed. \code{try}-with-resources and \code{with} close (and flush) the
+            file, even on an exception. \code{PrintWriter}'s \code{println} never
+            throws: ask \code{checkError()}.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{Delimiters need a rule.} A comma \emph{inside} a name
+            breaks \code{split(",")}. Python's \code{csv} module quotes such a field
+            and reads it back whole. Everything read back is \textbf{text}.
+      \item[\textbf{5}] \textbf{Calculate, format, write: three jobs.} A method that
+            \emph{returns} the text can be tested in memory (\code{StringWriter},
+            \code{StringIO}) without a real file.
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+try (PrintWriter out = new PrintWriter(
+         new FileWriter("r.csv", true))) {
+    out.println("Linh,85");  // ends the line
+}  // closed and flushed here
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-name,mark
-Linh,85
+\begin{lstlisting}[language=Py]
+with open("r.csv", "a") as f:
+    f.write("Linh,85\n")  # you add \n
 \end{lstlisting}
-\scriptsize\raggedright The writer emits the header then the record. The buffer lets the page show exactly what would be written.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. Python write does not add a newline}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-from io import StringIO
-buffer=StringIO()
-buffer.write("tea")
-buffer.write("coffee")
-print(repr(buffer.getvalue()))
-buffer.close()
-\end{lstlisting}
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-'teacoffee'
-\end{lstlisting}
-\scriptsize\raggedright The two writes concatenate; print adds a newline only when displaying the representation.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Newlines, modes, closing, quoting}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.35em]
+      \small\setlength{\baselineskip}{1.2\baselineskip}
+      \item Python's \code{f.write(s)} writes exactly \code{s}. Unlike Java's
+            \code{println}, it adds no \blank{1}.
+      \item Opening a file with mode \code{"w"} \blank{2} it first. Mode \blank{3}
+            keeps the old lines and writes after them.
+      \item Output can wait in a \blank{4}. \code{try}-with-resources and
+            \code{with} \blank{5} the file for you, even after an exception.
+      \item A comma inside a name would cut the field in two, so a CSV writer puts
+            that field in \blank{6}.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} newline   & \textbf{f)} quotes\\
+        \textbf{b)} empties   & \textbf{g)} \code{"r"}\\
+        \textbf{c)} \code{"a"} & \textbf{h)} header\\
+        \textbf{d)} buffer    & \textbf{i)} checkError\\
+        \textbf{e)} close     & \textbf{j)} appends\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} a) newline\\[0.3em]
+      \textbf{(2)} b) empties\quad \textbf{(3)} c) \code{"a"}\\[0.3em]
+      \textbf{(4)} d) buffer\quad \textbf{(5)} e) close\\[0.3em]
+      \textbf{(6)} f) quotes\\[0.3em]
+      Not used: g) \code{"r"}, h) header, i) checkError, j) appends.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small Closing also \textbf{flushes}: whatever waits in the buffer is written
+    to the file.}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{3. Java file output and read-back on Ed}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.io.*;
-File file=new File("report.txt");
-try(PrintWriter out=new PrintWriter(file,"UTF-8")) {
-    out.println("name,mark");
-    out.println("Linh,85");
-    if(out.checkError()) throw new IOException("write failed");
-}
-try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file),"UTF-8"))) {
-    String line;
-    while((line=in.readLine())!=null) System.out.println(line);
-}
-\end{lstlisting}
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small Predict the output. Why close before reading back? Do PrintWriter write failures always throw IOException?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-name,mark
-Linh,85
-\end{lstlisting}
-\scriptsize\raggedright Closing completes the output before a reader opens the file. Records appear in their written order. PrintWriter stores many write failures instead of throwing them; checkError reports those failures. Closing manages resource lifetime but does not prove that every write succeeded.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. Use CSV tooling when fields need quoting}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-import csv
-from io import StringIO
-buffer=StringIO(newline="")
-writer=csv.writer(buffer,lineterminator="\n")
-writer.writerow(["name","mark"])
-writer.writerow(["An, Mai",85])
-print(buffer.getvalue(),end="")
-buffer.seek(0)
-rows=list(csv.reader(buffer))
-print(rows[1][0])
-buffer.close()
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-name,mark
-"An, Mai",85
-An, Mai
-\end{lstlisting}
-\scriptsize\raggedright CSV quotes the name containing a comma; the reader returns the original field without the quoting characters.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. Format records separately from saving them}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Demo {
-    static String format(String name,int mark) { return name+","+mark; }
-    public static void main(String[] args) {
-        String[] names={"Linh","An"};
-        int[] marks={85,49};
-        for(int i=0;i<names.length;i++) System.out.println(format(names[i],marks[i]));
-    }
+\begin{frame}<1-2>[t,fragile]{\qb{2}{Multiple choice}Keep the old line, add a new one}
+  \neutrallabel{Goal:} {\small \code{s.txt} holds one line, \code{old}. Afterwards it
+  must hold \textbf{two} lines: \code{old}, then \code{new}.}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.42\textwidth}
+\begin{lstlisting}[language=Java]
+// import java.io.*;
+// main throws IOException
+try (PrintWriter out =
+         new PrintWriter(____)) {
+    out.println("new");
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Linh,85
-An,49
-\end{lstlisting}
-\scriptsize\raggedright The formatter pairs each name with the corresponding mark; persistence is a separate choice.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \column{0.55\textwidth}
+    \begin{discussionbox}{Which fills the blank \code{\_\_\_\_}? (90 seconds)}
+      \small\raggedright
+      \wrongopt{A}{\code{"s.txt"}}\\[0.25em]
+      \wrongopt{B}{\code{new FileWriter("s.txt")}}\\[0.25em]
+      \rightopt{C}{\code{new FileWriter("s.txt", true)}}\\[0.25em]
+      \wrongopt{D}{\code{new StringWriter()}}
+    \end{discussionbox}
+  \end{columns}
+  \begin{onlyenv}<1>
+  {\small \neutrallabel{Hint:} all four compile and run. For each one, ask: what is in
+  \code{s.txt} afterwards?}
+  \end{onlyenv}
+  \begin{onlyenv}<2>
+  \begin{contextbox}{Answer: C}
+    \footnotesize\raggedright
+    \begin{tabular}{@{}p{0.475\linewidth}@{\hspace{0.03\linewidth}}p{0.475\linewidth}@{}}
+      \textbf{C} \yes{} \code{true} opens the file for \textbf{appending}:
+      \code{old} stays and \code{new} goes after it. &
+      \textbf{A} \no{} \code{new PrintWriter("s.txt")} empties the file first, so
+      it holds only \code{new}.\\[0.3em]
+      \textbf{B} \no{} a \code{FileWriter} without \code{true} also empties the
+      file: only \code{new}. &
+      \textbf{D} \no{} writes to a string in memory. The file is untouched: only
+      \code{old}.
+    \end{tabular}
+  \end{contextbox}
+  \end{onlyenv}
 \end{frame}
 
-\begin{frame}[fragile]{6. Round-trip a small document}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-import json
-record={"name":"Linh","marks":[85,90]}
-text=json.dumps(record,sort_keys=True)
-restored=json.loads(text)
-print(restored["name"])
-print(sum(restored["marks"]))
-print(restored==record)
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}\code{with} and an exception}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
+try:
+    with open("r.txt", "w") as f:
+        f.write("a\n")
+        n = int("two")
+        f.write("b\n")
+except ValueError:
+    print("closed?", f.closed)
+with open("r.txt") as f:
+    print(repr(f.read()))
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-Linh
-175
-True
-\end{lstlisting}
-\scriptsize\raggedright The round trip preserves the two marks and name; their sum is 175.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+    \begin{discussionbox}{What does it print? (60 seconds)}
+      \small
+      \wrongopt{A}{\makebox[7.9em][l]{\code{closed? False}}then \code{''}}\\[0.15em]
+      \rightopt{B}{\makebox[7.9em][l]{\code{closed? True}}then \code{'a\textbackslash n'}}\\[0.15em]
+      \wrongopt{C}{\makebox[7.9em][l]{\code{closed? True}}then \code{'a\textbackslash nb\textbackslash n'}}\\[0.15em]
+      \wrongopt{D}{\makebox[7.9em][l]{\code{closed? False}}then \code{'a\textbackslash n'}}
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    {\small \code{int("two")} raises a \code{ValueError}. \code{repr} shows the text
+    with quotes, and a newline as \code{\textbackslash n}.}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: B}
+      \footnotesize\raggedright
+      \code{with} closes the file when the block ends for \textbf{any} reason,
+      including an exception. So \code{f.closed} is \code{True}: \textbf{A} and
+      \textbf{D} are wrong.\\[0.2em]
+      Closing also flushes, so the \code{"a\textbackslash n"} already written is
+      saved: not \code{''} (\textbf{A}).\\[0.2em]
+      The exception jumps straight to \code{except}, so \code{f.write("b\textbackslash n")}
+      never runs (\textbf{C}).\\[0.2em]
+      Java's \code{try}-with-resources does the same.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Team round 1: draw the model}
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
 
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: One report, several responsibilities}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.io.*;
-int[] marks={85,49,50};
-int total=0,passed=0;
-for(int mark:marks) { total+=mark; if(mark>=50) passed++; }
-StringWriter text=new StringWriter();
-try(PrintWriter out=new PrintWriter(text)) {
-    out.println("count,total,passed");
-    out.println(marks.length+","+total+","+passed);
-}
-System.out.print(text.toString());
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the flow and responsibilities after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (read) at (0,0) {input values\\[0pt] 85, 49, 50};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (calc) at (3.2,0) {calculation\\[0pt] 3, 184, 2};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (format) at (6.4,0) {format records\\[0pt] header + values};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (write) at (6.4,-1.5) {writer\\[0pt] memory or file};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (readback) at (3.2,-1.5) {read back\\[0pt] compare values};
-\draw[ref] (read) -- (calc);
-\draw[ref] (calc) -- (format);
-\draw[ref] (format) -- (write);
-\draw[ref] (write) -- (readback);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-count,total,passed
-3,184,2
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small Calculation produces values, formatting chooses a representation, and writing chooses a destination. A read-back test must inspect values and delimiters, not only whether an exception occurred.
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small Emit exactly three CSV lines: a header, Linh,85 and An,49. Names contain no commas or newlines.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.io.*;
-public class Broken {
-    public static void main(String[] args) {
-        StringWriter buffer=new StringWriter();
-        PrintWriter out=new PrintWriter(buffer);
-        String[] names={"Linh","An"};
-        int[] marks={85,49};
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=8,numbersep=0.7em]
-        out.print("name,mark");
-        for(int i=0;i<names.length;i++) {
-            out.print(names[i]+marks[i]);
-        }
-        System.out.print(buffer.toString());
-    }
-}
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L8:} Terminate the header with println.\item \textbf{L10:} Insert the field delimiter and terminate every record.\item \textbf{L12:} Close the writer before reading back the stored text. A memory writer may hide missing-flush bugs.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-name,markLinh85An49
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-name,mark
-Linh,85
-An,49
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Append a complete new record to the existing old record. The resulting file must contain old and new on separate lines.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-from pathlib import Path
-from tempfile import TemporaryDirectory
-with TemporaryDirectory() as folder:
-    path=Path(folder)/"report.txt"
-    path.write_text("old\n",encoding="utf-8")
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=6,numbersep=0.7em]
-    with path.open("w",encoding="utf-8") as out:
-        out.write("new")
-    with path.open("r",encoding="utf-8") as source:
-        print(source.read(),end="")
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L6:} Use append mode to retain old content.\item \textbf{L7:} Add the record terminator explicitly. write does not add a newline.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-new
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-old
-new
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: A writer preserves exact characters}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-import java.io.*;
-StringWriter buffer=new StringWriter();
-try(PrintWriter out=new PrintWriter(buffer)) {
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}\code{print}, \code{println} and append}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.54\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+// in main (throws IOException); import java.io.*;
+try (PrintWriter out = new PrintWriter("log.txt")) {
     out.print("A");
     out.println("B");
-    out.println("C");
+    out.print("C");
 }
-System.out.print(buffer.toString());
-System.out.println("D");
+try (PrintWriter out = new PrintWriter(
+         new FileWriter("log.txt", true))) {
+    out.println("D");
+}
+BufferedReader in = new BufferedReader(
+    new FileReader("log.txt"));
+String line;
+int n = 0;
+while ((line = in.readLine()) != null) {
+    n++;
+    System.out.println(n + ": " + line);
+}
+in.close();
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
+    \column{0.42\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down every line that is printed.\\[0.2em]
+      \textbf{2.} What is printed if the second writer is
+      \code{new PrintWriter("log.txt")} instead?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{1: AB}\\
+      \phantom{\textbf{1.}} \code{2: CD}\\[0.2em]
+      \code{print} ends no line, so \code{A} and \code{B} share line 1. \code{C} is
+      left with no line ending. The second writer \textbf{appends}, so \code{D}
+      joins \code{C} on line 2.\\[0.2em]
+      \textbf{2.} \code{1: D}\\[0.1em]
+      \code{new PrintWriter(name)} empties the file first, so \code{AB} and
+      \code{C} are gone.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-AB
-C
-D
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small print writes no terminator. The first println completes AB; the next completes C. D goes to standard output after the stored text.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: Quoting and a read-back test}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}A name with a comma}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
 import csv
-from io import StringIO
-text=StringIO(newline="")
-writer=csv.writer(text,lineterminator="\n")
-writer.writerow(["An, Mai",50])
-writer.writerow(["Tea",49])
-text.seek(0)
-rows=list(csv.reader(text))
-print(len(rows))
-print(rows[0][0],int(rows[0][1])>=50)
-print(rows[1])
+with open("marks.csv", "w", newline="") as f:
+    w = csv.writer(f)
+    w.writerow(["name", "mark"])
+    w.writerow(["Le, An", 85])
+    w.writerow(["Binh", 49])
+with open("marks.csv", newline="") as f:
+    lines = f.read().splitlines()
+print(lines[1])
+print(len(lines[1].split(",")))
+with open("marks.csv", newline="") as f:
+    rows = list(csv.reader(f))
+print(rows[1][0])
+print(rows[2])
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
+    {\footnotesize \code{splitlines()} gives the file's lines without their line
+    endings. \code{csv.reader} gives one list of fields per line.}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{four} lines that are printed.\\[0.2em]
+      \textbf{2.} You want Binh's mark as a number you can add up. What do you
+      write?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{"Le, An",85}\\
+      \phantom{\textbf{1.}} \code{3}\\
+      \phantom{\textbf{1.}} \code{Le, An}\\
+      \phantom{\textbf{1.}} \code{['Binh', '49']}\\[0.2em]
+      The name holds a comma, so the CSV writer put it in \textbf{quotes}.
+      \code{split(",")} knows nothing about quotes: it cuts at both commas, giving
+      3 pieces. \code{csv.reader} understands the quotes and returns the name
+      whole.\\[0.2em]
+      \textbf{2.} \code{int(rows[2][1])}. Everything read from a file is text:
+      \code{'49'}, not \code{49}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The report file (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+import java.io.*;
+public class Report {
+    // header, a line per student, pass count
+    static void save(String f, String[] names,
+                     int[] marks) {
+        FileWriter fw = new FileWriter(f);
+        PrintWriter out = new PrintWriter(fw);
+        out.println("name,mark");
+        int passed = 0;
+        for (int i = 0; i < names.length; i++) {
+            out.print(names[i] + "," + marks[i]);
+            if (marks[i] > 50) passed++;
+        }
+        out.println("passed," + passed);
+    }
+}
+\end{lstlisting}
+    {\small \badlabel{Find 4 bugs} (3 min): 1 compile error, 3 logic errors. Give each
+    line number and its fix.}
+    \column{0.44\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What the method should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Write \code{name,mark}, one \code{name,mark} line per student, then
+            \code{passed,<count>}
+      \item A mark of 50 or more is a pass
+      \item When \code{save} returns, every line is in the file
+    \end{itemize}
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+// main (throws IOException) is in class Demo
+String[] names = {"An", "Binh", "Chi"};
+int[] marks = {50, 49, 90};
+Report.save("r.csv", names, marks);
+// then print every line of r.csv
+\end{lstlisting}
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+name,mark
+An,50
+Binh,49
+Chi,90
+passed,2
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 6} (compile error): \code{new FileWriter} can throw an
+            \code{IOException}, and nothing catches it. javac:
+            {\scriptsize\code{unreported exception IOException; must be caught or
+            declared to be thrown}}. Add \code{throws IOException} on line 5.
+      \item \textbf{Line 11}: \code{print} ends no line, so all students run
+            together. Use \code{println}.
+      \item \textbf{Line 12}: \code{>} makes An's 50 a fail. Use \code{>=}.
+      \item \textbf{Lines 6--7}: \code{out} is never closed, so the text stays in
+            the buffer. Open it in
+            \code{try (PrintWriter out = ...) \{ ... \}}.
+    \end{itemize}
+    {\footnotesize Fix only line 6 and the test prints \textbf{nothing}: \code{r.csv}
+    is empty.}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}Saving twice (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.45\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+def save(path, marks):
+    with open(path, "a") as f:
+        f.write("name,mark")
+        for name, mark in marks.items():
+            f.write(f"{name},{mark}\n")
+
+def total(path):
+    with open(path) as f:
+        lines = f.read().splitlines()
+    result = 0
+    for line in lines[1:]:
+        result += line.split(",")[1]
+    return result
+
+marks = {"An": 85, "Binh": 49}
+save("m.csv", marks)
+save("m.csv", marks)
+with open("m.csv") as f:
+    print(f.read(), end="")
+print(total("m.csv"))
+\end{lstlisting}
+    \column{0.52\textwidth}
+    {\small \badlabel{Find 3 bugs} in lines 1--13 (3 min). Give each line number and
+    its fix.}\\[0.1em]
+    \begin{onlyenv}<1>
+    \neutrallabel{What the code should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Saving again \textbf{replaces} the old report
+      \item The header is a line of its own
+      \item \code{total} returns the sum, as a number
+    \end{itemize}
+    \begin{minipage}[t]{0.40\linewidth}
+    \neutrallabel{Expected}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+name,mark
+An,85
+Binh,49
+134
+\end{lstlisting}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.56\linewidth}
+    \badlabel{Actual}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+name,markAn,85
+Binh,49
+name,markAn,85
+Binh,49
+\end{lstlisting}
+    \end{minipage}
+    {\footnotesize \ldots{} then it crashes at line 12 with}\\
+    {\fontsize{6.0}{7.2}\selectfont\ttfamily TypeError: unsupported operand type(s) for +=: 'int' and 'str'\par}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 2}: \code{"a"} keeps the old report, so the second
+            \code{save} adds a second copy. Use \code{"w"}: it empties the file
+            first.
+      \item \textbf{Line 3}: \code{write} adds no newline, so the header runs into
+            \code{An,85}. Write \code{"name,mark\textbackslash n"}.
+      \item \textbf{Line 12}: a field read back is \textbf{text} (\code{'85'}), and
+            \code{0 + '85'} is an error. Convert it first:\\
+            \code{result += int(line.split(",")[1])}
+    \end{itemize}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Write the code}
+% ======================================================================
+
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}Report rows, no file needed (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{row}: the name, the mark and \code{pass} or \code{fail}, joined by
+          commas. A mark of 50 or more is a pass.
+    \item \code{summary}: \code{"<passed>/<count> passed"}, or \code{"no marks"} when
+          the array is empty.
+    \item Both \textbf{return} the text and print nothing: the caller decides where
+          it goes (screen, file or test).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.45\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Rows {
+    // "An,50,pass" or "Binh,49,fail"
+    static String row(String name, int mark) {
+        return "";  // TODO
+    }
+    // "2/3 passed", or "no marks" if empty
+    static String summary(int[] marks) {
+        return "";  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.52\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+System.out.println(Rows.row("An", 50));
+System.out.println(Rows.row("Binh", 49));
+int[] m = {50, 49, 90};
+System.out.println(Rows.summary(m));
+System.out.println(Rows.summary(new int[0]));
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+An,50,pass
+Binh,49,fail
+2/3 passed
+no marks
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Rows {
+    static String row(String name, int mark) {
+        String result = "fail";
+        if (mark >= 50) result = "pass";
+        return name + "," + mark + "," + result;
+    }
+    static String summary(int[] marks) {
+        if (marks.length == 0) return "no marks";
+        int passed = 0;
+        for (int m : marks) if (m >= 50) passed++;
+        return passed + "/" + marks.length + " passed";
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}A log that only grows (Python)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min).} {\small \code{app.log} does
+  not exist at the start. Use \code{with}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{log(path, message)}: add \code{message} as a new \textbf{last} line,
+          keeping the earlier lines.
+    \item \code{count\_lines(path)}: how many lines the file has, or \code{0} if it
+          does not exist (do not crash).
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+def log(path, message):
+    pass  # TODO
+
+def count_lines(path):
+    # TODO
+    return 0
+\end{lstlisting}
+    \begin{onlyenv}<2>
+    {\footnotesize With \code{"w"}, or without the \code{"\textbackslash n"}, the
+    first two counts are \code{1} and \code{1}.}
+    \end{onlyenv}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+log("app.log", "start")
+log("app.log", "save")
+print(count_lines("app.log"))
+log("app.log", "stop")
+print(count_lines("app.log"))
+print(count_lines("none.log"))
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
 2
-An, Mai True
-['Tea', '49']
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The CSV writer quotes the comma in the name. The reader reconstructs one field containing that comma; the mark is converted before comparing it numerically.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{A report with a stable schema}\small Read n then n marks in 0..100. Print count,total,passed and one CSV record with the number of marks, their sum, and the number at least 50. Standard output is the test destination; the same formatter could feed a file writer.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
 3
-85 49 50
+0
 \end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good]
+def log(path, message):
+    with open(path, "a") as f:
+        f.write(message + "\n")
 
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-count,total,passed
-3,184,2
+def count_lines(path):
+    try:
+        with open(path) as f:
+            return len(f.readlines())
+    except FileNotFoundError:
+        return 0
 \end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Code it: Java solution}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-import java.util.Scanner;
-Scanner sc=new Scanner(System.in);
-int n=sc.nextInt(),total=0,passed=0;
-for(int i=0;i<n;i++) { int mark=sc.nextInt(); total+=mark; if(mark>=50) passed++; }
-System.out.println("count,total,passed");
-System.out.println(n+","+total+","+passed);
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}One report, any writer (Java)}
+  \neutrallabel{Finish the \code{TODO} (alone, 4 min).} {\small Write \code{name,mark},
+  each row, then \code{count,<rows>}.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item Return \code{true} only if every write worked: \code{println} never
+          throws, so ask \code{out.checkError()}.
+    \item Do \textbf{not} close \code{out}: whoever opened it closes it.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.42\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Report {
+    // header, each row, then the count
+    static boolean write(PrintWriter out,
+                         String[] rows) {
+        // TODO
+        return false;
+    }
+}
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-n=int(input())
-marks=list(map(int,input().split()))[:n]
-print("count,total,passed")
-print(f"{n},{sum(marks)},{sum(mark>=50 for mark in marks)}")
+    \begin{onlyenv}<2>
+    {\footnotesize A write to a closed writer fails \textbf{quietly}:
+    \code{checkError()} turns \code{true}. For a file, the caller passes
+    \code{new PrintWriter("r.csv")} and closes it.}
+    \end{onlyenv}
+    \column{0.55\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main}; \code{import java.io.*;})}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+StringWriter mem = new StringWriter();
+PrintWriter out = new PrintWriter(mem);
+String[] rows = {"An,85", "Binh,49"};
+System.out.println(Report.write(out, rows));
+System.out.print(mem);
+out.close();
+System.out.println(Report.write(out, rows));
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
+    \neutrallabel{Must print}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+true
+name,mark
+An,85
+Binh,49
+count,2
+false
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Report {
+    static boolean write(PrintWriter out,
+                         String[] rows) {
+        out.println("name,mark");
+        for (String r : rows) {
+            out.println(r);
+        }
+        out.println("count," + rows.length);
+        return !out.checkError();
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{3 / 85 49 50}\par \textbf{Output:} \code{count,total,passed / 3,184,2}\par\medskip \textbf{Test 2}\par \code{0 / (blank)}\par \textbf{Output:} \code{count,total,passed / 0,0,0}\par\medskip \textbf{Test 3}\par \code{3 / 0 0 0}\par \textbf{Output:} \code{count,total,passed / 3,0,0}\par\medskip \textbf{Test 4}\par \code{2 / 100 50}\par \textbf{Output:} \code{count,total,passed / 2,150,2}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: one method, three jobs}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+    \neutrallabel{Last week: one method does it all}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class ReportJob {
+    void run(int[] marks) throws IOException {
+        int passed = 0;
+        for (int m : marks) if (m >= 50) passed++;
+        try (PrintWriter out =
+                 new PrintWriter("r.csv")) {
+            for (int m : marks) out.println(m);
+            out.println("passed," + passed);
+        }
+    }
+}
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright The pass mark changes to 40, and the office also wants the
+      report as JSON. Where does each change go?
+    \end{discussionbox}
+    \column{0.46\textwidth}
+    \pause
+    {\small Both land in the \textbf{same} method, next to the file name. One class,
+    three reasons to change. Instead, give each job its own home:}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class MarkList {     // knows the marks
+    int passed() { ... }
+}
+class CsvReport {    // knows the format
+    String format(MarkList list) { ... }
+}
+// the caller picks the destination
+\end{lstlisting}
+    {\small Today: who should \textbf{own} each piece of data and each decision?
+    Responsibilities, information experts, and SOLID and GRASP as design
+    questions.}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
-
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Specify delimiters, newlines, field order and text encoding.\item Distinguish write, append and read modes.\item Separate computation from formatting and persistence.\item Use quoting for general CSV and inspect values after reading back.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-10.html}{Course website: Week 10}. Complete programs accompany this deck.}
-
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Writing files}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] choose overwrite (\code{"w"}) or append (\code{"a"}, \code{true})
+            on purpose (Q1, Q2, Q4, Q7, Q9)
+      \item[\yes] end every line: \code{println}, or \code{"\textbackslash n"} with
+            \code{write} (Q1, Q4, Q6, Q7)
+      \item[\yes] close with \code{try}-with-resources or \code{with}, even on an
+            exception (Q1, Q3, Q6)
+      \item[\yes] handle errors: \code{throws IOException},
+            \code{FileNotFoundError}, \code{checkError()} (Q6, Q9, Q10)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Reliable reports}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] let \code{csv} quote a field with a comma; read it back with
+            \code{csv.reader} (Q1, Q5)
+      \item[\yes] turn text read back into numbers: \code{int(...)} (Q5, Q7)
+      \item[\yes] keep calculating and formatting apart from the destination
+            (Q8, Q10)
+      \item[\yes] test a report in memory, with the boundary and empty input
+            (Q8, Q10)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 11 -- Designing object-oriented programs}
+    \footnotesize Responsibilities, information experts, interfaces, substitution,
+    cohesion and coupling.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

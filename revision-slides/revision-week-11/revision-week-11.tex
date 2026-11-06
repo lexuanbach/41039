@@ -1,4 +1,5 @@
-% 41039 Programming 1 revision; shared style copied from the established Week 4 deck.
+% 41039 Programming 1 -- Revision of Week 11
+% Question format: the same spine as the CO1005 revision decks.
 \documentclass[aspectratio=169]{beamer}
 \makeatletter
 
@@ -56,7 +57,7 @@
 \setbeamercolor{footbar}{bg=bkblue,fg=white}
 \setbeamertemplate{footline}{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=2.1ex,dp=1.1ex,leftskip=.3cm,rightskip=.3cm]{footbar}%
-    \tiny\insertshorttitle\hfill\insertframenumber{}/\inserttotalframenumber%
+    \tiny{\hypersetup{linkcolor=white}\insertshorttitle}\hfill\insertframenumber{}/\inserttotalframenumber%
   \end{beamercolorbox}%
 }
 
@@ -102,7 +103,7 @@
 }
 
 \lstdefinestyle{code}{
-  basicstyle=\ttfamily\scriptsize,
+  basicstyle=\ttfamily\fontsize{7.4}{8.6}\selectfont,
   keywordstyle=\color{bkblue}\bfseries,
   commentstyle=\color{codecmt}\itshape,
   stringstyle=\color{codestr},
@@ -111,7 +112,7 @@
   xleftmargin=1.1em, framexleftmargin=1.1em,
   framexrightmargin=0.4em, framextopmargin=3pt, framexbottommargin=3pt,
   showstringspaces=false, columns=fullflexible, keepspaces=true,
-  breaklines=true, aboveskip=0.6em, belowskip=0.6em,
+  breaklines=true, aboveskip=0.35em, belowskip=0.35em,
 }
 \lstdefinestyle{bad}{style=code, rulecolor=\color{badred}, backgroundcolor=\color{badred!4}}
 \lstdefinestyle{good}{style=code, rulecolor=\color{goodgreen}, backgroundcolor=\color{goodgreen!5}}
@@ -140,563 +141,792 @@
 }
 
 
-
+% --- Additions for this deck ---------------------------------------------
+% A question badge for frame titles: \qb{3}{Multiple choice}
+\newcommand{\qb}[2]{\colorbox{bkblue}{\textcolor{white}{\normalsize\bfseries\sffamily Q#1}}\,{\normalsize\sffamily\textcolor{bkblue!75}{#2}}\enspace}
+% An MCQ option; the correct one turns green on the answer step
+\newcommand{\opt}[2]{\textbf{#1.}~#2}
+\newcommand{\rightopt}[2]{\alt<2->{\textcolor{goodgreen}{\ding{51}~\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
+\newcommand{\wrongopt}[2]{\alt<2->{\textcolor{codegray}{\textbf{#1.}~#2}}{\textbf{#1.}~#2}}
 
 \title[41039 Programming 1 --- Revision of Week 11]{41039 Programming 1}
-\subtitle{Revision of Week 11: Designing object-oriented programs}
+\subtitle{Revision of Week 11: designing object-oriented programs}
 \author{Dr. Xuan-Bach Le\\ \small\texttt{le.xuan.bach@hcmut.edu.vn}}
 \institute{\small Faculty of Computer Science and Engineering, HCMUT}
 \date{September Session 2026}
-\AtBeginSection[]{\begin{frame}{Outline}\tableofcontents[currentsection]\end{frame}}
+
 \begin{document}
 
-\begin{frame}{}
-\titlepage
+\begin{frame}[plain]
+  \titlepage
 \end{frame}
 
-\begin{frame}{How the revision session works}
-\begin{discussionbox}{A recap before the next lecture}\small Write an answer before the reveal. Explain the state change, rule or contract that makes it follow. These are practice questions, with no new assessment requirements.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 1: on your own}\begin{itemize}\small\item 6 short questions\item About 90 seconds per question\item Java and Python; name the language first\end{itemize}
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Part 2: teams of 3 or 4}\begin{itemize}\small\item Draw the model\item Spot the errors\item Predict the output\item Write and test the code\end{itemize}
-\end{columns}
-\keyline{A result needs a reason. A repair needs a counterexample.}
+% ======================================================================
+\begin{frame}{Today's revision: 10 questions, about 35 minutes}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.68\textwidth}
+    {\small
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{@{}l@{\hspace{0.8em}}l@{\hspace{0.8em}}l@{}}
+      \toprule
+      \textbf{\#} & \textbf{Type} & \textbf{Topic}\\
+      \midrule
+      Q1  & Fill in the blanks & Experts, cohesion, coupling, YAGNI\\
+      Q2  & Multiple choice    & Which \code{Basket} needs no edit?\\
+      Q3  & Multiple choice    & Which \code{Tally} breaks the promise?\\
+      Q4  & Predict the output & Library fines (Java)\\
+      Q5  & Predict the output & A screen and a recorder (Python)\\
+      Q6  & Find the bug       & The library member (Java, 4 bugs)\\
+      Q7  & Find the bug       & The checkout (Python, 3 bugs)\\
+      Q8  & Write the code     & Ask the expert: a cart (Java)\\
+      Q9  & Write the code     & One pass mark in one place (Python)\\
+      Q10 & Write the code     & Two desks, one stock (Java)\\
+      \bottomrule
+    \end{tabular}}
+    \column{0.29\textwidth}
+    \begin{discussionbox}{How it works}
+      \small\raggedright
+      \begin{enumerate}[itemsep=0.3em, topsep=0.1em, leftmargin=1.2em]
+        \item Read the question and answer it \textbf{alone} first. Write your answer
+              down.
+        \item Then compare with a neighbour.
+        \item The answer appears on the \textbf{next click}.
+      \end{enumerate}
+    \end{discussionbox}
+  \end{columns}
 \end{frame}
 
-\section{On your own}
-
-\begin{frame}[fragile]{1. Keep the calculation in the expert}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Order order=new Order();
-order.add(new Line(300,2));
-order.add(new Line(150,1));
-System.out.println(order.total());
-class Line {
-    private final int cents,quantity;
-    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }
-    int subtotal() { return cents*quantity; }
+\begin{frame}[fragile]{Week 11 in five ideas (read this first)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{1}] \textbf{One responsibility.} One clear job, so one reason to
+            change. Keep \textbf{calculating} apart from \textbf{printing}:
+            \code{total()} returns a number; other code shows it.
+      \item[\textbf{2}] \textbf{Information Expert.} Put a calculation in the class that
+            \emph{has} the data. \code{Order} \textbf{asks} each \code{Line} for its
+            subtotal; it never reaches into its \code{private} fields.
+      \item[\textbf{3}] \textbf{Depend on an interface, and be given it.} \code{Basket}
+            keeps a \code{PriceRule} passed to its constructor (Python: pass a
+            function). A new rule is a new class; \code{Basket} does not change.
+    \end{itemize}
+    \column{0.49\textwidth}
+    \begin{itemize}[itemsep=0.4em]
+      \small
+      \item[\textbf{4}] \textbf{Keep the promise.} A replacement must \emph{behave} as
+            callers expect, not just share method names. Ask only for what you use
+            (e.g.\ just \code{send}).
+      \item[\textbf{5}] \textbf{Cohesion and coupling.} High cohesion: parts serve one
+            purpose. Low coupling: few details of others. \textbf{DRY}: one rule in
+            one place. \textbf{YAGNI}: no code for imagined futures.
+    \end{itemize}
+\begin{lstlisting}[language=Java]
+int total() {    // in class Order
+    int sum = 0;
+    for (Line l : lines)
+        sum += l.subtotal();  // ask
+    return sum;               // no print
 }
-class Order {
-    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();
-    void add(Line line) { lines.add(line); }
-    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }
-}
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small Predict the total. Which object should compute one line subtotal, and which object should aggregate the order?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-750
-\end{lstlisting}
-\scriptsize\raggedright Each line computes its own subtotal; Order sums 600 and 150.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{2. Separate calculation from presentation}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Order:
-    def __init__(self, amounts): self.amounts=list(amounts)
-    def total(self): return sum(self.amounts)
-def format_receipt(order):
-    return f"Total: {order.total()} cents"
-order=Order([600,150])
-print(order.total())
-print(format_receipt(order))
-\end{lstlisting}
+% ======================================================================
+\section{Fill in the blanks}
+% ======================================================================
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-750
-Total: 750 cents
-\end{lstlisting}
-\scriptsize\raggedright The calculation returns a number; the formatter builds a human-readable receipt from that result.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
+\begin{frame}<1-2>{\qb{1}{Fill in the blanks}Responsibilities and dependencies}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.56\textwidth}
+    \neutrallabel{Fill each blank with a word from the bank.}\\[0.1em]
+    {\footnotesize Each word is used at most once. Four words are not used.}
+    \begin{itemize}[itemsep=0.25em]
+      \small\setlength{\baselineskip}{1.12\baselineskip}
+      \item Put a calculation in the class that holds its data: Information
+            \blank{1}.
+      \item All parts serve one purpose: high \blank{2}. Few details of other
+            classes needed: low \blank{3}.
+      \item \code{PriceRule} is an \blank{4}: any rule class fits.
+      \item A replacement must keep the \blank{5} callers rely on, not just the
+            method names.
+      \item Code for a feature nobody asked for breaks \blank{6}.
+    \end{itemize}
+    \column{0.40\textwidth}
+    \alt<1>{%
+    \begin{discussionbox}{Word bank (2 min, alone)}
+      \small\raggedright
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{@{}l@{\hspace{1.4em}}l@{}}
+        \textbf{a)} cohesion   & \textbf{f)} interface\\
+        \textbf{b)} DRY        & \textbf{g)} controller\\
+        \textbf{c)} expert     & \textbf{h)} YAGNI\\
+        \textbf{d)} behaviour  & \textbf{i)} coupling\\
+        \textbf{e)} static     & \textbf{j)} inheritance\\
+      \end{tabular}
+    \end{discussionbox}}{%
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{(1)} c) expert\\[0.3em]
+      \textbf{(2)} a) cohesion\quad \textbf{(3)} i) coupling\\[0.3em]
+      \textbf{(4)} f) interface\quad \textbf{(5)} d) behaviour\\[0.3em]
+      \textbf{(6)} h) YAGNI\\[0.3em]
+      Not used: b) DRY, e) static, g) controller, j) inheritance.
+    \end{contextbox}
+    \vspace{0.2em}
+    {\small \textbf{DRY} = one rule in one place. A \textbf{controller}
+    coordinates a request but leaves each rule to its expert.}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{3. An extensible pricing rule}
-\srcline{Java 8 excerpt: main statements and supporting types; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Basket basket=new Basket(new StudentPrice());
-System.out.println(basket.price(1000));
-interface PriceRule { int apply(int cents); }
-class StudentPrice implements PriceRule {
-    public int apply(int cents) { return cents*80/100; }
-}
+% ======================================================================
+\section{Multiple choice}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{2}{Multiple choice}Which \code{Basket} needs no edit?}
+  \neutrallabel{Given:} {\small \code{StudentPrice} (80\%) and the \textbf{new}
+  \code{Half} implement the interface \code{PriceRule}.}\\
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 1}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
 class Basket {
-    private final PriceRule rule;
-    Basket(PriceRule rule) { this.rule=rule; }
-    int price(int cents) { return rule.apply(cents); }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What prints? Which parts depend on the pricing interface, and how does that help when adding a new policy?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-800
-\end{lstlisting}
-\scriptsize\raggedright StudentPrice applies the 80\% policy. Basket depends on the PriceRule abstraction and receives its collaborator through the constructor. This supports dependency inversion and lets a new policy extend the behaviour without changing Basket.price.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{4. Inject a function in Python}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-def student_price(cents): return cents*80//100
-def regular_price(cents): return cents
-class Basket:
-    def __init__(self, rule): self.rule=rule
-    def price(self, cents): return self.rule(cents)
-print(Basket(student_price).price(1000))
-print(Basket(regular_price).price(1000))
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-800
-1000
-\end{lstlisting}
-\scriptsize\raggedright The caller supplies different policies to the same Basket implementation.
-\end{contextbox}\end{onlyenv}
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{5. Substitutability includes behaviour}
-\srcline{Java 8; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Demo {
-    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }
-    public static void main(String[] args) {
-        java.util.List<Integer> a=new java.util.ArrayList<Integer>();
-        java.util.List<Integer> b=new java.util.LinkedList<Integer>();
-        fill(a); fill(b);
-        System.out.println(a.equals(b));
-        System.out.println(a.get(0));
+    int price(int c,
+              boolean student) {
+        if (student)
+            return c * 80 / 100;
+        return c;
     }
 }
 \end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small Predict the output. Would a replacement List remain substitutable if its add method inserted at the front?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-true
-2
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 2}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Basket {
+    private PriceRule rule =
+        new StudentPrice();
+    int price(int c) {
+        return rule.apply(c);
+    }
+}
 \end{lstlisting}
-\scriptsize\raggedright Both implementations preserve append order, so their contents are equal and begin with 2. A replacement that prepended instead would violate the List contract. Matching a method signature does not prove behavioural substitutability.
-\end{contextbox}\end{onlyenv}
-\end{columns}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.315\textwidth}
+    \neutrallabel{Version 3}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Basket {
+    private PriceRule rule;
+    Basket(PriceRule r) {
+        rule = r;
+    }
+    int price(int c) {
+        return rule.apply(c);
+    }
+}
+\end{lstlisting}
+  \end{minipage}
 
+  \begin{columns}[T,onlytextwidth]
+    \column{0.34\textwidth}
+    \begin{discussionbox}{Choose one (90 s)}
+      \small\raggedright
+      Which can use \code{Half} with \textbf{no} edit to \code{Basket}?\\[0.1em]
+      \begin{tabular}{@{}l@{\hspace{0.7em}}l@{}}
+      \wrongopt{A}{V1 only} & \wrongopt{B}{V2 only}\\
+      \rightopt{C}{V3 only} & \wrongopt{D}{V2, V3}
+      \end{tabular}
+    \end{discussionbox}
+    \column{0.62\textwidth}
+    \alt<1>{%
+    \vspace{0.6em}{\small \neutrallabel{Hint:} the code that creates a basket is \textbf{outside}
+    the class. What can it hand to each version?}}{%
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      \textbf{V3} \yes{} the caller writes \code{new Basket(new Half())}: 500.\\
+      \textbf{V1} \no{} knows only ``student or not'': a new rule is new code.\\
+      \textbf{V2} \no{} (so not D) \textbf{picks} \code{StudentPrice} itself: to use
+      \code{Half}, edit \code{Basket}.
+    \end{contextbox}}
+  \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{6. A narrow capability}
-\srcline{Python 3; commit to an outcome before the reveal.}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
+\begin{frame}<1-2>[fragile]{\qb{3}{Multiple choice}Which \code{Tally} breaks the promise?}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.44\textwidth}
+\begin{lstlisting}[language=Java]
+interface Tally {
+    // Promise: total() is the sum of
+    // every n given to add(n).
+    void add(int n);
+    int total();
+}
+// in class Demo: works with ANY Tally
+static int check(Tally t) {
+    t.add(5);
+    t.add(3);
+    return t.total();
+}
+\end{lstlisting}
+    {\small Each option is a class that \code{implements Tally}; its \code{total()}
+    returns what it keeps (B adds up its list). All four \textbf{compile}. Exactly
+    \textbf{one} breaks \code{check}.}
+    \column{0.52\textwidth}
+    \begin{discussionbox}{Choose one (60 seconds)}
+      \small\raggedright
+      \wrongopt{A}{\code{Sum}: keeps a running sum, \code{s += n}.}\\[0.1em]
+      \wrongopt{B}{\code{ListTally}: keeps every \code{n} in a list.}\\[0.1em]
+      \rightopt{C}{\code{LastTally}: keeps only the last \code{n}.}\\[0.1em]
+      \wrongopt{D}{\code{CountTally}: \code{Sum} plus a new \code{count()}.}
+    \end{discussionbox}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answer: C}
+      \footnotesize\raggedright
+      \code{check} gives 8 for A, B, D but \textbf{3} for C: it forgets the 5. Same
+      method names, broken promise. The compiler checks names, not behaviour.\\[0.1em]
+      \textbf{B} stores numbers differently and \textbf{D} adds a method:
+      \code{check} cannot tell.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+\section{Predict the output}
+% ======================================================================
+
+\begin{frame}<1-2>[fragile]{\qb{4}{Predict the output}Library fines}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+interface Fee { int charge(int days); }
+class Flat implements Fee {
+    public int charge(int d) { return 5; }
+}
+class Daily implements Fee {
+    public int charge(int d) { return 2 * d; }
+}
+class Library {
+    private final Fee fee;
+    Library(Fee fee) { this.fee = fee; }
+    int fine(int daysLate) {
+        if (daysLate <= 0) return 0;
+        return fee.charge(daysLate);
+    }
+}
+// in main, in another class Demo
+Library a = new Library(new Daily());
+Library b = new Library(new Flat());
+System.out.println(a.fine(3) + " " + b.fine(3));
+System.out.println(a.fine(0) + " " + b.fine(9));
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{two} lines that are printed.\\[0.2em]
+      \textbf{2.} The library wants a new fee: 1 per day, at most 4. Which existing
+      class must you edit?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{6 5}\\
+      \phantom{\textbf{1.}} \code{0 5}\\[0.2em]
+      Each library uses the fee it was \textbf{given}: \code{Daily} gives
+      $2 \times 3 = 6$; \code{Flat} is always 5. For 0 days \code{Library} returns 0
+      \emph{before} it asks the fee.\\[0.2em]
+      \textbf{2.} None. Write a new class\\
+      {\scriptsize\code{class Capped implements Fee \{}\\
+      \code{~~public int charge(int d)}\\
+      \code{~~~~\{ return Math.min(d, 4); \} \}}}\\
+      and pass \code{new Capped()}. \code{fine(3)}, \code{fine(9)}, \code{fine(0)} give
+      \code{3 4 0}. The ``0 if not late'' rule stays in \code{Library}.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[fragile]{\qb{5}{Predict the output}A screen and a recorder}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.50\textwidth}
+\begin{lstlisting}[language=Py]
 class Screen:
-    def send(self, message): return "screen: "+message
+    def send(self, text):
+        print("screen:", text)
+
 class Recorder:
-    def __init__(self): self.messages=[]
-    def send(self, message):
-        self.messages.append(message)
-        return "recorded"
-def notify(channel, message): return channel.send(message)
-recorder=Recorder()
-print(notify(recorder,"Ready"))
-print(recorder.messages)
-\end{lstlisting}
+    def __init__(self):
+        self.sent = []
+    def send(self, text):
+        self.sent.append(text)
 
-\column{0.34\textwidth}
-\raggedright
-\begin{onlyenv}<1>\begin{discussionbox}{Your answer}\small What is the complete output? Which line or rule decides it?\end{discussionbox}\end{onlyenv}
-\begin{onlyenv}<2>\begin{contextbox}{Answer}
-\begin{lstlisting}[style=code]
-recorded
-['Ready']
-\end{lstlisting}
-\scriptsize\raggedright The recorder fulfils the same send capability and stores the message for inspection.
-\end{contextbox}\end{onlyenv}
-\end{columns}
+def remind(channel, names):
+    for name in names:
+        if name != "":
+            channel.send("Due: " + name)
 
+remind(Screen(), ["An", ""])
+r = Recorder()
+remind(r, ["Binh", "Chi"])
+print(len(r.sent), r.sent[0])
+\end{lstlisting}
+    \column{0.46\textwidth}
+    \begin{onlyenv}<1>
+    \begin{discussionbox}{Predict (90 seconds, alone)}
+      \small\raggedright
+      \textbf{1.} Write down the \textbf{two} lines that are printed.\\[0.2em]
+      \textbf{2.} \code{remind} only ever calls \code{send}. Why does that make
+      \code{remind} easy to test?
+    \end{discussionbox}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \begin{contextbox}{Answers}
+      \footnotesize\raggedright
+      \textbf{1.} \code{screen: Due: An}\\
+      \phantom{\textbf{1.}} \code{2 Due: Binh}\\[0.2em]
+      The empty name is skipped. \code{Screen} prints at once. \code{Recorder}
+      prints \textbf{nothing}: it keeps both messages in its list.\\[0.2em]
+      \textbf{2.} \code{remind} needs \textbf{only} an object with \code{send}. A test
+      passes a \code{Recorder}, then checks \code{r.sent}: nothing to read off a
+      screen. Asking for one small capability keeps \code{remind} loosely
+      coupled.
+    \end{contextbox}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Team round 1: draw the model}
+% ======================================================================
+\section{Find the bug}
+% ======================================================================
 
-\begin{frame}{Form teams}
-\begin{itemize}[itemsep=0.8em]\item Teams of 3 or 4. One shared sheet, one spokesperson.\item For each challenge, record the result and the reason.\item Rotate the spokesperson. Other teams can challenge an explanation.\item The final task has starter files and a Java/Python solution pair.\end{itemize}\keyline{Discuss first. Commit to an answer. Then compare with the reveal.}
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: A responsibility map for an order}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-Line a=new Line(300,2);
-Line b=new Line(150,1);
-Order order=new Order(a,b);
-System.out.println(order.total());
-class Line {
-    private final int cents,quantity;
-    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }
-    int subtotal() { return cents*quantity; }
-}
-class Order {
-    private final Line a,b;
-    Order(Line a,Line b) { this.a=a; this.b=b; }
-    int total() { return a.subtotal()+b.subtotal(); }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Four minutes}\small Draw the flow and responsibilities after the shown operations. Label the important state. Mark what is shared, what changes, or which path handles failure. Predict every output line.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Draw it: one answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.66\textwidth}
-\raggedright
-\resizebox{\linewidth}{!}{\begin{tikzpicture}
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (ui) at (0,0) {presentation\\[0pt] format a total};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (order) at (3.4,0) {Order\\[0pt] total()};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (a) at (6.8,0) {Line a\\[0pt] subtotal = 600};
-\node[draw=bkblue,rounded corners=2pt,fill=codebg,align=center,inner sep=6pt,font=\small] (b) at (6.8,-1.5) {Line b\\[0pt] subtotal = 150};
-\draw[ref] (ui) -- node[above=8pt,font=\scriptsize]{asks} (order);
-\draw[ref] (order) -- node[above=8pt,font=\scriptsize]{delegates} (a);
-\draw[ref] (order) -- node[above=8pt,font=\scriptsize]{delegates} (b);
-\end{tikzpicture}}
-
-\column{0.3\textwidth}
-\raggedright
-\begin{contextbox}{Output}\begin{lstlisting}[style=code]
-750
-\end{lstlisting}
-\end{contextbox}
-\end{columns}
-\vspace{0.8em}
-\small Line is the information expert for its own subtotal. Order aggregates its lines. Presentation can change its wording without changing the arithmetic.
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 2: spot the errors}
-
-\begin{frame}[fragile]{Spot the errors 1: Java (5 min)}
-\begin{discussionbox}{Contract}\small With HalfPrice, total(1000) returns 500 without printing. Main prints one line.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-public class Broken {
-    public static void main(String[] args) {
-        Checkout c=new Checkout(new HalfPrice());
-        System.out.println(c.total(1000));
-    }
-}
-interface Pricing { int apply(int cents); }
-class Regular implements Pricing {
-    public int apply(int cents) { return cents; }
-}
-class HalfPrice implements Pricing {
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=12,numbersep=0.7em]
-    public int apply(int cents) { return cents/2; }
-}
-class Checkout {
-    private final Pricing rule;
-    Checkout(Pricing rule) { this.rule=new Regular(); }
-    int total(int cents) {
-        System.out.println("charging");
-        return rule.apply(cents);
-    }
-}
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 1: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L16:} Keep the supplied Pricing collaborator instead of constructing an unrelated fixed policy.\item \textbf{L18:} A calculation-only total method should return the charge without choosing a presentation side effect.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-charging
-1000
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-500
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: Python (5 min)}
-\begin{discussionbox}{Contract}\small Count and labels must agree at the boundary, and one function must own the pass rule.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-def passes(mark): return mark>50
-
-def count_passes(marks):
-    return sum(passes(mark) for mark in marks)
-def labels(marks):
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\begin{lstlisting}[style=bad,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=6,numbersep=0.7em]
-    return ["P" if mark>=50 else "F" for mark in marks]
-
-marks=[49,50,85]
-print(count_passes(marks))
-print(labels(marks))
-\end{lstlisting}
-
-\end{columns}
-
-\end{frame}
-
-\begin{frame}[fragile]{Spot the errors 2: answers}
-\begin{columns}[T,onlytextwidth]
-\column{0.58\textwidth}
-\raggedright
-\begin{contextbox}{The repairs}\footnotesize\begin{itemize}[itemsep=0.45em]\item \textbf{L1:} Include the exact pass boundary: 50 passes.\item \textbf{L6:} Use passes(mark) here too, so counting and labels share one source of the pass rule.\end{itemize}\end{contextbox}
-\column{0.38\textwidth}
-\raggedright
-\badlabel{Original program}\begin{lstlisting}[style=code]
-1
-['F', 'P', 'P']
-\end{lstlisting}
-\goodlabel{After the repairs}\begin{lstlisting}[style=code]
-2
-['F', 'P', 'P']
-\end{lstlisting}
-
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 3: predict the output}
-
-\begin{frame}[fragile]{Predict 1: A policy and a common caller}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Java]
-public class Demo {
-    static int charge(Price rule,int cents) { return rule.apply(cents); }
-    public static void main(String[] args) {
-        Price[] rules={new Regular(),new Half()};
-        for(Price rule:rules) System.out.println(charge(rule,101));
-    }
-}
-interface Price { int apply(int cents); }
-class Regular implements Price {
-    public int apply(int cents) { return cents; }
-}
-class Half implements Price {
-    public int apply(int cents) { return cents/2; }
-}
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 1: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-101
-50
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small charge depends only on Price. The two objects select different policies; integer division truncates the fractional cent for Half.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: One capability, observable interactions}
-\begin{columns}[T,onlytextwidth]
-\column{0.62\textwidth}
-\raggedright
-\begin{lstlisting}[style=code,language=Py]
-class Recorder:
-    def __init__(self): self.messages=[]
-    def send(self,text):
-        self.messages.append(text)
-        return len(self.messages)
-def notify(channel,text): return channel.send(text)
-a=Recorder()
-b=a
-print(notify(b,"Ready"))
-print(notify(a,"Go"))
-print(a.messages,b.messages is a.messages)
-\end{lstlisting}
-
-\column{0.34\textwidth}
-\raggedright
-\begin{discussionbox}{Three minutes}\small Write every line in order. Explain the first state change, alias, dispatch decision or exception that controls the result. Then propose one change that alters the output.\end{discussionbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Predict 2: answer}
-\begin{columns}[T,onlytextwidth]
-\column{0.42\textwidth}
-\raggedright
-\begin{lstlisting}[style=code]
-1
-2
-['Ready', 'Go'] True
-\end{lstlisting}
-
-\column{0.54\textwidth}
-\raggedright
-\begin{contextbox}{Why}\small The recorder is a test collaborator. Both variables identify one recorder, so both requests add to the same history.\end{contextbox}
-\end{columns}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\section{Team round 4: write the code}
-
-\begin{frame}[fragile]{Code it: specification}
-\begin{discussionbox}{Information experts in an order}\small Read n, then n pairs: non-negative unit price in cents and quantity. Line.subtotal computes the product. Order.total sums the line subtotals. Print the total. Explain which responsibility belongs to each class.\end{discussionbox}
-\begin{columns}[T,onlytextwidth]
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Example input}\begin{lstlisting}[style=code]
-2
-300 2
-150 1
-\end{lstlisting}
-
-\column{0.48\textwidth}
-\raggedright
-\neutrallabel{Expected output}\begin{lstlisting}[style=code]
-750
-\end{lstlisting}
-
-\end{columns}
-\small Eight minutes. One Java team and one Python team at the keyboard. Other teams produce a boundary test and explain which wrong implementation it would expose.
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Java solution}
-\begin{lstlisting}[style=code,language=Java,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
+\begin{frame}<1-2>[fragile]{\qb{6}{Find the bug}The library member (Java)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.53\textwidth}
+\begin{lstlisting}[language=Java,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
 import java.util.*;
-Scanner sc=new Scanner(System.in);
-int n=sc.nextInt();
-Order order=new Order();
-for(int i=0;i<n;i++) order.add(new Line(sc.nextInt(),sc.nextInt()));
-System.out.println(order.total());
-class Line {
-    private final int price,quantity;
-    Line(int price,int quantity) { this.price=price; this.quantity=quantity; }
-    int subtotal() { return price*quantity; }
+class Loan {
+    private final int due;
+    Loan(int due) { this.due = due; }
+    boolean isLate(int day) { return day >= due; }
 }
-class Order {
-    private final List<Line> lines=new ArrayList<Line>();
-    void add(Line line) { lines.add(line); }
-    int total() { int total=0; for(Line line:lines) total+=line.subtotal(); return total; }
+public class Member {
+    private List<Loan> loans = new ArrayList<>();
+    List<Loan> getLoans() { return loans; }
+    boolean borrow(Loan l) {
+        if (loans.size() > 3) return false;
+        loans.add(l);
+        return true;
+    }
+    int countLate(int day) {
+        int n = 0;
+        for (Loan l : loans) if (day > l.due) n++;
+        return n;
+    }
 }
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
-\end{frame}
-
-\begin{frame}[fragile]{Code it: Python solution}
-\begin{lstlisting}[style=code,language=Py,numbers=left,numberstyle=\tiny\color{codegray},firstnumber=1,numbersep=0.7em]
-class Line:
-    def __init__(self,price,quantity): self.price,self.quantity=price,quantity
-    def subtotal(self): return self.price*self.quantity
-class Order:
-    def __init__(self): self.lines=[]
-    def add(self,line): self.lines.append(line)
-    def total(self): return sum(line.subtotal() for line in self.lines)
-order=Order()
-n=int(input())
-for _ in range(n):
-    price,quantity=map(int,input().split())
-    order.add(Line(price,quantity))
-print(order.total())
+    \column{0.44\textwidth}
+    \badlabel{Find 4 bugs} {\small (3 min): 1 compile error + 3 logic errors.
+    Give line and fix.}\\
+    \begin{onlyenv}<1>
+    \neutrallabel{What the classes should do}
+    \begin{itemize}[itemsep=0em, topsep=0em, leftmargin=1em]
+      \footnotesize
+      \item A loan is late only \textbf{after} its due day
+      \item Max \textbf{3} loans; \code{getLoans()} gives a \textbf{copy}
+    \end{itemize}
+    \neutrallabel{Test} {\footnotesize (\code{main} in another class)}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+Member m = new Member();
+m.borrow(new Loan(10));
+m.borrow(new Loan(12));
+System.out.println(m.countLate(10));
+m.borrow(new Loan(20));
+System.out.println(m.borrow(new Loan(20)));
+m.getLoans().clear();
+System.out.println(m.getLoans().size());
 \end{lstlisting}
-\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
-
+    \neutrallabel{Expected output}
+\begin{lstlisting}[basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+0
+false
+3
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 4 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 17} (compile error: \code{due has private access in Loan}):
+            \code{Member} reaches into \code{Loan}. Ask the expert:
+            \code{if (l.isLate(day)) n++;}
+      \item \textbf{Line 5}: \code{>=} makes a loan late \emph{on} its due day. Use
+            \code{>}.
+      \item \textbf{Line 11}: \code{>} lets a 4th loan in. Use \code{>=}.
+      \item \textbf{Line 9}: hands out the \textbf{real} list, so outside code can
+            clear it. Return a copy: \code{new ArrayList<>(loans)}.
+    \end{itemize}
+    {\footnotesize Fix only line 17: the test prints \code{1}, \code{true}, \code{0}.}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Code it: the tests}
-\footnotesize {\scriptsize A slash separates input lines; (blank) denotes an empty line.\par}\medskip \textbf{Test 1}\par \code{2 / 300 2 / 150 1}\par \textbf{Output:} \code{750}\par\medskip \textbf{Test 2}\par \code{0}\par \textbf{Output:} \code{0}\par\medskip \textbf{Test 3}\par \code{3 / 0 10 / 100 0 / 1 1}\par \textbf{Output:} \code{1}\par\medskip \keyline{Explain why each test is present, not only whether it passes.}
+\begin{frame}<1-2>[fragile]{\qb{7}{Find the bug}The checkout (Python)}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+\begin{lstlisting}[language=Py,style=bad,numbers=left,numberstyle=\tiny\color{codegray},numbersep=0.7em]
+def regular(cents):
+    return cents
+def student(cents):
+    return cents * 80 // 100
+
+class Checkout:
+    def __init__(self, rule):
+        self.rule = regular
+    def charge(self, cents):
+        print(self.rule(cents))
+    def receipt(self, cents):
+        return "Paid: " + self.charge(cents)
+
+c = Checkout(student)
+print(c.receipt(1000))
+print(c.receipt(505))
+\end{lstlisting}
+    {\small \badlabel{Find 3 bugs} in lines 6--12 (3 min): 2 logic errors + 1 crash.
+    Give each line number and its fix.}
+    \column{0.50\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{What \code{Checkout} should do}
+    \begin{itemize}[itemsep=0.05em, topsep=0.1em, leftmargin=1em]
+      \footnotesize
+      \item Use the rule function it is \textbf{given}
+      \item \code{charge(cents)}: \textbf{return} the price; print nothing
+      \item \code{receipt(cents)}: return \code{"Paid: <price>"}
+    \end{itemize}
+    \neutrallabel{Expected output}
+\begin{lstlisting}
+Paid: 800
+Paid: 404
+\end{lstlisting}
+    \badlabel{Actual output} {\footnotesize (crashes at line 12)}
+\begin{lstlisting}[style=bad,basicstyle=\ttfamily\fontsize{6.2}{7.4}\selectfont,xleftmargin=0.5em,framexleftmargin=0.5em]
+1000
+TypeError: can only concatenate str (not "NoneType") to str
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{The 3 fixes}
+    \begin{itemize}[itemsep=0.25em, leftmargin=1em]
+      \footnotesize
+      \item \textbf{Line 8}: ignores the \code{rule} it was given and picks
+            \code{regular} itself, so the student pays 1000. Use
+            \code{self.rule = rule}.
+      \item \textbf{Line 10}: a calculation that \textbf{prints} gives back
+            \code{None}, so no other code can use the price. Use
+            \code{return self.rule(cents)}.
+      \item \textbf{Line 12}: \code{"Paid: " +} a number crashes. Fix only line 10 and
+            it still fails with \code{(not "int")}. Use
+            \code{"Paid: " + str(self.charge(cents))}.
+    \end{itemize}
+    \end{onlyenv}
+  \end{columns}
 \end{frame}
 
-\section{Wrapping up}
+% ======================================================================
+\section{Write the code}
+% ======================================================================
 
-\begin{frame}{What you should now be able to explain}
-\begin{itemize}[itemsep=0.6em]\item Assign behaviour to the object with the needed information.\item Keep computation independent of display and file choices.\item Supply collaborators through a useful abstraction.\item Use SOLID, GRASP, DRY and YAGNI to justify concrete decisions.\end{itemize}\vfill\small Return to the matching week page for runnable examples and further practice. Bring one unresolved prediction or counterexample to the next class.\par\srcline{\href{../../weeks/week-11.html}{Course website: Week 11}. Complete programs accompany this deck.}
+\begin{frame}<1-2>[t,fragile]{\qb{8}{Write the code}Ask the expert: a cart (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{cost()}: the item's price in cents times its quantity.
+    \item \code{total()}: the sum of every item's cost. \code{Cart} must \textbf{ask}
+          each item: \code{cents} and \code{qty} are \code{private}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.49\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Item {
+    private final int cents, qty;
+    Item(int c, int q) { cents = c; qty = q; }
+    int cost() { return 0; }  // TODO
+}
+class Cart {
+    private List<Item> items = new ArrayList<>();
+    void add(Item i) { items.add(i); }
+    int total() {
+        return 0;  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.48\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+Cart c = new Cart();
+System.out.println(c.total());
+c.add(new Item(250, 2));
+c.add(new Item(120, 5));
+c.add(new Item(999, 0));
+System.out.println(c.total());
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+0
+1100
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Item {
+    private final int cents, qty;
+    Item(int c, int q) { cents = c; qty = q; }
+    int cost() { return cents * qty; }
+}
+class Cart {
+    private List<Item> items = new ArrayList<>();
+    void add(Item i) { items.add(i); }
+    int total() {
+        int sum = 0;
+        for (Item i : items) sum += i.cost();
+        return sum;
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
 
+\begin{frame}<1-2>[t,fragile]{\qb{9}{Write the code}One pass mark in one place (Python)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{\_\_init\_\_}: keep the pass mark and an empty list. \code{add(mark)}:
+          add one mark.
+    \item \code{passes(mark)}: is \code{mark} $\ge$ the pass mark? The two counts must
+          \textbf{not} read the pass mark.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.41\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Py]
+class Gradebook:
+    def __init__(self, pass_mark):
+        pass  # TODO
+    def add(self, mark):
+        pass  # TODO
+    def passes(self, mark):
+        return False  # TODO
+    def count_passes(self):
+        return 0  # TODO
+    def count_fails(self):
+        return 0  # TODO
+\end{lstlisting}
+    \column{0.56\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test}
+\begin{lstlisting}[language=Py]
+g = Gradebook(50)
+for m in [49, 50, 85]:
+    g.add(m)
+print(g.count_passes(), g.count_fails())
+h = Gradebook(60)
+h.add(50)
+print(h.count_passes(), h.count_fails())
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+2 1
+0 1
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Py,style=good,basicstyle=\ttfamily\fontsize{6.6}{7.5}\selectfont]
+class Gradebook:
+    def __init__(self, pass_mark):
+        self._pass_mark = pass_mark
+        self._marks = []
+    def add(self, mark):
+        self._marks.append(mark)
+    def passes(self, mark):
+        return mark >= self._pass_mark
+    def count_passes(self):
+        n = 0
+        for m in self._marks:
+            if self.passes(m):
+                n += 1
+        return n
+    def count_fails(self):
+        return len(self._marks) - self.count_passes()
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+\begin{frame}<1-2>[t,fragile]{\qb{10}{Write the code}Two desks, one stock (Java)}
+  \neutrallabel{Finish the \code{TODO}s (alone, 4 min)} {\small so that the test
+  prints the output shown.}
+  \begin{itemize}[itemsep=0pt, topsep=0.15em, leftmargin=1.2em]
+    \footnotesize
+    \item \code{take()}: at 0, return \code{false}, change nothing; else take one,
+          return \code{true}.
+    \item \code{Desk} keeps the \code{Stock} it is \textbf{given} (no count of its own)
+          and uses it in \code{borrow}.
+  \end{itemize}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.44\textwidth}
+    \neutrallabel{Skeleton}
+\begin{lstlisting}[language=Java,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+class Stock {
+    private int count;
+    Stock(int n) { count = n; }
+    boolean take() {
+        return false;  // TODO
+    }
+}
+class Desk {
+    // TODO: the Stock this desk uses
+    Desk(Stock stock) { /* TODO */ }
+    String borrow(String name) {
+        return "";  // TODO
+    }
+}
+\end{lstlisting}
+    \column{0.53\textwidth}
+    \begin{onlyenv}<1>
+    \neutrallabel{Test (in \code{main})}
+\begin{lstlisting}[language=Java]
+Stock books = new Stock(1);
+Desk front = new Desk(books);
+Desk back = new Desk(books);
+System.out.println(front.borrow("An"));
+System.out.println(back.borrow("Binh"));
+System.out.println(books.take());
+\end{lstlisting}
+    \neutrallabel{Must print}
+\begin{lstlisting}
+An borrowed
+Binh: none left
+false
+\end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+    \goodlabel{One answer}
+\begin{lstlisting}[language=Java,style=good,basicstyle=\ttfamily\fontsize{6.6}{7.5}\selectfont]
+class Stock {
+    private int count;
+    Stock(int n) { count = n; }
+    boolean take() {
+        if (count == 0) return false;
+        count--;
+        return true;
+    }
+}
+class Desk {
+    private final Stock stock;
+    Desk(Stock stock) { this.stock = stock; }
+    String borrow(String name) {
+        if (stock.take()) return name + " borrowed";
+        return name + ": none left";
+    }
+}
+\end{lstlisting}
+    \end{onlyenv}
+  \end{columns}
+\end{frame}
+
+% ======================================================================
+% ======================================================================
+% ======================================================================
+\section{Looking ahead}
+% ======================================================================
+
+\begin{frame}[fragile]{Looking ahead: one function that does every job}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.47\textwidth}
+    \neutrallabel{Every job in one function}
+\begin{lstlisting}[language=Py]
+rows = ["An,50", "Binh,70",
+        "Chi,abc", "Dung,90"]
+
+def report(lines):
+    total = 0
+    for line in lines:
+        name, mark = line.split(",")
+        total += int(mark)
+    print("Average:", total / len(lines))
+
+report(rows)
+\end{lstlisting}
+    \begin{discussionbox}{Think (1 minute)}
+      \small\raggedright Row \code{"Chi,abc"} crashes it with a \code{ValueError}.
+      Split \code{report} into jobs. Which job should deal with a bad row?
+    \end{discussionbox}
+    \column{0.49\textwidth}
+    \pause
+    {\small The \textbf{parse} job: text in, a mark (or \code{None}) out. Adding and
+    printing never see bad text:}
+\begin{lstlisting}[language=Py,style=good,basicstyle=\ttfamily\fontsize{6.8}{7.9}\selectfont]
+def parse(line):      # text -> a mark, or None
+    name, mark = line.split(",")
+    if mark.isdigit():
+        return int(mark)
+    return None
+
+marks = []
+for line in rows:
+    m = parse(line)
+    if m is None:
+        print("Skipped:", line)
+    else:
+        marks.append(m)
+print("Average:", sum(marks) / len(marks))
+\end{lstlisting}
+    {\small Prints \code{Skipped: Chi,abc} and then \code{Average: 70.0}.
+    Today: review and integration, whole programs built from stages.}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{You should now be able to\ldots}
+  \begin{columns}[T,onlytextwidth]
+    \column{0.48\textwidth}
+    \neutrallabel{Who does what}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] give a calculation to the class that has the data, and \textbf{ask}
+            it (Q1, Q6, Q8)
+      \item[\yes] keep calculating apart from printing: return, do not print
+            (Q7)
+      \item[\yes] keep one rule in one place (DRY) and avoid speculative code (YAGNI)
+            (Q1, Q4, Q9)
+      \item[\yes] let a controller coordinate while the expert owns the rule
+            and its state (Q10)
+    \end{itemize}
+    \column{0.48\textwidth}
+    \neutrallabel{Depending on as little as possible}
+    \begin{itemize}[itemsep=0.12em]
+      \small
+      \item[\yes] depend on an interface or function you are \textbf{given}
+            (Q2, Q4, Q7)
+      \item[\yes] tell a safe replacement from one that only matches the method names
+            (Q3)
+      \item[\yes] ask a caller for only the capability it uses (Q5)
+      \item[\yes] protect an object's data: no field access from outside, no leaked
+            lists (Q6)
+    \end{itemize}
+  \end{columns}
+  \vspace{0.3em}
+  \begin{contextbox}{Next: Week 12 -- Review and integration}
+    \footnotesize Tracing state accurately, a small data pipeline (read, parse,
+    validate, model, summarise, report) with a clear error policy, testing the
+    boundaries, and a first look at streams.
+  \end{contextbox}
 \end{frame}
 
 \end{document}

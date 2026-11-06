@@ -1,0 +1,93 @@
+/* Week 7's own diagram kinds (assets/visuals-w7.js): grow, overload, access, pair.
+   Design tokens only (assets/style.css), so light, dark and the code themes all follow. */
+
+/* ── grow: the array inside a list, with size and capacity brackets ── */
+.w7-arr { display: grid; gap: 0.3rem; width: max-content; min-width: 100%; }
+.w7-arr.is-old { opacity: 0.55; }
+.w7-arr.is-old .w7-slot { border-style: dashed; border-color: var(--red); }
+.w7-slots { display: flex; gap: var(--cg); }
+.w7-slot {
+  flex: 0 0 var(--cw); width: var(--cw); height: 3.1rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem;
+  background: var(--surface); border: 1.5px solid var(--ink-soft); border-radius: 7px;
+  font-family: "IBM Plex Mono", monospace; line-height: 1.1;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.w7-slot .v { font-size: 0.86rem; font-weight: 600; color: var(--ink); }
+.w7-slot .i { font-size: 0.64rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.w7-slot.is-empty { border-style: dashed; border-color: var(--line); background: transparent; }
+.w7-slot.is-empty .v { font-size: 0.62rem; font-weight: 500; font-style: italic; color: var(--ink-soft); }
+.w7-slot[data-mark="add"]  { border-style: solid; border-color: var(--green); background: color-mix(in srgb, var(--green) 14%, var(--surface)); }
+.w7-slot[data-mark="read"] { border-style: solid; border-color: var(--teal); border-width: 2.5px; background: color-mix(in srgb, var(--teal) 10%, var(--surface)); }
+.w7-slot[data-mark="free"] { border-style: dashed; border-color: var(--teal); border-width: 2px; }
+.w7-slot[data-mark="refused"] { border-style: dashed; border-color: var(--red); border-width: 2.5px; background: color-mix(in srgb, var(--red) 10%, var(--surface)); }
+.w7-measure { display: grid; gap: 0.2rem; }
+.w7-size, .w7-cap {
+  display: block; width: calc(var(--n, 0) * (var(--cw) + var(--cg)) - var(--cg));
+  min-width: max-content; padding-top: 0.15rem; text-align: center;
+  font-family: "IBM Plex Mono", monospace; font-size: 0.68rem; font-weight: 600;
+  border-top: 2px solid; transition: width 380ms ease;
+}
+.w7-size { color: var(--teal-ink); border-color: var(--teal); }
+.w7-cap { color: var(--ink-soft); border-color: var(--ink-soft); }
+
+/* ── overload: a prediction before the reveal ── */
+.w7-ask {
+  display: grid; gap: 0.45rem; padding: 0.6rem 0.75rem;
+  border: 1px dashed var(--amber); border-radius: 8px;
+  background: color-mix(in srgb, var(--amber) 6%, transparent);
+}
+.w7-ask-q { font-weight: 600; font-size: 0.92rem; }
+.w7-ask .btn[aria-pressed="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.w7-ask-fb { font-size: 0.9rem; min-height: 1.2rem; }
+.w7-ask-fb:empty { display: none; }
+
+/* ── access: counters, and doubly linked nodes ── */
+.w7-count {
+  font-size: 0.86rem; color: var(--ink-soft); margin: -0.2rem 0 0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.w7-count strong { color: var(--ink); }
+.w7-dnode { grid-template-columns: 1fr; }
+.w7-dlink { position: relative; width: var(--lw); height: 2px; }
+.w7-dlink.is-on { background: var(--ink-soft); margin: 0 3px; width: calc(var(--lw) - 6px); }
+.w7-dlink.is-on::before, .w7-dlink.is-on::after {
+  content: ""; position: absolute; top: -4px;
+  border-top: 5px solid transparent; border-bottom: 5px solid transparent;
+}
+.w7-dlink.is-on::after { right: -5px; border-left: 7px solid var(--ink-soft); }
+.w7-dlink.is-on::before { left: -5px; border-right: 7px solid var(--ink-soft); }
+.w7-dslot[data-mark="trail"] .viz-node { border-color: var(--teal); border-style: dashed; background: color-mix(in srgb, var(--teal) 6%, var(--surface)); }
+.w7-dslot[data-mark="read"] .viz-node { background: color-mix(in srgb, var(--teal) 12%, var(--surface)); }
+.w7-dslot.is-leaving { opacity: 0; }
+
+/* ── pair: main's variables and the objects they refer to ── */
+.w7-pair { grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); align-items: start; }
+.w7-locals, .w7-heap { display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
+.w7-var, .w7-field { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; overflow-wrap: anywhere; }
+.w7-var {
+  padding: 0.3rem 0.55rem; border: 1px solid var(--line); border-radius: 7px; background: var(--surface);
+}
+.w7-var .t { color: var(--ink-soft); }
+.w7-var .n { font-weight: 700; }
+.w7-var.is-new, .w7-obj.is-new { border-color: var(--green); background: color-mix(in srgb, var(--green) 10%, var(--surface)); }
+.w7-ref { color: var(--teal-ink); font-weight: 600; }
+.w7-obj {
+  border: 1.5px solid var(--line); border-radius: 9px; background: var(--surface);
+  padding: 0.4rem 0.55rem; display: grid; gap: 0.25rem;
+}
+.w7-obj.is-on { border-color: var(--teal); }
+.w7-obj-head { font-size: 0.8rem; font-weight: 600; }
+.w7-field { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.45rem; padding: 0.15rem 0.3rem; border-radius: 5px; }
+.w7-field .n { font-weight: 700; }
+.w7-field .val { margin-left: auto; font-weight: 600; }
+.w7-tp { font-size: 0.7rem; color: var(--ink-soft); }
+.w7-field.is-lit { background: color-mix(in srgb, var(--teal) 14%, transparent); box-shadow: inset 3px 0 0 var(--teal); }
+
+@media (max-width: 560px) {
+  .w7-grow { --cw: 2.75rem; --cg: 0.22rem; }
+  .w7-access { --nw: 3.4rem; --lw: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w7-slot, .w7-size, .w7-cap { transition: none; }
+}

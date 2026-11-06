@@ -1,208 +1,181 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/q02-mcq-which-test/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "2\n",
+    "stdout": "A: expected 0, got 0 (passes)\nB: expected 1, got 1 (passes)\nC: expected 2, got 1 (FAILS)\nD: expected 1, got 1 (passes)\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
+    "file": "examples/q03-mcq-where-to-add/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Not a number\nOut of range\n[85, 50]\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03-mcq-where-to-add/option-a/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Not a number\nOut of range\n[85, 50, 120]\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q03-mcq-where-to-add/option-d/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Not a number\nOut of range\n[120]\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-box-in-a-list/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "7 2\n9\n8\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-sale-items/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "[1, 2, 3]\n[9]\n",
+    "stdout": "pen 6\nink 15\nskip pad\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q03/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "records=3, passed=2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q04/main.py",
+    "file": "examples/q05-predict-sale-items/ink-zero/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "Invalid\n2\n",
+    "stdout": "pen 6\nskip ink\nskip pad\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q05/Demo.java",
+    "file": "examples/q06-find-the-bug-gradebook/only-line-13-fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "false\ntrue\nfalse\n0\n",
+    "stdout": "true false true\n3 1\n41.0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q06/main.py",
+    "file": "solutions/q06-find-the-bug-gradebook/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "true false true\n2 2\n62.5\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07-find-the-bug-load/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "0 0 49\n1 49 99\n2 99 184\ntotal 184\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q07/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "135\n[49, 50, 85]\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q08/main.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "[4, 6]\n[2, 3]\nTrue\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\n2 135\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\ncount,total,passed\n3,151,1\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\nInvalid\ncount,total,passed\n1,50,1\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "",
+    "stdout": "Invalid: An,abc\n",
     "returncode": 1,
-    "error": "IndexError: list index out of range"
+    "error": "ValueError: not enough values to unpack (expected 2, got 1)"
   },
   {
-    "file": "solutions/broken.py",
+    "file": "examples/q07-find-the-bug-load/only-line-10-fixed/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "Invalid\nInvalid\ncount,total,passed\n1,50,1\n",
+    "stdout": "Invalid: An,abc\nInvalid: Tuan\n4 2\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/predict-1/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "[50, 85]\n[0, 50, 85]\n2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-2/main.py",
+    "file": "solutions/q07-find-the-bug-load/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "Invalid\n2 135\n2\n",
+    "stdout": "Invalid: An,abc\nInvalid: Tuan\n2 2\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "solutions/c1-parse-a-row/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
-    "stdout": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n",
+    "stdin": "",
+    "stdout": "Linh 85\nInvalid: Mai,150\nInvalid: Tuan,abc\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "solutions/c2-summarise-a-file/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "Invalid: An,abc\nInvalid: Chi,7.5\n(3, 2)\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c3-keep-matching/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "0\n",
-    "stdout": "count,total,passed\n0,0,0\n",
+    "stdin": "",
+    "stdout": "[49, 50, 85]\n[50, 85]\n[49, 50, 120, 85, -3]\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c1-parse-a-row/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\nA,0\nB,50\nC,100\n",
-    "stdout": "count,total,passed\n3,150,2\n",
+    "stdin": "",
+    "stdout": " 0\n 0\n 0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c2-summarise-a-file/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "(0, 0)\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-keep-matching/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\nmissing\n,50\na,b,c\n",
-    "stdout": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n",
+    "stdin": "",
+    "stdout": "[]\n[]\n[49, 50, 120, 85, -3]\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
-    "lang": "python",
+    "file": "examples/looking-ahead/Demo.java",
+    "lang": "java",
     "release": 8,
-    "stdin": "4\nLinh,85\nAn,bad\nMai,50\nTea,101\n",
-    "stdout": "Invalid\nInvalid\ncount,total,passed\n2,135,2\n",
+    "stdin": "",
+    "stdout": "[50, 85]\n[50, 85]\n[49, 50, 120, 85, -3]\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
+    "file": "examples/looking-ahead/main.py",
     "lang": "python",
     "release": 8,
-    "stdin": "0\n",
-    "stdout": "count,total,passed\n0,0,0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\nA,0\nB,50\nC,100\n",
-    "stdout": "count,total,passed\n3,150,2\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\nmissing\n,50\na,b,c\n",
-    "stdout": "Invalid\nInvalid\nInvalid\ncount,total,passed\n0,0,0\n",
+    "stdin": "",
+    "stdout": "[50, 85]\n[49, 50, 120, 85, -3]\n",
     "returncode": 0,
     "error": ""
   }

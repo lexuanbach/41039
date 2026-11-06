@@ -1,190 +1,172 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/q02-mcq-which-main-compiles/option-c/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "13\nInvalid: bad\n8\n",
+    "stdout": "Buy milk\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "13\nInvalid: bad\n8\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q03/Demo.java",
+    "file": "examples/q02-mcq-which-main-compiles/option-c-missing-file/Demo.java",
     "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "caught\ncleanup\ndone\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q04/main.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "mark out of range\nchecked\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q05/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "1: tea\n2: \n3: coffee\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q06/main.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "1: tea\n2: \n3: coffee\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\n19\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\n2 12\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\n2 19\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
-    "lang": "python",
     "release": 8,
     "stdin": "",
     "stdout": "",
     "returncode": 1,
-    "error": "ValueError: invalid literal for int() with base 10: 'bad\\n'"
+    "error": "\tat Demo.main(Demo.java:9)"
   },
   {
-    "file": "solutions/broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Invalid\n19\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-1/Demo.java",
+    "file": "examples/q03-mcq-read-every-line/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "A\nC\nD\nE\n",
+    "stdout": "Version 1\n[tea]\n[]\n[coffee]\nVersion 2\n[tea]\nVersion 3\n[tea]\n[]\n[coffee]\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/predict-2/main.py",
+    "file": "examples/q04-predict-marks-through-calls/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "checked 40\nskip x\nchecked x\n40\nchecked 120\nmain: too big\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-marks-through-calls/catch-both/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "checked 40\nskip x\nchecked x\n40\nskip 120\nchecked 120\nchecked 9\n9\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-a-marks-file/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "checked 4\n4\nchecked x\nbad\nchecked 2\n2\n",
+    "stdout": "Linh ok\nline 2 skipped\nline 3 skipped\nMai ok\n4 155\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "4\n12\nbad\n-2\n7\n",
-    "stdout": "Invalid\nTotal: 17\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "0\n",
-    "stdout": "Total: 0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "2\nx\ny\n",
-    "stdout": "Invalid\nInvalid\nTotal: 0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "2\n0\n100\n",
-    "stdout": "Total: 100\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
+    "file": "examples/q05-predict-a-marks-file/why/main.py",
     "lang": "python",
     "release": 8,
-    "stdin": "4\n12\nbad\n-2\n7\n",
-    "stdout": "Invalid\nTotal: 17\n",
+    "stdin": "",
+    "stdout": "[''] -> not enough values to unpack (expected 2, got 1)\n['An', 'abc'] -> invalid literal for int() with base 10: 'abc'\n4 lines with a final newline\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
-    "lang": "python",
+    "file": "examples/q06-find-the-bug-mark-reader/only-compile-error-fixed/Demo.java",
+    "lang": "java",
     "release": 8,
-    "stdin": "0\n",
-    "stdout": "Total: 0\n",
+    "stdin": "",
+    "stdout": "50\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
-    "lang": "python",
+    "file": "solutions/q06-find-the-bug-mark-reader/Demo.java",
+    "lang": "java",
     "release": 8,
-    "stdin": "2\nx\ny\n",
-    "stdout": "Invalid\nInvalid\nTotal: 0\n",
+    "stdin": "",
+    "stdout": "bad line 3\nbad line 5\n100\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
+    "file": "examples/q07-find-the-bug-average/main.py",
     "lang": "python",
     "release": 8,
-    "stdin": "2\n0\n100\n",
-    "stdout": "Total: 100\n",
+    "stdin": "",
+    "stdout": "5.0\n",
+    "returncode": 1,
+    "error": "ZeroDivisionError: division by zero"
+  },
+  {
+    "file": "solutions/q07-find-the-bug-average/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "6.0\nNone\nno file: missing.txt\nNone\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c1-parse-mark/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "85\nnot a number: abc\nout of range: 120\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c2-ask-again/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "abc\n42\n7\nx\n",
+    "stdout": "not a number: abc\nout of range: 42\n7\nnot a number: x\nNone\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "solutions/c3-add-the-numbers/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "skip x\nskip y\n35\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c1-parse-mark/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0\n0\n0\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c2-ask-again/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "abc\n42\n7\nx\n",
+    "stdout": "None\nNone\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-add-the-numbers/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "0\n0\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/bridge/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "2 marks, total 155\nbefore close: 0 lines\nafter close: 2 lines\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/bridge/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "['marks,2total,155\\n']\n",
     "returncode": 0,
     "error": ""
   }

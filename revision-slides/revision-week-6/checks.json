@@ -1,172 +1,145 @@
 [
   {
-    "file": "examples/q01/Demo.java",
+    "file": "examples/q02-mcq-which-take/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "true\nfalse\n1\n",
+    "stdout": "false 4 false 4\nfalse -5 true 0\nfalse 4 true 9\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q02/main.py",
+    "file": "examples/q03-mcq-which-line-fails/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "50 7\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q04-predict-ticket-numbers/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "1 2\n11 2\n11\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q05-predict-shelf-has-a-book/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "True\nFalse\n1\n",
+    "stdout": "Shelf with Emma\nShelf with Dune\nTrue False\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q03/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "3\ntrue\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/q04/main.py",
+    "file": "examples/q05-predict-shelf-has-a-book/fixed/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "['tea']\n[]\nFalse\n",
+    "stdout": "Shelf with Dune\nShelf with Dune\nFalse False\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q05/Demo.java",
+    "file": "examples/q06-find-the-bug-car-park/only-line-14-fixed/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "1 2 2\n",
+    "stdout": "true true true\n2\ntrue true 4\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/q06/main.py",
+    "file": "solutions/q06-find-the-bug-car-park/Demo.java",
+    "lang": "java",
+    "release": 8,
+    "stdin": "",
+    "stdout": "true true false\n5\nfalse false 5\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "examples/q07-find-the-bug-team/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "['tea']\nTrue\n",
-    "returncode": 0,
-    "error": ""
+    "stdout": "True True False\n['An', 'Binh', 'Chi'] ['An', 'Binh', 'Chi']\n",
+    "returncode": 1,
+    "error": "ValueError: list.remove(x): x not in list"
   },
   {
-    "file": "examples/draw/Demo.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "Water Coffee\ntrue\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "false\nfalse\nfalse\n3\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/Broken.java",
-    "lang": "java",
-    "release": 8,
-    "stdin": "",
-    "stdout": "false\ntrue\nfalse\n0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "broken.py",
+    "file": "solutions/q07-find-the-bug-team/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "['tea', 'milk'] ['tea', 'milk']\n2\nNone\n",
+    "stdout": "True True False\n['An', 'Binh'] []\nFalse\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/broken.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "",
-    "stdout": "['tea'] ['tea', 'milk']\n1\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "examples/predict-1/Demo.java",
+    "file": "solutions/c1-bounded-counter/Demo.java",
     "lang": "java",
     "release": 8,
     "stdin": "",
-    "stdout": "1 3 4\ntrue\n",
+    "stdout": "true true false\n2\n0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "examples/predict-2/main.py",
+    "file": "solutions/c2-playlist/main.py",
     "lang": "python",
     "release": 8,
     "stdin": "",
-    "stdout": "['tea', 'milk']\n['coffee']\n['tea', 'milk']\n",
+    "stdout": "True False\nFalse\n2 songs: Hello, Yesterday\n0 songs\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "solutions/c3-order-numbers/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "5\n4\n2\n4\n0\n3\n",
-    "stdout": "OK\nRefused\nRefused\nOK\n0\n",
+    "stdin": "",
+    "stdout": "Order #1: tea\nOrder #2: coffee\nOrder #3: cake\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c1-bounded-counter/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "0\n2\n1\n-1\n",
-    "stdout": "Refused\nRefused\n0\n",
+    "stdin": "",
+    "stdout": "false false false\n0\n0\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/Demo.java",
+    "file": "starters/c2-playlist/main.py",
+    "lang": "python",
+    "release": 8,
+    "stdin": "",
+    "stdout": "False False\nFalse\n0 songs\n0 songs\n",
+    "returncode": 0,
+    "error": ""
+  },
+  {
+    "file": "starters/c3-order-numbers/Demo.java",
     "lang": "java",
     "release": 8,
-    "stdin": "3\n0\n",
-    "stdout": "3\n",
+    "stdin": "",
+    "stdout": "\n\n\n",
     "returncode": 0,
     "error": ""
   },
   {
-    "file": "solutions/challenge.py",
-    "lang": "python",
+    "file": "examples/bridge/Demo.java",
+    "lang": "java",
     "release": 8,
-    "stdin": "5\n4\n2\n4\n0\n3\n",
-    "stdout": "OK\nRefused\nRefused\nOK\n0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "0\n2\n1\n-1\n",
-    "stdout": "Refused\nRefused\n0\n",
-    "returncode": 0,
-    "error": ""
-  },
-  {
-    "file": "solutions/challenge.py",
-    "lang": "python",
-    "release": 8,
-    "stdin": "3\n0\n",
-    "stdout": "3\n",
+    "stdin": "",
+    "stdout": "true true true false \n40\n",
     "returncode": 0,
     "error": ""
   }

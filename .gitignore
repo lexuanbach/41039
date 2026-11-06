@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 .venv/
 plan/
+
+# fetch-script locks
+*.lock

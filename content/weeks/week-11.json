@@ -1,0 +1,3369 @@
+{
+  "week": 11,
+  "title": "Designing Object-Oriented Programs",
+  "short": "OOP design",
+  "lede": "Use SOLID and GRASP as questions about a concrete program: who owns the data, who makes decisions, which changes should stay local, and what callers may reasonably expect from a replacement.",
+  "sections": [
+    {
+      "title": "Responsibility and information experts",
+      "concepts": [
+        [
+          "A coherent reason to change",
+          "<p>The first design question is not &ldquo;which classes?&rdquo; but &ldquo;<strong>who is responsible for what?</strong>&rdquo; A <em>responsibility</em> is something a class knows or does. An order knows its lines. A receipt formatter knows how a receipt should look. A file writer knows how to put text on a disk.</p><p>The <strong>single responsibility principle</strong> (the S in SOLID) says a class should have one coherent responsibility. Robert C. Martin, who gave it that name, puts it as <em>one reason to change</em>. That gives you a test you can actually run: imagine the next three change requests. &ldquo;Prices now include tax.&rdquo; &ldquo;The receipt needs the shop&rsquo;s address.&rdquo; &ldquo;Save it as JSON as well.&rdquo; If all three land in the same class, it has three reasons to change, and every edit for one job risks breaking the other two.</p><p>The <code>ReportJob</code> at the end of today&rsquo;s revision was exactly this: one method counted the passes, chose the format and opened the file. A change to the pass mark and a change to the file format both meant editing the same lines.</p><p>It does <em>not</em> mean one method per class. A model may need constructors, queries and updates that all preserve the same rules. An <code>Order</code> with <code>add</code>, <code>total</code> and <code>lineCount</code> is still one responsibility: every method serves the same data and the same rules.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: the over-correction</span><p>Some students hear &ldquo;single responsibility&rdquo; and split every method into its own class: <code>OrderAdder</code>, <code>OrderTotaller</code>, <code>OrderCounter</code>. Now one idea is scattered over three files and each class reaches into the others&rsquo; data. Group code by <strong>reason to change</strong>, not by size.</p></div>"
+        ],
+        [
+          "Put a calculation beside its information",
+          "<p>Once you know the responsibilities, which class gets each one? GRASP (<em>General Responsibility Assignment Software Patterns</em>, from Craig Larman&rsquo;s textbook <em>Applying UML and Patterns</em>) gives the first answer: <strong>Information Expert</strong>. Give a job to the class that already has the information needed to do it.</p><p>Work it through for the order. Who can compute a line&rsquo;s subtotal? The line: it holds the price and the quantity. Who can compute the total? The order: it holds the lines. So <code>Line.subtotal()</code> and <code>Order.total()</code>, and the order asks each line instead of reaching inside its fields or repeating the subtotal rule.</p><p>The same idea is often said as <strong>tell, don&rsquo;t ask</strong>: tell an object what you want done, rather than asking for its data and doing the work yourself. If a caller writes <code>line.getCents() * line.getQuantity()</code>, the subtotal rule now lives in that caller, and in every other caller that needed a subtotal.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: a getter for every field</span><p>Making every field <code>private</code> and then adding a getter and a setter for each one is not encapsulation. The data still flows out and the rules get written by whoever uses it. Before adding a getter, ask: should the caller be <em>asking this object to do the job</em> instead?</p></div>"
+        ],
+        [
+          "Finding the classes: nouns, verbs and CRC cards",
+          "<p>Where do classes come from in the first place? A classic first move is to read the problem description and mark its words. <strong>Nouns</strong> suggest classes, or the data they hold; <strong>verbs</strong> suggest methods. The first interactive diagram below does exactly this.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Words in the description</th><th>Often becomes</th><th>Example</th></tr></thead><tbody><tr><td>&ldquo;a customer places an <u>order</u>&rdquo;</td><td>a class</td><td><code>Order</code></td></tr><tr><td>&ldquo;each line has a <u>price</u> and a <u>quantity</u>&rdquo;</td><td>fields of another class</td><td><code>Line.cents</code>, <code>Line.quantity</code></td></tr><tr><td>&ldquo;the shop <u>works out the total</u>&rdquo;</td><td>a method, on the class that has the data</td><td><code>Order.total()</code></td></tr><tr><td>&ldquo;students get a <u>discount</u>, staff get another&rdquo;</td><td>something that varies: an interface or a function</td><td><code>PriceRule</code></td></tr></tbody></table></div><p>It is a starting point, not an algorithm. Some nouns are just values (a price is an <code>int</code>, not a class). Some useful classes, like a receipt formatter, never appear as a noun at all; GRASP calls an invented helper like that a <strong>Pure Fabrication</strong>.</p><p>In 1989 Kent Beck and Ward Cunningham described a cheap way to try a design before writing any code: <a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">CRC cards</a> (Class, Responsibilities, Collaborators). One index card per class: its name at the top, what it knows and does on the left, the classes it works with on the right. If a card overflows, the class has too many jobs. If nobody&rsquo;s card holds a piece of data, nobody owns it yet.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Order</th><th>Collaborators</th></tr></thead><tbody><tr><td>knows its lines<br>adds a line<br>works out the total</td><td><code>Line</code></td></tr></tbody></table></div><p>Naming is a design tool. If the only honest name for a class is <code>OrderManager</code> or <code>ReceiptAndFileHelper</code>, it probably has more than one job.</p>"
+        ],
+        [
+          "Creator: who should make the object?",
+          "<p>When a new <code>Line</code> is needed, which class should call <code>new Line(...)</code>? GRASP&rsquo;s <strong>Creator</strong> suggests: class B should create objects of class A if B <em>contains</em> A, closely <em>uses</em> A, or <em>has the data</em> to initialise A.</p><p>An order contains its lines, so <code>order.addLine(300, 2)</code> can create the <code>Line</code> itself. The caller no longer needs to know that <code>Line</code> exists at all, and you could change how lines are stored without touching any caller. Compare the first example below, where <code>main</code> builds each line, with the extra example <em>The order creates its own lines</em>. Both print 750; they differ in who knows what.</p><p><strong>Java and Python, side by side.</strong> Both languages let an object guard its own data, but they enforce it differently.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>hide a field</td><td><code>private int cents;</code> &mdash; the compiler refuses outside access</td><td><code>self._cents</code> &mdash; a convention only; nothing stops access</td></tr><tr><td>a field that never changes</td><td><code>private final int cents;</code></td><td>no keyword; just never assign it again</td></tr><tr><td>read-only access</td><td>a getter and no setter</td><td>a <code>@property</code> with no setter</td></tr><tr><td>behaviour that needs no object</td><td>a <code>static</code> method inside some class</td><td>a plain function in the module (often clearer)</td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">A quick self-check</span><p>For each method you write, say out loud: &ldquo;this class can do this because it has ___&rdquo;. If the blank is another class&rsquo;s field, the method probably belongs in that other class.</p></div>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Keep the calculation in the expert",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Order order=new Order();\n        order.add(new Line(300,2));\n        order.add(new Line(150,1));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }\n}\n",
+          "notes": [
+            [
+              "int subtotal()",
+              "The line owns the price and quantity needed for its subtotal."
+            ],
+            [
+              "line.subtotal()",
+              "The order asks each line for its contribution instead of exposing its fields."
+            ]
+          ],
+          "wrong": [
+            "450\n",
+            "600\n",
+            "900\n"
+          ],
+          "why": "Each line computes its own subtotal; Order sums 600 and 150.",
+          "stdin": "",
+          "static": false,
+          "output": "750\n"
+        },
+        {
+          "title": "Separate calculation from presentation",
+          "lang": "python",
+          "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+          "notes": [
+            [
+              "def total(self)",
+              "Keep domain calculation available independently of presentation."
+            ],
+            [
+              "def format_receipt",
+              "Changing receipt wording need not change the order calculation."
+            ]
+          ],
+          "wrong": [
+            "750\n750\n",
+            "Total: 750 cents\n750\n",
+            "600\nTotal: 600 cents\n"
+          ],
+          "why": "The calculation returns a number; the formatter builds a human-readable receipt from that result.",
+          "stdin": "",
+          "static": false,
+          "output": "750\nTotal: 750 cents\n"
+        }
+      ],
+      "try": "Change the receipt wording without changing total(). Then add a per-line quantity and decide which class should absorb that rule.",
+      "visuals": [
+        {
+          "kind": "w11-nouns",
+          "title": "From a description to classes: who knows what?",
+          "intro": "A common first step in design is to read the problem description and mark its words. <strong>Nouns</strong> often suggest classes or the data they hold; <strong>verbs</strong> often suggest methods. Then give each job to the class that <em>has the information</em> for it: GRASP calls that class the <strong>Information Expert</strong>. Mark the words first, then hand out the jobs.",
+          "text": [
+            "A ",
+            {
+              "w": "customer",
+              "id": "customer"
+            },
+            "'s ",
+            {
+              "w": "order",
+              "id": "order"
+            },
+            " has several ",
+            {
+              "w": "lines",
+              "id": "lines"
+            },
+            ". Each line records a ",
+            {
+              "w": "unit price",
+              "id": "price"
+            },
+            " in cents and a ",
+            {
+              "w": "quantity",
+              "id": "quantity"
+            },
+            ". The program must ",
+            {
+              "w": "add",
+              "id": "add"
+            },
+            " lines to an order, work out each line's ",
+            {
+              "w": "subtotal",
+              "id": "subtotal"
+            },
+            " and ",
+            {
+              "w": "print",
+              "id": "print"
+            },
+            " the order's ",
+            {
+              "w": "total",
+              "id": "total"
+            },
+            "."
+          ],
+          "roles": [
+            {
+              "id": "class",
+              "label": "Class"
+            },
+            {
+              "id": "data",
+              "label": "Data (a field)"
+            },
+            {
+              "id": "action",
+              "label": "Action (a method)"
+            },
+            {
+              "id": "skip",
+              "label": "Not needed"
+            }
+          ],
+          "answers": {
+            "customer": {
+              "role": "skip",
+              "why": "A person outside the program. Nothing here stores anything about the customer, so no class is needed yet. Not every noun becomes a class."
+            },
+            "order": {
+              "role": "class",
+              "why": "An order is a thing with its own data (its lines) and its own jobs: a class, <code>Order</code>."
+            },
+            "lines": {
+              "role": "class",
+              "why": "A plural noun usually means several objects of one class: <code>Line</code>."
+            },
+            "price": {
+              "role": "data",
+              "why": "A value a line holds: the field <code>cents</code>."
+            },
+            "quantity": {
+              "role": "data",
+              "why": "A value a line holds: the field <code>quantity</code>."
+            },
+            "add": {
+              "role": "action",
+              "why": "Something the program does to an order: the method <code>add</code>."
+            },
+            "subtotal": {
+              "role": "action",
+              "also": [
+                "data"
+              ],
+              "why": "A noun, but it is <em>worked out</em> from price \u00d7 quantity, so it becomes the method <code>subtotal()</code>. Storing it as well would mean keeping a copy up to date."
+            },
+            "print": {
+              "role": "action",
+              "why": "A verb: something the program does. Section 1.1 asks <em>who</em> should do it."
+            },
+            "total": {
+              "role": "action",
+              "also": [
+                "data"
+              ],
+              "why": "Also worked out, from the lines, so it becomes the method <code>total()</code>, not a stored number."
+            }
+          },
+          "classes": [
+            {
+              "id": "Order",
+              "label": "Order",
+              "knows": "its list of lines"
+            },
+            {
+              "id": "Line",
+              "label": "Line",
+              "knows": "unit price (cents), quantity"
+            },
+            {
+              "id": "main",
+              "label": "main",
+              "knows": "the screen (it starts the program)"
+            }
+          ],
+          "duties": [
+            {
+              "id": "add",
+              "label": "add a line to the order",
+              "owner": "Order",
+              "token": "void add(Line line)",
+              "method": "add(Line)",
+              "why": {
+                "Order": "Right: the order owns the list, so only the order should change it.",
+                "Line": "A line does not know which order it belongs to, or that order's list.",
+                "main": "main would have to reach into the order's private list. Let the order look after its own list."
+              }
+            },
+            {
+              "id": "subtotal",
+              "label": "work out a line's subtotal",
+              "owner": "Line",
+              "token": "int subtotal()",
+              "method": "subtotal()",
+              "why": {
+                "Line": "Right: price \u00d7 quantity needs exactly the two numbers a line has.",
+                "Order": "Then Order must read every line's price and quantity: it becomes coupled to Line's fields, and the rule lives away from its data.",
+                "main": "main does not have the price or the quantity; it would have to dig them out of each line."
+              }
+            },
+            {
+              "id": "total",
+              "label": "add up the order's total",
+              "owner": "Order",
+              "token": "int total()",
+              "method": "total()",
+              "why": {
+                "Order": "Right: the order knows all of its lines, and asks each one for its subtotal.",
+                "Line": "One line cannot see the other lines of its order.",
+                "main": "main could loop over the lines, but only if the order exposed its list. The order is the expert here."
+              }
+            },
+            {
+              "id": "print",
+              "label": "print the total on the screen",
+              "owner": "main",
+              "token": "System.out.println(order.total());",
+              "method": "println(\u2026)",
+              "why": {
+                "main": "Right: showing the result is a different reason to change (wording, layout) from calculating it, so it stays outside Order.",
+                "Order": "Possible, but then the order changes whenever the wording or layout of the output changes: a second reason to change (1.1).",
+                "Line": "A line knows nothing about the whole order's total."
+              }
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Order order=new Order();\n        order.add(new Line(300,2));\n        order.add(new Line(150,1));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }\n}\n",
+              "output": "750\n",
+              "tokens": [
+                "void add(Line line)",
+                "int subtotal()",
+                "int total()",
+                "System.out.println(order.total());"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-calls",
+          "title": "Follow the messages: who works out the total?",
+          "intro": "Each box is an object (or a function) and the strip shows the message being sent. Press <strong>Next</strong> and watch who asks and who answers. The highlighted line has just run; the call stack on the right shows which method is running now, with the newest call at the bottom.",
+          "runs": [
+            {
+              "label": "Java: Order and Line",
+              "program": 0,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main",
+                  "fields": {}
+                }
+              ],
+              "steps": [
+                {
+                  "at": "Order order=new Order();",
+                  "new": {
+                    "id": "order",
+                    "cls": "Order",
+                    "name": "order",
+                    "fields": {
+                      "lines": "[ ]"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "order": "\u2192 Order"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "main creates an empty <code>Order</code>. The order owns its list of lines."
+                },
+                {
+                  "at": "order.add(new Line(300,2));",
+                  "new": {
+                    "id": "l1",
+                    "cls": "Line",
+                    "name": "line 1",
+                    "fields": {
+                      "cents": "300",
+                      "quantity": "2"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "A new <code>Line</code> is built with its unit price and quantity. Those two numbers now live inside the line."
+                },
+                {
+                  "at": "void add(Line line)",
+                  "call": [
+                    "main",
+                    "order",
+                    "add(line 1)"
+                  ],
+                  "set": {
+                    "order": {
+                      "lines": "[line 1]"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "order.add(line)"
+                  ],
+                  "say": "main sends <code>add</code> to the order, and the order puts the line in its own list."
+                },
+                {
+                  "at": "order.add(new Line(150,1));",
+                  "new": {
+                    "id": "l2",
+                    "cls": "Line",
+                    "name": "line 2",
+                    "fields": {
+                      "cents": "150",
+                      "quantity": "1"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "A second line: 150 cents, quantity 1."
+                },
+                {
+                  "at": "void add(Line line)",
+                  "call": [
+                    "main",
+                    "order",
+                    "add(line 2)"
+                  ],
+                  "set": {
+                    "order": {
+                      "lines": "[line 1, line 2]"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "order.add(line)"
+                  ],
+                  "say": "The order now holds two lines."
+                },
+                {
+                  "at": "System.out.println(order.total());",
+                  "call": [
+                    "main",
+                    "order",
+                    "total()"
+                  ],
+                  "stack": [
+                    "main",
+                    "order.total()"
+                  ],
+                  "say": "main asks the order for its total. main does not know, or need to know, how the total is worked out."
+                },
+                {
+                  "at": "int total()",
+                  "stack": [
+                    "main",
+                    "order.total()  sum = 0"
+                  ],
+                  "say": "The order knows its lines, so adding up is its job. It starts with <code>sum = 0</code>."
+                },
+                {
+                  "at": "int subtotal()",
+                  "call": [
+                    "order",
+                    "l1",
+                    "subtotal()"
+                  ],
+                  "stack": [
+                    "main",
+                    "order.total()  sum = 0",
+                    "line 1.subtotal()"
+                  ],
+                  "say": "The order does not read <code>cents</code> or <code>quantity</code> itself. It asks line 1, the object that has those numbers."
+                },
+                {
+                  "at": "int total()",
+                  "ret": [
+                    "l1",
+                    "order",
+                    "600"
+                  ],
+                  "stack": [
+                    "main",
+                    "order.total()  sum = 600"
+                  ],
+                  "say": "Line 1 works out 300 \u00d7 2 and returns 600. The order adds it: <code>sum</code> is 600."
+                },
+                {
+                  "at": "int subtotal()",
+                  "call": [
+                    "order",
+                    "l2",
+                    "subtotal()"
+                  ],
+                  "stack": [
+                    "main",
+                    "order.total()  sum = 600",
+                    "line 2.subtotal()"
+                  ],
+                  "say": "Next time round the loop, the order asks line 2."
+                },
+                {
+                  "at": "int total()",
+                  "ret": [
+                    "l2",
+                    "order",
+                    "150"
+                  ],
+                  "stack": [
+                    "main",
+                    "order.total()  sum = 750"
+                  ],
+                  "say": "Line 2 returns 150 \u00d7 1 = 150, so <code>sum</code> is 750."
+                },
+                {
+                  "at": "int total()",
+                  "ret": [
+                    "order",
+                    "main",
+                    "750"
+                  ],
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "There are no more lines. <code>total()</code> returns 750 to main."
+                },
+                {
+                  "at": "System.out.println(order.total());",
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "main prints the number. Each calculation stayed with the object that had the information it needed."
+                }
+              ]
+            },
+            {
+              "label": "Python: Order and format_receipt",
+              "program": 1,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main program",
+                  "fields": {}
+                },
+                {
+                  "id": "fmt",
+                  "cls": "function",
+                  "name": "format_receipt",
+                  "fields": {
+                    "job": "the wording"
+                  }
+                }
+              ],
+              "steps": [
+                {
+                  "at": "order=Order([600,150])",
+                  "new": {
+                    "id": "order",
+                    "cls": "Order",
+                    "name": "order",
+                    "fields": {
+                      "amounts": "[600, 150]"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "order": "\u2192 Order"
+                    }
+                  },
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "The program makes an <code>Order</code> holding two amounts. Calculating with them is the order's job."
+                },
+                {
+                  "at": "def total(self)",
+                  "call": [
+                    "main",
+                    "order",
+                    "total()"
+                  ],
+                  "stack": [
+                    "main program",
+                    "order.total()"
+                  ],
+                  "say": "The first <code>print</code> asks the order for its total."
+                },
+                {
+                  "at": "def total(self)",
+                  "ret": [
+                    "order",
+                    "main",
+                    "750"
+                  ],
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "<code>sum([600, 150])</code> is 750."
+                },
+                {
+                  "at": "print(order.total())",
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "The number is printed."
+                },
+                {
+                  "at": "def format_receipt",
+                  "call": [
+                    "main",
+                    "fmt",
+                    "format_receipt(order)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "format_receipt(order)"
+                  ],
+                  "say": "Now the receipt. Wording is a different job, with a different reason to change, so it lives in a separate function."
+                },
+                {
+                  "at": "return f\"Total:",
+                  "call": [
+                    "fmt",
+                    "order",
+                    "total()"
+                  ],
+                  "stack": [
+                    "main program",
+                    "format_receipt(order)",
+                    "order.total()"
+                  ],
+                  "say": "<code>format_receipt</code> does not add the amounts again. It asks the order, so there is only one adding-up rule."
+                },
+                {
+                  "at": "return f\"Total:",
+                  "ret": [
+                    "order",
+                    "fmt",
+                    "750"
+                  ],
+                  "stack": [
+                    "main program",
+                    "format_receipt(order)"
+                  ],
+                  "say": "The order answers 750, using the same <code>total()</code> as before."
+                },
+                {
+                  "at": "return f\"Total:",
+                  "ret": [
+                    "fmt",
+                    "main",
+                    "\"Total: 750 cents\""
+                  ],
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "The function puts the number into words and returns the text."
+                },
+                {
+                  "at": "print(format_receipt(order))",
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "Change the wording and only <code>format_receipt</code> changes; change the pricing and only <code>Order</code> does."
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Order order=new Order();\n        order.add(new Line(300,2));\n        order.add(new Line(150,1));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }\n}\n",
+              "output": "750\n",
+              "tokens": [
+                "Order order=new Order();",
+                "order.add(new Line(300,2));",
+                "void add(Line line)",
+                "order.add(new Line(150,1));",
+                "System.out.println(order.total());",
+                "int total()",
+                "int subtotal()"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+              "output": "750\nTotal: 750 cents\n",
+              "tokens": [
+                "order=Order([600,150])",
+                "def total(self)",
+                "print(order.total())",
+                "def format_receipt",
+                "return f\"Total:",
+                "print(format_receipt(order))"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-change",
+          "title": "Send in a change request: one class or two?",
+          "intro": "Both versions print the same thing today. The difference shows up when something has to change. Pick a version, then a change request: the edited lines are marked <span class=\"w11-key add\">+</span> and <span class=\"w11-key del\">\u2212</span>, and the summary says which parts of the program had to be opened. The output is from a real run of the changed program.",
+          "lang": "python",
+          "versions": [
+            {
+              "id": "one",
+              "label": "Everything in Order",
+              "program": 0
+            },
+            {
+              "id": "split",
+              "label": "Calculation apart from wording",
+              "program": 1
+            }
+          ],
+          "changes": [
+            {
+              "id": "word",
+              "label": "Reword the receipt",
+              "ask": "Marketing wants the receipt to say <em>Amount due</em> instead of <em>Total</em>."
+            },
+            {
+              "id": "gst",
+              "label": "Add 10% GST",
+              "ask": "Prices must now include 10% GST (in whole cents, rounded down)."
+            }
+          ],
+          "cells": {
+            "one:word": {
+              "program": 2,
+              "note": "One line, but inside <code>Order</code>, the class that also holds the pricing rules. A wording change means opening and retesting the pricing class."
+            },
+            "one:gst": {
+              "program": 3,
+              "note": "The adding-up rule is written twice in <code>Order</code> (in <code>total</code> and again in <code>receipt</code>), so a pricing change needs two edits.",
+              "slip": {
+                "program": 4,
+                "label": "What if you edit only total()?",
+                "note": "Now the program contradicts itself: the first line includes GST and the receipt does not. Nothing failed to run, so nothing warned you."
+              }
+            },
+            "split:word": {
+              "program": 5,
+              "note": "Only <code>format_receipt</code> changes. <code>Order</code> is not touched, so its calculation cannot have been broken by a wording change."
+            },
+            "split:gst": {
+              "program": 6,
+              "note": "Only <code>Order.total</code> changes, and the receipt picks up the new total automatically because it asks the order."
+            }
+          },
+          "summary": "Count how often each part was opened. In the first version <code>Order</code> changes for both reasons, wording and pricing; in the second, each part has one reason to change.",
+          "programs": [
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n    def receipt(self):\n        total=0\n        for amount in self.amounts: total+=amount\n        return f\"Total: {total} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(order.receipt())\n",
+              "output": "750\nTotal: 750 cents\n",
+              "tokens": [
+                "def receipt(self):"
+              ],
+              "id": "one"
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+              "output": "750\nTotal: 750 cents\n",
+              "tokens": [
+                "def format_receipt"
+              ],
+              "id": "split"
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n    def receipt(self):\n        total=0\n        for amount in self.amounts: total+=amount\n        return f\"Amount due: {total} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(order.receipt())\n",
+              "output": "750\nAmount due: 750 cents\n",
+              "tokens": [
+                "return f\"Amount due: {total} cents\""
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)*11//10\n    def receipt(self):\n        total=0\n        for amount in self.amounts: total+=amount\n        return f\"Total: {total*11//10} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(order.receipt())\n",
+              "output": "825\nTotal: 825 cents\n",
+              "tokens": [
+                "sum(self.amounts)*11//10",
+                "{total*11//10}"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)*11//10\n    def receipt(self):\n        total=0\n        for amount in self.amounts: total+=amount\n        return f\"Total: {total} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(order.receipt())\n",
+              "output": "825\nTotal: 750 cents\n",
+              "tokens": [
+                "sum(self.amounts)*11//10"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Amount due: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+              "output": "750\nAmount due: 750 cents\n",
+              "tokens": [
+                "return f\"Amount due:"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)*11//10\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+              "output": "825\nTotal: 825 cents\n",
+              "tokens": [
+                "sum(self.amounts)*11//10"
+              ]
+            }
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-swiss-knife",
+          "alt": "A very large red Swiss Army knife on a display stand with dozens of tools folded out at once: blades, scissors, pliers, saws, screwdrivers and more",
+          "lead": "One body, many reasons to send it for repair.",
+          "caption": "This Swiss Army knife packs blades, scissors, pliers, saws and dozens more tools into one body. Handy in a pocket; awkward as a design. If the scissors jam, the whole knife goes in for repair, saw and blades included. A class that calculates prices, words the receipt and saves the file is the same: a change for any one of those reasons opens code that serves the others. Where it breaks: one coherent job can still need several methods, just as a blade needs a hinge and a lock. Split by reason to change, not by counting methods.",
+          "place": "concept-1",
+          "width": "20rem"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-taxi-meter",
+          "alt": "An old black taxi meter mounted beside a cab door, with counters labelled miles, recording mile and extras, and a maker's plate underneath",
+          "lead": "The meter has the numbers, so the meter does the sum.",
+          "caption": "This old London taxi meter counts the distance and the extras as the trip goes on, so it is the meter that shows the fare. Nobody asks the passenger to read its gears and work the fare out. That is Information Expert: give a job to the object that already has the information. A <code>Line</code> has its price and quantity, so it computes its subtotal; an <code>Order</code> has its lines, so it adds them up.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "comic",
+          "num": 844,
+          "title": "Good Code",
+          "year": "2011",
+          "alt": "xkcd flowchart titled How to write good code. Start project, then: do things right or do them fast? Fast: code fast, does it work yet? No, loop; almost, but it has become a mass of kludges and spaghetti code. Right: code well, are you done yet? No, loop; no, and the requirements have changed. Both paths lead to: throw it all out and start over. Good code is reached only from a disconnected question mark.",
+          "caption": "Requirements will change. Good design does not stop that; it keeps each change small and in one place, so you do not have to throw it all out.",
+          "size": "fig-narrow",
+          "place": "after-visuals"
+        }
+      ],
+      "extras": [
+        {
+          "title": "The order creates its own lines",
+          "lang": "java",
+          "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Order order = new Order();\n        order.addLine(300, 2);\n        order.addLine(150, 1);\n        System.out.println(order.lineCount() + \" lines\");\n        System.out.println(order.total());\n    }\n}\n\nclass Line {\n    private final int cents;\n    private final int quantity;\n\n    Line(int cents, int quantity) {\n        this.cents = cents;\n        this.quantity = quantity;\n    }\n\n    int subtotal() {\n        return cents * quantity;\n    }\n}\n\nclass Order {\n    private final List<Line> lines = new ArrayList<Line>();\n\n    void addLine(int cents, int quantity) {\n        lines.add(new Line(cents, quantity));\n    }\n\n    int lineCount() {\n        return lines.size();\n    }\n\n    int total() {\n        int sum = 0;\n        for (Line line : lines) {\n            sum += line.subtotal();\n        }\n        return sum;\n    }\n}\n",
+          "stdin": "",
+          "static": false,
+          "output": "2 lines\n750\n",
+          "notes": [
+            [
+              "order.addLine(300, 2);",
+              "The caller passes only price and quantity. It never writes <code>new Line</code>, so it does not even need to know that <code>Line</code> exists.",
+              "Ask, do not build"
+            ],
+            [
+              "int subtotal()",
+              "Information Expert: the line has the price and the quantity, so it works out its own subtotal.",
+              "The expert"
+            ],
+            [
+              "lines.add(new Line(cents, quantity));",
+              "Creator: the order contains its lines, so the order is the natural place to create them.",
+              "Creator"
+            ],
+            [
+              "return lines.size();",
+              "Only the order knows how lines are stored. Switching to a <code>LinkedList</code> would change no caller.",
+              "Hidden storage"
+            ],
+            [
+              "sum += line.subtotal();",
+              "The order asks each line; it never multiplies a price by a quantity itself.",
+              "Tell, don't ask"
+            ]
+          ]
+        },
+        {
+          "title": "Tell, don't ask: the account guards its balance",
+          "lang": "python",
+          "code": "class Account:\n    def __init__(self, balance):\n        self._balance = balance\n\n    def withdraw(self, amount):\n        if amount > self._balance:\n            return False\n        self._balance -= amount\n        return True\n\n    def balance(self):\n        return self._balance\n\n\naccount = Account(100)\nprint(account.withdraw(30))\nprint(account.withdraw(80))\nprint(account.balance())\n",
+          "stdin": "",
+          "static": false,
+          "output": "True\nFalse\n70\n",
+          "notes": [
+            [
+              "self._balance = balance",
+              "The leading underscore says &ldquo;internal: use the methods&rdquo;. Python does not enforce it; it is a promise between programmers.",
+              "A private-by-convention field"
+            ],
+            [
+              "def withdraw(self, amount):",
+              "The caller <em>tells</em> the account to withdraw. The rule &ldquo;never go below zero&rdquo; lives here, once.",
+              "Tell"
+            ],
+            [
+              "if amount > self._balance:",
+              "The account has the balance, so it makes the decision: Information Expert.",
+              "The expert decides"
+            ],
+            [
+              "print(account.withdraw(80))",
+              "Only 70 is left, so the account refuses and the balance is unchanged. Compare a caller that asks for the balance, checks it and subtracts: that check would be copied into every caller.",
+              "Refused"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Extension and dependency inversion",
+      "concepts": [
+        [
+          "Name the variation you actually need",
+          "<p>Bertrand Meyer&rsquo;s 1988 book <em>Object-Oriented Software Construction</em> gave the <strong>open&ndash;closed principle</strong> (the O in SOLID): software entities should be <em>open for extension, but closed for modification</em>. In plain words: you should be able to add a new case by adding new code, not by editing code that already works.</p><p>A <code>Basket</code> that depends on a <code>PriceRule</code> can accept another rule without editing its calculation. A half-price offer is a new <code>HalfPrice</code> class; <code>Basket</code> is not opened at all. Compare the version that chooses for itself:</p><div class=\"code-card\"><pre>int price(int cents) {\n    if (kind.equals(\"student\")) return cents * 80 / 100;\n    if (kind.equals(\"half\")) return cents / 2;   // edit Basket again\n    return cents;\n}</pre></div><p>Every new offer means another <code>if</code> inside a class that was already tested.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: an interface for everything</span><p>The abstraction earns its place when there are <em>real</em> alternatives. An interface with exactly one implementation, created &ldquo;in case&rdquo;, is extra code to read with nothing to show for it. Wait until the second variation actually turns up, then extract the interface: it takes minutes.</p></div>"
+        ],
+        [
+          "Supply collaborators rather than hiding choices",
+          "<p>The <strong>dependency inversion principle</strong> (the D in SOLID) asks high-level policy to depend on an abstraction, not on a specific low-level implementation. Here the high-level policy is &ldquo;price a basket&rdquo;; the low-level detail is &ldquo;which discount&rdquo;. <code>Basket</code> depends on the <code>PriceRule</code> interface, and so does every rule. Neither knows about the other.</p><p>Passing the collaborator in through the constructor makes the choice explicit: <code>new Basket(new StudentPrice())</code>. This is often called <strong>dependency injection</strong>. Someone outside, usually <code>main</code>, decides which rule to use; <code>Basket</code> just uses it.</p><p>Python can use a plain function for a small policy, because functions are values. A function may be a clearer design than a class hierarchy when there is one operation.</p><div class=\"note warn\"><span class=\"tag\">Python trap: / is not Java&rsquo;s /</span><p>In Java, <code>cents * 80 / 100</code> with <code>int</code>s gives <code>800</code>. In Python, <code>1000 * 80 / 100</code> gives <code>800.0</code>, a float. Use <code>//</code> for whole-number division of cents, as the Python example does.</p></div>"
+        ],
+        [
+          "Know what you depend on, and control it",
+          "<p>A class that creates its own collaborators hides them. If <code>Greeter</code> reads the system clock itself, you cannot check its &ldquo;Good afternoon&rdquo; branch in the morning. If it is <em>given</em> a clock, a test can pass a fake one that always says 9 or 15, as the extra example <em>A fake clock makes the test repeatable</em> does. Tests are often the first place a second implementation is needed.</p><p>The same goes for anything slow, random or outside the program: files, the network, the time, random numbers. Inject it, and the rest of the class becomes easy to test.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>the contract</td><td><code>interface PriceRule { int apply(int c); }</code></td><td>any callable; an ABC or <code>Protocol</code> for bigger contracts</td></tr><tr><td>a one-off small policy</td><td>a lambda for a one-method interface: <code>c -&gt; c / 2</code></td><td>a function, or <code>lambda c: c // 2</code></td></tr><tr><td>supply it</td><td><code>new Basket(new StudentPrice())</code></td><td><code>Basket(student_price)</code></td></tr><tr><td>pass the wrong kind of thing</td><td>compile error</td><td>an error only when it is called</td></tr></tbody></table></div><div class=\"note danger\"><span class=\"tag\">One tiny package, 2.5 hours</span><p>On 22 March 2016 a developer unpublished his <code>kik</code> package and 272 others from npm, the JavaScript package registry. One of them was <code>left-pad</code>, a tiny function that pads a string on the left. Projects all over the world depended on it, often without knowing, through other packages. npm saw hundreds of build failures per minute, and the disruption lasted 2.5 hours. Source: <a href=\"https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm\" target=\"_blank\" rel=\"noopener\">npm blog, &ldquo;kik, left-pad, and npm&rdquo;</a>. Every dependency is a collaborator you do not control; knowing exactly what you rely on is what makes it replaceable.</p></div>"
+        ],
+        [
+          "Polymorphism instead of a growing if-chain",
+          "<p>GRASP calls this move <strong>Polymorphism</strong>: when behaviour varies by type, give each type its own method instead of testing the type with <code>if</code>. The caller writes <code>rule.apply(cents)</code> once, and the right version runs. You met the mechanism in Week 8; this week is about <em>when</em> it is worth it.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Situation</th><th>Prefer</th></tr></thead><tbody><tr><td>two or three fixed cases that rarely change</td><td>a plain <code>if</code>/<code>elif</code> or <code>switch</code></td></tr><tr><td>new cases keep arriving, each with its own rules</td><td>an interface and one class per case</td></tr><tr><td>one small operation varies</td><td>Python: pass a function. Java: a one-method interface (or a lambda)</td></tr><tr><td>the cases differ only by a number</td><td>one class with a parameter, e.g. <code>Discount(20)</code></td></tr></tbody></table></div><div class=\"joke\"><p>All problems in computer science can be solved by another level of indirection&hellip; except for the problem of too many layers of indirection.</p><span class=\"attrib\">David Wheeler, as quoted by Butler Lampson; the second half is often given as Wheeler&rsquo;s own conclusion</span></div><p>Every interface is a level of indirection: one more place a reader has to look. It pays for itself when it lets a change stay small and local, and not otherwise.</p>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "An extensible pricing rule",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+          "notes": [
+            [
+              "PriceRule rule",
+              "Depend on the pricing contract, not a particular policy class."
+            ],
+            [
+              "rule.apply(cents)",
+              "Delegate the variation to the policy object."
+            ]
+          ],
+          "wrong": [
+            "1000\n",
+            "200\n",
+            "80\n"
+          ],
+          "why": "StudentPrice applies the 80% policy; a new policy can be supplied without changing Basket.price.",
+          "stdin": "",
+          "static": false,
+          "output": "800\n"
+        },
+        {
+          "title": "Inject a function in Python",
+          "lang": "python",
+          "code": "def student_price(cents): return cents*80//100\ndef regular_price(cents): return cents\n\nclass Basket:\n    def __init__(self, rule): self.rule=rule\n    def price(self, cents): return self.rule(cents)\n\nprint(Basket(student_price).price(1000))\nprint(Basket(regular_price).price(1000))\n",
+          "notes": [
+            [
+              "self.rule=rule",
+              "Store a collaborator supplied by the caller instead of choosing one internally."
+            ],
+            [
+              "self.rule(cents)",
+              "Call the selected pricing function through its common input/output contract."
+            ]
+          ],
+          "wrong": [
+            "1000\n800\n",
+            "800\n800\n",
+            "200\n1000\n"
+          ],
+          "why": "The caller supplies different policies to the same Basket implementation.",
+          "stdin": "",
+          "static": false,
+          "output": "800\n1000\n"
+        }
+      ],
+      "try": "Add a rule that charges half price. Keep Basket unchanged and explain which promise the new rule must retain.",
+      "visuals": [
+        {
+          "kind": "w11-change",
+          "title": "A new price rule: whose code has to change?",
+          "intro": "Two baskets that print 800 today. In the first, <code>Basket</code> chooses the price itself with <code>if</code>. In the second (the example below), it depends on the <code>PriceRule</code> interface. Send each one the same change request and compare which classes you had to edit.",
+          "lang": "java",
+          "unitLabels": {
+            "Demo": "main (Demo)"
+          },
+          "versions": [
+            {
+              "id": "ifs",
+              "label": "Basket decides with if",
+              "program": 0
+            },
+            {
+              "id": "rule",
+              "label": "Basket depends on PriceRule",
+              "program": 1
+            }
+          ],
+          "changes": [
+            {
+              "id": "pct",
+              "label": "Student discount 25%",
+              "ask": "The student discount goes up from 20% to 25%."
+            },
+            {
+              "id": "half",
+              "label": "Add a half-price rule",
+              "ask": "A new half-price offer, used by this basket."
+            }
+          ],
+          "cells": {
+            "ifs:pct": {
+              "program": 2,
+              "note": "A one-number change, but it is made inside <code>Basket</code>: every pricing decision lives in the class that also does the basket's own work."
+            },
+            "ifs:half": {
+              "program": 3,
+              "note": "<code>Basket</code> has to be edited for a new offer, and its <code>if</code> chain grows with every offer to come. Each edit risks the offers that already worked."
+            },
+            "rule:pct": {
+              "program": 4,
+              "note": "Only <code>StudentPrice</code> changes. The variation has its own class, so the change stays inside it."
+            },
+            "rule:half": {
+              "program": 5,
+              "note": "<code>Basket</code> is untouched: the new offer is a new class that fits the existing <code>PriceRule</code> contract, and main chooses it. Open for extension, closed for modification."
+            }
+          },
+          "summary": "<code>Basket</code> never changes in the second version. That only pays off because there really are several rules; with only one rule, the plain version would be simpler.",
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(\"student\");\n        System.out.println(basket.price(1000));\n    }\n}\nclass Basket {\n    private final String kind;\n    Basket(String kind) { this.kind=kind; }\n    int price(int cents) {\n        if(kind.equals(\"student\")) return cents*80/100;\n        return cents;\n    }\n}\n",
+              "output": "800\n",
+              "tokens": [
+                "if(kind.equals(\"student\"))"
+              ],
+              "id": "ifs"
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+              "output": "800\n",
+              "tokens": [
+                "interface PriceRule"
+              ],
+              "id": "rule"
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(\"student\");\n        System.out.println(basket.price(1000));\n    }\n}\nclass Basket {\n    private final String kind;\n    Basket(String kind) { this.kind=kind; }\n    int price(int cents) {\n        if(kind.equals(\"student\")) return cents*75/100;\n        return cents;\n    }\n}\n",
+              "output": "750\n",
+              "tokens": [
+                "return cents*75/100;"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(\"half\");\n        System.out.println(basket.price(1000));\n    }\n}\nclass Basket {\n    private final String kind;\n    Basket(String kind) { this.kind=kind; }\n    int price(int cents) {\n        if(kind.equals(\"student\")) return cents*80/100;\n        if(kind.equals(\"half\")) return cents/2;\n        return cents;\n    }\n}\n",
+              "output": "500\n",
+              "tokens": [
+                "if(kind.equals(\"half\"))"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*75/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+              "output": "750\n",
+              "tokens": [
+                "return cents*75/100;"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new HalfPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\nclass HalfPrice implements PriceRule {\n    public int apply(int cents) { return cents/2; }\n}\n",
+              "output": "500\n",
+              "tokens": [
+                "class HalfPrice implements PriceRule"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-calls",
+          "title": "Who chooses the rule? Follow the collaborator",
+          "intro": "The basket never decides its own pricing. Watch where the rule object (or function) is created, how it reaches the basket, and who does the arithmetic when <code>price</code> is called.",
+          "runs": [
+            {
+              "label": "Java: a PriceRule object",
+              "program": 0,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main",
+                  "fields": {}
+                }
+              ],
+              "steps": [
+                {
+                  "at": "Basket basket=new Basket(new StudentPrice());",
+                  "new": {
+                    "id": "rule",
+                    "cls": "StudentPrice",
+                    "name": "a PriceRule",
+                    "fields": {
+                      "rule": "80% of the price"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "<code>new StudentPrice()</code>: main chooses the policy. The choice is made here, in plain sight, where the objects are built."
+                },
+                {
+                  "at": "Basket(PriceRule rule) { this.rule=rule; }",
+                  "call": [
+                    "main",
+                    "basket",
+                    "new Basket(rule)"
+                  ],
+                  "new": {
+                    "id": "basket",
+                    "cls": "Basket",
+                    "name": "basket",
+                    "fields": {
+                      "rule": "\u2192 StudentPrice"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "Basket(rule)"
+                  ],
+                  "say": "The constructor receives the rule and keeps a reference to it. Its parameter type is <code>PriceRule</code>, the interface, so any rule would fit."
+                },
+                {
+                  "at": "Basket basket=new Basket(new StudentPrice());",
+                  "set": {
+                    "main": {
+                      "basket": "\u2192 Basket"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "main now holds the basket. It never told the basket <em>how</em> to price; it handed over an object that knows."
+                },
+                {
+                  "at": "System.out.println(basket.price(1000));",
+                  "call": [
+                    "main",
+                    "basket",
+                    "price(1000)"
+                  ],
+                  "stack": [
+                    "main",
+                    "basket.price(1000)"
+                  ],
+                  "say": "main asks the basket for the price of 1000 cents."
+                },
+                {
+                  "at": "int price(int cents)",
+                  "call": [
+                    "basket",
+                    "rule",
+                    "apply(1000)"
+                  ],
+                  "stack": [
+                    "main",
+                    "basket.price(1000)",
+                    "rule.apply(1000)"
+                  ],
+                  "say": "The basket delegates: <code>rule.apply(cents)</code>. It only knows the interface; Java runs <code>StudentPrice</code>'s <code>apply</code> because that is the object it was given."
+                },
+                {
+                  "at": "public int apply(int cents)",
+                  "ret": [
+                    "rule",
+                    "basket",
+                    "800"
+                  ],
+                  "stack": [
+                    "main",
+                    "basket.price(1000)"
+                  ],
+                  "say": "1000 \u00d7 80 / 100 = 800."
+                },
+                {
+                  "at": "int price(int cents)",
+                  "ret": [
+                    "basket",
+                    "main",
+                    "800"
+                  ],
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "The basket passes the answer back."
+                },
+                {
+                  "at": "System.out.println(basket.price(1000));",
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "To price differently, main passes a different rule. <code>Basket</code> itself never changes."
+                }
+              ]
+            },
+            {
+              "label": "Python: a function as the rule",
+              "program": 1,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main program",
+                  "fields": {}
+                },
+                {
+                  "id": "sp",
+                  "cls": "function",
+                  "name": "student_price",
+                  "fields": {
+                    "returns": "cents*80//100"
+                  }
+                },
+                {
+                  "id": "rp",
+                  "cls": "function",
+                  "name": "regular_price",
+                  "fields": {
+                    "returns": "cents"
+                  }
+                }
+              ],
+              "steps": [
+                {
+                  "at": "def __init__(self, rule): self.rule=rule",
+                  "call": [
+                    "main",
+                    "b1",
+                    "Basket(student_price)"
+                  ],
+                  "new": {
+                    "id": "b1",
+                    "cls": "Basket",
+                    "name": "first basket",
+                    "fields": {
+                      "rule": "\u2192 student_price"
+                    }
+                  },
+                  "stack": [
+                    "main program",
+                    "Basket.__init__"
+                  ],
+                  "say": "In Python a function is an object too, so the caller can pass <code>student_price</code> itself (no brackets: it is not called yet). The basket stores it."
+                },
+                {
+                  "at": "def price(self, cents)",
+                  "call": [
+                    "main",
+                    "b1",
+                    "price(1000)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "basket.price(1000)"
+                  ],
+                  "say": "Ask the first basket for a price."
+                },
+                {
+                  "at": "def student_price",
+                  "call": [
+                    "b1",
+                    "sp",
+                    "rule(1000)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "basket.price(1000)",
+                    "student_price(1000)"
+                  ],
+                  "say": "<code>self.rule(cents)</code> calls whatever function was stored: here <code>student_price</code>."
+                },
+                {
+                  "at": "def price(self, cents)",
+                  "ret": [
+                    "sp",
+                    "b1",
+                    "800"
+                  ],
+                  "stack": [
+                    "main program",
+                    "basket.price(1000)"
+                  ],
+                  "say": "1000 \u00d7 80 // 100 = 800."
+                },
+                {
+                  "at": "print(Basket(student_price).price(1000))",
+                  "ret": [
+                    "b1",
+                    "main",
+                    "800"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "The first line prints 800."
+                },
+                {
+                  "at": "def __init__(self, rule): self.rule=rule",
+                  "call": [
+                    "main",
+                    "b2",
+                    "Basket(regular_price)"
+                  ],
+                  "new": {
+                    "id": "b2",
+                    "cls": "Basket",
+                    "name": "second basket",
+                    "fields": {
+                      "rule": "\u2192 regular_price"
+                    }
+                  },
+                  "stack": [
+                    "main program",
+                    "Basket.__init__"
+                  ],
+                  "say": "The same <code>Basket</code> class, given a different function."
+                },
+                {
+                  "at": "def regular_price",
+                  "call": [
+                    "b2",
+                    "rp",
+                    "rule(1000)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "basket.price(1000)",
+                    "regular_price(1000)"
+                  ],
+                  "say": "This basket's <code>price</code> calls <code>regular_price</code>."
+                },
+                {
+                  "at": "print(Basket(regular_price).price(1000))",
+                  "ret": [
+                    "b2",
+                    "main",
+                    "1000"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "Full price: 1000. With only one operation to vary, a function is a lighter design than an interface and classes."
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+              "output": "800\n",
+              "tokens": [
+                "Basket basket=new Basket(new StudentPrice());",
+                "Basket(PriceRule rule) { this.rule=rule; }",
+                "System.out.println(basket.price(1000));",
+                "int price(int cents)",
+                "public int apply(int cents)"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "def student_price(cents): return cents*80//100\ndef regular_price(cents): return cents\n\nclass Basket:\n    def __init__(self, rule): self.rule=rule\n    def price(self, cents): return self.rule(cents)\n\nprint(Basket(student_price).price(1000))\nprint(Basket(regular_price).price(1000))\n",
+              "output": "800\n1000\n",
+              "tokens": [
+                "def __init__(self, rule): self.rule=rule",
+                "def price(self, cents)",
+                "def student_price",
+                "def regular_price",
+                "print(Basket(student_price).price(1000))",
+                "print(Basket(regular_price).price(1000))"
+              ]
+            }
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-screwdriver-bits",
+          "alt": "A screwdriver with a blue and black handle and a long shaft, next to a holder of ten interchangeable Torx bits labelled T7 to T40",
+          "lead": "Swap the bit, keep the handle.",
+          "caption": "The handle never changes; every bit fits the same hexagonal socket. A new kind of screw needs a new bit, not a new screwdriver. That is what <code>PriceRule</code> gives <code>Basket</code>: a new pricing policy is a new class that fits the same socket, and Basket's code stays untouched. Where it breaks: a socket is only worth making when there really are several bits. A screwdriver for one kind of screw can have a fixed tip, and a class with one behaviour needs no interface yet.",
+          "place": "concept-1",
+          "width": "20rem"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-lens-mount",
+          "alt": "The front of a camera body with no lens attached: a metal bayonet ring with screws, a red alignment dot and a row of gold electrical contacts around the opening",
+          "lead": "The camera depends on the mount, not on one lens.",
+          "caption": "The ring on this camera body is a standard lens mount, with contacts the camera uses to talk to the lens. The body has no lens built in: you attach one, and any lens made for this mount will work. Dependency inversion is the same arrangement. <code>Basket</code> depends on the <code>PriceRule</code> contract, and the caller attaches a particular rule through the constructor, so the choice is visible where the objects are put together instead of hidden inside the basket.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "comic",
+          "num": 2347,
+          "title": "Dependency",
+          "year": "2020",
+          "alt": "xkcd comic: a tall, precarious tower of blocks labelled All modern digital infrastructure. Near the bottom, the whole tower rests on one tiny block, labelled A project some random person in Nebraska has been thanklessly maintaining since 2003.",
+          "caption": "Every class depends on something. Depending on a small, stable contract, rather than on one particular implementation, is what lets you swap the block out when it wobbles.",
+          "size": "fig-narrow",
+          "place": "after-visuals"
+        }
+      ],
+      "extras": [
+        {
+          "title": "A new rule, and Basket did not change",
+          "lang": "java",
+          "code": "import java.util.ArrayList;\nimport java.util.List;\n\npublic class Demo {\n    public static void main(String[] args) {\n        List<PriceRule> rules = new ArrayList<PriceRule>();\n        rules.add(new RegularPrice());\n        rules.add(new StudentPrice());\n        rules.add(new HalfPrice());\n        for (PriceRule rule : rules) {\n            Basket basket = new Basket(rule);\n            System.out.println(rule.name() + \": \" + basket.price(1000));\n        }\n    }\n}\n\ninterface PriceRule {\n    String name();\n    int apply(int cents);\n}\n\nclass RegularPrice implements PriceRule {\n    public String name() { return \"regular\"; }\n    public int apply(int cents) { return cents; }\n}\n\nclass StudentPrice implements PriceRule {\n    public String name() { return \"student\"; }\n    public int apply(int cents) { return cents * 80 / 100; }\n}\n\nclass HalfPrice implements PriceRule {\n    public String name() { return \"half\"; }\n    public int apply(int cents) { return cents / 2; }\n}\n\nclass Basket {\n    private final PriceRule rule;\n\n    Basket(PriceRule rule) { this.rule = rule; }\n\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+          "stdin": "",
+          "static": false,
+          "output": "regular: 1000\nstudent: 800\nhalf: 500\n",
+          "notes": [
+            [
+              "List<PriceRule> rules",
+              "A list of the interface type can hold any rule. The loop below never needs to know which classes exist.",
+              "Any rule"
+            ],
+            [
+              "rules.add(new HalfPrice());",
+              "Adding the half-price offer is one new class and one line here. <code>Basket</code> is not edited: open for extension, closed for modification.",
+              "Extension"
+            ],
+            [
+              "Basket basket = new Basket(rule);",
+              "Dependency injection: the caller chooses the rule and hands it to the basket.",
+              "Inject"
+            ],
+            [
+              "interface PriceRule",
+              "The contract both sides depend on: a name and an <code>apply</code> method.",
+              "The abstraction"
+            ],
+            [
+              "return cents / 2;",
+              "The whole half-price policy. It lives in its own class, so it can be tested alone.",
+              "One policy"
+            ],
+            [
+              "return rule.apply(cents);",
+              "Polymorphism: the same line runs <code>RegularPrice</code>, <code>StudentPrice</code> or <code>HalfPrice</code>, depending on what was injected.",
+              "Which apply?"
+            ]
+          ]
+        },
+        {
+          "title": "A fake clock makes the test repeatable",
+          "lang": "python",
+          "code": "class Greeter:\n    def __init__(self, clock):\n        self.clock = clock\n\n    def greet(self, name):\n        hour = self.clock()\n        if hour < 12:\n            return \"Good morning, \" + name\n        return \"Good afternoon, \" + name\n\n\ndef fake_morning():\n    return 9\n\n\ndef fake_afternoon():\n    return 15\n\n\nprint(Greeter(fake_morning).greet(\"Linh\"))\nprint(Greeter(fake_afternoon).greet(\"Linh\"))\n",
+          "stdin": "",
+          "static": false,
+          "output": "Good morning, Linh\nGood afternoon, Linh\n",
+          "notes": [
+            [
+              "def __init__(self, clock):",
+              "The greeter is <em>given</em> a clock: any function that returns the current hour. In the real program you would pass <code>lambda: datetime.now().hour</code>.",
+              "Injected clock"
+            ],
+            [
+              "hour = self.clock()",
+              "The greeter calls whatever it was given. It cannot tell a real clock from a fake one.",
+              "Call the collaborator"
+            ],
+            [
+              "def fake_morning():",
+              "A fake for testing: it always says 9 o&rsquo;clock, so the morning branch can be checked at any time of day.",
+              "A fake"
+            ],
+            [
+              "print(Greeter(fake_afternoon).greet(\"Linh\"))",
+              "Same class, other fake, other branch. Both branches are tested in one run, without waiting for the afternoon.",
+              "Both branches"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Substitution and focused interfaces",
+      "concepts": [
+        [
+          "The signature is only part of the contract",
+          "<p>The <strong>Liskov substitution principle</strong> (the L in SOLID) is about behaviour. A replacement must keep the promises that make its callers correct. Barbara Liskov first set out the idea in a 1987 conference keynote, <em>Data Abstraction and Hierarchy</em>, and in 1994 she and Jeannette Wing gave it a precise form.</p><p>Java&rsquo;s type checker can check that a method exists with the right signature. It cannot check what the method <em>does</em>. A <code>List</code> whose <code>add</code> quietly inserted at the front would compile, and would break every caller that relies on append order.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>A replacement may&hellip;</th><th>&hellip;but must not</th></tr></thead><tbody><tr><td>accept more inputs than the original</td><td>refuse inputs the original accepted</td></tr><tr><td>promise more (faster, more precise)</td><td>promise less (wrong order, values lost)</td></tr><tr><td>store its data differently</td><td>add surprising side effects: printing, deleting, sending</td></tr></tbody></table></div><p>Java itself has a documented exception: in the <code>List</code> documentation, <code>add</code> is marked <em>optional operation</em>. <code>Arrays.asList</code> returns a fixed-size list, so this compiles and then throws:</p><div class=\"code-card\"><pre>List&lt;String&gt; names = Arrays.asList(\"An\", \"Binh\");\nnames.add(\"Mai\");   // UnsupportedOperationException</pre></div>"
+        ],
+        [
+          "Expose only the capability a caller uses",
+          "<p>The <strong>interface segregation principle</strong> (the I in SOLID) keeps callers from depending on operations they never use. A notifier needs <code>send</code>, not a whole service that can also store data, change settings and delete users.</p><p>A narrow interface pays off three ways. Callers are protected from changes to operations they do not use. Writing another implementation is easy, because there is only one method to write. And a test can pass a simple <em>recorder</em> that satisfies the same capability without sending anything real; the test then inspects the recorded messages as well as the return values.</p><p>In Python there is often no interface at all: <code>notify</code> works with any object that has a <code>send</code> method. This is <em>duck typing</em> (&ldquo;if it quacks like a duck&hellip;&rdquo;). The principle still applies: the fewer methods a function calls on its parameter, the more objects can stand in for it.</p>"
+        ],
+        [
+          "The classic trap: is a square a rectangle?",
+          "<p>In maths, every square is a rectangle. So <code>class Square extends Rectangle</code> looks obviously right. Run the extra example <em>A square that breaks a rectangle&rsquo;s promise</em>: a method sets width 5 and height 4 and expects an area of 20. The rectangle gives 20. The square, which must keep its sides equal, gives 16.</p><p>Nothing crashed and the compiler was happy. The square broke a promise the rectangle made: &ldquo;setting the height does not change the width&rdquo;. Any code written for rectangles is now wrong when it is handed a square.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: trusting the English &ldquo;is a&rdquo;</span><p>&ldquo;A square <em>is a</em> rectangle&rdquo; and &ldquo;a penguin <em>is a</em> bird&rdquo; are true in English, and both make broken subclasses if <code>Rectangle</code> has independent setters or <code>Bird</code> has <code>fly()</code>. Ask instead: <em>can it do everything the parent promises, in every situation?</em> If not, use a shared interface (<code>Shape</code> with <code>area()</code>) or composition.</p></div><div class=\"note tip\"><span class=\"tag\">One way out</span><p>Make shapes unchangeable: <code>new Rectangle(5, 4)</code> and <code>new Square(4)</code>, with no setters. Without setters there is no promise to break, and both can implement <code>Shape</code>.</p></div>"
+        ],
+        [
+          "Contracts in Java and in Python",
+          "<p>Both languages let you state a contract; they check it at different moments. In both, only tests can check behaviour.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a contract</td><td><code>interface Channel { String send(String m); }</code></td><td>nothing (duck typing), or a class with <code>ABC</code> and <code>@abstractmethod</code>, or <code>typing.Protocol</code></td></tr><tr><td>a method is missing</td><td>compile error</td><td>plain class: <code>AttributeError</code> when called.<br>ABC: <code>TypeError</code> when the object is created</td></tr><tr><td>mark an override</td><td><code>@Override</code>, checked by the compiler</td><td><code>@typing.override</code> (Python 3.12+), checked only by tools such as type checkers</td></tr><tr><td>the behaviour is wrong</td><td>tests</td><td>tests</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: leaving out @Override</span><p>Misspell an overriding method (<code>tostring()</code> instead of <code>toString()</code>) and Java happily adds a new method; the old one still runs. With <code>@Override</code> on it, the compiler reports the mistake at once. It costs nothing, so use it every time.</p></div>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "Substitutability includes behaviour",
+          "lang": "java",
+          "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.LinkedList<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+          "notes": [
+            [
+              "xs.add(2)",
+              "The List add contract appends; caller expectations include order."
+            ],
+            [
+              "a.equals(b)",
+              "List equality compares ordered elements across different implementations."
+            ]
+          ],
+          "wrong": [
+            "false\n2\n",
+            "true\n3\n",
+            "false\n3\n"
+          ],
+          "why": "Both implementations honour append order, so their contents are equal and begin with 2.",
+          "stdin": "",
+          "static": false,
+          "output": "true\n2\n"
+        },
+        {
+          "title": "A narrow capability",
+          "lang": "python",
+          "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message)\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+          "notes": [
+            [
+              "def notify(channel, message)",
+              "Require only send; the caller need not know how delivery is implemented."
+            ],
+            [
+              "self.messages.append",
+              "A recording implementation makes the interaction observable in a test."
+            ]
+          ],
+          "wrong": [
+            "screen: Ready\n[]\n",
+            "recorded\n[]\n",
+            "Ready\n['Ready']\n"
+          ],
+          "why": "The recorder fulfils the same send capability and stores the message for inspection.",
+          "stdin": "",
+          "static": false,
+          "output": "recorded\n['Ready']\n"
+        }
+      ],
+      "try": "Invent a send implementation that silently drops messages. Explain why matching a method signature alone does not prove the replacement is suitable.",
+      "visuals": [
+        {
+          "kind": "w11-swap",
+          "title": "Swap the implementation: does it keep the promise?",
+          "intro": "Each replacement below is accepted: the Java ones compile and the Python ones run without an error. But does the caller still get what it relies on? Pick a replacement, <strong>predict</strong>, then reveal the real output.",
+          "cases": [
+            {
+              "id": "list",
+              "label": "Java: a List for fill()",
+              "lang": "java",
+              "reference": 0,
+              "relies": "<code>fill(xs)</code> relies on the <code>List</code> promise that <code>add</code> puts each element <em>at the end</em>. After <code>fill</code>, the list must hold 2 then 3, equal to the ArrayList <code>a</code>.",
+              "variants": [
+                {
+                  "label": "LinkedList",
+                  "program": 0,
+                  "why": "A different data structure inside (linked nodes, not an array), but the same promise: <code>add</code> appends."
+                },
+                {
+                  "label": "Vector",
+                  "program": 1,
+                  "why": "An older List class from Java 1.0. It also keeps the promise, so the caller cannot tell the difference."
+                },
+                {
+                  "label": "FrontList (home-made)",
+                  "program": 2,
+                  "why": "<code>FrontList</code> is a List, so the compiler accepts it, but its <code>add</code> puts each element at the <em>front</em>. b ends up [3, 2]. The signature matched; the behaviour did not."
+                }
+              ]
+            },
+            {
+              "id": "channel",
+              "label": "Python: a channel for notify()",
+              "lang": "python",
+              "reference": 3,
+              "relies": "The test relies on a recorder that <em>keeps every message exactly as sent</em>, so that <code>recorder.messages</code> shows what <code>notify</code> sent.",
+              "variants": [
+                {
+                  "label": "Recorder (append)",
+                  "program": 3,
+                  "why": "The example below: it records the message and returns <code>\"recorded\"</code>."
+                },
+                {
+                  "label": "Recorder (+=)",
+                  "program": 4,
+                  "why": "Different code inside, same behaviour: <code>+= [message]</code> also adds to the end of the list."
+                },
+                {
+                  "label": "Recorder that drops",
+                  "program": 5,
+                  "why": "It still has <code>send</code> and still says <code>\"recorded\"</code>, but it never keeps the message. A test using it would pass while checking nothing."
+                },
+                {
+                  "label": "Recorder that shouts",
+                  "program": 6,
+                  "why": "It changes the message before keeping it, so the test sees something <code>notify</code> never sent."
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.LinkedList<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+              "output": "true\n2\n",
+              "tokens": [
+                "new java.util.LinkedList<Integer>()"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.Vector<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+              "output": "true\n2\n",
+              "tokens": [
+                "Vector"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new FrontList();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\nclass FrontList extends java.util.ArrayList<Integer> {\n    public boolean add(Integer x) { super.add(0,x); return true; }\n}\n",
+              "output": "false\n2\n",
+              "tokens": [
+                "super.add(0,x)"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message)\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+              "output": "recorded\n['Ready']\n",
+              "tokens": [
+                "self.messages.append(message)"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages+=[message]\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+              "output": "recorded\n['Ready']\n",
+              "tokens": [
+                "self.messages+=[message]"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+              "output": "recorded\n[]\n",
+              "tokens": [
+                "return \"recorded\""
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message.upper())\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+              "output": "recorded\n['READY']\n",
+              "tokens": [
+                "message.upper()"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-calls",
+          "title": "Callers that depend only on the promise",
+          "intro": "<code>fill</code> and <code>notify</code> each know only one thing about their parameter: what it promises to do. Step through and notice that neither ever asks <em>which</em> class it was given.",
+          "runs": [
+            {
+              "label": "Java: fill() with two Lists",
+              "program": 0,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main",
+                  "fields": {}
+                },
+                {
+                  "id": "fill",
+                  "cls": "static method",
+                  "name": "fill",
+                  "fields": {
+                    "parameter": "List<Integer> xs"
+                  }
+                }
+              ],
+              "steps": [
+                {
+                  "at": "java.util.List<Integer> a=new java.util.ArrayList<Integer>();",
+                  "new": {
+                    "id": "a",
+                    "cls": "ArrayList",
+                    "name": "a",
+                    "fields": {
+                      "elements": "[ ]"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "a": "\u2192 ArrayList"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "<code>a</code> is an <code>ArrayList</code>, declared with the interface type <code>List&lt;Integer&gt;</code>."
+                },
+                {
+                  "at": "java.util.List<Integer> b=new java.util.LinkedList<Integer>();",
+                  "new": {
+                    "id": "b",
+                    "cls": "LinkedList",
+                    "name": "b",
+                    "fields": {
+                      "elements": "[ ]"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "b": "\u2192 LinkedList"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "<code>b</code> is a <code>LinkedList</code>: different storage, same <code>List</code> type."
+                },
+                {
+                  "at": "static void fill",
+                  "call": [
+                    "main",
+                    "fill",
+                    "fill(a)"
+                  ],
+                  "stack": [
+                    "main",
+                    "fill(xs = a)"
+                  ],
+                  "say": "<code>fill</code> receives <code>a</code> as <code>xs</code>. It only knows that <code>xs</code> is some <code>List</code>."
+                },
+                {
+                  "at": "static void fill",
+                  "call": [
+                    "fill",
+                    "a",
+                    "add(2), add(3)"
+                  ],
+                  "set": {
+                    "a": {
+                      "elements": "[2, 3]"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "fill(xs = a)",
+                    "a.add(\u2026)"
+                  ],
+                  "say": "Two <code>add</code> calls. The List promise: each element goes on the end."
+                },
+                {
+                  "at": "static void fill",
+                  "call": [
+                    "main",
+                    "fill",
+                    "fill(b)"
+                  ],
+                  "stack": [
+                    "main",
+                    "fill(xs = b)"
+                  ],
+                  "say": "The same method, now with the LinkedList. No <code>if</code>, no check of the class."
+                },
+                {
+                  "at": "static void fill",
+                  "call": [
+                    "fill",
+                    "b",
+                    "add(2), add(3)"
+                  ],
+                  "set": {
+                    "b": {
+                      "elements": "[2, 3]"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "fill(xs = b)",
+                    "b.add(\u2026)"
+                  ],
+                  "say": "LinkedList keeps the same promise, so <code>b</code> also holds 2 then 3."
+                },
+                {
+                  "at": "System.out.println(a.equals(b));",
+                  "call": [
+                    "main",
+                    "a",
+                    "equals(b)"
+                  ],
+                  "ret": [
+                    "a",
+                    "main",
+                    "true"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "List equality compares the elements in order, whatever the class, so this is <code>true</code>."
+                },
+                {
+                  "at": "System.out.println(a.get(0));",
+                  "call": [
+                    "main",
+                    "a",
+                    "get(0)"
+                  ],
+                  "ret": [
+                    "a",
+                    "main",
+                    "2"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "The first element is 2, because <code>add</code> appended. A caller may rely on that."
+                }
+              ]
+            },
+            {
+              "label": "Python: notify() with a recorder",
+              "program": 1,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main program",
+                  "fields": {}
+                },
+                {
+                  "id": "notify",
+                  "cls": "function",
+                  "name": "notify",
+                  "fields": {
+                    "needs": "channel.send(\u2026)"
+                  }
+                }
+              ],
+              "steps": [
+                {
+                  "at": "recorder=Recorder()",
+                  "new": {
+                    "id": "rec",
+                    "cls": "Recorder",
+                    "name": "recorder",
+                    "fields": {
+                      "messages": "[]"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "recorder": "\u2192 Recorder"
+                    }
+                  },
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "A <code>Recorder</code> starts with an empty list of messages."
+                },
+                {
+                  "at": "print(notify(recorder,\"Ready\"))",
+                  "call": [
+                    "main",
+                    "notify",
+                    "notify(recorder, \"Ready\")"
+                  ],
+                  "stack": [
+                    "main program",
+                    "notify(channel, message)"
+                  ],
+                  "say": "<code>notify</code> gets the recorder as <code>channel</code>. It needs exactly one capability from it: <code>send</code>."
+                },
+                {
+                  "at": "def notify",
+                  "call": [
+                    "notify",
+                    "rec",
+                    "send(\"Ready\")"
+                  ],
+                  "stack": [
+                    "main program",
+                    "notify(channel, message)",
+                    "recorder.send(message)"
+                  ],
+                  "say": "It calls <code>channel.send(message)</code>. A <code>Screen</code> would also work here; so would anything else with a suitable <code>send</code>."
+                },
+                {
+                  "at": "self.messages.append(message)",
+                  "set": {
+                    "rec": {
+                      "messages": "['Ready']"
+                    }
+                  },
+                  "stack": [
+                    "main program",
+                    "notify(channel, message)",
+                    "recorder.send(message)"
+                  ],
+                  "say": "Instead of showing the message anywhere, the recorder keeps it, so a test can look at it afterwards."
+                },
+                {
+                  "at": "return \"recorded\"",
+                  "ret": [
+                    "rec",
+                    "notify",
+                    "\"recorded\""
+                  ],
+                  "stack": [
+                    "main program",
+                    "notify(channel, message)"
+                  ],
+                  "say": "<code>send</code> returns its answer."
+                },
+                {
+                  "at": "print(notify(recorder,\"Ready\"))",
+                  "ret": [
+                    "notify",
+                    "main",
+                    "\"recorded\""
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "<code>notify</code> passes it straight back, and it is printed."
+                },
+                {
+                  "at": "print(recorder.messages)",
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "The test can check the interaction itself: exactly one message, <code>Ready</code>, was sent. No real screen or email was involved."
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.LinkedList<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+              "output": "true\n2\n",
+              "tokens": [
+                "java.util.List<Integer> a=new java.util.ArrayList<Integer>();",
+                "java.util.List<Integer> b=new java.util.LinkedList<Integer>();",
+                "static void fill",
+                "System.out.println(a.equals(b));",
+                "System.out.println(a.get(0));"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message)\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+              "output": "recorded\n['Ready']\n",
+              "tokens": [
+                "recorder=Recorder()",
+                "print(notify(recorder,\"Ready\"))",
+                "def notify",
+                "self.messages.append(message)",
+                "return \"recorded\"",
+                "print(recorder.messages)"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-change",
+          "title": "One big interface or a narrow one?",
+          "intro": "<code>notify</code> only ever calls <code>send</code>. In the first version its parameter is a large <code>MessageService</code> that also manages user accounts; in the second it is a one-method <code>Channel</code>. Make the two changes in order and watch which classes are dragged in.",
+          "lang": "java",
+          "unitLabels": {
+            "Demo": "main (Demo)"
+          },
+          "versions": [
+            {
+              "id": "fat",
+              "label": "notify takes a MessageService",
+              "program": 0
+            },
+            {
+              "id": "narrow",
+              "label": "notify takes a Channel",
+              "program": 1
+            }
+          ],
+          "changes": [
+            {
+              "id": "rec",
+              "label": "1. Add a test recorder",
+              "ask": "Testing <code>notify</code> needs a recorder that keeps the messages instead of showing them."
+            },
+            {
+              "id": "reset",
+              "label": "2. Accounts gain resetPassword",
+              "ask": "After change 1, account management needs a new operation, <code>resetPassword</code>. <code>notify</code> does not use it."
+            }
+          ],
+          "cells": {
+            "fat:rec": {
+              "program": 2,
+              "note": "The recorder must implement every <code>MessageService</code> method, so it gets two dummy methods for account jobs it will never do."
+            },
+            "fat:reset": {
+              "program": 3,
+              "from": 2,
+              "note": "An account change forces edits to <code>Screen</code> and <code>Recorder</code>, two classes that only send messages. Their code was opened for a reason that has nothing to do with them."
+            },
+            "narrow:rec": {
+              "program": 4,
+              "note": "The recorder implements the one method <code>notify</code> needs. No dummy methods."
+            },
+            "narrow:reset": {
+              "program": 5,
+              "from": 4,
+              "note": "Only <code>Accounts</code> changes. (Whatever class manages accounts would implement it; it is not part of this program.) <code>Screen</code> and <code>Recorder</code> are untouched."
+            }
+          },
+          "summary": "A client should not be forced to depend on operations it does not use. With the narrow interface, an account change never reaches the classes that only send messages.",
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(MessageService service, String message) { return service.send(message); }\n    public static void main(String[] args) {\n        System.out.println(notify(new Screen(), \"Ready\"));\n    }\n}\ninterface MessageService {\n    String send(String message);\n    void saveUser(String name);\n    void deleteUser(String name);\n}\nclass Screen implements MessageService {\n    public String send(String message) { return \"screen: \"+message; }\n    public void saveUser(String name) { }\n    public void deleteUser(String name) { }\n}\n",
+              "output": "screen: Ready\n",
+              "tokens": [
+                "interface MessageService"
+              ],
+              "id": "fat"
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(Channel channel, String message) { return channel.send(message); }\n    public static void main(String[] args) {\n        System.out.println(notify(new Screen(), \"Ready\"));\n    }\n}\ninterface Channel { String send(String message); }\ninterface Accounts {\n    void saveUser(String name);\n    void deleteUser(String name);\n}\nclass Screen implements Channel {\n    public String send(String message) { return \"screen: \"+message; }\n}\n",
+              "output": "screen: Ready\n",
+              "tokens": [
+                "interface Channel"
+              ],
+              "id": "narrow"
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(MessageService service, String message) { return service.send(message); }\n    public static void main(String[] args) {\n        Recorder recorder=new Recorder();\n        System.out.println(notify(recorder, \"Ready\"));\n        System.out.println(recorder.messages);\n    }\n}\ninterface MessageService {\n    String send(String message);\n    void saveUser(String name);\n    void deleteUser(String name);\n}\nclass Screen implements MessageService {\n    public String send(String message) { return \"screen: \"+message; }\n    public void saveUser(String name) { }\n    public void deleteUser(String name) { }\n}\nclass Recorder implements MessageService {\n    final java.util.List<String> messages=new java.util.ArrayList<String>();\n    public String send(String message) { messages.add(message); return \"recorded\"; }\n    public void saveUser(String name) { throw new UnsupportedOperationException(); }\n    public void deleteUser(String name) { throw new UnsupportedOperationException(); }\n}\n",
+              "output": "recorded\n[Ready]\n",
+              "tokens": [
+                "class Recorder implements MessageService"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(MessageService service, String message) { return service.send(message); }\n    public static void main(String[] args) {\n        Recorder recorder=new Recorder();\n        System.out.println(notify(recorder, \"Ready\"));\n        System.out.println(recorder.messages);\n    }\n}\ninterface MessageService {\n    String send(String message);\n    void saveUser(String name);\n    void deleteUser(String name);\n    void resetPassword(String name);\n}\nclass Screen implements MessageService {\n    public String send(String message) { return \"screen: \"+message; }\n    public void saveUser(String name) { }\n    public void deleteUser(String name) { }\n    public void resetPassword(String name) { }\n}\nclass Recorder implements MessageService {\n    final java.util.List<String> messages=new java.util.ArrayList<String>();\n    public String send(String message) { messages.add(message); return \"recorded\"; }\n    public void saveUser(String name) { throw new UnsupportedOperationException(); }\n    public void deleteUser(String name) { throw new UnsupportedOperationException(); }\n    public void resetPassword(String name) { throw new UnsupportedOperationException(); }\n}\n",
+              "output": "recorded\n[Ready]\n",
+              "tokens": [
+                "void resetPassword(String name);"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(Channel channel, String message) { return channel.send(message); }\n    public static void main(String[] args) {\n        Recorder recorder=new Recorder();\n        System.out.println(notify(recorder, \"Ready\"));\n        System.out.println(recorder.messages);\n    }\n}\ninterface Channel { String send(String message); }\ninterface Accounts {\n    void saveUser(String name);\n    void deleteUser(String name);\n}\nclass Screen implements Channel {\n    public String send(String message) { return \"screen: \"+message; }\n}\nclass Recorder implements Channel {\n    final java.util.List<String> messages=new java.util.ArrayList<String>();\n    public String send(String message) { messages.add(message); return \"recorded\"; }\n}\n",
+              "output": "recorded\n[Ready]\n",
+              "tokens": [
+                "class Recorder implements Channel"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    static String notify(Channel channel, String message) { return channel.send(message); }\n    public static void main(String[] args) {\n        Recorder recorder=new Recorder();\n        System.out.println(notify(recorder, \"Ready\"));\n        System.out.println(recorder.messages);\n    }\n}\ninterface Channel { String send(String message); }\ninterface Accounts {\n    void saveUser(String name);\n    void deleteUser(String name);\n    void resetPassword(String name);\n}\nclass Screen implements Channel {\n    public String send(String message) { return \"screen: \"+message; }\n}\nclass Recorder implements Channel {\n    final java.util.List<String> messages=new java.util.ArrayList<String>();\n    public String send(String message) { messages.add(message); return \"recorded\"; }\n}\n",
+              "output": "recorded\n[Ready]\n",
+              "tokens": [
+                "void resetPassword(String name);"
+              ]
+            }
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-spare-tyre",
+          "alt": "A temporary spare wheel fitted to a muddy black car. The tyre sidewall reads Temporary use only and a yellow sticker on the black steel rim gives a speed limit of 80 and 50",
+          "lead": "It fits the same bolts. It is not the same tyre.",
+          "caption": "This temporary spare bolts on exactly like a normal wheel: the \"signature\" matches. But the sidewall says TEMPORARY USE ONLY, and the sticker and the sidewall limit the car to 80 km/h (50 mph). A driver who expects normal behaviour is in for a surprise. Liskov substitution asks for more than a matching shape: a replacement must keep the promises its callers rely on, such as a <code>List</code> keeping elements in the order they were added.",
+          "place": "concept-1",
+          "width": "20rem"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-valet-key",
+          "alt": "Two car keys and a remote fob on a ring: a black-headed main key, and a separate green-headed valet key lying in front",
+          "lead": "Hand over only what the job needs.",
+          "caption": "Some cars came with a separate valet key (green, in front) as well as the main key, so that a parking attendant can drive the car without getting everything the owner's key can do. A narrow interface does the same for code: <code>notify</code> receives something that can <code>send</code>, not a whole service that can also delete users. Less to depend on means less that can break it, and a test can hand over a simple recorder instead.",
+          "place": "concept-2",
+          "width": "20rem"
+        },
+        {
+          "kind": "did-you-know",
+          "photo": "photo-w11-mars-orbiter",
+          "place": "end",
+          "alt": "Artist's drawing of the Mars Climate Orbiter: a gold-wrapped box with a long solar panel and a dish antenna, above the orange surface of Mars",
+          "text": "In September 1999 NASA lost the Mars Climate Orbiter. The interface specification said a ground program must report thruster impulse in newton-seconds; it reported pound-force seconds instead, so the navigation software underestimated the thrusters' effect by a factor of 4.45 and steered the spacecraft too close to Mars. Both programs passed numbers that \"fitted\". The broken part was the promise about what the numbers meant. Sources:",
+          "sources": [
+            [
+              "NASA Mishap Investigation Board, Phase I report (1999)",
+              "https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf"
+            ],
+            [
+              "NASA JPL: Mars Climate Orbiter",
+              "https://www.jpl.nasa.gov/missions/mars-climate-orbiter"
+            ]
+          ]
+        },
+        {
+          "kind": "did-you-know",
+          "photo": "photo-w11-mit-dome",
+          "place": "end",
+          "alt": "The Great Dome of the Massachusetts Institute of Technology behind a row of columns, seen along a cleared path between snowy lawns",
+          "text": "The Liskov substitution principle is named after Barbara Liskov, a computer scientist at MIT. In 2009 she received the ACM A.M. Turing Award for her work on data abstraction, which MIT News described as a way to make software easier to construct, modify and maintain. She also designed the programming language CLU. Sources:",
+          "sources": [
+            [
+              "MIT News, 10 March 2009",
+              "https://news.mit.edu/2009/turing-liskov-0310"
+            ]
+          ]
+        }
+      ],
+      "extras": [
+        {
+          "title": "A square that breaks a rectangle's promise",
+          "lang": "java",
+          "code": "public class Demo {\n    static int stretch(Rectangle r) {\n        r.setWidth(5);\n        r.setHeight(4);\n        return r.area();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(stretch(new Rectangle()));\n        System.out.println(stretch(new Square()));\n    }\n}\n\nclass Rectangle {\n    protected int width;\n    protected int height;\n\n    void setWidth(int w) { width = w; }\n    void setHeight(int h) { height = h; }\n    int area() { return width * height; }\n}\n\nclass Square extends Rectangle {\n    @Override\n    void setWidth(int w) { width = w; height = w; }\n\n    @Override\n    void setHeight(int h) { width = h; height = h; }\n}\n",
+          "stdin": "",
+          "static": false,
+          "output": "20\n16\n",
+          "notes": [
+            [
+              "static int stretch(Rectangle r)",
+              "Written for rectangles. It relies on a promise: setting the height leaves the width alone.",
+              "The caller"
+            ],
+            [
+              "return r.area();",
+              "For a 5 by 4 rectangle the caller expects 20.",
+              "The expectation"
+            ],
+            [
+              "stretch(new Square())",
+              "This compiles: a <code>Square</code> <em>is a</em> <code>Rectangle</code> as far as Java&rsquo;s types go.",
+              "Accepted by the compiler"
+            ],
+            [
+              "void setHeight(int h) { width = h; height = h; }",
+              "To stay square it changes the width too. Setting the height to 4 makes it 4 by 4, so the area is 16, not 20.",
+              "The broken promise"
+            ],
+            [
+              "class Square extends Rectangle",
+              "True in maths, false as a substitute: a square cannot keep a rectangle&rsquo;s promise about independent sides.",
+              "Not substitutable"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Cohesion, coupling and practical restraint",
+      "concepts": [
+        [
+          "Coordinate without owning every rule",
+          "<p>A program receives requests from outside: a button press, a line of input, a web request. GRASP&rsquo;s <strong>Controller</strong> is the first object beyond the user interface that receives such a request and decides which model objects should handle it. It translates; it does not own the rules.</p><p>In the example, <code>Counter.borrow()</code> turns a request into <code>stock.take()</code> and a reply. The rule about whether a copy is available stays in <code>Stock</code>, the information expert. The controller never duplicates the availability calculation.</p><p>Two words describe how good this division is. <strong>Cohesion</strong>: how closely the parts of one class belong together. <strong>Coupling</strong>: how much one class depends on the details of another. Aim for <em>high cohesion, low coupling</em>: each class does one related set of things, and knows as little as possible about the others.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: the class that does everything</span><p>A controller that checks stock, computes fines, formats messages and writes the log is the Swiss Army knife again. It is easy to write and painful to change. If a controller method is longer than a few lines, look for an expert to hand the work to.</p></div>"
+        ],
+        [
+          "Keep one source of each rule",
+          "<p>Andy Hunt and Dave Thomas state <strong>DRY</strong> (<em>Don&rsquo;t Repeat Yourself</em>) in <em>The Pragmatic Programmer</em> (1999): &ldquo;Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.&rdquo; Note the word <em>knowledge</em>. DRY is about rules, not about text that happens to look alike.</p><p><strong>YAGNI</strong> stands for &ldquo;You Aren&rsquo;t Gonna Need It&rdquo;, a mantra from Extreme Programming. Martin Fowler <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">traces it</a> to Kent Beck answering a list of features &ldquo;the system would soon need&rdquo; with &ldquo;you aren&rsquo;t going to need it&rdquo;. Build what the program needs now, and keep it easy to change.</p><p>GRASP also names Creator, Polymorphism, Pure Fabrication, Indirection and Protected Variations. Use those names to explain a design, not to force extra layers into a small program.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: merging things that only look the same</span><p>The pass mark is 50 and the late-penalty cap is also 50. Using one constant for both is not DRY; it couples two unrelated rules, so changing one silently changes the other. Ask &ldquo;if this one changed, must that one change too?&rdquo; Only if the answer is yes is it the same knowledge.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-hoare.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Tony Hoare\"></div><p>&ldquo;There are two ways of constructing a software design: One way is to make it so simple that there are <em>obviously</em> no deficiencies and the other way is to make it so complicated that there are no <em>obvious</em> deficiencies. The first method is far more difficult.&rdquo;</p><span class=\"attrib\">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture, CACM 24(2), 1981 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg\" target=\"_blank\" rel=\"noopener\">Rama, 2011</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY-SA 2.0 fr</a></span></span></div>"
+        ],
+        [
+          "Coupling you can see: long chains of dots",
+          "<p>One quick way to spot tight coupling is to count the dots:</p><div class=\"code-card\"><pre>String city = order.getCustomer().getAddress().getCity();   // knows three classes\nString city = order.deliveryCity();                          // knows one</pre></div><p>The first line depends on how orders, customers <em>and</em> addresses are built inside. If addresses gain a second line or customers get several addresses, every chain like this breaks. The second line asks the order, and only the order needs to know the path.</p><p>The guideline is called the <strong>Law of Demeter</strong>, or &ldquo;talk only to your immediate friends&rdquo;. Ian Holland proposed it in 1987 while working on the Demeter project at Northeastern University, which gave it its name.</p><div class=\"note tip\"><span class=\"tag\">A guideline, not a law</span><p>Chains on values are fine: <code>name.strip().lower()</code> or <code>sb.append(a).append(b)</code> each return the same kind of value, not a path into someone else&rsquo;s internals. The smell is walking through several <em>different</em> objects to reach a piece of data.</p></div>"
+        ],
+        [
+          "Refactoring: change the design, keep the behaviour",
+          "<p>Martin Fowler&rsquo;s book <em>Refactoring</em> <a href=\"https://martinfowler.com/bliki/DefinitionOfRefactoring.html\" target=\"_blank\" rel=\"noopener\">defines</a> it as &ldquo;a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.&rdquo; Same output, better shape.</p><p>The method is small, safe steps. Have a test (or at least a known output) first. Make one small change. Run it. Repeat. The last interactive diagram below walks through four such steps, and the extra example <em>Refactor, then prove nothing changed</em> prints <code>True</code> when the old and new versions agree.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Refactoring</th><th>Use it when</th><th>This week</th></tr></thead><tbody><tr><td>Rename</td><td>a name no longer says what the thing does</td><td><code>doIt</code> &rarr; <code>borrow</code></td></tr><tr><td>Extract method / function</td><td>a block of code has a job you can name</td><td><code>passes(mark)</code></td></tr><tr><td>Move method</td><td>a method uses another class&rsquo;s data more than its own</td><td>subtotal moves into <code>Line</code></td></tr><tr><td>Replace conditional with polymorphism</td><td>an <code>if</code>-chain on a type keeps growing</td><td><code>PriceRule</code> classes</td></tr><tr><td>Delete dead code</td><td>nothing calls it any more</td><td>old code paths, unused flags</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: refactoring and adding a feature at once</span><p>If the output changes, which edit caused it? Keep the two apart: first refactor until the output is identical, then add the feature as a separate step.</p></div><div class=\"note danger\"><span class=\"tag\">Code that was &ldquo;not meant to be used&rdquo;</span><p>On 1 August 2012, in the first 45 minutes after the market opened, Knight Capital&rsquo;s trading router sent more than 4 million orders while trying to fill just 212 customer orders. The firm lost more than $460 million. According to the US Securities and Exchange Commission, Knight had moved a section of code in 2005, leaving an old function defective; &ldquo;although this function was not meant to be used, Knight left it in the router&rdquo;. In late July 2012 Knight incorrectly deployed new code in the same router. Source: <a href=\"https://www.sec.gov/news/press-release/2013-222\" target=\"_blank\" rel=\"noopener\">SEC press release 2013-222</a>. Unused code still has to be understood, tested and deployed correctly. If nothing needs it, delete it.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-dijkstra.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Edsger W. Dijkstra\"></div><p>&ldquo;Simplicity is prerequisite for reliability.&rdquo;</p><span class=\"attrib\">E. W. Dijkstra, EWD 498, <em>How do we tell truths that might hurt?</em>, 1975 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg\" target=\"_blank\" rel=\"noopener\">Hamilton Richards, 2002</a> &middot; <a href=\"http://creativecommons.org/licenses/by-sa/3.0/\" target=\"_blank\" rel=\"noopener\">CC BY-SA 3.0</a></span></span></div>"
+        ]
+      ],
+      "examples": [
+        {
+          "title": "A controller coordinates an operation",
+          "lang": "java",
+          "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        Counter counter=new Counter(stock);\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\nclass Counter {\n    private final Stock stock;\n    Counter(Stock stock) { this.stock=stock; }\n    String borrow() { return stock.take() ? \"Borrowed\" : \"Unavailable\"; }\n}\n",
+          "notes": [
+            [
+              "stock.take()",
+              "The stock object owns the availability rule and state change."
+            ],
+            [
+              "Counter(Stock stock)",
+              "The controller receives its collaborator and coordinates the request."
+            ]
+          ],
+          "wrong": [
+            "Borrowed\nBorrowed\nBorrowed\n",
+            "Unavailable\nBorrowed\nBorrowed\n",
+            "Borrowed\nUnavailable\nUnavailable\n"
+          ],
+          "why": "The controller translates each model result into a response; the third request has no stock left.",
+          "stdin": "",
+          "static": false,
+          "output": "Borrowed\nBorrowed\nUnavailable\n"
+        },
+        {
+          "title": "One rule in one place",
+          "lang": "python",
+          "code": "def passes(mark): return mark>=50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+          "notes": [
+            [
+              "def passes",
+              "Keep the pass rule in one place so callers cannot quietly disagree."
+            ],
+            [
+              "sum(passes(mark) for mark in marks)",
+              "Both the count and labels depend on the same rule."
+            ]
+          ],
+          "wrong": [
+            "1\n['F', 'F', 'P']\n",
+            "2\n['P', 'F', 'P']\n",
+            "3\n['P', 'P', 'P']\n"
+          ],
+          "why": "Exactly 50 passes. Both callers use the same threshold function.",
+          "stdin": "",
+          "static": false,
+          "output": "2\n['F', 'P', 'P']\n"
+        }
+      ],
+      "try": "Move the pass threshold from 50 to 60 in one place and predict both outputs. For the borrowing example, identify the controller, expert and source of mutable state.",
+      "visuals": [
+        {
+          "kind": "w11-tangle",
+          "title": "Untangle the library counter",
+          "intro": "Five jobs have been handed out badly. A <span class=\"w11-key bad\">red arrow</span> means a class is doing a job that needs another class's data or role, so it depends on that class's details. The <span class=\"w11-key ok\">grey arrows</span> are the two calls the program really needs. Select a job, then press <strong>Move here</strong> on the class that should own it.",
+          "classes": [
+            {
+              "id": "ui",
+              "label": "main (UI)",
+              "owns": "the screen: prints replies",
+              "unit": "Demo",
+              "calledBy": "Nothing calls main: the program starts here. It calls <code>counter.borrow()</code>."
+            },
+            {
+              "id": "counter",
+              "label": "Counter",
+              "owns": "a reference to the Stock",
+              "unit": "Counter",
+              "calledBy": "Called by main (<code>borrow()</code>). It calls <code>stock.take()</code>."
+            },
+            {
+              "id": "stock",
+              "label": "Stock",
+              "owns": "count: the copies left",
+              "unit": "Stock",
+              "calledBy": "Called by Counter (<code>take()</code>). It calls nobody."
+            }
+          ],
+          "needed": [
+            [
+              "ui",
+              "counter",
+              "borrow()"
+            ],
+            [
+              "counter",
+              "stock",
+              "take()"
+            ]
+          ],
+          "duties": [
+            {
+              "id": "check",
+              "label": "check whether a copy is left (count == 0?)",
+              "home": "stock",
+              "start": "ui",
+              "needs": "count",
+              "why": "It needs <code>count</code>, which Stock owns."
+            },
+            {
+              "id": "take",
+              "label": "take one copy (count \u2212 1)",
+              "home": "stock",
+              "start": "counter",
+              "needs": "count",
+              "why": "Changing <code>count</code> belongs with <code>count</code>; then nobody else can make it negative."
+            },
+            {
+              "id": "reply",
+              "label": "turn the answer into \u201cBorrowed\u201d or \u201cUnavailable\u201d",
+              "home": "counter",
+              "start": "stock",
+              "needs": "the reply wording",
+              "why": "Translating a model result into a response is the controller's job. Stock should not care how the answer is worded."
+            },
+            {
+              "id": "coord",
+              "label": "handle a borrow request: ask the stock, then reply",
+              "home": "counter",
+              "start": "ui",
+              "needs": "the request flow",
+              "why": "Coordinating a request is exactly what a controller is for (GRASP Controller)."
+            },
+            {
+              "id": "print",
+              "label": "print the reply",
+              "home": "ui",
+              "start": "stock",
+              "needs": "the screen",
+              "why": "Only the UI talks to the person. A Stock that prints could never be reused without a screen."
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        Counter counter=new Counter(stock);\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\nclass Counter {\n    private final Stock stock;\n    Counter(Stock stock) { this.stock=stock; }\n    String borrow() { return stock.take() ? \"Borrowed\" : \"Unavailable\"; }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "class Stock",
+                "class Counter",
+                "boolean take()",
+                "String borrow()"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-calls",
+          "title": "A controller coordinates, the expert decides",
+          "intro": "Step through three borrow requests. Watch <code>count</code> inside the Stock, and notice that the Counter never touches it: it only asks.",
+          "runs": [
+            {
+              "label": "Java: Counter and Stock",
+              "program": 0,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main",
+                  "fields": {}
+                }
+              ],
+              "steps": [
+                {
+                  "at": "Stock stock=new Stock(2);",
+                  "new": {
+                    "id": "stock",
+                    "cls": "Stock",
+                    "name": "stock",
+                    "fields": {
+                      "count": "2"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "stock": "\u2192 Stock"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "A Stock with 2 copies. <code>count</code> is private: only Stock can change it."
+                },
+                {
+                  "at": "Counter counter=new Counter(stock);",
+                  "new": {
+                    "id": "counter",
+                    "cls": "Counter",
+                    "name": "counter",
+                    "fields": {
+                      "stock": "\u2192 Stock"
+                    }
+                  },
+                  "set": {
+                    "main": {
+                      "counter": "\u2192 Counter"
+                    }
+                  },
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "The Counter is given the Stock it will work with (it does not create its own)."
+                },
+                {
+                  "at": "String borrow()",
+                  "call": [
+                    "main",
+                    "counter",
+                    "borrow()"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()"
+                  ],
+                  "say": "First request: main asks the controller."
+                },
+                {
+                  "at": "boolean take()",
+                  "call": [
+                    "counter",
+                    "stock",
+                    "take()"
+                  ],
+                  "set": {
+                    "stock": {
+                      "count": "1"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "counter.borrow()",
+                    "stock.take()"
+                  ],
+                  "say": "The Counter asks the expert. Stock checks <code>count == 0</code> (false), lowers <code>count</code> to 1 and will return <code>true</code>."
+                },
+                {
+                  "at": "String borrow()",
+                  "ret": [
+                    "stock",
+                    "counter",
+                    "true"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()"
+                  ],
+                  "say": "The Counter turns <code>true</code> into the reply <code>\"Borrowed\"</code>."
+                },
+                {
+                  "at": "System.out.println(counter.borrow());",
+                  "ret": [
+                    "counter",
+                    "main",
+                    "\"Borrowed\""
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "main prints the reply."
+                },
+                {
+                  "at": "String borrow()",
+                  "call": [
+                    "main",
+                    "counter",
+                    "borrow()"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()"
+                  ],
+                  "say": "Second request."
+                },
+                {
+                  "at": "boolean take()",
+                  "call": [
+                    "counter",
+                    "stock",
+                    "take()"
+                  ],
+                  "set": {
+                    "stock": {
+                      "count": "0"
+                    }
+                  },
+                  "stack": [
+                    "main",
+                    "counter.borrow()",
+                    "stock.take()"
+                  ],
+                  "say": "One copy is still there, so <code>count</code> goes from 1 to 0 and <code>take</code> returns <code>true</code>."
+                },
+                {
+                  "at": "System.out.println(counter.borrow());",
+                  "ret": [
+                    "counter",
+                    "main",
+                    "\"Borrowed\""
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "Borrowed again."
+                },
+                {
+                  "at": "String borrow()",
+                  "call": [
+                    "main",
+                    "counter",
+                    "borrow()"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()"
+                  ],
+                  "say": "Third request."
+                },
+                {
+                  "at": "boolean take()",
+                  "call": [
+                    "counter",
+                    "stock",
+                    "take()"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()",
+                    "stock.take()"
+                  ],
+                  "say": "Now <code>count == 0</code> is true: <code>take</code> returns <code>false</code> and leaves <code>count</code> alone. It cannot go negative."
+                },
+                {
+                  "at": "String borrow()",
+                  "ret": [
+                    "stock",
+                    "counter",
+                    "false"
+                  ],
+                  "stack": [
+                    "main",
+                    "counter.borrow()"
+                  ],
+                  "say": "The Counter turns <code>false</code> into <code>\"Unavailable\"</code>. It made no decision about stock itself."
+                },
+                {
+                  "at": "System.out.println(counter.borrow());",
+                  "ret": [
+                    "counter",
+                    "main",
+                    "\"Unavailable\""
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main"
+                  ],
+                  "say": "The availability rule lives in one place, Stock. The Counter just coordinates."
+                }
+              ]
+            },
+            {
+              "label": "Python: one passes() rule",
+              "program": 1,
+              "objects": [
+                {
+                  "id": "main",
+                  "cls": "main program",
+                  "fields": {}
+                },
+                {
+                  "id": "passes",
+                  "cls": "function",
+                  "name": "passes",
+                  "fields": {
+                    "rule": "mark >= 50"
+                  }
+                },
+                {
+                  "id": "cp",
+                  "cls": "function",
+                  "name": "count_passes",
+                  "fields": {}
+                },
+                {
+                  "id": "lb",
+                  "cls": "function",
+                  "name": "labels",
+                  "fields": {}
+                }
+              ],
+              "steps": [
+                {
+                  "at": "marks=[49,50,85]",
+                  "set": {
+                    "main": {
+                      "marks": "[49, 50, 85]"
+                    }
+                  },
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "Three marks. The pass rule is written once, in <code>passes</code>."
+                },
+                {
+                  "at": "return sum(passes(mark) for mark in marks)",
+                  "call": [
+                    "main",
+                    "cp",
+                    "count_passes(marks)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "count_passes(marks)"
+                  ],
+                  "say": "<code>count_passes</code> does not know the pass mark. It asks <code>passes</code> about each mark."
+                },
+                {
+                  "at": "def passes",
+                  "call": [
+                    "cp",
+                    "passes",
+                    "passes(49)"
+                  ],
+                  "ret": [
+                    "passes",
+                    "cp",
+                    "False"
+                  ],
+                  "stack": [
+                    "main program",
+                    "count_passes(marks)",
+                    "passes(49)"
+                  ],
+                  "say": "49 >= 50 is <code>False</code>."
+                },
+                {
+                  "at": "def passes",
+                  "call": [
+                    "cp",
+                    "passes",
+                    "passes(50)"
+                  ],
+                  "ret": [
+                    "passes",
+                    "cp",
+                    "True"
+                  ],
+                  "stack": [
+                    "main program",
+                    "count_passes(marks)",
+                    "passes(50)"
+                  ],
+                  "say": "50 >= 50 is <code>True</code>: exactly 50 passes."
+                },
+                {
+                  "at": "def passes",
+                  "call": [
+                    "cp",
+                    "passes",
+                    "passes(85)"
+                  ],
+                  "ret": [
+                    "passes",
+                    "cp",
+                    "True"
+                  ],
+                  "stack": [
+                    "main program",
+                    "count_passes(marks)",
+                    "passes(85)"
+                  ],
+                  "say": "85 passes too."
+                },
+                {
+                  "at": "print(count_passes(marks))",
+                  "ret": [
+                    "cp",
+                    "main",
+                    "2"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "<code>sum</code> counts each <code>True</code> as 1, so the count is 2."
+                },
+                {
+                  "at": "return [\"P\" if passes(mark) else \"F\" for mark in marks]",
+                  "call": [
+                    "main",
+                    "lb",
+                    "labels(marks)"
+                  ],
+                  "stack": [
+                    "main program",
+                    "labels(marks)"
+                  ],
+                  "say": "<code>labels</code> asks the very same function, so it cannot disagree with the count."
+                },
+                {
+                  "at": "def passes",
+                  "call": [
+                    "lb",
+                    "passes",
+                    "passes(49), passes(50), passes(85)"
+                  ],
+                  "ret": [
+                    "passes",
+                    "lb",
+                    "False, True, True"
+                  ],
+                  "stack": [
+                    "main program",
+                    "labels(marks)",
+                    "passes(\u2026)"
+                  ],
+                  "say": "Same three answers, turned into <code>\"F\"</code>, <code>\"P\"</code>, <code>\"P\"</code>."
+                },
+                {
+                  "at": "print(labels(marks))",
+                  "ret": [
+                    "lb",
+                    "main",
+                    "['F', 'P', 'P']"
+                  ],
+                  "print": true,
+                  "stack": [
+                    "main program"
+                  ],
+                  "say": "Change the pass mark in <code>passes</code> and both results follow. The diagram below shows what happens when the rule is copied instead."
+                }
+              ]
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        Counter counter=new Counter(stock);\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\nclass Counter {\n    private final Stock stock;\n    Counter(Stock stock) { this.stock=stock; }\n    String borrow() { return stock.take() ? \"Borrowed\" : \"Unavailable\"; }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "Stock stock=new Stock(2);",
+                "Counter counter=new Counter(stock);",
+                "String borrow()",
+                "boolean take()",
+                "System.out.println(counter.borrow());"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "def passes(mark): return mark>=50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "2\n['F', 'P', 'P']\n",
+              "tokens": [
+                "marks=[49,50,85]",
+                "return sum(passes(mark) for mark in marks)",
+                "def passes",
+                "print(count_passes(marks))",
+                "return [\"P\" if passes(mark) else \"F\" for mark in marks]",
+                "print(labels(marks))"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-change",
+          "title": "Move the pass mark to 60: one place or two?",
+          "intro": "Both programs print the same result today. In the first, the rule <code>mark&gt;=50</code> is copied into two functions; in the second (the example below), it has one home, <code>passes</code>. Send both the same change request.",
+          "lang": "python",
+          "versions": [
+            {
+              "id": "copied",
+              "label": "Rule copied in two places",
+              "program": 0
+            },
+            {
+              "id": "one",
+              "label": "One passes() function",
+              "program": 1
+            }
+          ],
+          "changes": [
+            {
+              "id": "sixty",
+              "label": "Pass mark 50 \u2192 60",
+              "ask": "The faculty raises the pass mark to 60."
+            }
+          ],
+          "cells": {
+            "copied:sixty": {
+              "program": 2,
+              "note": "Two edits for one decision. You had to know that the rule was written twice.",
+              "slip": {
+                "program": 3,
+                "label": "What if you miss the second copy?",
+                "note": "The count says one student passed, but the labels still show two P's. Each function is \"correct\" by its own copy of the rule."
+              }
+            },
+            "one:sixty": {
+              "program": 4,
+              "note": "One edit, and both results change together. There is no second copy to forget."
+            }
+          },
+          "summary": "DRY is about knowledge, not about text: the pass mark is one decision, so it gets one home. YAGNI pulls the other way: do not build a configurable rules engine for a threshold that has one value.",
+          "programs": [
+            {
+              "lang": "python",
+              "code": "def count_passes(marks):\n    return sum(mark>=50 for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if mark>=50 else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "2\n['F', 'P', 'P']\n",
+              "tokens": [
+                "mark>=50"
+              ],
+              "id": "copied"
+            },
+            {
+              "lang": "python",
+              "code": "def passes(mark): return mark>=50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "2\n['F', 'P', 'P']\n",
+              "tokens": [
+                "def passes"
+              ],
+              "id": "one"
+            },
+            {
+              "lang": "python",
+              "code": "def count_passes(marks):\n    return sum(mark>=60 for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if mark>=60 else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "1\n['F', 'F', 'P']\n",
+              "tokens": [
+                "mark>=60"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "def count_passes(marks):\n    return sum(mark>=60 for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if mark>=50 else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "1\n['F', 'P', 'P']\n",
+              "tokens": [
+                "sum(mark>=60"
+              ]
+            },
+            {
+              "lang": "python",
+              "code": "def passes(mark): return mark>=60\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+              "output": "1\n['F', 'F', 'P']\n",
+              "tokens": [
+                "return mark>=60"
+              ]
+            }
+          ]
+        },
+        {
+          "kind": "w11-refactor",
+          "title": "Refactor step by step: from one long main to Counter and Stock",
+          "intro": "Refactoring changes the design without changing what the program does. Step through four small moves that turn a copy-and-paste <code>main</code> into the controller example below. Each step shows what changed, why, and a check that the real output stayed the same.",
+          "lang": "java",
+          "metrics": [
+            {
+              "label": "copies of the rule count==0",
+              "token": "count==0"
+            },
+            {
+              "label": "places that change count",
+              "token": "count--"
+            },
+            {
+              "label": "classes",
+              "pattern": "^(public )?class "
+            }
+          ],
+          "steps": [
+            {
+              "program": 0,
+              "title": "Start: everything in main",
+              "tag": "Starting point",
+              "why": "It works, but the stock rule is pasted three times and <code>main</code> does everything: holds the count, applies the rule, chooses the reply and prints it."
+            },
+            {
+              "program": 1,
+              "title": "Give the data a home: a Stock class",
+              "tag": "Information Expert (first half)",
+              "why": "The count now belongs to an object. But <code>main</code> still reads and changes <code>stock.count</code> directly, so it is coupled to Stock's field and still holds the rule."
+            },
+            {
+              "program": 2,
+              "title": "Move the rule beside its data: take()",
+              "tag": "Information Expert \u00b7 DRY",
+              "why": "Stock owns <code>count</code>, so Stock gets the rule. The field becomes <code>private</code>, the rule exists once, and nobody outside can make the count negative."
+            },
+            {
+              "program": 3,
+              "title": "Give the request a coordinator: Counter",
+              "tag": "Controller \u00b7 low coupling",
+              "why": "Turning a request into a model call and a reply is now the Counter's job, so <code>main</code> only starts things and prints. This is the example below."
+            },
+            {
+              "program": 3,
+              "title": "Stop here",
+              "tag": "YAGNI",
+              "why": "Tempting next steps: a <code>BorrowPolicy</code> interface, a factory, a configuration file. There is only one policy, so none of them would earn its place yet. Add them when a real second policy arrives."
+            }
+          ],
+          "programs": [
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        int count=2;\n        if(count==0) System.out.println(\"Unavailable\");\n        else { count--; System.out.println(\"Borrowed\"); }\n        if(count==0) System.out.println(\"Unavailable\");\n        else { count--; System.out.println(\"Borrowed\"); }\n        if(count==0) System.out.println(\"Unavailable\");\n        else { count--; System.out.println(\"Borrowed\"); }\n    }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "if(count==0)"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        if(stock.count==0) System.out.println(\"Unavailable\");\n        else { stock.count--; System.out.println(\"Borrowed\"); }\n        if(stock.count==0) System.out.println(\"Unavailable\");\n        else { stock.count--; System.out.println(\"Borrowed\"); }\n        if(stock.count==0) System.out.println(\"Unavailable\");\n        else { stock.count--; System.out.println(\"Borrowed\"); }\n    }\n}\nclass Stock {\n    int count;\n    Stock(int count) { this.count=count; }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "class Stock"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        System.out.println(stock.take() ? \"Borrowed\" : \"Unavailable\");\n        System.out.println(stock.take() ? \"Borrowed\" : \"Unavailable\");\n        System.out.println(stock.take() ? \"Borrowed\" : \"Unavailable\");\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "boolean take()"
+              ]
+            },
+            {
+              "lang": "java",
+              "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        Counter counter=new Counter(stock);\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\nclass Counter {\n    private final Stock stock;\n    Counter(Stock stock) { this.stock=stock; }\n    String borrow() { return stock.take() ? \"Borrowed\" : \"Unavailable\"; }\n}\n",
+              "output": "Borrowed\nBorrowed\nUnavailable\n",
+              "tokens": [
+                "class Counter"
+              ]
+            }
+          ]
+        }
+      ],
+      "media": [
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-library-desk",
+          "alt": "A public library circulation desk with wooden counters, computer screens, a self-service kiosk and a sign reading Return all materials here",
+          "lead": "The desk coordinates; the catalogue knows.",
+          "caption": "At a circulation desk, staff take your request, check the library's records and give you an answer. They do not memorise which copies are on the shelves; the records know that. <code>Counter</code> plays the same part: it turns a borrow request into a call to <code>stock.take()</code> and a reply. The rule about whether a copy is left stays in <code>Stock</code>.",
+          "place": "concept-1",
+          "width": "20rem"
+        },
+        {
+          "kind": "media-row",
+          "photo": "photo-w11-clocks",
+          "alt": "A shop wall covered in about a dozen wall clocks for sale, round, square and octagonal, every one showing a different time",
+          "lead": "Copies of the same knowledge drift apart.",
+          "caption": "Every clock on this wall is meant to tell the same time, and no two of them agree. Copies drift. A rule written in two places, such as a pass mark, is a pair of clocks: change one, forget the other, and the program contradicts itself. DRY means one source for each piece of knowledge, like one <code>passes</code> function that every caller asks. Where it breaks: two pieces of code that merely look alike are not always the same rule; merge them only when they share a meaning.",
+          "place": "concept-2",
+          "width": "18rem"
+        },
+        {
+          "kind": "comic",
+          "num": 974,
+          "title": "The General Problem",
+          "year": "2011",
+          "alt": "xkcd comic in three panels. A person at a dinner table asks: Can you pass the salt? In the last panel they complain: I said... it's been 20 minutes! The other person replies: I know! I'm developing a system to pass you arbitrary condiments. It'll save time in the long run!",
+          "caption": "YAGNI: build what this program needs now. A general condiment-passing system for one salt shaker is a design with no customer.",
+          "size": "fig-wide",
+          "place": "after-visuals"
+        },
+        {
+          "kind": "did-you-know",
+          "photo": "photo-w11-kilogram",
+          "place": "end",
+          "alt": "A replica of the international prototype kilogram: a small polished metal cylinder under two nested glass bell jars on a metal base",
+          "text": "For more than a century, the kilogram was defined by one object: a small polished cylinder of platinum-iridium, the International Prototype of the Kilogram. National standards were calibrated against it or its copies, and the measured mass of each standard drifted a little over time. In November 2018 the world's measurement community voted to define the kilogram by the Planck constant, a fixed constant of nature, instead. One authoritative source, not a pile of copies: DRY on a planetary scale. Sources:",
+          "sources": [
+            [
+              "NIST: Kilogram, introduction",
+              "https://www.nist.gov/si-redefinition/kilogram-introduction"
+            ]
+          ]
+        }
+      ],
+      "extras": [
+        {
+          "title": "Refactor, then prove nothing changed",
+          "lang": "python",
+          "code": "# Before: one function counts, labels and formats\ndef report_before(marks):\n    passed = 0\n    for m in marks:\n        if m >= 50:\n            passed += 1\n    lines = []\n    for m in marks:\n        if m >= 50:\n            lines.append(str(m) + \" P\")\n        else:\n            lines.append(str(m) + \" F\")\n    lines.append(\"passed: \" + str(passed))\n    return \"\\n\".join(lines)\n\n\n# After: the pass rule has one home; each function has one job\nPASS_MARK = 50\n\n\ndef passes(mark):\n    return mark >= PASS_MARK\n\n\ndef label(mark):\n    return str(mark) + (\" P\" if passes(mark) else \" F\")\n\n\ndef report_after(marks):\n    lines = [label(m) for m in marks]\n    lines.append(\"passed: \" + str(sum(passes(m) for m in marks)))\n    return \"\\n\".join(lines)\n\n\nmarks = [49, 50, 85]\nprint(report_after(marks))\nprint(report_before(marks) == report_after(marks))\n",
+          "stdin": "",
+          "static": false,
+          "output": "49 F\n50 P\n85 P\npassed: 2\nTrue\n",
+          "notes": [
+            [
+              "def report_before(marks):",
+              "The original: one function counts, labels and formats. The rule <code>m &gt;= 50</code> appears twice.",
+              "Before"
+            ],
+            [
+              "PASS_MARK = 50",
+              "The pass mark now has exactly one home. Changing it to 60 is a one-line edit.",
+              "One source"
+            ],
+            [
+              "def passes(mark):",
+              "Extract function: the rule gets a name, so callers say what they mean.",
+              "Extract"
+            ],
+            [
+              "def label(mark):",
+              "One small job: turn one mark into one line of the report.",
+              "One job"
+            ],
+            [
+              "print(report_before(marks) == report_after(marks))",
+              "The refactoring check: the old and new versions must give identical text. <code>True</code> means the behaviour did not change.",
+              "Same behaviour"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "q": "What is a sound interpretation of single responsibility?",
+      "correct": "A class groups behaviour around one coherent responsibility.",
+      "wrong": [
+        "A class must contain exactly one method, including its constructors and getters.",
+        "A class must combine every application feature so all changes occur in one file.",
+        "A class must have no fields, because storing data always creates a second responsibility."
+      ],
+      "why": "The responsibility is a cohesive concept and reason for change, not a method count."
+    },
+    {
+      "q": "What does dependency inversion encourage in the pricing example?",
+      "correct": "Make Basket depend on the pricing capability it needs.",
+      "wrong": [
+        "Make every PriceRule depend on the concrete internal fields of Basket in both directions.",
+        "Make Basket construct one fixed StudentPrice internally so callers cannot choose another.",
+        "Make all fields public so the classes can change one another without method calls."
+      ],
+      "why": "The high-level caller asks for a contract and receives a suitable implementation."
+    },
+    {
+      "q": "Which change most clearly breaks substitutability for List.add(value)?",
+      "correct": "Making it insert at the front instead of appending at the end.",
+      "wrong": [
+        "Replacing a backing array with linked nodes while preserving all promised list behaviour.",
+        "Using a larger internal capacity while preserving element order and all public operations.",
+        "Changing a private helper name while preserving the same public contract and outputs."
+      ],
+      "why": "Callers depend on the append contract, not the private storage arrangement."
+    },
+    {
+      "q": "When does YAGNI advise against adding a new feature?",
+      "correct": "When it exists only for an imagined future need.",
+      "wrong": [
+        "When the current requirements already require it and a user cannot complete the task without it.",
+        "When an existing concrete bug needs a fix to preserve the documented input contract.",
+        "When an existing test shows the current implementation returns the wrong result."
+      ],
+      "why": "The principle cautions against speculation; required behaviour and bug fixes still matter."
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Order order=new Order();\n        order.add(new Line(300,2));\n        order.add(new Line(150,1));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int cents,quantity;\n    Line(int cents,int quantity) { this.cents=cents; this.quantity=quantity; }\n    int subtotal() { return cents*quantity; }\n}\nclass Order {\n    private final java.util.List<Line> lines=new java.util.ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int sum=0; for(Line line:lines) sum+=line.subtotal(); return sum; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>450</code>",
+        "<code>600</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced.",
+        "<code>750</code>"
+      ],
+      "a": 3,
+      "why": "Each line computes its own subtotal; Order sums 600 and 150."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Order:\n    def __init__(self, amounts): self.amounts=list(amounts)\n    def total(self): return sum(self.amounts)\n\ndef format_receipt(order):\n    return f\"Total: {order.total()} cents\"\n\norder=Order([600,150])\nprint(order.total())\nprint(format_receipt(order))\n",
+      "lang": "python",
+      "opts": [
+        "<code>750<br>Total: 750 cents</code>",
+        "<code>750<br>750</code>",
+        "<code>Total: 750 cents<br>750</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 0,
+      "why": "The calculation returns a number; the formatter builds a human-readable receipt from that result."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Basket basket=new Basket(new StudentPrice());\n        System.out.println(basket.price(1000));\n    }\n}\ninterface PriceRule { int apply(int cents); }\nclass StudentPrice implements PriceRule {\n    public int apply(int cents) { return cents*80/100; }\n}\nclass Basket {\n    private final PriceRule rule;\n    Basket(PriceRule rule) { this.rule=rule; }\n    int price(int cents) { return rule.apply(cents); }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>1000</code>",
+        "<code>800</code>",
+        "<code>200</code>",
+        "<code>80</code>"
+      ],
+      "a": 1,
+      "why": "StudentPrice applies the 80% policy; a new policy can be supplied without changing Basket.price."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "def student_price(cents): return cents*80//100\ndef regular_price(cents): return cents\n\nclass Basket:\n    def __init__(self, rule): self.rule=rule\n    def price(self, cents): return self.rule(cents)\n\nprint(Basket(student_price).price(1000))\nprint(Basket(regular_price).price(1000))\n",
+      "lang": "python",
+      "opts": [
+        "<code>1000<br>800</code>",
+        "<code>800<br>800</code>",
+        "<code>800<br>1000</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 2,
+      "why": "The caller supplies different policies to the same Basket implementation."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    static void fill(java.util.List<Integer> xs) { xs.add(2); xs.add(3); }\n    public static void main(String[] args) {\n        java.util.List<Integer> a=new java.util.ArrayList<Integer>();\n        java.util.List<Integer> b=new java.util.LinkedList<Integer>();\n        fill(a); fill(b);\n        System.out.println(a.equals(b));\n        System.out.println(a.get(0));\n    }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>false<br>2</code>",
+        "<code>true<br>3</code>",
+        "<code>false<br>3</code>",
+        "<code>true<br>2</code>"
+      ],
+      "a": 3,
+      "why": "Both implementations honour append order, so their contents are equal and begin with 2."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "class Screen:\n    def send(self, message): return \"screen: \"+message\nclass Recorder:\n    def __init__(self): self.messages=[]\n    def send(self, message):\n        self.messages.append(message)\n        return \"recorded\"\n\ndef notify(channel, message): return channel.send(message)\nrecorder=Recorder()\nprint(notify(recorder,\"Ready\"))\nprint(recorder.messages)\n",
+      "lang": "python",
+      "opts": [
+        "<code>recorded<br>[&#x27;Ready&#x27;]</code>",
+        "<code>screen: Ready<br>[]</code>",
+        "<code>recorded<br>[]</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 0,
+      "why": "The recorder fulfils the same send capability and stores the message for inspection."
+    },
+    {
+      "q": "What is the complete outcome of this Java program?",
+      "code": "public class Demo {\n    public static void main(String[] args) {\n        Stock stock=new Stock(2);\n        Counter counter=new Counter(stock);\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n        System.out.println(counter.borrow());\n    }\n}\nclass Stock {\n    private int count;\n    Stock(int count) { this.count=count; }\n    boolean take() { if(count==0) return false; count--; return true; }\n}\nclass Counter {\n    private final Stock stock;\n    Counter(Stock stock) { this.stock=stock; }\n    String borrow() { return stock.take() ? \"Borrowed\" : \"Unavailable\"; }\n}\n",
+      "lang": "java",
+      "opts": [
+        "<code>Borrowed<br>Borrowed<br>Borrowed</code>",
+        "<code>Borrowed<br>Borrowed<br>Unavailable</code>",
+        "<code>Unavailable<br>Borrowed<br>Borrowed</code>",
+        "<code>Borrowed<br>Unavailable<br>Unavailable</code>"
+      ],
+      "a": 1,
+      "why": "The controller translates each model result into a response; the third request has no stock left."
+    },
+    {
+      "q": "What is the complete outcome of this Python program?",
+      "code": "def passes(mark): return mark>=50\n\ndef count_passes(marks):\n    return sum(passes(mark) for mark in marks)\n\ndef labels(marks):\n    return [\"P\" if passes(mark) else \"F\" for mark in marks]\n\nmarks=[49,50,85]\nprint(count_passes(marks))\nprint(labels(marks))\n",
+      "lang": "python",
+      "opts": [
+        "<code>1<br>[&#x27;F&#x27;, &#x27;F&#x27;, &#x27;P&#x27;]</code>",
+        "<code>2<br>[&#x27;P&#x27;, &#x27;F&#x27;, &#x27;P&#x27;]</code>",
+        "<code>2<br>[&#x27;F&#x27;, &#x27;P&#x27;, &#x27;P&#x27;]</code>",
+        "Execution stops with a runtime error before completing the program; the remaining output is not produced."
+      ],
+      "a": 2,
+      "why": "Exactly 50 passes. Both callers use the same threshold function."
+    },
+    {
+      "q": "What is a sound interpretation of single responsibility?",
+      "opts": [
+        "A class must contain exactly one method, including its constructors and getters.",
+        "A class must combine every application feature so all changes occur in one file.",
+        "A class must have no fields, because storing data always creates a second responsibility.",
+        "A class groups behaviour around one coherent responsibility."
+      ],
+      "a": 3,
+      "why": "The responsibility is a cohesive concept and reason for change, not a method count."
+    },
+    {
+      "q": "What does dependency inversion encourage in the pricing example?",
+      "opts": [
+        "Make Basket depend on the pricing capability it needs.",
+        "Make every PriceRule depend on the concrete internal fields of Basket in both directions.",
+        "Make Basket construct one fixed StudentPrice internally so callers cannot choose another.",
+        "Make all fields public so the classes can change one another without method calls."
+      ],
+      "a": 0,
+      "why": "The high-level caller asks for a contract and receives a suitable implementation."
+    },
+    {
+      "q": "Which change most clearly breaks substitutability for List.add(value)?",
+      "opts": [
+        "Replacing a backing array with linked nodes while preserving all promised list behaviour.",
+        "Making it insert at the front instead of appending at the end.",
+        "Using a larger internal capacity while preserving element order and all public operations.",
+        "Changing a private helper name while preserving the same public contract and outputs."
+      ],
+      "a": 1,
+      "why": "Callers depend on the append contract, not the private storage arrangement."
+    },
+    {
+      "q": "When does YAGNI advise against adding a new feature?",
+      "opts": [
+        "When the current requirements already require it and a user cannot complete the task without it.",
+        "When an existing concrete bug needs a fix to preserve the documented input contract.",
+        "When it exists only for an imagined future need.",
+        "When an existing test shows the current implementation returns the wrong result."
+      ],
+      "a": 2,
+      "why": "The principle cautions against speculation; required behaviour and bug fixes still matter."
+    }
+  ],
+  "exercises": [
+    {
+      "id": "e1",
+      "title": "Let each order line compute its subtotal",
+      "lang": "java",
+      "brief": "Read n, then n pairs of non-negative integers: unit price in cents and quantity. Implement Line.subtotal() and Order.total(). Print the total price. All products and totals fit in Java int.",
+      "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        // use Line objects and an Order instead of duplicating subtotal logic\n    }\n}\n",
+      "solution": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        Order order=new Order();\n        for(int i=0;i<n;i++) order.add(new Line(sc.nextInt(),sc.nextInt()));\n        System.out.println(order.total());\n    }\n}\nclass Line {\n    private final int price,quantity;\n    Line(int price,int quantity) { this.price=price; this.quantity=quantity; }\n    int subtotal() { return price*quantity; }\n}\nclass Order {\n    private final List<Line> lines=new ArrayList<Line>();\n    void add(Line line) { lines.add(line); }\n    int total() { int total=0; for(Line line:lines) total+=line.subtotal(); return total; }\n}\n",
+      "tests": [
+        {
+          "stdin": "2\n300 2\n150 1\n",
+          "expect": "750\n"
+        },
+        {
+          "stdin": "0\n",
+          "expect": "0\n"
+        },
+        {
+          "stdin": "3\n0 10\n100 0\n1 1\n",
+          "expect": "1\n"
+        }
+      ]
+    },
+    {
+      "id": "e2",
+      "title": "Information experts in Python",
+      "lang": "python",
+      "brief": "Use the same input and output as exercise 1. Put price \u00d7 quantity in Line.subtotal and summation in Order.total.",
+      "starter": "class Line:\n    pass\nclass Order:\n    pass\n# read the order, then print its total\n",
+      "solution": "class Line:\n    def __init__(self,price,quantity): self.price,self.quantity=price,quantity\n    def subtotal(self): return self.price*self.quantity\nclass Order:\n    def __init__(self): self.lines=[]\n    def add(self,line): self.lines.append(line)\n    def total(self): return sum(line.subtotal() for line in self.lines)\n\norder=Order()\nn=int(input())\nfor _ in range(n):\n    price,quantity=map(int,input().split())\n    order.add(Line(price,quantity))\nprint(order.total())\n",
+      "tests": [
+        {
+          "stdin": "2\n300 2\n150 1\n",
+          "expect": "750\n"
+        },
+        {
+          "stdin": "0\n",
+          "expect": "0\n"
+        },
+        {
+          "stdin": "3\n0 10\n100 0\n1 1\n",
+          "expect": "1\n"
+        }
+      ]
+    },
+    {
+      "id": "e3",
+      "title": "Inject a pricing policy",
+      "lang": "java",
+      "brief": "Read <code>regular cents</code> or <code>student cents</code>. The student policy charges cents \u00d7 80 / 100, truncating the fractional cent. Define a Pricing interface and pass the selected implementation into Checkout. Print the charge.",
+      "starter": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        String kind=sc.next(); int cents=sc.nextInt();\n        // build Checkout with a Pricing collaborator\n    }\n}\n",
+      "solution": "import java.util.Scanner;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        String kind=sc.next(); int cents=sc.nextInt();\n        Checkout checkout=new Checkout(kind.equals(\"student\") ? new Student() : new Regular());\n        System.out.println(checkout.charge(cents));\n    }\n}\ninterface Pricing { int apply(int cents); }\nclass Regular implements Pricing { public int apply(int cents) { return cents; } }\nclass Student implements Pricing { public int apply(int cents) { return cents*80/100; } }\nclass Checkout {\n    private final Pricing pricing;\n    Checkout(Pricing pricing) { this.pricing=pricing; }\n    int charge(int cents) { return pricing.apply(cents); }\n}\n",
+      "tests": [
+        {
+          "stdin": "regular 125\n",
+          "expect": "125\n"
+        },
+        {
+          "stdin": "student 125\n",
+          "expect": "100\n"
+        },
+        {
+          "stdin": "student 1\n",
+          "expect": "0\n"
+        },
+        {
+          "stdin": "student 0\n",
+          "expect": "0\n"
+        }
+      ]
+    },
+    {
+      "id": "e4",
+      "title": "Record the requested notifications",
+      "lang": "python",
+      "brief": "Read n messages, one per line. Define a Recorder with send(text), pass it to a notify function for each message, then print <code>Sent: n</code> followed by each recorded message. Do not print inside send.",
+      "starter": "class Recorder:\n    # record messages rather than printing them\n    pass\n# implement notify, read n messages, then inspect the recorder\n",
+      "solution": "class Recorder:\n    def __init__(self): self.messages=[]\n    def send(self,text): self.messages.append(text)\ndef notify(channel,text): channel.send(text)\nr=Recorder()\nn=int(input())\nfor _ in range(n): notify(r,input())\nprint(f\"Sent: {len(r.messages)}\")\nfor message in r.messages: print(message)\n",
+      "tests": [
+        {
+          "stdin": "2\nHello\nDue soon\n",
+          "expect": "Sent: 2\nHello\nDue soon\n"
+        },
+        {
+          "stdin": "0\n",
+          "expect": "Sent: 0\n"
+        },
+        {
+          "stdin": "1\n\n",
+          "expect": "Sent: 1\n\n"
+        }
+      ]
+    },
+    {
+      "id": "e5",
+      "title": "Compute through a collection abstraction",
+      "lang": "java",
+      "brief": "Read n, then n integer values. Write <code>sum(List&lt;Integer&gt;)</code> and call it once with ArrayList data and once with a LinkedList containing the same data. Print both sums on separate lines.",
+      "starter": "import java.util.*;\n\npublic class Demo {\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        // read values, then pass both implementations to one sum method\n    }\n}\n",
+      "solution": "import java.util.*;\n\npublic class Demo {\n    static int sum(List<Integer> xs) { int total=0; for(int x:xs) total+=x; return total; }\n    public static void main(String[] args) {\n        Scanner sc=new Scanner(System.in);\n        int n=sc.nextInt();\n        List<Integer> a=new ArrayList<Integer>();\n        for(int i=0;i<n;i++) a.add(sc.nextInt());\n        List<Integer> b=new LinkedList<Integer>(a);\n        System.out.println(sum(a)); System.out.println(sum(b));\n    }\n}\n",
+      "tests": [
+        {
+          "stdin": "3\n1 2 3\n",
+          "expect": "6\n6\n"
+        },
+        {
+          "stdin": "0\n",
+          "expect": "0\n0\n"
+        },
+        {
+          "stdin": "3\n-1 0 1\n",
+          "expect": "0\n0\n"
+        }
+      ]
+    },
+    {
+      "id": "e6",
+      "title": "One pass rule used twice",
+      "lang": "python",
+      "brief": "Read a line of integer marks (possibly empty). Define passes(mark) using threshold 50. Use it to print the number of passes, then a space-separated line of P/F labels in original order.",
+      "starter": "def passes(mark):\n    # the single pass rule\n    pass\nmarks=list(map(int,input().split()))\n# use passes for both the count and labels\n",
+      "solution": "def passes(mark): return mark>=50\nmarks=list(map(int,input().split()))\nprint(sum(passes(mark) for mark in marks))\nprint(*[\"P\" if passes(mark) else \"F\" for mark in marks])\n",
+      "tests": [
+        {
+          "stdin": "49 50 85\n",
+          "expect": "2\nF P P\n"
+        },
+        {
+          "stdin": "\n",
+          "expect": "0\n\n"
+        },
+        {
+          "stdin": "0 0\n",
+          "expect": "0\nF F\n"
+        },
+        {
+          "stdin": "100\n",
+          "expect": "1\nP\n"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    [
+      "A Recap of the Four Pillars",
+      "https://edstem.org/au/courses/41298/lessons/118778",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "The SOLID Principles",
+      "https://edstem.org/au/courses/41298/lessons/118779",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "GRASP",
+      "https://edstem.org/au/courses/41298/lessons/118780",
+      "Read the lesson and trace its examples on Ed."
+    ],
+    [
+      "Other useful tools and ideas",
+      "https://edstem.org/au/courses/41298/lessons/118781",
+      "Read the lesson and trace its examples on Ed."
+    ]
+  ],
+  "reading": [
+    [
+      "Java List contract",
+      "https://docs.oracle.com/javase/8/docs/api/java/util/List.html",
+      "A concrete contract used by the substitution and dependency examples."
+    ],
+    [
+      "Python classes",
+      "https://docs.python.org/3/tutorial/classes.html",
+      "Methods, instance data and collaboration."
+    ]
+  ],
+  "activities": [
+    [
+      "Review a change request",
+      "<p>An order currently prints its receipt directly. The next requirement is to save the same totals as CSV. Identify the part that should stay fixed, the responsibility that varies, and one small refactoring that isolates the change. Avoid adding speculative features.</p>"
+    ],
+    [
+      "Defend a responsibility map",
+      "<p>Draw UI \u2192 Counter \u2192 Stock and Order \u2192 Line. For each arrow, name the exact operation needed. Explain one coupling you removed and one coupling that is necessary for the program to work.</p>"
+    ],
+    [
+      "CRC cards for a library",
+      "<p>In pairs, take four index cards (or four boxes on paper): <code>Library</code>, <code>Member</code>, <code>Book</code>, <code>Loan</code>. Read this aloud: <em>&ldquo;A member borrows a book for 14 days. A member may hold at most 3 loans. A late return costs 1,000 VND per day.&rdquo;</em></p><p>Write each responsibility on exactly one card and each collaborator on the right. Then answer: who decides whether the member may borrow? Who works out the fine? Which card is the controller? If any card has more than four responsibilities, split it and say why.</p>",
+      "15 min \u00b7 pairs"
+    ]
+  ],
+  "misc": [
+    {
+      "title": "SOLID and GRASP at a glance",
+      "meta": "reference \u00b7 questions to ask",
+      "html": "<p>Reference, not reading. Each principle is best used as a <em>question</em> about a concrete piece of code.</p><h3 class=\"read-group-title\">SOLID</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Principle</th><th>Question to ask</th><th>Warning sign</th><th>This week</th></tr></thead><tbody><tr><td>S</td><td>Single responsibility</td><td>How many reasons could this class have to change?</td><td>calculation, wording and saving in one class</td><td><code>Order</code> and <code>format_receipt</code></td></tr><tr><td>O</td><td>Open&ndash;closed</td><td>Can I add the next case without editing working code?</td><td>an <code>if</code>-chain that grows with every new case</td><td>new <code>PriceRule</code> classes</td></tr><tr><td>L</td><td>Liskov substitution</td><td>Does the replacement keep every promise callers rely on?</td><td>a subclass that throws, ignores or reorders</td><td><code>ArrayList</code> vs <code>LinkedList</code>; the square</td></tr><tr><td>I</td><td>Interface segregation</td><td>Does this caller use everything it is given?</td><td>a parameter type with many methods, of which one is called</td><td><code>notify</code> needs only <code>send</code></td></tr><tr><td>D</td><td>Dependency inversion</td><td>Does the policy name a concrete detail it could be given instead?</td><td><code>new</code> of a concrete collaborator inside a class</td><td><code>Basket(PriceRule)</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">GRASP: nine patterns</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pattern</th><th>Question it answers</th><th>This week</th></tr></thead><tbody><tr><td>Information Expert</td><td>Who has the data for this job?</td><td><code>Line.subtotal()</code></td></tr><tr><td>Creator</td><td>Who should create this object?</td><td><code>Order.addLine</code> creates the <code>Line</code></td></tr><tr><td>Controller</td><td>Who first receives a request from outside?</td><td><code>Counter.borrow()</code></td></tr><tr><td>Low Coupling</td><td>How can this class know less about others?</td><td><code>order.deliveryCity()</code></td></tr><tr><td>High Cohesion</td><td>Do this class&rsquo;s parts belong together?</td><td>formatting kept out of <code>Order</code></td></tr><tr><td>Polymorphism</td><td>Behaviour varies by type: who chooses?</td><td>each rule&rsquo;s own <code>apply</code></td></tr><tr><td>Pure Fabrication</td><td>No domain class fits: may I invent one?</td><td>a receipt formatter</td></tr><tr><td>Indirection</td><td>Can a go-between keep two classes apart?</td><td>the <code>PriceRule</code> interface</td></tr><tr><td>Protected Variations</td><td>What is likely to change, and what shields the rest?</td><td>the clock passed to <code>Greeter</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Other useful ideas</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>In one line</th></tr></thead><tbody><tr><td>DRY</td><td>one authoritative home for each piece of <em>knowledge</em></td></tr><tr><td>YAGNI</td><td>build what is needed now; do not build for imagined futures</td></tr><tr><td>Tell, don&rsquo;t ask</td><td>ask an object to do the job instead of taking its data</td></tr><tr><td>Law of Demeter</td><td>talk to your immediate collaborators, not to their collaborators</td></tr><tr><td>Refactoring</td><td>improve the structure in small steps, keeping the output identical</td></tr></tbody></table></div>"
+    },
+    {
+      "title": "Where the principles came from",
+      "meta": "history \u00b7 1972 to 2004",
+      "html": "<p>None of this week&rsquo;s principles was invented as a rule to memorise. Each was someone&rsquo;s answer to a real problem: programs that were too hard to change.</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">1972</div><div class=\"tl-body\"><h4>Hiding the decisions likely to change</h4><p>David Parnas publishes &ldquo;On the Criteria To Be Used in Decomposing Systems into Modules&rdquo; in <em>Communications of the ACM</em>. His advice: split a program around the design decisions that are likely to change, and hide each one inside a module. Most of this week descends from that idea.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1974</div><div class=\"tl-body\"><h4>Coupling and cohesion get their names</h4><p>Wayne Stevens, Glenford Myers and Larry Constantine&rsquo;s paper &ldquo;Structured Design&rdquo; in the <em>IBM Systems Journal</em> uses coupling and cohesion to judge how a program is divided into modules.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1987</div><div class=\"tl-body\"><h4>Substitution</h4><p>Barbara Liskov&rsquo;s OOPSLA keynote <em>Data Abstraction and Hierarchy</em> asks when one type can safely stand in for another. With Jeannette Wing she gives it a precise form in 1994. She received the 2009 ACM Turing Award.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1988</div><div class=\"tl-body\"><h4>Open for extension</h4><p>Bertrand Meyer&rsquo;s <em>Object-Oriented Software Construction</em> states the open&ndash;closed principle.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1989</div><div class=\"tl-body\"><h4>CRC cards</h4><p>Kent Beck and Ward Cunningham present CRC cards at OOPSLA as a way to teach object-oriented thinking with index cards.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1999</div><div class=\"tl-body\"><h4>Refactoring, DRY and YAGNI</h4><p>Martin Fowler&rsquo;s <em>Refactoring</em> and Hunt and Thomas&rsquo;s <em>The Pragmatic Programmer</em> (which coins DRY) are published, and Extreme Programming spreads YAGNI.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2000</div><div class=\"tl-body\"><h4>The principles collected</h4><p>Robert C. Martin&rsquo;s paper <em>Design Principles and Design Patterns</em> brings together the principles later known as SOLID. Michael Feathers coins the acronym around 2004.</p></div></div></div><h3 class=\"read-group-title\">Liskov&rsquo;s original wording</h3><div class=\"joke\"><p>If for each object o<sub>1</sub> of type S there is an object o<sub>2</sub> of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o<sub>1</sub> is substituted for o<sub>2</sub> then S is a subtype of T.</p><span class=\"attrib\">Barbara Liskov, <em>Data Abstraction and Hierarchy</em>, SIGPLAN Notices, May 1988</span></div><p>In plain words: if every program written for T still behaves the same when you hand it an S, then S really is a kind of T. That is the square-and-rectangle test.</p><div class=\"note tip\"><span class=\"tag\">Read more</span><p><a href=\"https://en.wikipedia.org/wiki/SOLID\" target=\"_blank\" rel=\"noopener\">SOLID</a> &middot; <a href=\"https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)\" target=\"_blank\" rel=\"noopener\">GRASP</a> &middot; <a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">Beck &amp; Cunningham, CRC cards (1989)</a> &middot; <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">Fowler on YAGNI</a></p></div>"
+    }
+  ],
+  "study": "Read the four-pillars recap, SOLID, GRASP and the practical design ideas on Ed. Use each principle to justify a concrete change rather than reciting its acronym."
+}
