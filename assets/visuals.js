@@ -36,7 +36,8 @@ window.P1Visuals = (function () {
 
   var LANG = { java: 'Java', python: 'Python' };
   var motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-  function moving() { return !(motionQuery && motionQuery.matches); }
+  // no movement while a diagram is being measured (see measure below), or when the reader asked for none
+  function moving() { return !measuring && !(motionQuery && motionQuery.matches); }
 
   // ───────────── small helpers ─────────────
   function el(tag, cls, text) {
@@ -134,13 +135,139 @@ window.P1Visuals = (function () {
     if (!spec.langs && spec.kind === 'typecheck') kinds = kinds.concat('python');
     kinds.forEach(function (l) { langs.appendChild(el('span', 'lang ' + l, LANG[l])); });
     head.appendChild(langs);
+    var fsBtn = button('⛶ Full screen', 'ghost viz-fs', 'Make this diagram fill the screen (Esc to leave)');
+    fsBtn.setAttribute('aria-pressed', 'false');
+    head.appendChild(fsBtn);
     host.appendChild(head);
     var body = el('div', 'viz-body');
     var intro = el('p', 'viz-intro');
     intro.innerHTML = spec.intro;
     body.appendChild(intro);
     host.appendChild(body);
+    host._viz = { body: body, steppers: [], fixedH: 0, userH: 0, width: 0 };
+    fsBtn.addEventListener('click', function () { setFull(host, !host.classList.contains('is-full')); });
+    keepSize(host);
     return body;
+  }
+
+  /* ───────────── full screen: the diagram is lifted over the page, like the code editor ───────────── */
+  function setFull(host, on) {
+    var btn = host.querySelector('.viz-fs');
+    host.classList.toggle('is-full', on);
+    document.body.classList.toggle('code-fullscreen-open', on || !!document.querySelector('.viz.is-full, .code-fullscreen'));
+    btn.textContent = on ? '✕ Exit full screen' : '⛶ Full screen';
+    btn.setAttribute('aria-pressed', String(on));
+    btn.title = on ? 'Back to the page (Esc)' : 'Make this diagram fill the screen (Esc to leave)';
+    btn.setAttribute('aria-label', btn.title);
+    if (on) btn.focus();
+    else { applyHeight(host); host.scrollIntoView({ block: 'nearest' }); }
+  }
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Escape') return;
+    var open = document.querySelector('.viz.is-full');
+    if (open) setFull(open, false);
+  });
+
+  /* ───────────── a frame that does not jump ─────────────
+     Stepping changes how tall a diagram's content is (a longer caption, another row, a stack
+     frame). So the first time a diagram is shown, it is quietly stepped through every frame of
+     every variant, the tallest is measured, and the body is fixed at that height. Content that
+     outgrows it (the "Your turn" sandbox, a narrow window) scrolls inside the frame, and the step
+     controls stay in view. The reader can drag the bottom edge to resize; that size is kept. */
+  var measuring = false;
+  var MAX_VH = 0.85;   // a frame never starts taller than this share of the window
+
+  function applyHeight(host) {
+    var v = host._viz;
+    if (!v || host.classList.contains('is-full')) return;
+    var h = v.userH || v.fixedH;
+    if (h) v.body.style.height = h + 'px';
+  }
+
+  function naturalHeight(body) {
+    return Math.ceil(body.scrollHeight);
+  }
+
+  function measure(host) {
+    var v = host._viz;
+    if (!v || host.classList.contains('is-full') || !host.offsetWidth) return;
+    var body = v.body;
+    var keepScroll = body.scrollTop;
+    measuring = true;
+    // the captions are aria-live: keep the silent walk through every step from being read out
+    var live = Array.prototype.slice.call(host.querySelectorAll('[aria-live]'));
+    var liveWas = live.map(function (n) { return n.getAttribute('aria-live'); });
+    live.forEach(function (n) { n.setAttribute('aria-live', 'off'); });
+    var max = 0, head = host.querySelector('.viz-head'), headMax = 0;
+    // a variant can change the header (another language badge) and wrap it onto a second line
+    var measureHead = function () { headMax = Math.max(headMax, head ? head.offsetHeight : 0); };
+    try {
+      body.style.height = 'auto';
+      if (head) head.style.minHeight = '';
+      max = naturalHeight(body);
+      measureHead();
+      var steppers = v.steppers.filter(function (s) { return s.size() > 0; });
+      // groups of choices (variant, language, strategy) with one option picked can be put back
+      var groups = Array.prototype.filter.call(host.querySelectorAll('.viz-seg'), function (g) {
+        return !g.closest('.viz-sandbox') && g.querySelectorAll('.viz-seg-btn[aria-pressed="true"]').length === 1;
+      });
+      var start = groups.map(function (g) { return g.querySelector('.viz-seg-btn[aria-pressed="true"]'); });
+      var at = steppers.map(function (s) { return s.at(); });
+      function walkSteps() {
+        v.steppers.forEach(function (s) {
+          for (var i = 0; i < s.size(); i++) { s.show(i); max = Math.max(max, naturalHeight(body)); }
+        });
+      }
+      walkSteps();
+      groups.forEach(function (g) {
+        Array.prototype.forEach.call(g.querySelectorAll('.viz-seg-btn'), function (b) {
+          if (b.disabled || b.hidden) return;
+          b.click();
+          max = Math.max(max, naturalHeight(body));
+          measureHead();
+          walkSteps();
+        });
+      });
+      // put everything back as it was
+      start.forEach(function (b) { b.click(); });
+      v.steppers.forEach(function (s, i) {
+        var j = steppers.indexOf(s);
+        if (s.size()) s.show(j >= 0 ? at[j] : 0);
+      });
+    } catch (err) {
+      console.warn('P1Visuals: could not measure', host.dataset.title, err);
+    }
+    measuring = false;
+    live.forEach(function (n, i) { n.setAttribute('aria-live', liveWas[i]); });
+    var cap =Math.max(320, Math.round(window.innerHeight * MAX_VH));
+    v.fixedH = Math.min(max + 2, cap);
+    v.width = host.offsetWidth;
+    if (head && headMax) head.style.minHeight = headMax + 'px';
+    applyHeight(host);
+    body.scrollTop = keepScroll;
+  }
+
+  function keepSize(host) {
+    var v = host._viz;
+    if (!window.ResizeObserver) return;
+    // measure when the diagram first gets a size (its tab is opened) and when its width changes
+    new ResizeObserver(function () {
+      if (measuring || host.classList.contains('is-full')) return;
+      var w = host.offsetWidth;
+      if (!w || w === v.width) return;
+      if (v.userH) { v.width = w; return; }
+      measure(host);
+    }).observe(host);
+    // a drag on the resize handle changes the body's height away from the one set here
+    new ResizeObserver(function () {
+      if (measuring || host.classList.contains('is-full') || !v.fixedH) return;
+      var h = parseFloat(v.body.style.height), want = v.userH || v.fixedH;
+      if (h && Math.abs(h - want) > 2) v.userH = Math.round(h);
+    }).observe(v.body);
+    // web fonts change line wrapping once they arrive
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+      if (!v.userH && host.offsetWidth) measure(host);
+    });
   }
 
   function segmented(label, options, onPick) {
@@ -208,6 +335,12 @@ window.P1Visuals = (function () {
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName) || ev.target.closest('.viz-sandbox')) return;
       if (ev.key === 'ArrowRight') { stop(); go(at + 1); ev.preventDefault(); }
       if (ev.key === 'ArrowLeft') { stop(); go(at - 1); ev.preventDefault(); }
+    });
+    // measure() walks every frame through these, so the frame can be sized for the tallest
+    if (host._viz) host._viz.steppers.push({
+      size: function () { return frames.length; },
+      at: function () { return at; },
+      show: function (n) { stop(); go(n); }
     });
     return {
       say: say, bar: bar, next: bNext,

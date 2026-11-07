@@ -33,6 +33,7 @@ following page.
 | --- | --- |
 | `revision-week-9.tex` | The deck. Build: `xelatex revision-week-9.tex`, twice |
 | `revision-week-9.pdf` | Built output |
+| `revision-week-9-student.pdf` | Student copy: the first click of every slide, so no answers. Built by `python3 scripts/build_student_revisions.py --weeks 9` |
 | `bk-logo.png` | Required next to the `.tex` |
 | `examples/q02-mcq-which-main-compiles/` | `option-a/`, `option-b/`, `option-d/`: the three versions of `main` that **do not compile**. `option-c/` compiles and first creates its own `notes.txt`. `option-c-missing-file/` is option C with no file: it stops with a `FileNotFoundException` stack trace |
 | `examples/q03-mcq-read-every-line/` | The three loops, each on its own reader over `"tea\n\ncoffee"`, printing each line in `[ ]` |

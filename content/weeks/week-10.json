@@ -9,19 +9,19 @@
       "concepts": [
         [
           "Write the format down first",
-          "<p>Some output is read by a <strong>person</strong>: a message on the screen, a table in a printed report. Some is read by <strong>another program</strong>: a file that a spreadsheet, a marking script or next month&rsquo;s version of your own program will open. A person shrugs at a missing comma or an extra space. A program cannot. It splits, counts and converts exactly the characters it receives, so every detail of your output becomes a promise.</p><p>Write that promise down <em>before</em> you write the first line of output. For a file of marks, the <strong>format contract</strong> answers questions like these:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Question</th><th>One possible answer</th></tr></thead><tbody><tr><td>What does one line hold?</td><td>one student: name, then mark</td></tr><tr><td>Is there a header line?</td><td>yes, exactly <code>name,mark</code>, first</td></tr><tr><td>What separates the fields?</td><td>one comma, no spaces around it</td></tr><tr><td>How is a number written?</td><td>digits only: <code>85</code>, not <code>85.0</code> or <code>85 marks</code></td></tr><tr><td>Which encoding?</td><td>UTF-8, so <code>Nguy\u1ec5n</code> survives (Section 2)</td></tr><tr><td>How does each line end?</td><td>one <code>\\n</code>, after <em>every</em> record, the last one too</td></tr><tr><td>What does &ldquo;no students&rdquo; look like?</td><td>the header line on its own</td></tr></tbody></table></div><p>Then keep three jobs apart: <strong>calculate</strong> the values, <strong>format</strong> them into text, and <strong>send</strong> the text somewhere (the screen, a string in memory, a file). A method that does all three at once can only be tested by opening a file; a method that returns a formatted string can be tested with one <code>println</code>.</p><div class=\"note warn\"><span class=\"tag\">Display text is not a file format</span><p>Printing a list or an array gives text chosen for humans, and nobody promised to keep it the same. Python prints <code>['Linh', 85]</code>; Java prints an <code>int[]</code> as <code>[I@</code> followed by a hexadecimal number that changes from run to run. Neither is something another program should parse. Build each record yourself, field by field, in the order the contract says.</p></div><div class=\"note danger\"><span class=\"tag\">The right numbers in the wrong units, 1999</span><p>NASA&rsquo;s Mars Climate Orbiter was lost on 23 September 1999. One ground program wrote thruster data into a file whose interface specification required metric units (newton-seconds); it wrote pound-force seconds instead. The navigation software read the file as the specification promised. The investigation board&rsquo;s words: the specification, &ldquo;which was not followed, defines both the format and units&rdquo; of the file. The values came out low by a factor of 4.45, and after nine months of small errors the spacecraft arrived about 170&nbsp;km lower than planned. <a href=\"https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf\" target=\"_blank\" rel=\"noopener\">Mishap Investigation Board, Phase I report (1999)</a></p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-mcilroy.jpeg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Doug McIlroy\"></div><p>&ldquo;Expect the output of every program to become the input to another, as yet unknown, program. Don&rsquo;t clutter output with extraneous information.&rdquo;</p><span class=\"attrib\">Doug McIlroy, with E.&nbsp;N. Pinson and B.&nbsp;A. Tague, <a href=\"https://archive.org/details/bstj57-6-1899\" target=\"_blank\" rel=\"noopener\">foreword to the UNIX issue of the <em>Bell System Technical Journal</em></a>, 1978 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ADouglas_McIlroy.jpeg\" target=\"_blank\" rel=\"noopener\">Denise Panyik-Dale, 2011</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div>"
+          "<p>A program reads exactly the characters you write. A person shrugs at a missing comma; a program does not. So output for a program is a promise: a <strong>format contract</strong>. Write it down first. For a marks file:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Question</th><th>One possible answer</th></tr></thead><tbody><tr><td>What does one line hold?</td><td>one student: name, then mark</td></tr><tr><td>Is there a header line?</td><td>yes, exactly <code>name,mark</code>, first</td></tr><tr><td>What separates the fields?</td><td>one comma, no spaces around it</td></tr><tr><td>How is a number written?</td><td>digits only: <code>85</code>, not <code>85.0</code> or <code>85 marks</code></td></tr><tr><td>Which encoding?</td><td>UTF-8, so <code>Nguy\u1ec5n</code> survives (Section 2)</td></tr><tr><td>How does each line end?</td><td>one <code>\\n</code>, after <em>every</em> record, the last one too</td></tr><tr><td>What does &ldquo;no students&rdquo; look like?</td><td>the header line on its own</td></tr></tbody></table></div><p>Keep three jobs apart: <strong>calculate</strong> the values, <strong>format</strong> them as text, <strong>send</strong> the text (to the screen, memory or a file). A method that returns a string is easy to test.</p><div class=\"note warn\"><span class=\"tag\">Display text is not a file format</span><p>Printed lists are for humans. Python shows <code>['Linh', 85]</code>; Java shows an <code>int[]</code> as <code>[I@</code> plus a hex number that changes each run. Build each record yourself, field by field.</p></div><div class=\"note danger\"><span class=\"tag\">The right numbers in the wrong units, 1999</span><p>NASA&rsquo;s Mars Climate Orbiter was lost on 23 September 1999. A ground program wrote pound-force seconds where the file&rsquo;s specification required newton-seconds, so the values were low by a factor of 4.45. The craft arrived about 170&nbsp;km lower than planned. The board&rsquo;s verdict: the specification, &ldquo;which was not followed, defines both the format and units&rdquo; of the file. <a href=\"https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf\" target=\"_blank\" rel=\"noopener\">Mishap Investigation Board, Phase I report (1999)</a></p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-mcilroy.jpeg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Doug McIlroy\"></div><p>&ldquo;Expect the output of every program to become the input to another, as yet unknown, program. Don&rsquo;t clutter output with extraneous information.&rdquo;</p><span class=\"attrib\">Doug McIlroy, with E.&nbsp;N. Pinson and B.&nbsp;A. Tague, <a href=\"https://archive.org/details/bstj57-6-1899\" target=\"_blank\" rel=\"noopener\">foreword to the UNIX issue of the <em>Bell System Technical Journal</em></a>, 1978 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ADouglas_McIlroy.jpeg\" target=\"_blank\" rel=\"noopener\">Denise Panyik-Dale, 2011</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div>"
         ],
         [
           "print, println and write",
-          "<p>Java and Python give you the same three moves, under different names: write some text, write some text <em>and end the line</em>, or write a formatted value. The one that causes trouble is the first, because nothing visible happens until the <em>next</em> piece of text lands on the same line. Java&rsquo;s <code>print</code> and Python&rsquo;s <code>write</code> store exactly the characters you give them. Java&rsquo;s <code>println</code> adds a line end; Python&rsquo;s <code>write</code> never does, so <code>\"\\n\"</code> is part of the text you pass.</p><p>What exactly is &ldquo;a line end&rdquo;? Java&rsquo;s <code>println</code> writes the <strong>system line separator</strong>: <code>\\n</code> on Linux and macOS, <code>\\r\\n</code> on Windows. Python writes <code>\\n</code>, and a file opened in text mode on Windows turns each <code>\\n</code> into <code>\\r\\n</code> as it saves (unless you open it with <code>newline=\"\"</code>). Most readers accept both, but a contract should say which one it means. The Miscellaneous panel <em>Two characters for one new line</em> explains why there are two.</p><div class=\"note warn\"><span class=\"tag\">Every record needs its newline, the last one too</span><p><code>\"\\n\".join(records)</code> puts newlines <em>between</em> records, not after the last one. Append another record later and it is glued onto the end of that last line; <code>wc -l</code>, which counts newline characters, reports one line fewer than you wrote. End each record as you write it: <code>println</code>, or <code>write(record + \"\\n\")</code>.</p></div>"
+          "<p>Java&rsquo;s <code>print</code> and Python&rsquo;s <code>write</code> store exactly what you give them. Java&rsquo;s <code>println</code> adds a line end. With <code>write</code>, you add <code>\"\\n\"</code> yourself.</p><p>Java&rsquo;s line end is the <strong>system line separator</strong>: <code>\\n</code> on Linux and macOS, <code>\\r\\n</code> on Windows. A Python text-mode file on Windows also saves <code>\\n</code> as <code>\\r\\n</code> (unless opened with <code>newline=\"\"</code>). The Miscellaneous panel <em>Two characters for one new line</em> explains why.</p><div class=\"note warn\"><span class=\"tag\">Every record needs its newline, the last one too</span><p><code>\"\\n\".join(records)</code> leaves the last record without a newline, so a record appended later joins that line. End every record as you write it: <code>println</code>, or <code>write(record + \"\\n\")</code>.</p></div>"
         ],
         [
           "The same three moves in both languages",
-          "<p>The same moves, side by side. <code>out</code> is a <code>PrintWriter</code> in Java and an open text file or <code>StringIO</code> in Python.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Java (<code>PrintWriter</code>, <code>System.out</code>)</th><th>Python file or <code>StringIO</code></th><th>Python <code>print</code></th></tr></thead><tbody><tr><td>text, no line end</td><td class=\"mono\">out.print(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\")</td><td class=\"mono\">print(\"Linh\", end=\"\")</td></tr><tr><td>text, then line end</td><td class=\"mono\">out.println(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\\n\")</td><td class=\"mono\">print(\"Linh\")</td></tr><tr><td>only a line end</td><td class=\"mono\">out.println()</td><td class=\"mono\">out.write(\"\\n\")</td><td class=\"mono\">print()</td></tr><tr><td>a number</td><td class=\"mono\">out.print(85) converts it</td><td class=\"mono\">out.write(str(85)); <code>write(85)</code> is a <code>TypeError</code></td><td class=\"mono\">print(85) converts it</td></tr><tr><td>several values</td><td class=\"mono\">out.println(name + \",\" + mark)</td><td class=\"mono\">out.write(f\"{name},{mark}\\n\")</td><td class=\"mono\">print(name, mark, sep=\",\")</td></tr><tr><td>to a file</td><td class=\"mono\">a <code>PrintWriter</code> on the file</td><td class=\"mono\">the file object itself</td><td class=\"mono\">print(..., file=out)</td></tr></tbody></table></div><p>Python&rsquo;s <code>print</code> is the friendly one: it converts values to text, puts <code>sep</code> (a space) between them and <code>end</code> (a newline) after them, and <code>file=out</code> sends all that to a file instead of the screen.</p>"
+          "<p><code>out</code> is a <code>PrintWriter</code> in Java, and a text file or <code>StringIO</code> in Python.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Java (<code>PrintWriter</code>, <code>System.out</code>)</th><th>Python file or <code>StringIO</code></th><th>Python <code>print</code></th></tr></thead><tbody><tr><td>text, no line end</td><td class=\"mono\">out.print(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\")</td><td class=\"mono\">print(\"Linh\", end=\"\")</td></tr><tr><td>text, then line end</td><td class=\"mono\">out.println(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\\n\")</td><td class=\"mono\">print(\"Linh\")</td></tr><tr><td>only a line end</td><td class=\"mono\">out.println()</td><td class=\"mono\">out.write(\"\\n\")</td><td class=\"mono\">print()</td></tr><tr><td>a number</td><td class=\"mono\">out.print(85) converts it</td><td class=\"mono\">out.write(str(85)); <code>write(85)</code> is a <code>TypeError</code></td><td class=\"mono\">print(85) converts it</td></tr><tr><td>several values</td><td class=\"mono\">out.println(name + \",\" + mark)</td><td class=\"mono\">out.write(f\"{name},{mark}\\n\")</td><td class=\"mono\">print(name, mark, sep=\",\")</td></tr><tr><td>to a file</td><td class=\"mono\">a <code>PrintWriter</code> on the file</td><td class=\"mono\">the file object itself</td><td class=\"mono\">print(..., file=out)</td></tr></tbody></table></div><p>Python&rsquo;s <code>print</code> converts values to text, puts <code>sep</code> (a space) between them and <code>end</code> (a newline) after them.</p>"
         ],
         [
           "Reports for people: width, alignment, decimals",
-          "<p>A report for <em>people</em> has a different contract: the columns must line up, and numbers need a sensible number of decimals. Both languages describe that with a small <strong>format specifier</strong>: a width (the <em>minimum</em> number of characters), an alignment, and for decimals the digits after the point. The interactive diagram <em>A report for people: make the columns line up</em> lets you try each one.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Effect</th><th>Java <code>printf</code> / <code>String.format</code></th><th>Python f-string</th><th>Result (<code>|</code> marks the edges)</th></tr></thead><tbody><tr><td>text, left-aligned in 8</td><td class=\"mono\">%-8s</td><td class=\"mono\">{name:&lt;8}</td><td class=\"mono\">|Linh&nbsp;&nbsp;&nbsp;&nbsp;|</td></tr><tr><td>whole number, right-aligned in 5</td><td class=\"mono\">%5d</td><td class=\"mono\">{mark:&gt;5}</td><td class=\"mono\">|&nbsp;&nbsp;&nbsp;85|</td></tr><tr><td>one digit after the point</td><td class=\"mono\">%.1f</td><td class=\"mono\">{avg:.1f}</td><td class=\"mono\">|72.5|</td></tr><tr><td>width 6, one decimal</td><td class=\"mono\">%6.1f</td><td class=\"mono\">{avg:6.1f}</td><td class=\"mono\">|&nbsp;&nbsp;72.5|</td></tr><tr><td>line end</td><td class=\"mono\">%n</td><td class=\"mono\">\\n</td><td class=\"mono\"></td></tr></tbody></table></div><p>A width never cuts a value: a name longer than 8 characters simply pushes the rest of its row to the right. Choose widths for the longest value you expect, and keep machine-readable files free of padding altogether: <code>Linh,85</code>, not <code>Linh&nbsp;&nbsp;&nbsp;&nbsp;,&nbsp;&nbsp;&nbsp;85</code>.</p><div class=\"note warn\"><span class=\"tag\">In Java, the decimal point depends on the computer</span><p><code>String.format</code> and <code>printf</code> follow the computer&rsquo;s <strong>locale</strong>. With a Vietnamese locale, <code>%.1f</code> writes <code>72,5</code>, with a decimal comma: right for a person in Vietnam, wrong for a CSV file where the comma separates fields. For files, pass <code>Locale.ROOT</code>: <code>String.format(Locale.ROOT, \"%.1f\", avg)</code>. Python&rsquo;s f-strings always use a point (only the <code>n</code> format type follows the locale). The example <em>The locale can move the decimal point</em> below shows the difference.</p></div>"
+          "<p>A report for <em>people</em> needs aligned columns. A <strong>format specifier</strong> sets a width (the <em>minimum</em> number of characters), an alignment and the decimals. Try them in the diagram <em>A report for people: make the columns line up</em>.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Effect</th><th>Java <code>printf</code> / <code>String.format</code></th><th>Python f-string</th><th>Result (<code>|</code> marks the edges)</th></tr></thead><tbody><tr><td>text, left-aligned in 8</td><td class=\"mono\">%-8s</td><td class=\"mono\">{name:&lt;8}</td><td class=\"mono\">|Linh&nbsp;&nbsp;&nbsp;&nbsp;|</td></tr><tr><td>whole number, right-aligned in 5</td><td class=\"mono\">%5d</td><td class=\"mono\">{mark:&gt;5}</td><td class=\"mono\">|&nbsp;&nbsp;&nbsp;85|</td></tr><tr><td>one digit after the point</td><td class=\"mono\">%.1f</td><td class=\"mono\">{avg:.1f}</td><td class=\"mono\">|72.5|</td></tr><tr><td>width 6, one decimal</td><td class=\"mono\">%6.1f</td><td class=\"mono\">{avg:6.1f}</td><td class=\"mono\">|&nbsp;&nbsp;72.5|</td></tr><tr><td>line end</td><td class=\"mono\">%n</td><td class=\"mono\">\\n</td><td class=\"mono\"></td></tr></tbody></table></div><p>A width never cuts a long value; it pushes the rest of the row right. Never pad files for programs: write <code>Linh,85</code>.</p><div class=\"note warn\"><span class=\"tag\">In Java, the decimal point depends on the computer</span><p>Java&rsquo;s <code>printf</code> and <code>String.format</code> follow the computer&rsquo;s <strong>locale</strong> (its country settings). A Vietnamese locale writes <code>72,5</code>, which breaks a CSV file. For files, pass <code>Locale.ROOT</code>. Python f-strings always use a point (except the <code>n</code> type). See <em>The locale can move the decimal point</em>.</p></div>"
         ]
       ],
       "examples": [
@@ -32,7 +32,7 @@
           "notes": [
             [
               "new PrintWriter(buffer)",
-              "Use the same formatted writer operations with an in-memory destination."
+              "The same writer methods, with memory as the destination."
             ],
             [
               "writer.println",
@@ -56,11 +56,11 @@
           "notes": [
             [
               "buffer.write(\"tea\")",
-              "Write exactly these characters, with no implicit newline."
+              "Writes exactly these characters. No newline is added."
             ],
             [
               "repr(buffer.getvalue())",
-              "Display the stored string explicitly so whitespace can be inspected."
+              "Shows the stored string with quotes, so spaces and newlines are visible."
             ]
           ],
           "wrong": [
@@ -79,7 +79,7 @@
         {
           "kind": "w10-trace",
           "title": "Where do the characters go? Step through both writers",
-          "intro": "Press <strong>Next</strong> to run one line at a time. The box on the left is the writer&rsquo;s <strong>destination</strong>: a string kept in memory. Every <span class=\"w10-nl-demo\">\u21b5</span> is one newline character. Watch which calls add one and which do not, and answer the prediction before the output appears.",
+          "intro": "Press <strong>Next</strong> to run one line at a time. The left box is the writer&rsquo;s <strong>destination</strong>, a string in memory. Each <span class=\"w10-nl-demo\">\u21b5</span> is one newline. Watch which calls add one.",
           "langs": [
             "java",
             "python"
@@ -134,42 +134,42 @@
               ],
               "steps": [
                 {
-                  "say": "A <code>StringWriter</code> is an empty piece of text in memory. Nothing has been written yet.",
+                  "say": "A <code>StringWriter</code> is empty text in memory.",
                   "line": "StringWriter buffer=new StringWriter();",
                   "set": {
                     "buf": ""
                   }
                 },
                 {
-                  "say": "<code>PrintWriter</code> adds the friendly methods (<code>print</code>, <code>println</code>) and sends everything into <code>buffer</code>. The <code>try(&hellip;)</code> makes Java close it automatically at the closing brace.",
+                  "say": "<code>PrintWriter</code> adds <code>print</code> and <code>println</code> and writes into <code>buffer</code>. The <code>try(&hellip;)</code> closes it at the closing brace.",
                   "line": "try(PrintWriter writer=new PrintWriter(buffer))",
                   "set": {
                     "w": "open"
                   }
                 },
                 {
-                  "say": "<code>println</code> writes the text <em>and then</em> a line separator: the header is now one complete line.",
+                  "say": "<code>println</code> writes the text, then a line separator. The header is one complete line.",
                   "line": "writer.println(\"name,mark\");",
                   "set": {
                     "buf": "name,mark\n"
                   }
                 },
                 {
-                  "say": "A second complete line. Two records, each ending in its own newline: exactly what a line-by-line reader expects.",
+                  "say": "A second complete line. Each record ends in its own newline, as a line reader expects.",
                   "line": "writer.println(\"Linh,85\");",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "Leaving the <code>try</code> block closes the writer, even if something had gone wrong inside it. The text stays in <code>buffer</code>.",
+                  "say": "Leaving the <code>try</code> block closes the writer. The text stays in <code>buffer</code>.",
                   "at": 9,
                   "set": {
                     "w": "closed (by try-with-resources)"
                   }
                 },
                 {
-                  "say": "<code>print</code>, not <code>println</code>: the stored text already ends with a newline, so adding another would print a blank line.",
+                  "say": "<code>print</code>, not <code>println</code>: the text already ends with a newline. Another would add a blank line.",
                   "line": "System.out.print(buffer.toString());",
                   "out": 2,
                   "predict": {
@@ -180,7 +180,7 @@
                       "Nothing: the writer was closed"
                     ],
                     "answer": 1,
-                    "why": "Each <code>println</code> stored a newline, so the text is two lines. Closing the <em>writer</em> does not erase what it wrote into the <code>StringWriter</code>."
+                    "why": "Each <code>println</code> stored a newline, so there are two lines. Closing the <em>writer</em> does not erase the <code>StringWriter</code>."
                   }
                 }
               ],
@@ -204,7 +204,7 @@
               ],
               "steps": [
                 {
-                  "say": "<code>StringIO()</code> is an empty piece of text in memory that behaves like a file.",
+                  "say": "<code>StringIO()</code> is empty text in memory that acts like a file.",
                   "line": "buffer=StringIO()",
                   "set": {
                     "buf": ""
@@ -218,14 +218,14 @@
                   }
                 },
                 {
-                  "say": "The next write goes straight after the last character. Nothing separates the two words.",
+                  "say": "The next write goes straight after. Nothing separates the two words.",
                   "line": "buffer.write(\"coffee\")",
                   "set": {
                     "buf": "teacoffee"
                   }
                 },
                 {
-                  "say": "<code>repr</code> shows the string with its quotes, so any space or <code>\\n</code> would be visible. There is none.",
+                  "say": "<code>repr</code> shows the quotes, so a space or <code>\\n</code> would be visible. There is none.",
                   "line": "print(repr(buffer.getvalue()))",
                   "out": 1,
                   "predict": {
@@ -236,11 +236,11 @@
                       "<code>'teacoffee'</code>"
                     ],
                     "answer": 2,
-                    "why": "Unlike <code>print</code>, <code>write</code> adds nothing of its own: no separator and no newline. You get exactly the characters you passed."
+                    "why": "Unlike <code>print</code>, <code>write</code> adds nothing: no separator, no newline."
                   }
                 },
                 {
-                  "say": "Closing the in-memory buffer frees it. (Call <code>getvalue()</code> before closing: afterwards it raises an error.)",
+                  "say": "Closing frees the buffer. Call <code>getvalue()</code> first: afterwards it raises an error.",
                   "line": "buffer.close()"
                 }
               ],
@@ -262,7 +262,7 @@
         {
           "kind": "w10-lines",
           "title": "print, println, write: build the report yourself",
-          "intro": "Your job: make the writer store <strong>exactly</strong> two complete records, <code>name,mark</code> and <code>Linh,85</code>, each ending in a newline. Press the calls in any order. The reader on the right splits the stored text into lines the way a program reading the file would.",
+          "intro": "Goal: store <strong>exactly</strong> two records, <code>name,mark</code> and <code>Linh,85</code>, each ending in a newline. Press the calls in any order. The reader on the right splits the text into lines, as a program would.",
           "target": "name,mark\nLinh,85\n",
           "pieces": {
             "java": [
@@ -345,7 +345,7 @@
         {
           "kind": "w10-trace",
           "title": "Same record, five formats: does the reader still understand?",
-          "intro": "The reading program below never changes: it expects <code>name,mark</code>, one record per line. Choose how the writer formats the record. The file contents, the fields the reader gets and the output all come from real runs of the program shown.",
+          "intro": "The reader below never changes: it expects <code>name,mark</code>, one record per line. Choose how the writer formats the record. Every result comes from a real run.",
           "langs": [
             "java",
             "python"
@@ -464,7 +464,7 @@
               ],
               "steps": [
                 {
-                  "say": "Writer and reader agree: two fields, name first, comma between, one line per record. The contract holds.",
+                  "say": "Writer and reader agree: two fields, name first, comma between, one line per record.",
                   "line": "out.println(name+\",\"+mark);",
                   "set": {
                     "f": "Linh,85\n",
@@ -502,7 +502,7 @@
               ],
               "steps": [
                 {
-                  "say": "Writer and reader agree: two fields, name first, comma between, one line per record. The contract holds.",
+                  "say": "Writer and reader agree: two fields, name first, comma between, one line per record.",
                   "line": "out.write(f\"{name},{mark}\\n\")",
                   "set": {
                     "f": "Linh,85\n",
@@ -540,7 +540,7 @@
               ],
               "steps": [
                 {
-                  "say": "Still valid CSV, and still two fields, but in the wrong <em>order</em>. Nothing crashes on the writing side; the reader only finds out when <code>Linh</code> is not a number. Field order is part of the contract.",
+                  "say": "Two fields, but in the wrong <em>order</em>. The reader fails when <code>Linh</code> is not a number. Field order is part of the contract.",
                   "line": "out.println(mark+\",\"+name);",
                   "set": {
                     "f": "85,Linh\n",
@@ -578,7 +578,7 @@
               ],
               "steps": [
                 {
-                  "say": "Still valid CSV, and still two fields, but in the wrong <em>order</em>. Nothing crashes on the writing side; the reader only finds out when <code>Linh</code> is not a number. Field order is part of the contract.",
+                  "say": "Two fields, but in the wrong <em>order</em>. The reader fails when <code>Linh</code> is not a number. Field order is part of the contract.",
                   "line": "out.write(f\"{mark},{name}\\n\")",
                   "set": {
                     "f": "85,Linh\n",
@@ -616,7 +616,7 @@
               ],
               "steps": [
                 {
-                  "say": "Many spreadsheets in Europe use <code>;</code>. Splitting at commas finds no comma at all, so the whole line is one field. The delimiter is part of the contract.",
+                  "say": "Many European spreadsheets use <code>;</code>. Splitting at commas finds none, so the whole line is one field. The delimiter is part of the contract.",
                   "line": "out.println(name+\";\"+mark);",
                   "set": {
                     "f": "Linh;85\n",
@@ -653,7 +653,7 @@
               ],
               "steps": [
                 {
-                  "say": "Many spreadsheets in Europe use <code>;</code>. Splitting at commas finds no comma at all, so the whole line is one field. The delimiter is part of the contract.",
+                  "say": "Many European spreadsheets use <code>;</code>. Splitting at commas finds none, so the whole line is one field. The delimiter is part of the contract.",
                   "line": "out.write(f\"{name};{mark}\\n\")",
                   "set": {
                     "f": "Linh;85\n",
@@ -690,7 +690,7 @@
               ],
               "steps": [
                 {
-                  "say": "Lovely to read on screen, useless to the reader: spaces are padding, not a delimiter. A report for people and a file for programs are two different formats.",
+                  "say": "Nice on screen, useless to the reader: spaces are padding, not a delimiter. Reports for people and files for programs are different formats.",
                   "line": "out.println(String.format(\"%-8s%5d\", name, mark));",
                   "set": {
                     "f": "Linh       85\n",
@@ -727,7 +727,7 @@
               ],
               "steps": [
                 {
-                  "say": "Lovely to read on screen, useless to the reader: spaces are padding, not a delimiter. A report for people and a file for programs are two different formats.",
+                  "say": "Nice on screen, useless to the reader: spaces are padding, not a delimiter. Reports for people and files for programs are different formats.",
                   "line": "out.write(f\"{name:<8}{mark:>5}\\n\")",
                   "set": {
                     "f": "Linh       85\n",
@@ -764,7 +764,7 @@
               ],
               "steps": [
                 {
-                  "say": "This is how the language <em>displays</em> a list, not a storage format: the brackets and quotes end up inside the fields, and Java and Python do not even agree. Never save display text for another program to read.",
+                  "say": "This is how the language <em>displays</em> a list. Brackets and quotes end up in the fields, and Java and Python differ. Never save display text for a program.",
                   "line": "out.println(Arrays.asList(name, mark));",
                   "set": {
                     "f": "[Linh, 85]\n",
@@ -802,7 +802,7 @@
               ],
               "steps": [
                 {
-                  "say": "This is how the language <em>displays</em> a list, not a storage format: the brackets and quotes end up inside the fields, and Java and Python do not even agree. Never save display text for another program to read.",
+                  "say": "This is how the language <em>displays</em> a list. Brackets and quotes end up in the fields, and Java and Python differ. Never save display text for a program.",
                   "line": "out.write(str([name, mark]) + \"\\n\")",
                   "set": {
                     "f": "['Linh', 85]\n",
@@ -843,7 +843,7 @@
         {
           "kind": "w10-format",
           "title": "A report for people: make the columns line up",
-          "intro": "The same three records, formatted for a <em>person</em> to read. A format specifier sets a column&rsquo;s <strong>width</strong> (the minimum number of characters), its <strong>alignment</strong> and, for decimals, the number of <strong>digits after the point</strong>. The <code>|</code> characters are fences, so you can see whether the columns line up. Every output below is a real run.",
+          "intro": "The same three records, formatted for a <em>person</em>. A format specifier sets a column&rsquo;s <strong>width</strong> (minimum characters), <strong>alignment</strong> and <strong>digits after the point</strong>. The <code>|</code> fences show whether columns line up. Every output is a real run.",
           "programs": [
             {
               "lang": "java",
@@ -1147,15 +1147,15 @@
             ],
             [
               "Locale.forLanguageTag(\"vi-VN\")",
-              "Vietnamese conventions write the decimal separator as a comma, which is what a person in Vietnam expects to read."
+              "Vietnamese conventions use a decimal comma, as a person in Vietnam expects."
             ],
             [
               "\"%s,%.1f\"",
-              "The comma here is the field delimiter; <code>%.1f</code> prints one digit after the decimal separator, whichever character that is."
+              "This comma is the field delimiter. <code>%.1f</code> prints one digit after the decimal separator, whatever that character is."
             ],
             [
               "local.split(\",\").length",
-              "The reader now finds three fields where the writer meant two: the decimal comma looks exactly like a delimiter."
+              "The reader finds three fields, not two: the decimal comma looks like a delimiter."
             ]
           ],
           "stdin": "",
@@ -1169,23 +1169,23 @@
       "concepts": [
         [
           "Overwrite and append are different promises",
-          "<p>Opening a file for writing is a decision about what happens to the text <em>already</em> in it. Make that decision on purpose, before the program runs, because nothing warns you afterwards.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Python</th><th>Java 8</th><th>File already exists</th><th>File missing</th></tr></thead><tbody><tr><td>replace the contents</td><td><code>open(p, \"w\")</code></td><td><code>new PrintWriter(p, \"UTF-8\")</code></td><td>emptied at once</td><td>created</td></tr><tr><td>add at the end</td><td><code>open(p, \"a\")</code></td><td><code>new FileWriter(p, true)</code></td><td>kept; new text goes after it</td><td>created</td></tr><tr><td>create, never replace</td><td><code>open(p, \"x\")</code></td><td><code>Files.newBufferedWriter(path, StandardOpenOption.CREATE_NEW)</code></td><td><code>FileExistsError</code> / <code>FileAlreadyExistsException</code></td><td>created</td></tr><tr><td>read</td><td><code>open(p)</code></td><td><code>new BufferedReader(&hellip;)</code></td><td>read from the start</td><td><code>FileNotFoundError</code> / <code>FileNotFoundException</code></td></tr></tbody></table></div><p>Java&rsquo;s <code>FileWriter</code> in Java 8 always uses the computer&rsquo;s default encoding. To append in UTF-8, wrap <code>new FileOutputStream(p, true)</code> in an <code>OutputStreamWriter</code> with <code>\"UTF-8\"</code>; the <code>true</code> means append.</p><div class=\"note warn\"><span class=\"tag\">The file is emptied when you open it, not when you write</span><p><code>open(p, \"w\")</code> and <code>new PrintWriter(p)</code> truncate the file the moment they open it. If the program then crashes, or has nothing to write, the old contents are already gone. The classic version of this bug opens the same file for reading and for writing at once: the reader finds an empty file. Read everything you need first, close it, then open the file for writing.</p></div>"
+          "<p>Opening a file for writing decides what happens to its old contents. Choose on purpose: nothing warns you.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Python</th><th>Java 8</th><th>File already exists</th><th>File missing</th></tr></thead><tbody><tr><td>replace the contents</td><td><code>open(p, \"w\")</code></td><td><code>new PrintWriter(p, \"UTF-8\")</code></td><td>emptied at once</td><td>created</td></tr><tr><td>add at the end</td><td><code>open(p, \"a\")</code></td><td><code>new FileWriter(p, true)</code></td><td>kept; new text goes after it</td><td>created</td></tr><tr><td>create, never replace</td><td><code>open(p, \"x\")</code></td><td><code>Files.newBufferedWriter(path, StandardOpenOption.CREATE_NEW)</code></td><td><code>FileExistsError</code> / <code>FileAlreadyExistsException</code></td><td>created</td></tr><tr><td>read</td><td><code>open(p)</code></td><td><code>new BufferedReader(&hellip;)</code></td><td>read from the start</td><td><code>FileNotFoundError</code> / <code>FileNotFoundException</code></td></tr></tbody></table></div><p>Java 8&rsquo;s <code>FileWriter</code> always uses the default encoding. To append in UTF-8, wrap <code>new FileOutputStream(p, true)</code> in an <code>OutputStreamWriter</code> with <code>\"UTF-8\"</code>.</p><div class=\"note warn\"><span class=\"tag\">The file is emptied when you open it, not when you write</span><p><code>open(p, \"w\")</code> and <code>new PrintWriter(p)</code> empty the file as they open it. So reading and writing the same file at once gives the reader nothing. Read and close first, then open for writing.</p></div>"
         ],
         [
           "Close before checking the saved result",
-          "<p>Writing to a disk is slow compared with writing to memory, so a writer collects your text in a <strong>buffer</strong> and sends it to the file in large batches. Text leaves the buffer in three ways: the buffer fills up, you call <code>flush()</code>, or you call <code>close()</code>, which flushes and then releases the file. Until then, another program, or your own program reading the file back, may see an empty or incomplete file. That is the post box in the photo: posted is not delivered.</p><p>Closing proves that the writer has finished; it does not prove the data was right. Only reading the file back, with the reader you intend to use, tells you what a later program will receive.</p><div class=\"note warn\"><span class=\"tag\">A program that never closes can leave an empty file</span><p>In Java, text still in a <code>PrintWriter</code>&rsquo;s buffer when the program ends is lost: the file can be empty or cut off in the middle of a line. Python usually flushes open files when a program ends normally, but not when it is killed or crashes hard. Do not rely on either: use <code>try</code>-with-resources and <code>with</code>.</p></div>"
+          "<p>A writer collects text in a <strong>buffer</strong> (a holding area in memory) and sends it to the disk in batches. Text reaches the file when the buffer fills, on <code>flush()</code>, or on <code>close()</code> (flush, then release the file). Before that, a reader may see an empty file. Like the post box: posted is not delivered.</p><p>Closing means the writer finished, not that the data is right. Read the file back to check.</p><div class=\"note warn\"><span class=\"tag\">A program that never closes can leave an empty file</span><p>Java loses any text still in a <code>PrintWriter</code>&rsquo;s buffer when the program ends. Python usually flushes on a normal exit, but not on a hard crash. Use <code>try</code>-with-resources and <code>with</code>.</p></div>"
         ],
         [
           "Let the language close it: try-with-resources and with",
-          "<p>You will forget to call <code>close()</code> one day, or an exception will jump over it. So both languages can close for you when a block ends, however it ends:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>open, then close automatically</td><td><code>try (PrintWriter out = new PrintWriter(f, \"UTF-8\")) { &hellip; }</code></td><td><code>with open(p, \"w\", encoding=\"utf-8\") as out:</code></td></tr><tr><td>closed when</td><td>the <code>try</code> block ends: normally, by <code>return</code> or by an exception</td><td>the <code>with</code> block ends, the same three ways</td></tr><tr><td>two resources</td><td><code>try (A a = &hellip;; B b = &hellip;)</code>, closed in reverse order</td><td><code>with open(a) as x, open(b, \"w\") as y:</code></td></tr><tr><td>push the buffer out now</td><td><code>out.flush()</code></td><td><code>out.flush()</code></td></tr><tr><td>flush after every line</td><td><code>new PrintWriter(writer, true)</code>: <code>println</code>, <code>printf</code> and <code>format</code> flush</td><td><code>print(&hellip;, file=out, flush=True)</code></td></tr></tbody></table></div><p>The interactive diagram <em>An exception halfway through: who closes the file?</em> shows what each version does when <code>parseInt</code> or <code>int()</code> throws in the middle of a save.</p>"
+          "<p>Both languages close the file for you when a block ends, even when an exception ends it.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>open, then close automatically</td><td><code>try (PrintWriter out = new PrintWriter(f, \"UTF-8\")) { &hellip; }</code></td><td><code>with open(p, \"w\", encoding=\"utf-8\") as out:</code></td></tr><tr><td>closed when</td><td>the <code>try</code> block ends: normally, by <code>return</code> or by an exception</td><td>the <code>with</code> block ends, the same three ways</td></tr><tr><td>two resources</td><td><code>try (A a = &hellip;; B b = &hellip;)</code>, closed in reverse order</td><td><code>with open(a) as x, open(b, \"w\") as y:</code></td></tr><tr><td>push the buffer out now</td><td><code>out.flush()</code></td><td><code>out.flush()</code></td></tr><tr><td>flush after every line</td><td><code>new PrintWriter(writer, true)</code>: <code>println</code>, <code>printf</code> and <code>format</code> flush</td><td><code>print(&hellip;, file=out, flush=True)</code></td></tr></tbody></table></div><p>See it in the diagram <em>An exception halfway through: who closes the file?</em></p>"
         ],
         [
           "When writing fails: exceptions and checkError",
-          "<p>Writing can fail: the folder does not exist, you have no permission, the disk is full, the USB stick was pulled out. The two languages report failures differently, and Java&rsquo;s <code>PrintWriter</code> is the odd one out.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>What goes wrong</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>the folder does not exist</td><td><code>new PrintWriter(\"no/such/dir/r.txt\")</code> throws <code>FileNotFoundException</code>, a checked <code>IOException</code></td><td><code>open(&hellip;, \"w\")</code> raises <code>FileNotFoundError</code>, a kind of <code>OSError</code></td></tr><tr><td>no permission</td><td>also <code>FileNotFoundException</code>, with &ldquo;Permission denied&rdquo; in the message</td><td><code>PermissionError</code></td></tr><tr><td>a later write fails (disk full)</td><td><code>BufferedWriter.write</code> throws <code>IOException</code>; <code>PrintWriter.println</code> throws <strong>nothing</strong> and sets an error flag</td><td><code>write</code>, <code>flush</code> or <code>close</code> raises <code>OSError</code></td></tr></tbody></table></div><p>Because <code>println</code> on a <code>PrintWriter</code> never throws, a program can finish happily having saved nothing. When the result matters, call <code>checkError()</code> before you report success: it flushes the stream and returns <code>true</code> if any write has failed. The Java file example below does exactly that, and turns the flag into an <code>IOException</code> that a caller cannot ignore.</p><div class=\"note warn\"><span class=\"tag\">Don&rsquo;t print &ldquo;Saved!&rdquo; from a catch-all</span><p><code>catch (Exception e) { }</code> and <code>except: pass</code> turn a failed save into a silent one, which is worse than a crash: the user walks away believing the report exists. Catch the specific exception, tell the user what failed and where, or let it travel up to a caller that can decide (Week 9).</p></div>"
+          "<p>Writing can fail: a missing folder, no permission, a full disk.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>What goes wrong</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>the folder does not exist</td><td><code>new PrintWriter(\"no/such/dir/r.txt\")</code> throws <code>FileNotFoundException</code>, a checked <code>IOException</code></td><td><code>open(&hellip;, \"w\")</code> raises <code>FileNotFoundError</code>, a kind of <code>OSError</code></td></tr><tr><td>no permission</td><td>also <code>FileNotFoundException</code>, with &ldquo;Permission denied&rdquo; in the message</td><td><code>PermissionError</code></td></tr><tr><td>a later write fails (disk full)</td><td><code>BufferedWriter.write</code> throws <code>IOException</code>; <code>PrintWriter.println</code> throws <strong>nothing</strong> and sets an error flag</td><td><code>write</code>, <code>flush</code> or <code>close</code> raises <code>OSError</code></td></tr></tbody></table></div><p><code>println</code> on a <code>PrintWriter</code> never throws, so a failed save looks fine. Before you report success, call <code>checkError()</code>. It flushes and returns <code>true</code> if any write failed.</p><div class=\"note warn\"><span class=\"tag\">Don&rsquo;t print &ldquo;Saved!&rdquo; from a catch-all</span><p><code>catch (Exception e) { }</code> and <code>except: pass</code> hide a failed save, and the user thinks the report exists. Catch the specific exception and report it, or let it reach a caller that can decide (Week 9).</p></div>"
         ],
         [
           "Name the encoding: UTF-8",
-          "<p>A file stores <strong>bytes</strong>, not letters. An <strong>encoding</strong> is the rule that turns characters into bytes and back again. ASCII has English letters only. <strong>UTF-8</strong> can store every Unicode character: one byte for each ASCII letter, two to four bytes for everything else. <code>Nguy\u1ec5n</code> is 6 characters but 8 bytes, because <code>\u1ec5</code> takes three. When the reader decodes those bytes with a different rule, the name comes back as nonsense such as <code>Nguy\u00e1\u00bb\u2026n</code>, a mess with its own name: <em>mojibake</em>.</p><p>If you do not name an encoding, Java 8 and Python before 3.15 use the operating system&rsquo;s default, and on Windows that is often not UTF-8. Java 18 (<a href=\"https://openjdk.org/jeps/400\" target=\"_blank\" rel=\"noopener\">JEP 400</a>) and Python 3.15 (<a href=\"https://peps.python.org/pep-0686/\" target=\"_blank\" rel=\"noopener\">PEP 686</a>) switched their defaults to UTF-8, but Ed, your laptop and your marker&rsquo;s computer may not all run the same version. So name it every time:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>write</td><td class=\"mono\">new PrintWriter(file, \"UTF-8\")</td><td class=\"mono\">open(p, \"w\", encoding=\"utf-8\")</td></tr><tr><td>read</td><td class=\"mono\">new InputStreamReader(new FileInputStream(file), \"UTF-8\")</td><td class=\"mono\">open(p, encoding=\"utf-8\")</td></tr></tbody></table></div><div class=\"note\"><span class=\"tag\">Did you know?</span><p>In 2010 Patrick McKenzie published <a href=\"https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/\" target=\"_blank\" rel=\"noopener\">Falsehoods Programmers Believe About Names</a>, a list of assumptions that real names break. Two of them: &ldquo;People&rsquo;s names are written in ASCII&rdquo; and &ldquo;People&rsquo;s names fit within a certain defined amount of space.&rdquo; A marks file that cannot store <code>Nguy\u1ec5n</code>, or <code>An, Mai</code> with its comma, has a contract that the class list will break in week one.</p></div>"
+          "<p>A file stores <strong>bytes</strong>. An <strong>encoding</strong> is the rule that turns characters into bytes and back. <strong>UTF-8</strong> handles every character: <code>Nguy\u1ec5n</code> is 6 characters but 8 bytes, because <code>\u1ec5</code> takes three. Decode with the wrong rule and you get <em>mojibake</em>: <code>Nguy\u00e1\u00bb\u2026n</code>.</p><p>With no encoding named, Java 8 and Python before 3.15 use the system default, often not UTF-8 on Windows. Java 18 (<a href=\"https://openjdk.org/jeps/400\" target=\"_blank\" rel=\"noopener\">JEP 400</a>) and Python 3.15 (<a href=\"https://peps.python.org/pep-0686/\" target=\"_blank\" rel=\"noopener\">PEP 686</a>) default to UTF-8, but not every computer runs them. Name it every time:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>write</td><td class=\"mono\">new PrintWriter(file, \"UTF-8\")</td><td class=\"mono\">open(p, \"w\", encoding=\"utf-8\")</td></tr><tr><td>read</td><td class=\"mono\">new InputStreamReader(new FileInputStream(file), \"UTF-8\")</td><td class=\"mono\">open(p, encoding=\"utf-8\")</td></tr></tbody></table></div><div class=\"note\"><span class=\"tag\">Did you know?</span><p>Patrick McKenzie&rsquo;s 2010 list <a href=\"https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/\" target=\"_blank\" rel=\"noopener\">Falsehoods Programmers Believe About Names</a> includes &ldquo;People&rsquo;s names are written in ASCII&rdquo; and &ldquo;People&rsquo;s names fit within a certain defined amount of space.&rdquo; Your marks file must handle <code>Nguy\u1ec5n</code> and <code>An, Mai</code>.</p></div>"
         ]
       ],
       "examples": [
@@ -1196,11 +1196,11 @@
           "notes": [
             [
               "path.open(\"w\"",
-              "Opening in write mode truncates the existing contents."
+              "Write mode empties the existing contents."
             ],
             [
               "path.open(\"a\"",
-              "Append preserves existing content and writes after it."
+              "Append keeps the existing content and writes after it."
             ]
           ],
           "wrong": [
@@ -1210,21 +1210,20 @@
           ],
           "why": "The second write-mode open replaces old with new; append then adds tail.",
           "stdin": "",
-          "static": true,
           "output": "new\ntail\n"
         },
         {
-          "title": "Java file output and read-back on Ed",
+          "title": "Java file output and read-back",
           "lang": "java",
           "code": "import java.io.*;\n\npublic class Demo {\n    public static void main(String[] args) throws IOException {\n        File file=new File(\"report.txt\");\n        try(PrintWriter out=new PrintWriter(file,\"UTF-8\")) {\n            out.println(\"name,mark\");\n            out.println(\"Linh,85\");\n            if(out.checkError()) throw new IOException(\"write failed\");\n        }\n        try(BufferedReader in=new BufferedReader(new InputStreamReader(new FileInputStream(file),\"UTF-8\"))) {\n            String line;\n            while((line=in.readLine())!=null) System.out.println(line);\n        }\n    }\n}\n",
           "notes": [
             [
               "out.checkError()",
-              "PrintWriter stores many write errors internally; check them explicitly."
+              "PrintWriter records write errors instead of throwing them. Check explicitly."
             ],
             [
               "new InputStreamReader",
-              "Choose UTF-8 when decoding the bytes during read-back."
+              "Decode the bytes as UTF-8 when reading back."
             ]
           ],
           "wrong": [
@@ -1234,16 +1233,15 @@
           ],
           "why": "Closing completes the output before a new reader opens the same file. The output order is the order written.",
           "stdin": "",
-          "static": true,
           "output": "name,mark\nLinh,85\n"
         }
       ],
-      "try": "Run the file examples on Ed. Change append to write in the Python example, then read back the result. Describe exactly which previous content is retained.",
+      "try": "Run the file examples here or on Ed. Change append to write in the Python example, then read back the result. Describe exactly which previous content is retained.",
       "visuals": [
         {
           "kind": "w10-modes",
           "title": "Overwrite or append? Choose the modes, predict, then watch the file",
-          "intro": "The program opens <code>report.txt</code> three times and writes one line each time. Choose the mode of each open, <strong>predict</strong> how many lines the file ends with, then step through. Python&rsquo;s <code>\"w\"</code> and Java&rsquo;s <code>FileWriter(&hellip;, false)</code> empty the file first; <code>\"a\"</code> and <code>true</code> keep what is there and add after it. (The folder starts empty, so the first open creates the file either way.) This is the Python example above, plus its Java twin, run in the program&rsquo;s own folder.",
+          "intro": "The program opens <code>report.txt</code> three times and writes one line each time. Choose each mode, <strong>predict</strong> the final line count, then step through. <code>\"w\"</code> and <code>FileWriter(&hellip;, false)</code> empty the file first; <code>\"a\"</code> and <code>true</code> add after it. The folder starts empty, so the first open always creates the file. This is the Python example above plus its Java twin.",
           "programs": [
             {
               "lang": "python",
@@ -1458,7 +1456,7 @@
         {
           "kind": "w10-trace",
           "title": "The buffer: written is not the same as saved",
-          "intro": "Writing to a file usually puts the text in a <strong>buffer</strong> in memory first; it reaches the disk in bigger batches. Choose how the program ends, then step through. The byte counts are what a real run measured on disk.",
+          "intro": "A writer puts text in a <strong>buffer</strong> in memory first, then sends it to disk in batches. Choose how the program ends, then step through. Byte counts come from a real run.",
           "langs": [
             "java",
             "python"
@@ -1576,7 +1574,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "PrintWriter out=new PrintWriter(file,\"UTF-8\");",
                   "set": {
                     "buf": "",
@@ -1592,14 +1590,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.println(\"Linh,85\");",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "System.out.println(\"before: \"",
                   "out": 1,
                   "predict": {
@@ -1610,11 +1608,11 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "<code>close()</code> first <strong>flushes</strong> (empties the buffer onto the disk), then releases the file. The writer cannot be used again.",
+                  "say": "<code>close()</code> <strong>flushes</strong> (empties the buffer onto the disk), then releases the file. The writer cannot be used again.",
                   "line": "out.close();",
                   "set": {
                     "buf": "",
@@ -1623,7 +1621,7 @@
                   }
                 },
                 {
-                  "say": "Now the disk holds all 18 bytes: 10 for <code>name,mark</code> plus its newline, 8 for <code>Linh,85</code> plus its newline.",
+                  "say": "The disk now holds all 18 bytes: 10 for <code>name,mark</code> and its newline, 8 for <code>Linh,85</code> and its newline.",
                   "line": "System.out.println(\"after:  \"",
                   "out": 2
                 }
@@ -1659,7 +1657,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "out = open(\"report.txt\", \"w\", encoding=\"utf-8\")",
                   "set": {
                     "buf": "",
@@ -1675,14 +1673,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.write(\"Linh,85\\n\")",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "print(\"before:\"",
                   "out": 1,
                   "predict": {
@@ -1693,11 +1691,11 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "<code>close()</code> first <strong>flushes</strong> (empties the buffer onto the disk), then releases the file. The writer cannot be used again.",
+                  "say": "<code>close()</code> <strong>flushes</strong> (empties the buffer onto the disk), then releases the file. The writer cannot be used again.",
                   "line": "out.close()",
                   "set": {
                     "buf": "",
@@ -1706,7 +1704,7 @@
                   }
                 },
                 {
-                  "say": "Now the disk holds all 18 bytes: 10 for <code>name,mark</code> plus its newline, 8 for <code>Linh,85</code> plus its newline.",
+                  "say": "The disk now holds all 18 bytes: 10 for <code>name,mark</code> and its newline, 8 for <code>Linh,85</code> and its newline.",
                   "line": "print(\"after: \"",
                   "out": 2
                 }
@@ -1742,7 +1740,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "PrintWriter out=new PrintWriter(file,\"UTF-8\");",
                   "set": {
                     "buf": "",
@@ -1758,14 +1756,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.println(\"Linh,85\");",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "System.out.println(\"before: \"",
                   "out": 1,
                   "predict": {
@@ -1776,11 +1774,11 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "<code>flush()</code> pushes the buffer onto the disk but leaves the writer <em>open</em>. Safe for now, but the file is still held until someone closes it.",
+                  "say": "<code>flush()</code> pushes the buffer onto the disk but leaves the writer <em>open</em>, still holding the file.",
                   "line": "out.flush();",
                   "set": {
                     "buf": "",
@@ -1789,7 +1787,7 @@
                   }
                 },
                 {
-                  "say": "All 18 bytes are on the disk, because of the flush. The writer is still open: close it when you are finished (try-with-resources or <code>with</code> does that for you).",
+                  "say": "All 18 bytes are on disk because of the flush. Still close the writer when finished (try-with-resources or <code>with</code> does it for you).",
                   "line": "System.out.println(\"after:  \"",
                   "out": 2
                 }
@@ -1825,7 +1823,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "out = open(\"report.txt\", \"w\", encoding=\"utf-8\")",
                   "set": {
                     "buf": "",
@@ -1841,14 +1839,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.write(\"Linh,85\\n\")",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "print(\"before:\"",
                   "out": 1,
                   "predict": {
@@ -1859,11 +1857,11 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "<code>flush()</code> pushes the buffer onto the disk but leaves the writer <em>open</em>. Safe for now, but the file is still held until someone closes it.",
+                  "say": "<code>flush()</code> pushes the buffer onto the disk but leaves the writer <em>open</em>, still holding the file.",
                   "line": "out.flush()",
                   "set": {
                     "buf": "",
@@ -1872,7 +1870,7 @@
                   }
                 },
                 {
-                  "say": "All 18 bytes are on the disk, because of the flush. The writer is still open: close it when you are finished (try-with-resources or <code>with</code> does that for you).",
+                  "say": "All 18 bytes are on disk because of the flush. Still close the writer when finished (try-with-resources or <code>with</code> does it for you).",
                   "line": "print(\"after: \"",
                   "out": 2
                 }
@@ -1908,7 +1906,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "PrintWriter out=new PrintWriter(file,\"UTF-8\");",
                   "set": {
                     "buf": "",
@@ -1924,14 +1922,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.println(\"Linh,85\");",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "System.out.println(\"before: \"",
                   "out": 1,
                   "predict": {
@@ -1942,15 +1940,15 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "Nothing here flushes or closes the writer, so the two lines are still only in memory.",
+                  "say": "Nothing flushes or closes the writer, so both lines are still only in memory.",
                   "line": "// (no flush, no close)"
                 },
                 {
-                  "say": "Still 0 bytes. When <code>main</code> ends, Java does <strong>not</strong> flush a <code>PrintWriter</code> for you: these 18 characters are simply lost.",
+                  "say": "Still 0 bytes. Java does <strong>not</strong> flush a <code>PrintWriter</code> when <code>main</code> ends: the 18 characters are lost.",
                   "line": "System.out.println(\"after:  \"",
                   "out": 2
                 }
@@ -1986,7 +1984,7 @@
               ],
               "steps": [
                 {
-                  "say": "Opening for writing creates <code>report.txt</code> on disk, empty, and an empty buffer in memory.",
+                  "say": "Opening creates an empty <code>report.txt</code> on disk and an empty buffer in memory.",
                   "line": "out = open(\"report.txt\", \"w\", encoding=\"utf-8\")",
                   "set": {
                     "buf": "",
@@ -2002,14 +2000,14 @@
                   }
                 },
                 {
-                  "say": "The second line joins it. The program has &ldquo;written&rdquo; 18 characters&hellip;",
+                  "say": "The second line joins it: 18 characters &ldquo;written&rdquo;&hellip;",
                   "line": "out.write(\"Linh,85\\n\")",
                   "set": {
                     "buf": "name,mark\nLinh,85\n"
                   }
                 },
                 {
-                  "say": "&hellip;but the disk still holds <strong>0 bytes</strong>. Any other program opening <code>report.txt</code> now would find it empty.",
+                  "say": "&hellip;but the disk holds <strong>0 bytes</strong>. Another program would find <code>report.txt</code> empty.",
                   "line": "print(\"before:\"",
                   "out": 1,
                   "predict": {
@@ -2020,15 +2018,15 @@
                       "18 bytes: both lines"
                     ],
                     "answer": 0,
-                    "why": "Both lines are still waiting in the buffer. Small writes are collected in memory because going to the disk once is much faster than going 18 times."
+                    "why": "Both lines wait in the buffer. One trip to the disk is much faster than 18."
                   }
                 },
                 {
-                  "say": "Nothing here flushes or closes the writer, so the two lines are still only in memory.",
+                  "say": "Nothing flushes or closes the writer, so both lines are still only in memory.",
                   "line": "# (no flush, no close)"
                 },
                 {
-                  "say": "Still 0 bytes. CPython will usually flush the file when the program ends normally, but until then every reader sees an empty file, and a crash loses the lot. Do not rely on luck: close it.",
+                  "say": "Still 0 bytes. CPython usually flushes when the program ends normally, but until then readers see an empty file, and a crash loses it all. Close it.",
                   "line": "print(\"after: \"",
                   "out": 2
                 }
@@ -2060,7 +2058,7 @@
         {
           "kind": "w10-trace",
           "title": "An exception halfway through: who closes the file?",
-          "intro": "The <code>save</code> method writes one mark per line. Choose how it closes the file, and whether the data holds a bad mark <code>\"x\"</code> that makes <code>parseInt</code> / <code>int()</code> throw. Step through and watch the exception jump straight past the rest of <code>save</code>.",
+          "intro": "<code>save</code> writes one mark per line. Choose how it closes the file, and whether a bad mark <code>\"x\"</code> makes <code>parseInt</code> / <code>int()</code> throw. Watch the exception jump past the rest of <code>save</code>.",
           "langs": [
             "java",
             "python"
@@ -2219,28 +2217,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "Mark <code>50</code> is written, into the buffer.",
+                  "say": "Mark <code>50</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n50\n"
                   }
                 },
                 {
-                  "say": "The loop finished, so <code>out.close()</code> runs: the buffer is flushed onto the disk and the file is released.",
+                  "say": "The loop ends, so <code>out.close()</code> runs: the buffer is flushed to disk and the file released.",
                   "line": "out.close();",
                   "set": {
                     "buf": "",
@@ -2249,7 +2247,7 @@
                   }
                 },
                 {
-                  "say": "Back in <code>main</code>: all three marks are saved, 9 bytes. Both versions behave the same when nothing goes wrong.",
+                  "say": "Back in <code>main</code>: all three marks saved, 9 bytes. With no error, both versions behave the same.",
                   "line": "System.out.println(\"saved: \"",
                   "out": 1
                 }
@@ -2307,28 +2305,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "Mark <code>50</code> is written, into the buffer.",
+                  "say": "Mark <code>50</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n50\n"
                   }
                 },
                 {
-                  "say": "The loop finished, so <code>out.close()</code> runs: the buffer is flushed onto the disk and the file is released.",
+                  "say": "The loop ends, so <code>out.close()</code> runs: the buffer is flushed to disk and the file released.",
                   "line": "out.close()",
                   "set": {
                     "buf": "",
@@ -2337,7 +2335,7 @@
                   }
                 },
                 {
-                  "say": "Back in <code>main</code>: all three marks are saved, 9 bytes. Both versions behave the same when nothing goes wrong.",
+                  "say": "Back in <code>main</code>: all three marks saved, 9 bytes. With no error, both versions behave the same.",
                   "line": "print(\"saved:\"",
                   "out": 1
                 }
@@ -2395,28 +2393,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "<code>Integer.parseInt(\"x\")</code> cannot turn <code>x</code> into a number, so it <strong>throws NumberFormatException</strong>. The rest of <code>save</code> is skipped from here.",
+                  "say": "<code>Integer.parseInt(\"x\")</code> <strong>throws NumberFormatException</strong>. The rest of <code>save</code> is skipped.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "x": "NumberFormatException thrown!"
                   }
                 },
                 {
-                  "say": "<code>out.close()</code> is <strong>never reached</strong>: the exception jumped over it. The file stays open and &ldquo;85&rdquo; and &ldquo;49&rdquo; sit in the buffer.",
+                  "say": "<code>out.close()</code> is <strong>never reached</strong>. The file stays open, with &ldquo;85&rdquo; and &ldquo;49&rdquo; in the buffer.",
                   "line": "out.close();"
                 },
                 {
@@ -2427,7 +2425,7 @@
                   }
                 },
                 {
-                  "say": "The disk holds <strong>0 bytes</strong>: the good marks were never flushed and the file was never closed. A leaked, half-written file is the classic bug that try-with-resources / <code>with</code> prevents.",
+                  "say": "The disk holds <strong>0 bytes</strong>: nothing was flushed, and the file was never closed. try-with-resources / <code>with</code> prevents this bug.",
                   "line": "System.out.println(\"save failed; on disk: \"",
                   "out": 1,
                   "predict": {
@@ -2495,28 +2493,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "<code>int(\"x\")</code> cannot turn <code>x</code> into a number, so it <strong>throws ValueError</strong>. The rest of <code>save</code> is skipped from here.",
+                  "say": "<code>int(\"x\")</code> <strong>throws ValueError</strong>. The rest of <code>save</code> is skipped.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "x": "ValueError thrown!"
                   }
                 },
                 {
-                  "say": "<code>out.close()</code> is <strong>never reached</strong>: the exception jumped over it. The file stays open and &ldquo;85&rdquo; and &ldquo;49&rdquo; sit in the buffer.",
+                  "say": "<code>out.close()</code> is <strong>never reached</strong>. The file stays open, with &ldquo;85&rdquo; and &ldquo;49&rdquo; in the buffer.",
                   "line": "out.close()"
                 },
                 {
@@ -2527,7 +2525,7 @@
                   }
                 },
                 {
-                  "say": "The disk holds <strong>0 bytes</strong>: the good marks were never flushed and the file was never closed. A leaked, half-written file is the classic bug that try-with-resources / <code>with</code> prevents.",
+                  "say": "The disk holds <strong>0 bytes</strong>: nothing was flushed, and the file was never closed. try-with-resources / <code>with</code> prevents this bug.",
                   "line": "print(\"save failed; on disk:\"",
                   "out": 1,
                   "predict": {
@@ -2586,7 +2584,7 @@
                   }
                 },
                 {
-                  "say": "The file is opened: <code>report.txt</code> now exists on disk, empty. The <code>try(&hellip;)</code> promises to close it however the block is left.",
+                  "say": "The file is opened, empty. The <code>try(&hellip;)</code> will close it however the block is left.",
                   "line": "try(PrintWriter out=new PrintWriter(\"report.txt\",\"UTF-8\"))",
                   "set": {
                     "buf": "",
@@ -2595,28 +2593,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "Mark <code>50</code> is written, into the buffer.",
+                  "say": "Mark <code>50</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n50\n"
                   }
                 },
                 {
-                  "say": "The block ends normally, so the file is closed automatically: flushed onto the disk and released.",
+                  "say": "The block ends, so the file is closed automatically: flushed and released.",
                   "at": 7,
                   "set": {
                     "buf": "",
@@ -2625,7 +2623,7 @@
                   }
                 },
                 {
-                  "say": "Back in <code>main</code>: all three marks are saved, 9 bytes. Both versions behave the same when nothing goes wrong.",
+                  "say": "Back in <code>main</code>: all three marks saved, 9 bytes. With no error, both versions behave the same.",
                   "line": "System.out.println(\"saved: \"",
                   "out": 1
                 }
@@ -2674,7 +2672,7 @@
                   }
                 },
                 {
-                  "say": "The file is opened: <code>report.txt</code> now exists on disk, empty. The <code>with</code> promises to close it however the block is left.",
+                  "say": "The file is opened, empty. The <code>with</code> will close it however the block is left.",
                   "line": "with open(\"report.txt\", \"w\", encoding=\"utf-8\") as out:",
                   "set": {
                     "buf": "",
@@ -2683,28 +2681,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "Mark <code>50</code> is written, into the buffer.",
+                  "say": "Mark <code>50</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n50\n"
                   }
                 },
                 {
-                  "say": "The block ends normally, so the file is closed automatically: flushed onto the disk and released.",
+                  "say": "The block ends, so the file is closed automatically: flushed and released.",
                   "at": 4,
                   "set": {
                     "buf": "",
@@ -2713,7 +2711,7 @@
                   }
                 },
                 {
-                  "say": "Back in <code>main</code>: all three marks are saved, 9 bytes. Both versions behave the same when nothing goes wrong.",
+                  "say": "Back in <code>main</code>: all three marks saved, 9 bytes. With no error, both versions behave the same.",
                   "line": "print(\"saved:\"",
                   "out": 1
                 }
@@ -2762,7 +2760,7 @@
                   }
                 },
                 {
-                  "say": "The file is opened: <code>report.txt</code> now exists on disk, empty. The <code>try(&hellip;)</code> promises to close it however the block is left.",
+                  "say": "The file is opened, empty. The <code>try(&hellip;)</code> will close it however the block is left.",
                   "line": "try(PrintWriter out=new PrintWriter(\"report.txt\",\"UTF-8\"))",
                   "set": {
                     "buf": "",
@@ -2771,28 +2769,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "<code>Integer.parseInt(\"x\")</code> cannot turn <code>x</code> into a number, so it <strong>throws NumberFormatException</strong>. The rest of <code>save</code> is skipped from here.",
+                  "say": "<code>Integer.parseInt(\"x\")</code> <strong>throws NumberFormatException</strong>. The rest of <code>save</code> is skipped.",
                   "line": "for(String mark:marks) out.println(Integer.parseInt(mark));",
                   "set": {
                     "x": "NumberFormatException thrown!"
                   }
                 },
                 {
-                  "say": "The exception is leaving the block, so the file is <strong>closed first</strong>: the buffer is flushed, then the exception carries on to the caller.",
+                  "say": "The exception leaves the block, so the file is <strong>closed first</strong> and flushed. Then the exception carries on.",
                   "at": 7,
                   "set": {
                     "buf": "",
@@ -2808,7 +2806,7 @@
                   }
                 },
                 {
-                  "say": "The disk holds the 6 bytes written before the failure (<code>85</code> and <code>49</code>, each with its newline), and the file is closed. Closing is guaranteed; whether a half-finished report is acceptable is still your decision.",
+                  "say": "The disk holds 6 bytes (<code>85</code> and <code>49</code>, each with its newline), and the file is closed. Is a half-finished report acceptable? That is still your decision.",
                   "line": "System.out.println(\"save failed; on disk: \"",
                   "out": 1,
                   "predict": {
@@ -2819,7 +2817,7 @@
                       "9 bytes (all three)"
                     ],
                     "answer": 1,
-                    "why": "Automatic closing flushed the two marks written before the exception; the third was never written."
+                    "why": "Automatic closing flushed the two marks written before the exception. The third was never written."
                   }
                 }
               ],
@@ -2867,7 +2865,7 @@
                   }
                 },
                 {
-                  "say": "The file is opened: <code>report.txt</code> now exists on disk, empty. The <code>with</code> promises to close it however the block is left.",
+                  "say": "The file is opened, empty. The <code>with</code> will close it however the block is left.",
                   "line": "with open(\"report.txt\", \"w\", encoding=\"utf-8\") as out:",
                   "set": {
                     "buf": "",
@@ -2876,28 +2874,28 @@
                   }
                 },
                 {
-                  "say": "Mark <code>85</code> is written, into the buffer.",
+                  "say": "Mark <code>85</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n"
                   }
                 },
                 {
-                  "say": "Mark <code>49</code> is written, into the buffer.",
+                  "say": "Mark <code>49</code> goes into the buffer.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "buf": "85\n49\n"
                   }
                 },
                 {
-                  "say": "<code>int(\"x\")</code> cannot turn <code>x</code> into a number, so it <strong>throws ValueError</strong>. The rest of <code>save</code> is skipped from here.",
+                  "say": "<code>int(\"x\")</code> <strong>throws ValueError</strong>. The rest of <code>save</code> is skipped.",
                   "line": "out.write(str(int(mark)) + \"\\n\")",
                   "set": {
                     "x": "ValueError thrown!"
                   }
                 },
                 {
-                  "say": "The exception is leaving the block, so the file is <strong>closed first</strong>: the buffer is flushed, then the exception carries on to the caller.",
+                  "say": "The exception leaves the block, so the file is <strong>closed first</strong> and flushed. Then the exception carries on.",
                   "at": 4,
                   "set": {
                     "buf": "",
@@ -2913,7 +2911,7 @@
                   }
                 },
                 {
-                  "say": "The disk holds the 6 bytes written before the failure (<code>85</code> and <code>49</code>, each with its newline), and the file is closed. Closing is guaranteed; whether a half-finished report is acceptable is still your decision.",
+                  "say": "The disk holds 6 bytes (<code>85</code> and <code>49</code>, each with its newline), and the file is closed. Is a half-finished report acceptable? That is still your decision.",
                   "line": "print(\"save failed; on disk:\"",
                   "out": 1,
                   "predict": {
@@ -2924,7 +2922,7 @@
                       "9 bytes (all three)"
                     ],
                     "answer": 1,
-                    "why": "Automatic closing flushed the two marks written before the exception; the third was never written."
+                    "why": "Automatic closing flushed the two marks written before the exception. The third was never written."
                   }
                 }
               ],
@@ -2962,7 +2960,7 @@
         {
           "kind": "w10-trace",
           "title": "Step through: Java writes report.txt, then reads it back",
-          "intro": "This is the Java example below, line by line. Watch the text wait in the buffer until the first <code>try</code> block closes the writer, then watch <code>readLine</code> walk through the file until it returns <code>null</code>.",
+          "intro": "The Java example below, line by line. The text waits in the buffer until the first <code>try</code> block closes the writer. Then <code>readLine</code> walks the file until it returns <code>null</code>.",
           "langs": [
             "java"
           ],
@@ -3014,7 +3012,7 @@
                   "line": "File file=new File(\"report.txt\");"
                 },
                 {
-                  "say": "Opening the <code>PrintWriter</code> creates <code>report.txt</code> (or empties it if it already exists), encoded as UTF-8.",
+                  "say": "Opening the <code>PrintWriter</code> creates <code>report.txt</code> (or empties it), encoded as UTF-8.",
                   "line": "try(PrintWriter out=new PrintWriter(file,\"UTF-8\"))",
                   "set": {
                     "buf": "",
@@ -3036,7 +3034,7 @@
                   }
                 },
                 {
-                  "say": "<code>checkError()</code> flushes and asks whether any write failed. <code>PrintWriter</code> never throws an <code>IOException</code> from <code>println</code>, so this is the only way to find out. Here it returns <code>false</code>: no error, nothing thrown.",
+                  "say": "<code>checkError()</code> flushes and asks whether any write failed. <code>println</code> never throws an <code>IOException</code>, so this is the only way to know. Here it returns <code>false</code>.",
                   "line": "if(out.checkError())",
                   "set": {
                     "buf": "",
@@ -3044,11 +3042,11 @@
                   }
                 },
                 {
-                  "say": "The try block ends and the writer is closed. The file is complete on disk before anything reads it.",
+                  "say": "The try block ends and closes the writer. The file is complete before anything reads it.",
                   "at": 10
                 },
                 {
-                  "say": "A reader opens the same file and decodes its bytes as UTF-8, the encoding it was written in.",
+                  "say": "A reader opens the file and decodes it as UTF-8, the encoding it was written in.",
                   "line": "try(BufferedReader in=new BufferedReader("
                 },
                 {
@@ -3068,7 +3066,7 @@
                   "out": 2
                 },
                 {
-                  "say": "There are no more lines, so the loop stops.",
+                  "say": "No more lines, so the loop stops.",
                   "line": "while((line=in.readLine())!=null)",
                   "set": {
                     "line": "null"
@@ -3082,7 +3080,7 @@
                       "It throws an <code>EOFException</code>"
                     ],
                     "answer": 1,
-                    "why": "An empty string means &ldquo;an empty line&rdquo;, which is real data. <code>null</code> means &ldquo;end of the file&rdquo;, which is why the loop tests <code>!= null</code>."
+                    "why": "An empty string is an empty line: real data. <code>null</code> means end of file, so the loop tests <code>!= null</code>."
                   }
                 }
               ]
@@ -3132,19 +3130,19 @@
           "notes": [
             [
               "name.encode(\"utf-8\")",
-              "Turn the characters into the bytes a file would store. This is what <code>open(p, \"w\", encoding=\"utf-8\")</code> does on every write."
+              "Turns characters into the bytes a file stores, as <code>open(p, \"w\", encoding=\"utf-8\")</code> does on every write."
             ],
             [
               "len(data)",
-              "Eight bytes for six characters: <code>\u1ec5</code> needs three bytes in UTF-8; the five ASCII letters need one each."
+              "Eight bytes for six characters: <code>\u1ec5</code> takes three bytes in UTF-8, each ASCII letter one."
             ],
             [
               "data.decode(\"utf-8\")",
-              "Decoding with the same encoding gives the name back exactly: a successful round trip."
+              "The same encoding gives the name back exactly: a successful round trip."
             ],
             [
               "data.decode(\"cp1252\")",
-              "Decoding with Windows-1252, a common Windows default, reads the three bytes of <code>\u1ec5</code> as three separate characters: mojibake."
+              "Windows-1252, a common Windows default, reads the three bytes of <code>\u1ec5</code> as three characters: mojibake."
             ]
           ],
           "stdin": "",
@@ -3158,19 +3156,19 @@
       "concepts": [
         [
           "A simple delimiter has a precondition",
-          "<p>A <strong>delimiter</strong> is a character that means &ldquo;this field ends here&rdquo;. Splitting at it is safe exactly when it can never appear <em>inside</em> a value. That is a fact about your data, not about your code, so check it against real values before choosing:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Delimiter</th><th>Safe when the values are</th><th>Breaks on</th></tr></thead><tbody><tr><td>comma <code>,</code></td><td>numbers, codes, single-word names</td><td><code>An, Mai</code>; <code>1,000</code>; <code>72,5</code> with a decimal comma</td></tr><tr><td>tab</td><td>text typed into a form field</td><td>values pasted from a spreadsheet</td></tr><tr><td>semicolon <code>;</code></td><td>numbers with a decimal comma</td><td>free text</td></tr><tr><td>quoted CSV</td><td>any text at all</td><td>only a reader that ignores the quoting rules</td></tr></tbody></table></div><p>For a simple exercise it is fine to say &ldquo;names contain no commas&rdquo;, as long as you <em>say</em> it, in the contract. For real data, use a CSV writer and reader that understand quoting.</p><div class=\"note warn\"><span class=\"tag\">Java&rsquo;s split drops empty fields at the end, and takes a pattern</span><p><code>\"Linh,85,,\".split(\",\")</code> gives 2 strings in Java, because <code>split</code> throws away empty strings at the end; Python&rsquo;s <code>split(\",\")</code> gives 4. Use <code>split(\",\", -1)</code> to keep them. And Java&rsquo;s <code>split</code> takes a regular expression, where some characters are special: <code>\"a|b\".split(\"|\")</code> splits between every character, and <code>split(\".\")</code> returns an empty array. Write <code>split(\"\\\\|\")</code> or <code>split(\"\\\\.\")</code>.</p></div>"
+          "<p>A <strong>delimiter</strong> is a character that ends a field. It is safe only if no value contains it. Check your real data:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Delimiter</th><th>Safe when the values are</th><th>Breaks on</th></tr></thead><tbody><tr><td>comma <code>,</code></td><td>numbers, codes, single-word names</td><td><code>An, Mai</code>; <code>1,000</code>; <code>72,5</code> with a decimal comma</td></tr><tr><td>tab</td><td>text typed into a form field</td><td>values pasted from a spreadsheet</td></tr><tr><td>semicolon <code>;</code></td><td>numbers with a decimal comma</td><td>free text</td></tr><tr><td>quoted CSV</td><td>any text at all</td><td>only a reader that ignores the quoting rules</td></tr></tbody></table></div><p>&ldquo;Names contain no commas&rdquo; is fine for an exercise, if the contract says so. Real data needs a CSV writer and reader that understand quoting.</p><div class=\"note warn\"><span class=\"tag\">Java&rsquo;s split drops empty fields at the end, and takes a pattern</span><p>Java&rsquo;s <code>\"Linh,85,,\".split(\",\")</code> drops trailing empty fields: 2 strings, where Python gives 4. Use <code>split(\",\", -1)</code>. Its argument is a regular expression, so <code>split(\"|\")</code> splits between every character and <code>split(\".\")</code> returns an empty array. Write <code>split(\"\\\\|\")</code> or <code>split(\"\\\\.\")</code>.</p></div>"
         ],
         [
           "Round-trip what you produce",
-          "<p>The only proof that a format works is a <strong>round trip</strong>: write the data, read it back with the parser you intend to use, and compare the <em>values</em>, not just the number of lines. Count the records that went in and the records that came out, then check a few values field by field, especially the awkward ones.</p><p>Python&rsquo;s <code>csv.writer</code> applies the quoting rules for you, quoting only the fields that need it, and <code>csv.reader</code> undoes them. Two details: the reader gives every field back as a <code>str</code>, so <code>int(row[1])</code> is your job; and a real file for <code>csv</code> must be opened with <code>newline=\"\"</code>, because the <a href=\"https://docs.python.org/3/library/csv.html#csv.writer\" target=\"_blank\" rel=\"noopener\">documentation</a> warns that otherwise newlines inside quoted fields are misread, and on Windows an extra <code>\\r</code> is written. Java has no CSV parser in its standard library: write with a small quoting method like the one in <em>Quote a field by hand</em> below, and read general CSV with a library such as Apache Commons CSV or OpenCSV.</p><div class=\"note danger\"><span class=\"tag\">Nearly 16,000 missing test results, 2020</span><p>In October 2020, nearly 16,000 positive COVID-19 cases in England went unreported. Testing companies sent their results to Public Health England as CSV files, without problems. PHE then loaded them into Excel templates in the old <code>.xls</code> format, which holds only about 65,000 rows. Each test result used several rows, so each template could take about 1,400 cases, and when that total was reached, further cases were simply left off. No error appeared. Counting the records that went in and the records that came out is exactly the round-trip check that catches this. <a href=\"https://www.bbc.com/news/technology-54423988\" target=\"_blank\" rel=\"noopener\">BBC News, 5 October 2020</a></p></div>"
+          "<p>A <strong>round trip</strong> proves a format works: write the data, read it back with your real parser, and compare the <em>values</em>. Count the records in and out.</p><p>Python&rsquo;s <code>csv.writer</code> quotes fields that need it; <code>csv.reader</code> removes the quotes. Every field comes back as a <code>str</code>. Open real files with <code>newline=\"\"</code>, or quoted newlines are misread (<a href=\"https://docs.python.org/3/library/csv.html#csv.writer\" target=\"_blank\" rel=\"noopener\">documentation</a>). Java has no CSV parser in its standard library: quote by hand (see <em>Quote a field by hand</em>) and read with a library such as Apache Commons CSV or OpenCSV.</p><div class=\"note danger\"><span class=\"tag\">Nearly 16,000 missing test results, 2020</span><p>In October 2020, nearly 16,000 positive COVID-19 cases in England went unreported. Public Health England loaded CSV results into old <code>.xls</code> Excel templates that hold only about 65,000 rows (about 1,400 cases), and further cases were silently left off. Counting records in and out catches this. <a href=\"https://www.bbc.com/news/technology-54423988\" target=\"_blank\" rel=\"noopener\">BBC News, 5 October 2020</a></p></div>"
         ],
         [
           "The two quoting rules of CSV",
-          "<p>Real CSV makes the round trip work for any text with two quoting rules, written down in RFC 4180. Rule 6: &ldquo;Fields containing line breaks (CRLF), double quotes, and commas should be enclosed in double-quotes.&rdquo; Rule 7: a double quote inside such a field is written twice.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Value</th><th>Written as</th><th>Why</th></tr></thead><tbody><tr><td>Linh</td><td><span class=\"mono\">Linh</span></td><td>nothing special</td></tr><tr><td>An, Mai</td><td><span class=\"mono\">\"An, Mai\"</span></td><td>contains a comma</td></tr><tr><td>Bao \"Ben\" Tran</td><td><span class=\"mono\">\"Bao \"\"Ben\"\" Tran\"</span></td><td>contains a quote: wrap the field, double the quote</td></tr><tr><td>an address over two lines</td><td>quoted, with the line break inside the quotes</td><td>contains a line break</td></tr><tr><td>(empty)</td><td>nothing between two commas: <span class=\"mono\">Linh,,85</span></td><td>an empty field is still a field</td></tr></tbody></table></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-postel.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Jon Postel\"></div><p>&ldquo;TCP implementations will follow a general principle of robustness: be conservative in what you do, be liberal in what you accept from others.&rdquo;</p><span class=\"attrib\">Jon Postel (editor), <a href=\"https://www.rfc-editor.org/rfc/rfc793\" target=\"_blank\" rel=\"noopener\">RFC 793, <em>Transmission Control Protocol</em></a>, 1981 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AJon_Postel_sitting_in_office_%28cropped%29.jpg\" target=\"_blank\" rel=\"noopener\">Carl Malamud</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div><p>Postel&rsquo;s advice for network software is still quoted for files: be strict about what you <em>write</em>. Its second half is now debated: in 2023 the Internet Architecture Board published <a href=\"https://www.rfc-editor.org/rfc/rfc9413\" target=\"_blank\" rel=\"noopener\">RFC 9413</a>, noting that some interpretations of being liberal in what you accept &ldquo;can negatively affect interoperability over time.&rdquo; For this course: when your reader meets a line it does not understand, reject it with a clear message rather than guess (Week 9).</p>"
+          "<p>RFC 4180 gives CSV two quoting rules. Rule 6: &ldquo;Fields containing line breaks (CRLF), double quotes, and commas should be enclosed in double-quotes.&rdquo; Rule 7: a double quote inside such a field is written twice.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Value</th><th>Written as</th><th>Why</th></tr></thead><tbody><tr><td>Linh</td><td><span class=\"mono\">Linh</span></td><td>nothing special</td></tr><tr><td>An, Mai</td><td><span class=\"mono\">\"An, Mai\"</span></td><td>contains a comma</td></tr><tr><td>Bao \"Ben\" Tran</td><td><span class=\"mono\">\"Bao \"\"Ben\"\" Tran\"</span></td><td>contains a quote: wrap the field, double the quote</td></tr><tr><td>an address over two lines</td><td>quoted, with the line break inside the quotes</td><td>contains a line break</td></tr><tr><td>(empty)</td><td>nothing between two commas: <span class=\"mono\">Linh,,85</span></td><td>an empty field is still a field</td></tr></tbody></table></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-postel.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Jon Postel\"></div><p>&ldquo;TCP implementations will follow a general principle of robustness: be conservative in what you do, be liberal in what you accept from others.&rdquo;</p><span class=\"attrib\">Jon Postel (editor), <a href=\"https://www.rfc-editor.org/rfc/rfc793\" target=\"_blank\" rel=\"noopener\">RFC 793, <em>Transmission Control Protocol</em></a>, 1981 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AJon_Postel_sitting_in_office_%28cropped%29.jpg\" target=\"_blank\" rel=\"noopener\">Carl Malamud</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div><p>For files, keep the first half: be strict in what you <em>write</em>. The second half is debated. <a href=\"https://www.rfc-editor.org/rfc/rfc9413\" target=\"_blank\" rel=\"noopener\">RFC 9413</a> (2023) notes that some interpretations of it &ldquo;can negatively affect interoperability over time.&rdquo; So reject a line you do not understand, with a clear message (Week 9).</p>"
         ],
         [
           "Named columns and CSV in both languages",
-          "<p>Python can also name the columns. <code>csv.DictWriter</code> writes a header from a list of field names and then one row per dictionary; <code>csv.DictReader</code> reads the header and hands you each row as a dictionary, so <code>row[\"mark\"]</code> still works if someone adds a column or swaps the order. In Java, read the header line yourself and look up each column&rsquo;s position once, instead of hard-coding <code>parts[1]</code>.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Task</th><th>Java (standard library only)</th><th>Python</th></tr></thead><tbody><tr><td>write a field that may contain a comma</td><td>your own quoting method</td><td><code>csv.writer(out).writerow([name, mark])</code></td></tr><tr><td>write rows with a header</td><td><code>println(\"name,mark\")</code>, then one line per record</td><td><code>csv.DictWriter(out, fieldnames=[\"name\", \"mark\"])</code>, <code>writeheader()</code></td></tr><tr><td>read simple, comma-free fields</td><td><code>line.split(\",\", -1)</code></td><td><code>line.rstrip(\"\\n\").split(\",\")</code></td></tr><tr><td>read real CSV</td><td>a library</td><td><code>csv.reader(f)</code> or <code>csv.DictReader(f)</code></td></tr><tr><td>numbers in the fields</td><td><code>Integer.parseInt(parts[1])</code></td><td><code>int(row[\"mark\"])</code></td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">Test with the nastiest name you can think of</span><p>Before trusting a CSV pipeline, push one record through it whose name holds a comma, a double quote and a Vietnamese letter: <code>Bao \"Ben\", Nguy\u1ec5n</code>. If it comes back unchanged, your writer, your reader and your encoding all agree.</p></div>"
+          "<p>Python&rsquo;s <code>csv.DictWriter</code> and <code>csv.DictReader</code> use named columns, so <code>row[\"mark\"]</code> still works if columns move. In Java, find each column&rsquo;s position from the header once; do not hard-code <code>parts[1]</code>.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Task</th><th>Java (standard library only)</th><th>Python</th></tr></thead><tbody><tr><td>write a field that may contain a comma</td><td>your own quoting method</td><td><code>csv.writer(out).writerow([name, mark])</code></td></tr><tr><td>write rows with a header</td><td><code>println(\"name,mark\")</code>, then one line per record</td><td><code>csv.DictWriter(out, fieldnames=[\"name\", \"mark\"])</code>, <code>writeheader()</code></td></tr><tr><td>read simple, comma-free fields</td><td><code>line.split(\",\", -1)</code></td><td><code>line.rstrip(\"\\n\").split(\",\")</code></td></tr><tr><td>read real CSV</td><td>a library</td><td><code>csv.reader(f)</code> or <code>csv.DictReader(f)</code></td></tr><tr><td>numbers in the fields</td><td><code>Integer.parseInt(parts[1])</code></td><td><code>int(row[\"mark\"])</code></td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">Test with the nastiest name you can think of</span><p>Round-trip one record named <code>Bao \"Ben\", Nguy\u1ec5n</code>. If it comes back unchanged, your writer, reader and encoding agree.</p></div>"
         ]
       ],
       "examples": [
@@ -3181,11 +3179,11 @@
           "notes": [
             [
               "return name+\",\"+mark",
-              "A formatting method returns data instead of choosing where to write it."
+              "Returns the text instead of choosing where to write it."
             ],
             [
               "format(names[i],marks[i])",
-              "The caller can send the result to the screen or to a file."
+              "The caller decides: screen or file."
             ]
           ],
           "wrong": [
@@ -3205,11 +3203,11 @@
           "notes": [
             [
               "csv.writer",
-              "Let the CSV writer quote a field that contains a comma."
+              "The CSV writer quotes a field that contains a comma."
             ],
             [
               "buffer.seek(0)",
-              "Rewind the stream before reading back the data."
+              "Rewind the stream before reading back."
             ]
           ],
           "wrong": [
@@ -3228,7 +3226,7 @@
         {
           "kind": "w10-split",
           "title": "Cut at every comma: when does the name survive?",
-          "intro": "Left: the Java example&rsquo;s method joins name and mark with a comma, and <code>split(\",\")</code> cuts at <em>every</em> comma. Right: Python&rsquo;s <code>csv</code> module puts quotes around a field that needs them, and its reader understands the quotes. Pick a name, or type your own, and count the fields that come back.",
+          "intro": "Left: the Java method joins name and mark with a comma, and <code>split(\",\")</code> cuts at <em>every</em> comma. Right: Python&rsquo;s <code>csv</code> quotes a field when needed, and its reader understands quotes. Pick or type a name and count the fields that come back.",
           "presets": [
             "Linh",
             "An, Mai",
@@ -3306,7 +3304,7 @@
         {
           "kind": "w10-trace",
           "title": "Round trip: write CSV, rewind, read it back",
-          "intro": "This is the Python CSV example, line by line. The <span class=\"w10-cursor-demo\">\u25b2</span> is the stream&rsquo;s <strong>position</strong>: writing moves it forward, reading starts from it. Then try the version that forgets to rewind.",
+          "intro": "The Python CSV example, line by line. The <span class=\"w10-cursor-demo\">\u25b2</span> is the stream&rsquo;s <strong>position</strong>: writing moves it forward; reading starts from it. Then try the version that forgets to rewind.",
           "langs": [
             "python"
           ],
@@ -3367,7 +3365,7 @@
               ],
               "steps": [
                 {
-                  "say": "An empty in-memory text stream. <code>newline=\"\"</code> tells it not to translate newlines: the <code>csv</code> module handles line endings itself.",
+                  "say": "An empty in-memory text stream. <code>newline=\"\"</code> stops newline translation: <code>csv</code> handles line endings itself.",
                   "line": "buffer=StringIO(newline=\"\")",
                   "set": {
                     "buf": ""
@@ -3377,7 +3375,7 @@
                   }
                 },
                 {
-                  "say": "The writer will end every row with <code>\\n</code>. (Its default is <code>\\r\\n</code>, the line ending the CSV standard uses.)",
+                  "say": "The writer will end each row with <code>\\n</code>. Its default is <code>\\r\\n</code>, the CSV standard&rsquo;s line ending.",
                   "line": "writer=csv.writer(buffer,lineterminator=\"\\n\")"
                 },
                 {
@@ -3391,7 +3389,7 @@
                   }
                 },
                 {
-                  "say": "<code>An, Mai</code> contains a comma, so the writer wraps it in quotes: the comma inside is data, not a separator. The number 85 becomes the text <code>85</code>.",
+                  "say": "<code>An, Mai</code> contains a comma, so the writer quotes it: that comma is data, not a separator. 85 becomes the text <code>85</code>.",
                   "line": "writer.writerow([\"An, Mai\",85])",
                   "set": {
                     "buf": "name,mark\n\"An, Mai\",85\n"
@@ -3413,7 +3411,7 @@
                   }
                 },
                 {
-                  "say": "The reader reads from the position to the end. It sees the quotes, so <code>An, Mai</code> comes back as <em>one</em> field. Every value comes back as text: <code>'85'</code>, not 85.",
+                  "say": "The reader reads from the position. It sees the quotes, so <code>An, Mai</code> is <em>one</em> field. Every value comes back as text: <code>'85'</code>, not 85.",
                   "line": "rows=list(csv.reader(buffer))",
                   "set": {
                     "rows": [
@@ -3443,7 +3441,7 @@
                       "<code>An, Mai</code>"
                     ],
                     "answer": 2,
-                    "why": "The quotes are part of the <em>format</em>, not of the value. The reader removes them, and the comma inside stays part of the name."
+                    "why": "Quotes belong to the <em>format</em>, not the value. The reader removes them; the comma stays in the name."
                   }
                 },
                 {
@@ -3476,7 +3474,7 @@
               ],
               "steps": [
                 {
-                  "say": "An empty in-memory text stream. <code>newline=\"\"</code> tells it not to translate newlines: the <code>csv</code> module handles line endings itself.",
+                  "say": "An empty in-memory text stream. <code>newline=\"\"</code> stops newline translation: <code>csv</code> handles line endings itself.",
                   "line": "buffer=StringIO(newline=\"\")",
                   "set": {
                     "buf": ""
@@ -3486,7 +3484,7 @@
                   }
                 },
                 {
-                  "say": "The writer will end every row with <code>\\n</code>. (Its default is <code>\\r\\n</code>, the line ending the CSV standard uses.)",
+                  "say": "The writer will end each row with <code>\\n</code>. Its default is <code>\\r\\n</code>, the CSV standard&rsquo;s line ending.",
                   "line": "writer=csv.writer(buffer,lineterminator=\"\\n\")"
                 },
                 {
@@ -3500,7 +3498,7 @@
                   }
                 },
                 {
-                  "say": "<code>An, Mai</code> contains a comma, so the writer wraps it in quotes: the comma inside is data, not a separator. The number 85 becomes the text <code>85</code>.",
+                  "say": "<code>An, Mai</code> contains a comma, so the writer quotes it: that comma is data, not a separator. 85 becomes the text <code>85</code>.",
                   "line": "writer.writerow([\"An, Mai\",85])",
                   "set": {
                     "buf": "name,mark\n\"An, Mai\",85\n"
@@ -3515,7 +3513,7 @@
                   "out": 2
                 },
                 {
-                  "say": "No <code>seek(0)</code> this time: the position is still at the very end, after everything that was written.",
+                  "say": "No <code>seek(0)</code>: the position is still at the end of the text.",
                   "line": "rows=list(csv.reader(buffer))",
                   "set": {
                     "rows": []
@@ -3528,11 +3526,11 @@
                       "Only the last row"
                     ],
                     "answer": 1,
-                    "why": "A reader starts at the current position. From the end there is nothing left to read, so it returns no rows. No error, just silently empty."
+                    "why": "A reader starts at the current position. At the end there is nothing to read, so it silently returns no rows."
                   }
                 },
                 {
-                  "say": "An empty list. With <code>rows[1][0]</code> this would crash with an <code>IndexError</code>; this version prints the list instead.",
+                  "say": "An empty list. <code>rows[1][0]</code> would raise <code>IndexError</code>; this version prints the list instead.",
                   "line": "print(rows)",
                   "out": 3
                 },
@@ -3616,15 +3614,15 @@
           "notes": [
             [
               "line.split(\",\")",
-              "With no limit, Java removes every empty string at the end of the result. Python&rsquo;s <code>\"Linh,85,,\".split(\",\")</code> keeps all four fields."
+              "With no limit, Java drops every empty string at the end. Python&rsquo;s <code>\"Linh,85,,\".split(\",\")</code> keeps all four fields."
             ],
             [
               "line.split(\",\",-1)",
-              "A negative limit keeps the trailing empty fields, so the number of fields matches the number of delimiters plus one."
+              "A negative limit keeps trailing empty fields, so fields = delimiters + 1."
             ],
             [
               "\"An,\".split(\",\")",
-              "An empty last field (a missing mark) disappears completely: reading <code>noMark[1]</code> would throw <code>ArrayIndexOutOfBoundsException</code>."
+              "The empty last field (a missing mark) vanishes: <code>noMark[1]</code> would throw <code>ArrayIndexOutOfBoundsException</code>."
             ]
           ],
           "stdin": "",
@@ -3638,19 +3636,19 @@
           "notes": [
             [
               "boolean special",
-              "RFC 4180: a field needs quotes only if it contains a comma, a double quote or a line break."
+              "RFC 4180: quote a field only if it holds a comma, a double quote or a line break."
             ],
             [
               "if(!special) return value;",
-              "Ordinary values are written unchanged, which is what Python&rsquo;s <code>csv.writer</code> does by default too."
+              "Ordinary values are written unchanged, as Python&rsquo;s <code>csv.writer</code> does by default."
             ],
             [
               "value.replace(\"\\\"\",\"\\\"\\\"\")",
-              "Double every quote inside the value, then wrap the whole field in quotes."
+              "Double every quote inside the value, then wrap the field in quotes."
             ],
             [
               "field(names[i])",
-              "Only the text field is quoted; the mark is a number and can never contain a comma."
+              "Only the text field is quoted. A number never contains a comma."
             ]
           ],
           "stdin": "",
@@ -3664,19 +3662,19 @@
       "concepts": [
         [
           "Choose a format that represents the structure",
-          "<p>A line of CSV is flat: one record, a fixed list of fields. As soon as a record holds a <em>list</em> (all of a student&rsquo;s marks) or another record (an address), you would have to invent a second delimiter, then a third. <strong>JSON</strong> already has the structure built in: objects with named fields, arrays, strings, numbers, <code>true</code>/<code>false</code> and <code>null</code>, nested as deep as you need.</p><p>A document that parses is not yet a <em>valid</em> report. <code>{\"name\": \"Linh\"}</code> is perfect JSON with no marks in it; <code>{\"marks\": [\"x\"]}</code> has a mark that is not a number. Check the fields you need, and their types and ranges, straight after parsing.</p><div class=\"note warn\"><span class=\"tag\">A JSON round trip can change your data</span><p>JSON object keys are always strings, so a Python dictionary with keys <code>1</code> and <code>2</code> comes back with keys <code>\"1\"</code> and <code>\"2\"</code>. A tuple comes back as a list. Compare what you restore with what you saved, as the example <em>A JSON round trip is not always the same data</em> does.</p></div>"
+          "<p>A CSV line is flat: a fixed list of fields. <strong>JSON</strong> has structure built in: objects with named fields, arrays, strings, numbers, <code>true</code>/<code>false</code> and <code>null</code>, nested as deep as you need. So one record can hold a list of marks.</p><p>Valid JSON is not yet a valid report. <code>{\"name\": \"Linh\"}</code> has no marks; <code>{\"marks\": [\"x\"]}</code> has a mark that is not a number. Check fields, types and ranges right after parsing.</p><div class=\"note warn\"><span class=\"tag\">A JSON round trip can change your data</span><p>JSON keys are always strings, so Python keys <code>1</code> and <code>2</code> come back as <code>\"1\"</code> and <code>\"2\"</code>. A tuple comes back as a list. Compare the restored data with the original, as <em>A JSON round trip is not always the same data</em> does.</p></div>"
         ],
         [
           "JSON types in Python and Java",
-          "<p>Each JSON type has a natural partner in Python; Java needs a library to do the mapping.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>JSON</th><th>Python after <code>json.loads</code></th><th>Java</th></tr></thead><tbody><tr><td>object <code>{\"name\": \"Linh\"}</code></td><td><code>dict</code></td><td>with a library: a <code>Map</code> or your own class</td></tr><tr><td>array <code>[85, 90]</code></td><td><code>list</code></td><td>a <code>List</code> or an array</td></tr><tr><td>string <code>\"Linh\"</code></td><td><code>str</code></td><td><code>String</code></td></tr><tr><td>number <code>85</code>, <code>72.5</code></td><td><code>int</code>, <code>float</code></td><td><code>int</code>, <code>double</code></td></tr><tr><td><code>true</code>, <code>false</code>, <code>null</code></td><td><code>True</code>, <code>False</code>, <code>None</code></td><td><code>true</code>, <code>false</code>, <code>null</code></td></tr></tbody></table></div><p>Python&rsquo;s <code>json</code> module is in the standard library; Java SE has no JSON parser, so real Java projects add a library such as Jackson or Gson. Three <code>json.dumps</code> options are worth knowing: <code>indent=2</code> for people, <code>sort_keys=True</code> so the same data always gives the same text, and <code>ensure_ascii=False</code> to keep <code>Nguy\u1ec5n</code> readable instead of <code>Nguy\\u1ec5n</code>. Since <a href=\"https://www.rfc-editor.org/rfc/rfc8259\" target=\"_blank\" rel=\"noopener\">RFC 8259</a> (2017), JSON exchanged between systems &ldquo;MUST be encoded using UTF-8&rdquo;.</p><p>Choosing the shape of the data first makes the code that reads it simpler, an old observation about programs that holds just as well for files:</p>"
+          "<p>Each JSON type has a Python partner. Java needs a library.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>JSON</th><th>Python after <code>json.loads</code></th><th>Java</th></tr></thead><tbody><tr><td>object <code>{\"name\": \"Linh\"}</code></td><td><code>dict</code></td><td>with a library: a <code>Map</code> or your own class</td></tr><tr><td>array <code>[85, 90]</code></td><td><code>list</code></td><td>a <code>List</code> or an array</td></tr><tr><td>string <code>\"Linh\"</code></td><td><code>str</code></td><td><code>String</code></td></tr><tr><td>number <code>85</code>, <code>72.5</code></td><td><code>int</code>, <code>float</code></td><td><code>int</code>, <code>double</code></td></tr><tr><td><code>true</code>, <code>false</code>, <code>null</code></td><td><code>True</code>, <code>False</code>, <code>None</code></td><td><code>true</code>, <code>false</code>, <code>null</code></td></tr></tbody></table></div><p>Python has <code>json</code> built in. Java SE has no JSON parser, so projects add Jackson or Gson. Useful <code>json.dumps</code> options:</p><ul><li><code>indent=2</code>: readable for people.</li><li><code>sort_keys=True</code>: the same data always gives the same text.</li><li><code>ensure_ascii=False</code>: keeps <code>Nguy\u1ec5n</code>, not <code>Nguy\\u1ec5n</code>.</li></ul><p>JSON exchanged between systems &ldquo;MUST be encoded using UTF-8&rdquo; (<a href=\"https://www.rfc-editor.org/rfc/rfc8259\" target=\"_blank\" rel=\"noopener\">RFC 8259</a>, 2017).</p>"
         ],
         [
           "Test a pipeline in layers",
-          "<p>A report program is a pipeline of layers: <strong>calculate</strong> the totals, <strong>format</strong> the record, <strong>write</strong> it, <strong>read it back</strong>. Test each layer on its own, so a failure tells you where to look, like the stack of sieves in the photo.</p><p>A test needs output that is <strong>repeatable</strong>: the same input must give the same characters on every run and every computer. Keep out anything that changes by itself: the current time, random numbers, the iteration order of a Java <code>HashMap</code> or a Python <code>set</code> of strings, and the computer&rsquo;s locale. Sort before you print, pass <code>Locale.ROOT</code>, use <code>sort_keys=True</code>.</p><p>Then compare the <em>whole text</em>. &ldquo;It ran without an exception&rdquo; is not a test: it passes with the wrong mode, a missing newline or the columns swapped. Write the report into a <code>StringWriter</code> or <code>StringIO</code>, compare it with the exact string you expect, and print <code>repr</code> of the difference when it fails, so invisible characters show up. The example <em>Test the report, not the screen</em> does this.</p><div class=\"note tip\"><span class=\"tag\">One test with a real file, the rest in memory</span><p>Memory streams make tests fast and repeatable. Keep one test that really writes a file on Ed and reads it back: it is the only one that checks the working directory, the file mode and the encoding.</p></div>"
+          "<p>Test each layer on its own: <strong>calculate</strong>, <strong>format</strong>, <strong>write</strong>, <strong>read back</strong>. A failure then shows where to look, like the stack of sieves in the photo.</p><p>Tests need <strong>repeatable</strong> output: same input, same characters, every time. Keep out the clock, random numbers, the order of a Java <code>HashMap</code> or a Python <code>set</code> of strings, and the locale. Sort, pass <code>Locale.ROOT</code>, use <code>sort_keys=True</code>.</p><p>Compare the <em>whole text</em>; &ldquo;it ran&rdquo; is not a test. Write into a <code>StringWriter</code> or <code>StringIO</code>, compare with the exact expected string, and print <code>repr</code> on failure. See <em>Test the report, not the screen</em>.</p><div class=\"note tip\"><span class=\"tag\">One test with a real file, the rest in memory</span><p>Memory tests are fast and repeatable. Add one test that writes a real file on Ed and reads it back: only it checks the working directory, file mode and encoding.</p></div>"
         ],
         [
           "A test list for a report",
-          "<p>Pick test inputs that are most likely to expose a bug, not the ones most likely to pass. For a marks report:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Test input</th><th>Why this one</th><th>Expected</th></tr></thead><tbody><tr><td><code>[85, 49, 50]</code></td><td>ordinary data, including the boundary</td><td>count 3, passed 2</td></tr><tr><td><code>[50]</code></td><td>exactly on the pass mark</td><td>passed 1, not 0</td></tr><tr><td><code>[]</code></td><td>no data at all</td><td>the header and <code>0,0</code>, or the error your contract chose</td></tr><tr><td>a name with a comma or a quote</td><td>quoting</td><td>the same name after a round trip</td></tr><tr><td>a last line without <code>\\n</code></td><td>the reader&rsquo;s edge case</td><td>the record is still read</td></tr><tr><td>the program run twice</td><td>the file mode</td><td>one copy with <code>\"w\"</code>, two with <code>\"a\"</code></td></tr></tbody></table></div><p>Run the first five in memory; the last one needs a real file.</p>"
+          "<p>Choose the inputs most likely to expose a bug:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Test input</th><th>Why this one</th><th>Expected</th></tr></thead><tbody><tr><td><code>[85, 49, 50]</code></td><td>ordinary data, including the boundary</td><td>count 3, passed 2</td></tr><tr><td><code>[50]</code></td><td>exactly on the pass mark</td><td>passed 1, not 0</td></tr><tr><td><code>[]</code></td><td>no data at all</td><td>the header and <code>0,0</code>, or the error your contract chose</td></tr><tr><td>a name with a comma or a quote</td><td>quoting</td><td>the same name after a round trip</td></tr><tr><td>a last line without <code>\\n</code></td><td>the reader&rsquo;s edge case</td><td>the record is still read</td></tr><tr><td>the program run twice</td><td>the file mode</td><td>one copy with <code>\"w\"</code>, two with <code>\"a\"</code></td></tr></tbody></table></div><p>The first five run in memory; the last needs a real file.</p>"
         ]
       ],
       "examples": [
@@ -3687,11 +3685,11 @@
           "notes": [
             [
               "json.dumps",
-              "Serialise the data into text, using a defined format rather than object display text."
+              "Turns the data into text in a defined format, not display text."
             ],
             [
               "json.loads",
-              "Parse that text back into data and verify the recovered values."
+              "Parses the text back into data, so you can check the values."
             ]
           ],
           "wrong": [
@@ -3715,7 +3713,7 @@
             ],
             [
               "marks.length+\",\"+total+\",\"+passed",
-              "Build a record in the same field order as the header."
+              "Build the record in the header&rsquo;s field order."
             ]
           ],
           "wrong": [
@@ -3734,7 +3732,7 @@
         {
           "kind": "w10-trace",
           "title": "JSON round trip: data \u2192 text \u2192 data, then check it",
-          "intro": "Step through <code>dumps</code> (data to text) and <code>loads</code> (text back to data). Then pick a document that is perfectly valid JSON but still wrong for a mark report, and see why a program must <strong>validate</strong> what it parsed.",
+          "intro": "Step through <code>dumps</code> (data to text) and <code>loads</code> (text to data). Then pick a document that is valid JSON but wrong for a mark report, and see why you must <strong>validate</strong> what you parse.",
           "langs": [
             "python"
           ],
@@ -3814,21 +3812,21 @@
               ],
               "steps": [
                 {
-                  "say": "A dictionary holding a string and a <em>list</em>. A <code>name,mark</code> line could not hold a list of marks without inventing a new convention.",
+                  "say": "A dictionary with a string and a <em>list</em>. A <code>name,mark</code> line cannot hold a list of marks.",
                   "line": "record={\"name\":\"Linh\",\"marks\":[85,90]}",
                   "set": {
                     "d": "{'name': 'Linh', 'marks': [85, 90]}"
                   }
                 },
                 {
-                  "say": "<code>json.dumps</code> turns the data into JSON text: double quotes, square brackets for the list. <code>sort_keys=True</code> puts the keys in alphabetical order, so the same data always gives the same text.",
+                  "say": "<code>json.dumps</code> turns the data into JSON text. <code>sort_keys=True</code> sorts the keys, so the same data always gives the same text.",
                   "line": "text=json.dumps(record,sort_keys=True)",
                   "set": {
                     "tx": "{\"marks\": [85, 90], \"name\": \"Linh\"}"
                   }
                 },
                 {
-                  "say": "<code>json.loads</code> parses the text into a brand-new dictionary with the same values.",
+                  "say": "<code>json.loads</code> parses the text into a new dictionary with the same values.",
                   "line": "restored=json.loads(text)",
                   "set": {
                     "r": "{'name': 'Linh', 'marks': [85, 90]}"
@@ -3840,12 +3838,12 @@
                   "out": 1
                 },
                 {
-                  "say": "&hellip;and the marks came back as a list of numbers, so they can be added.",
+                  "say": "&hellip;and the marks as a list of numbers you can add.",
                   "line": "print(sum(restored[\"marks\"]))",
                   "out": 2
                 },
                 {
-                  "say": "<code>==</code> compares the <em>values</em>, not the text or the key order. The round trip preserved the data.",
+                  "say": "<code>==</code> compares <em>values</em>, not text or key order. The round trip kept the data.",
                   "line": "print(restored==record)",
                   "out": 3,
                   "predict": {
@@ -3856,7 +3854,7 @@
                       "An error: you cannot compare dicts"
                     ],
                     "answer": 1,
-                    "why": "Two dictionaries are equal when they have the same keys with the same values. JSON objects are unordered too, so key order is not part of the data."
+                    "why": "Dictionaries are equal when they have the same keys and values. JSON objects are unordered too."
                   }
                 }
               ],
@@ -3892,7 +3890,7 @@
                   }
                 },
                 {
-                  "say": "<code>json.loads</code> parses it <strong>without any error</strong>: it is syntactically valid JSON.",
+                  "say": "<code>json.loads</code> parses it <strong>without error</strong>: it is valid JSON.",
                   "line": "restored = json.loads(text)",
                   "set": {
                     "r": "{'name': 'Linh'}"
@@ -3900,7 +3898,7 @@
                   "out": 1
                 },
                 {
-                  "say": "The text is valid JSON, so <code>loads</code> succeeds. But the report needs marks: without the check, <code>record[\"marks\"]</code> would crash with a <code>KeyError</code> later, far from the real cause.",
+                  "say": "But there are no marks. Without a check, <code>record[\"marks\"]</code> would raise <code>KeyError</code> later, far from the cause.",
                   "line": "print(check(restored))",
                   "out": 2,
                   "predict": {
@@ -3910,7 +3908,7 @@
                       "No: the check rejects it"
                     ],
                     "answer": 1,
-                    "why": "Parsing only checks the <em>syntax</em>. Whether the fields are present and the values make sense is up to your program."
+                    "why": "Parsing checks only the <em>syntax</em>. Your program must check the fields and values."
                   }
                 }
               ],
@@ -3946,7 +3944,7 @@
                   }
                 },
                 {
-                  "say": "<code>json.loads</code> parses it <strong>without any error</strong>: it is syntactically valid JSON.",
+                  "say": "<code>json.loads</code> parses it <strong>without error</strong>: it is valid JSON.",
                   "line": "restored = json.loads(text)",
                   "set": {
                     "r": "{'name': 'Linh', 'marks': [85, '90']}"
@@ -3954,7 +3952,7 @@
                   "out": 1
                 },
                 {
-                  "say": "<code>\"90\"</code> is a string. JSON is happy; <code>sum</code> would crash with a <code>TypeError</code>, or worse, another language might quietly treat it as text.",
+                  "say": "<code>\"90\"</code> is a string. JSON accepts it, but <code>sum</code> would raise <code>TypeError</code>. Another language might quietly treat it as text.",
                   "line": "print(check(restored))",
                   "out": 2,
                   "predict": {
@@ -3964,7 +3962,7 @@
                       "No: the check rejects it"
                     ],
                     "answer": 1,
-                    "why": "Parsing only checks the <em>syntax</em>. Whether the fields are present and the values make sense is up to your program."
+                    "why": "Parsing checks only the <em>syntax</em>. Your program must check the fields and values."
                   }
                 }
               ],
@@ -4000,7 +3998,7 @@
                   }
                 },
                 {
-                  "say": "<code>json.loads</code> parses it <strong>without any error</strong>: it is syntactically valid JSON.",
+                  "say": "<code>json.loads</code> parses it <strong>without error</strong>: it is valid JSON.",
                   "line": "restored = json.loads(text)",
                   "set": {
                     "r": "{'name': 'Linh', 'marks': [85, 190]}"
@@ -4008,7 +4006,7 @@
                   "out": 1
                 },
                 {
-                  "say": "190 is a perfectly good JSON number, and the program would add it up without complaint. Only a check that knows the rules of the data (0 to 100) catches it.",
+                  "say": "190 is a valid JSON number, and the program would add it without complaint. Only a range check (0 to 100) catches it.",
                   "line": "print(check(restored))",
                   "out": 2,
                   "predict": {
@@ -4018,7 +4016,7 @@
                       "No: the check rejects it"
                     ],
                     "answer": 1,
-                    "why": "Parsing only checks the <em>syntax</em>. Whether the fields are present and the values make sense is up to your program."
+                    "why": "Parsing checks only the <em>syntax</em>. Your program must check the fields and values."
                   }
                 }
               ],
@@ -4042,7 +4040,7 @@
         {
           "kind": "w10-trace",
           "title": "Test the pipeline layer by layer: pick a test input",
-          "intro": "A report has three layers: <strong>calculate</strong> the totals, <strong>format</strong> the record, <strong>write</strong> it somewhere. Pick a test input and step through. The boundary 50 and the empty list are the inputs most likely to expose a bug.",
+          "intro": "A report has three layers: <strong>calculate</strong>, <strong>format</strong>, <strong>write</strong>. Pick a test input and step through. The boundary 50 and the empty list are most likely to expose a bug.",
           "langs": [
             "java",
             "python"
@@ -4213,21 +4211,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "out.println(\"count,total,passed\");",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>3,184,2</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>3,184,2</code>, in header order. A test can compare this text exactly.",
                   "line": "out.println(marks.length+\",\"+total+\",\"+passed);",
                   "set": {
                     "buf": "count,total,passed\n3,184,2\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "System.out.print(buffer.toString());",
                   "out": 2,
                   "predict": {
@@ -4306,21 +4304,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "buffer.write(\"count,total,passed\\n\")",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>3,184,2</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>3,184,2</code>, in header order. A test can compare this text exactly.",
                   "line": "buffer.write(f\"{len(marks)},{total},{passed}\\n\")",
                   "set": {
                     "buf": "count,total,passed\n3,184,2\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "print(buffer.getvalue(), end=\"\")",
                   "out": 2,
                   "predict": {
@@ -4374,25 +4372,25 @@
                   }
                 },
                 {
-                  "say": "The loop body never runs. total and passed stay 0. Is a total of 0 meaningful here? It is. An <em>average</em> would not be: it would divide by zero, so it needs an explicit empty-input rule.",
+                  "say": "The loop body never runs, so total and passed stay 0. A total of 0 makes sense. An <em>average</em> would divide by zero, so it needs an explicit empty-input rule.",
                   "line": "for(int mark:marks)"
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "out.println(\"count,total,passed\");",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>0,0,0</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>0,0,0</code>, in header order. A test can compare this text exactly.",
                   "line": "out.println(marks.length+\",\"+total+\",\"+passed);",
                   "set": {
                     "buf": "count,total,passed\n0,0,0\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "System.out.print(buffer.toString());",
                   "out": 2,
                   "predict": {
@@ -4446,25 +4444,25 @@
                   }
                 },
                 {
-                  "say": "The loop body never runs. total and passed stay 0. Is a total of 0 meaningful here? It is. An <em>average</em> would not be: it would divide by zero, so it needs an explicit empty-input rule.",
+                  "say": "The loop body never runs, so total and passed stay 0. A total of 0 makes sense. An <em>average</em> would divide by zero, so it needs an explicit empty-input rule.",
                   "line": "total += mark"
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "buffer.write(\"count,total,passed\\n\")",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>0,0,0</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>0,0,0</code>, in header order. A test can compare this text exactly.",
                   "line": "buffer.write(f\"{len(marks)},{total},{passed}\\n\")",
                   "set": {
                     "buf": "count,total,passed\n0,0,0\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "print(buffer.getvalue(), end=\"\")",
                   "out": 2,
                   "predict": {
@@ -4527,21 +4525,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "out.println(\"count,total,passed\");",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>1,50,1</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>1,50,1</code>, in header order. A test can compare this text exactly.",
                   "line": "out.println(marks.length+\",\"+total+\",\"+passed);",
                   "set": {
                     "buf": "count,total,passed\n1,50,1\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "System.out.print(buffer.toString());",
                   "out": 2,
                   "predict": {
@@ -4604,21 +4602,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "buffer.write(\"count,total,passed\\n\")",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>1,50,1</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>1,50,1</code>, in header order. A test can compare this text exactly.",
                   "line": "buffer.write(f\"{len(marks)},{total},{passed}\\n\")",
                   "set": {
                     "buf": "count,total,passed\n1,50,1\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "print(buffer.getvalue(), end=\"\")",
                   "out": 2,
                   "predict": {
@@ -4681,21 +4679,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "out.println(\"count,total,passed\");",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>1,49,0</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>1,49,0</code>, in header order. A test can compare this text exactly.",
                   "line": "out.println(marks.length+\",\"+total+\",\"+passed);",
                   "set": {
                     "buf": "count,total,passed\n1,49,0\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "System.out.print(buffer.toString());",
                   "out": 2,
                   "predict": {
@@ -4758,21 +4756,21 @@
                   }
                 },
                 {
-                  "say": "Layer 2 starts: the header line, in the agreed field order.",
+                  "say": "Layer 2: the header line, in the agreed field order.",
                   "line": "buffer.write(\"count,total,passed\\n\")",
                   "set": {
                     "buf": "count,total,passed\n"
                   }
                 },
                 {
-                  "say": "The record <code>1,49,0</code>, in the same order as the header. A test can compare this text exactly.",
+                  "say": "The record <code>1,49,0</code>, in header order. A test can compare this text exactly.",
                   "line": "buffer.write(f\"{len(marks)},{total},{passed}\\n\")",
                   "set": {
                     "buf": "count,total,passed\n1,49,0\n"
                   }
                 },
                 {
-                  "say": "Layer 3: the text goes to its destination, here the console. Because the buffer is in memory, the whole report can be tested without a real file.",
+                  "say": "Layer 3: the text goes to its destination, here the console. The buffer is in memory, so you can test the whole report without a file.",
                   "line": "print(buffer.getvalue(), end=\"\")",
                   "out": 2,
                   "predict": {
@@ -4852,19 +4850,19 @@
           "notes": [
             [
               "{1:85,2:90}",
-              "A dictionary with <code>int</code> keys. JSON object names can only be strings."
+              "A dictionary with <code>int</code> keys. JSON keys can only be strings."
             ],
             [
               "json.dumps(record)",
-              "<code>dumps</code> quietly turns the keys into <code>\"1\"</code> and <code>\"2\"</code>, and the tuple into a JSON array."
+              "<code>dumps</code> silently turns the keys into <code>\"1\"</code> and <code>\"2\"</code>, and the tuple into an array."
             ],
             [
               "restored==record",
-              "The restored data is not equal to the original, so a round-trip test catches the change."
+              "Not equal to the original, so a round-trip test catches the change."
             ],
             [
               "restored[\"marks\"][\"1\"]",
-              "After the round trip, look the mark up with the string key; <code>restored[\"marks\"][1]</code> would raise <code>KeyError</code>."
+              "After the round trip, use the string key. <code>restored[\"marks\"][1]</code> would raise <code>KeyError</code>."
             ]
           ],
           "stdin": "",
@@ -4878,11 +4876,11 @@
           "notes": [
             [
               "m>50",
-              "The bug: a mark of exactly 50 should pass. Only a test on the boundary can notice."
+              "The bug: a mark of exactly 50 should pass. Only a boundary test notices."
             ],
             [
               "write_report(marks,out)",
-              "The report writes to any destination it is given, so the test can hand it a memory stream instead of a file."
+              "The report writes to any destination, so a test can pass a memory stream instead of a file."
             ],
             [
               "actual==expected",
@@ -4890,11 +4888,11 @@
             ],
             [
               "repr(actual)",
-              "On failure, show the exact characters, including <code>\\n</code>, so the difference is visible."
+              "On failure, show the exact characters, <code>\\n</code> included."
             ],
             [
               "check([50]",
-              "The boundary test fails and points straight at the comparison. Change <code>&gt;</code> to <code>&gt;=</code> and run again."
+              "The boundary test fails and points at the comparison. Change <code>&gt;</code> to <code>&gt;=</code> and run again."
             ]
           ],
           "stdin": "",
@@ -5282,17 +5280,17 @@
       "15 min \u00b7 pairs"
     ]
   ],
-  "study": "Finish the output and resource-management sections of both I/O lessons. Practise the memory examples here and run the labelled real-file examples on Ed.",
+  "study": "Finish the output and resource-management sections of both I/O lessons. Run the memory and real-file examples here, then try the file examples on Ed too.",
   "misc": [
     {
       "title": "Java and Python, side by side",
       "meta": "reference \u00b7 file output",
-      "html": "<p>Reference, not reading. Everything this week, in both languages. Java column: Java 8, standard library only.</p><h3 class=\"read-group-title\">Writing text</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>text without a line end</td><td class=\"mono\">out.print(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\")</td></tr><tr><td>text and a line end</td><td class=\"mono\">out.println(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\\n\") or print(\"Linh\", file=out)</td></tr><tr><td>formatted</td><td class=\"mono\">out.printf(Locale.ROOT, \"%-8s%5d%n\", name, mark)</td><td class=\"mono\">out.write(f\"{name:&lt;8}{mark:&gt;5}\\n\")</td></tr><tr><td>write to memory</td><td class=\"mono\">new PrintWriter(new StringWriter())</td><td class=\"mono\">io.StringIO()</td></tr><tr><td>get the stored text</td><td class=\"mono\">buffer.toString()</td><td class=\"mono\">buffer.getvalue()</td></tr></tbody></table></div><h3 class=\"read-group-title\">Opening and closing files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>replace</td><td class=\"mono\">new PrintWriter(file, \"UTF-8\")</td><td class=\"mono\">open(p, \"w\", encoding=\"utf-8\")</td></tr><tr><td>append</td><td class=\"mono\">new FileWriter(p, true)</td><td class=\"mono\">open(p, \"a\", encoding=\"utf-8\")</td></tr><tr><td>create, never replace</td><td class=\"mono\">Files.newBufferedWriter(path, StandardOpenOption.CREATE_NEW)</td><td class=\"mono\">open(p, \"x\", encoding=\"utf-8\")</td></tr><tr><td>close automatically</td><td class=\"mono\">try (PrintWriter out = &hellip;) { &hellip; }</td><td class=\"mono\">with open(&hellip;) as out:</td></tr><tr><td>flush now</td><td class=\"mono\">out.flush()</td><td class=\"mono\">out.flush()</td></tr></tbody></table></div><h3 class=\"read-group-title\">When things go wrong</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>cannot open the file</td><td><code>FileNotFoundException</code> (checked: catch or declare)</td><td><code>FileNotFoundError</code>, <code>PermissionError</code> (both <code>OSError</code>)</td></tr><tr><td>a write fails</td><td><code>IOException</code>; but <code>PrintWriter</code> only sets a flag</td><td><code>OSError</code></td></tr><tr><td>did any write fail?</td><td><code>out.checkError()</code></td><td>not needed: failures raise</td></tr></tbody></table></div><h3 class=\"read-group-title\">Formats</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>split a simple line</td><td><code>line.split(\",\", -1)</code></td><td><code>line.rstrip(\"\\n\").split(\",\")</code></td></tr><tr><td>real CSV</td><td>no standard library support: quote by hand, read with a library</td><td><code>csv.writer</code>, <code>csv.reader</code>, <code>DictReader</code>; open with <code>newline=\"\"</code></td></tr><tr><td>JSON</td><td>no standard library support: a library such as Jackson or Gson</td><td><code>json.dumps</code>, <code>json.loads</code></td></tr><tr><td>line end of <code>println</code> / text mode</td><td><code>System.lineSeparator()</code></td><td><code>\\n</code>, turned into <code>os.linesep</code> in text mode</td></tr></tbody></table></div>"
+      "html": "<p>Reference only: this week in both languages. Java column: Java 8, standard library.</p><h3 class=\"read-group-title\">Writing text</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>text without a line end</td><td class=\"mono\">out.print(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\")</td></tr><tr><td>text and a line end</td><td class=\"mono\">out.println(\"Linh\")</td><td class=\"mono\">out.write(\"Linh\\n\") or print(\"Linh\", file=out)</td></tr><tr><td>formatted</td><td class=\"mono\">out.printf(Locale.ROOT, \"%-8s%5d%n\", name, mark)</td><td class=\"mono\">out.write(f\"{name:&lt;8}{mark:&gt;5}\\n\")</td></tr><tr><td>write to memory</td><td class=\"mono\">new PrintWriter(new StringWriter())</td><td class=\"mono\">io.StringIO()</td></tr><tr><td>get the stored text</td><td class=\"mono\">buffer.toString()</td><td class=\"mono\">buffer.getvalue()</td></tr></tbody></table></div><h3 class=\"read-group-title\">Opening and closing files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>replace</td><td class=\"mono\">new PrintWriter(file, \"UTF-8\")</td><td class=\"mono\">open(p, \"w\", encoding=\"utf-8\")</td></tr><tr><td>append</td><td class=\"mono\">new FileWriter(p, true)</td><td class=\"mono\">open(p, \"a\", encoding=\"utf-8\")</td></tr><tr><td>create, never replace</td><td class=\"mono\">Files.newBufferedWriter(path, StandardOpenOption.CREATE_NEW)</td><td class=\"mono\">open(p, \"x\", encoding=\"utf-8\")</td></tr><tr><td>close automatically</td><td class=\"mono\">try (PrintWriter out = &hellip;) { &hellip; }</td><td class=\"mono\">with open(&hellip;) as out:</td></tr><tr><td>flush now</td><td class=\"mono\">out.flush()</td><td class=\"mono\">out.flush()</td></tr></tbody></table></div><h3 class=\"read-group-title\">When things go wrong</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>cannot open the file</td><td><code>FileNotFoundException</code> (checked: catch or declare)</td><td><code>FileNotFoundError</code>, <code>PermissionError</code> (both <code>OSError</code>)</td></tr><tr><td>a write fails</td><td><code>IOException</code>; but <code>PrintWriter</code> only sets a flag</td><td><code>OSError</code></td></tr><tr><td>did any write fail?</td><td><code>out.checkError()</code></td><td>not needed: failures raise</td></tr></tbody></table></div><h3 class=\"read-group-title\">Formats</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>split a simple line</td><td><code>line.split(\",\", -1)</code></td><td><code>line.rstrip(\"\\n\").split(\",\")</code></td></tr><tr><td>real CSV</td><td>no standard library support: quote by hand, read with a library</td><td><code>csv.writer</code>, <code>csv.reader</code>, <code>DictReader</code>; open with <code>newline=\"\"</code></td></tr><tr><td>JSON</td><td>no standard library support: a library such as Jackson or Gson</td><td><code>json.dumps</code>, <code>json.loads</code></td></tr><tr><td>line end of <code>println</code> / text mode</td><td><code>System.lineSeparator()</code></td><td><code>\\n</code>, turned into <code>os.linesep</code> in text mode</td></tr></tbody></table></div>"
     },
     {
       "title": "Two characters for one new line",
       "meta": "history \u00b7 CR and LF",
-      "html": "<div class=\"concept\"><h3><span class=\"idx\">M2.1</span>A typewriter with two jobs</h3><p>On a mechanical teleprinter such as the Teletype Model 33 (the machine in the Section 1 photo), starting a new line was two separate movements: <strong>carriage return</strong> moved the print head back to the left edge, and <strong>line feed</strong> rolled the paper up one line. ASCII gave each its own code: CR is 13 (<code>\\r</code>) and LF is 10 (<code>\\n</code>). The return was the slow part, so CR was sent first, and the head could still be travelling when the next character arrived; machines were often sent extra padding characters to give it time.</p><p>Operating systems then split into three camps, and they never fully reunited:</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">CR LF</div><div class=\"tl-body\"><h4>Two characters, like the teleprinter</h4><p>Early systems that drove a Teletype directly stored both codes in their files. Most of DEC&rsquo;s minicomputer systems used CR LF, so did CP/M and MS-DOS, and Windows still does.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">LF</div><div class=\"tl-body\"><h4>One character, translated on the way out</h4><p>Multics, begun in 1964, stored only LF and let a device driver send whatever the printer needed. Unix followed Multics, and so do Linux and macOS today.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">CR</div><div class=\"tl-body\"><h4>The odd one out</h4><p>The Apple II and classic Mac OS used CR alone. Mac OS X, built on Unix, switched to LF.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2018</div><div class=\"tl-body\"><h4>Notepad learns LF</h4><p>Windows Notepad showed a Unix file as one long line until Microsoft added support for LF and CR line endings in 2018 (<a href=\"https://devblogs.microsoft.com/commandline/extended-eol-in-notepad/\" target=\"_blank\" rel=\"noopener\">Microsoft announcement</a>).</p></div></div></div><p class=\"host\" style=\"font-size:0.85rem;opacity:0.85\">Source for this history: <a href=\"https://en.wikipedia.org/wiki/Newline#History\" target=\"_blank\" rel=\"noopener\">Wikipedia, &ldquo;Newline&rdquo;, History and Representation</a>.</p></div><div class=\"concept\"><h3><span class=\"idx\">M2.2</span>What it means for your files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Where</th><th>What ends a line</th></tr></thead><tbody><tr><td>Java <code>println</code></td><td>the system line separator, <code>System.lineSeparator()</code>: <code>\\n</code> or <code>\\r\\n</code></td></tr><tr><td>Java <code>print(\"&hellip;\\n\")</code></td><td>exactly <code>\\n</code>, on every system</td></tr><tr><td>Python text-mode <code>write(\"\\n\")</code></td><td><code>\\n</code> on Linux and macOS; <code>\\r\\n</code> on Windows (unless opened with <code>newline=\"\"</code>)</td></tr><tr><td>Python <code>csv.writer</code></td><td><code>\\r\\n</code> by default, as RFC 4180 says, unless you set <code>lineterminator</code></td></tr><tr><td>reading: Java <code>readLine()</code>, Python text mode</td><td>all three styles are recognised, and the line end is removed (Java) or turned into <code>\\n</code> (Python)</td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">Why the examples on this page look so careful</span><p>That is why the CSV example sets <code>lineterminator=\"\\n\"</code> and opens its stream with <code>newline=\"\"</code>: the output then has the same bytes on every computer, so the expected output in a test does too.</p></div></div>"
+      "html": "<div class=\"concept\"><h3><span class=\"idx\">M2.1</span>A typewriter with two jobs</h3><p>On a teleprinter such as the Teletype Model 33 (the machine in the Section 1 photo), a new line took two movements. <strong>Carriage return</strong> moved the print head back to the left edge. <strong>Line feed</strong> rolled the paper up one line. ASCII gave each a code: CR is 13 (<code>\\r</code>) and LF is 10 (<code>\\n</code>). The return was slow, so CR went first, and machines were often sent extra padding characters to give the head time.</p><p>Operating systems split into three camps and never fully reunited:</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">CR LF</div><div class=\"tl-body\"><h4>Two characters, like the teleprinter</h4><p>Systems that drove a Teletype directly stored both codes. So did most DEC minicomputer systems, CP/M and MS-DOS. Windows still does.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">LF</div><div class=\"tl-body\"><h4>One character, translated on the way out</h4><p>Multics (begun in 1964) stored only LF and let a device driver send what the printer needed. Unix followed, and so do Linux and macOS.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">CR</div><div class=\"tl-body\"><h4>The odd one out</h4><p>The Apple II and classic Mac OS used CR alone. Mac OS X, built on Unix, switched to LF.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2018</div><div class=\"tl-body\"><h4>Notepad learns LF</h4><p>Windows Notepad showed a Unix file as one long line until Microsoft added LF and CR support in 2018 (<a href=\"https://devblogs.microsoft.com/commandline/extended-eol-in-notepad/\" target=\"_blank\" rel=\"noopener\">Microsoft announcement</a>).</p></div></div></div><p class=\"host\" style=\"font-size:0.85rem;opacity:0.85\">Source for this history: <a href=\"https://en.wikipedia.org/wiki/Newline#History\" target=\"_blank\" rel=\"noopener\">Wikipedia, &ldquo;Newline&rdquo;, History and Representation</a>.</p></div><div class=\"concept\"><h3><span class=\"idx\">M2.2</span>What it means for your files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Where</th><th>What ends a line</th></tr></thead><tbody><tr><td>Java <code>println</code></td><td>the system line separator, <code>System.lineSeparator()</code>: <code>\\n</code> or <code>\\r\\n</code></td></tr><tr><td>Java <code>print(\"&hellip;\\n\")</code></td><td>exactly <code>\\n</code>, on every system</td></tr><tr><td>Python text-mode <code>write(\"\\n\")</code></td><td><code>\\n</code> on Linux and macOS; <code>\\r\\n</code> on Windows (unless opened with <code>newline=\"\"</code>)</td></tr><tr><td>Python <code>csv.writer</code></td><td><code>\\r\\n</code> by default, as RFC 4180 says, unless you set <code>lineterminator</code></td></tr><tr><td>reading: Java <code>readLine()</code>, Python text mode</td><td>all three styles are recognised, and the line end is removed (Java) or turned into <code>\\n</code> (Python)</td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">Why the examples on this page look so careful</span><p>That is why the CSV example sets <code>lineterminator=\"\\n\"</code> and opens its stream with <code>newline=\"\"</code>: the bytes, and so a test&rsquo;s expected output, are the same on every computer.</p></div></div>"
     }
   ]
 }

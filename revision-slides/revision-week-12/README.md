@@ -38,6 +38,7 @@ beyond the core". Current Canvas instructions govern assessment.
 | --- | --- |
 | `revision-week-12.tex` | The deck. Build: `xelatex revision-week-12.tex`, twice |
 | `revision-week-12.pdf` | Built output |
+| `revision-week-12-student.pdf` | Student copy: the first click of every slide, so no answers. Built by `python3 scripts/build_student_revisions.py --weeks 12` |
 | `bk-logo.png` | Required next to the `.tex` |
 | `examples/q02-mcq-which-test/` | The slide's `countPassed`, run on the four tests A–D against the rule (`>= 50`) |
 | `examples/q03-mcq-where-to-add/` | `Demo.java` is option B (the answer). `option-a/` and `option-d/` run those placements. `option-c/Demo.java` **does not compile** |

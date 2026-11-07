@@ -32,6 +32,7 @@ following page.
 | --- | --- |
 | `revision-week-8.tex` | The deck. Build: `xelatex revision-week-8.tex`, twice |
 | `revision-week-8.pdf` | Built output |
+| `revision-week-8-student.pdf` | Student copy: the first click of every slide, so no answers. Built by `python3 scripts/build_student_revisions.py --weeks 8` |
 | `bk-logo.png` | Required next to the `.tex` |
 | `examples/five-ideas/` | The "five ideas" listing (`Priced`, `Item`, `Book`) with a `main` |
 | `examples/q02-mcq-which-line-fails/` | `Demo.java` runs options A, B and D. `option-c/Demo.java` adds option C and **does not compile** |

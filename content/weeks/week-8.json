@@ -9,15 +9,15 @@
       "concepts": [
         [
           "An is-a relationship",
-          "<p>Inheritance lets you say: <em>this new class is a more specific kind of that existing class</em>. A <code>Dog</code> is an <code>Animal</code>, so every <code>Dog</code> object gets everything an <code>Animal</code> has (its fields and its methods) and can add more of its own. The existing class is the <strong>superclass</strong> (also called the parent or base class); the new one is the <strong>subclass</strong> (the child or derived class).</p><p>The test is one question: <strong>can a subclass object go everywhere the superclass is expected, and keep every promise the superclass makes?</strong> A kelpie can visit any vet who treats dogs. If you catch yourself saying &ldquo;it is an Animal, except&hellip;&rdquo;, inheritance is the wrong tool. Wanting to reuse a few lines of code is <em>not</em> a reason to inherit; section 4 shows the better tool for that.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a subclass</td><td class=\"mono\">class Dog extends Animal { &hellip; }</td><td class=\"mono\">class Dog(Animal):</td></tr><tr><td>direct superclasses allowed</td><td class=\"mono\">exactly one</td><td class=\"mono\">one or more</td></tr><tr><td>if you name none</td><td class=\"mono\">the class extends <code>Object</code></td><td class=\"mono\">the class inherits from <code>object</code></td></tr><tr><td>run the parent&rsquo;s constructor</td><td class=\"mono\"><code>super(name);</code> as the first statement</td><td class=\"mono\"><code>super().__init__(name)</code>, anywhere in <code>__init__</code></td></tr><tr><td>are constructors inherited?</td><td class=\"mono\">no: each class writes its own</td><td class=\"mono\"><code>__init__</code> is an ordinary method, inherited if the subclass has none</td></tr><tr><td>private parts of the parent</td><td class=\"mono\">a <code>private</code> field exists in every Dog, but only Animal&rsquo;s code can use it</td><td class=\"mono\">nothing is enforced; a leading underscore (<code>_name</code>) means &ldquo;internal, please do not touch&rdquo;</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\"><code>protected</code> is wider than it looks</span><p>In Java, <code>protected</code> means &ldquo;visible to subclasses <em>and</em> to every class in the same package&rdquo;. On Ed all your classes sit in one package, so <code>protected</code> behaves almost like <code>public</code> there. Keep fields <code>private</code> and give subclasses the methods they need instead.</p></div>"
+          "<p>Inheritance makes a new class a more specific kind of an existing one. A <code>Dog</code> is an <code>Animal</code>, so a Dog gets Animal&rsquo;s fields and methods and can add its own. Animal is the <strong>superclass</strong> (parent, base class). Dog is the <strong>subclass</strong> (child).</p><p><strong>The test:</strong> can a Dog go everywhere an Animal is expected, and keep every Animal promise? If you catch yourself saying &ldquo;it is an Animal, except&hellip;&rdquo;, do not inherit. To reuse code, use the tool in section 4.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a subclass</td><td class=\"mono\">class Dog extends Animal { &hellip; }</td><td class=\"mono\">class Dog(Animal):</td></tr><tr><td>direct superclasses allowed</td><td class=\"mono\">exactly one</td><td class=\"mono\">one or more</td></tr><tr><td>if you name none</td><td class=\"mono\">the class extends <code>Object</code></td><td class=\"mono\">the class inherits from <code>object</code></td></tr><tr><td>run the parent&rsquo;s constructor</td><td class=\"mono\"><code>super(name);</code> as the first statement</td><td class=\"mono\"><code>super().__init__(name)</code>, anywhere in <code>__init__</code></td></tr><tr><td>are constructors inherited?</td><td class=\"mono\">no: each class writes its own</td><td class=\"mono\">yes: <code>__init__</code> is inherited if the subclass has none</td></tr><tr><td>private parts of the parent</td><td class=\"mono\">a <code>private</code> field exists in every Dog, but only Animal&rsquo;s code can use it</td><td class=\"mono\">not enforced; <code>_name</code> means &ldquo;internal, do not touch&rdquo;</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\"><code>protected</code> is wider than it looks</span><p>Java&rsquo;s <code>protected</code> also opens a member to every class in the same package. On Ed that is all your classes. Keep fields <code>private</code> and give subclasses methods.</p></div>"
         ],
         [
           "Build the base part first",
-          "<p>A <code>Dog</code> object contains an <code>Animal</code> part. Before the Dog constructor can store a breed, the Animal part must exist and be valid, so <strong>the parent&rsquo;s constructor runs first</strong>. In Java, <code>super(name)</code> must be the very first statement of the constructor. If you do not write a <code>super(&hellip;)</code> call, Java quietly inserts <code>super()</code>, a call with no arguments.</p><div class=\"note warn\"><span class=\"tag\">The call you did not write</span><p>If <code>Animal</code> only has the constructor <code>Animal(String name)</code>, then <code>Dog() { }</code> does not compile: the hidden <code>super()</code> has nothing to call. On Ed, <code>javac</code> says <code>constructor Animal in class Animal cannot be applied to given types;</code>. The page&rsquo;s compiler says <code>Implicit super constructor Animal() is undefined</code>. Both mean the same thing: call <code>super(name)</code> yourself.</p></div><p>Python is more relaxed, and so it is easier to get wrong. If <code>Dog</code> defines no <code>__init__</code>, it inherits Animal&rsquo;s. But as soon as <code>Dog</code> defines its own <code>__init__</code>, Animal&rsquo;s is <em>not</em> called unless you write <code>super().__init__(name)</code>. Nothing complains at that point. The object is simply missing its <code>name</code> until some later line asks for it. The example <em>Forget super().__init__() and the name never arrives</em> below shows this.</p>"
+          "<p>A Dog contains an Animal part, and <strong>the parent&rsquo;s constructor builds it first</strong>. In Java, <code>super(name)</code> must be the constructor&rsquo;s first statement. If you leave it out, Java inserts <code>super()</code>, with no arguments.</p><div class=\"note warn\"><span class=\"tag\">The call you did not write</span><p>If Animal only has <code>Animal(String name)</code>, then <code>Dog() { }</code> fails: the hidden <code>super()</code> has nothing to call. <code>javac</code> on Ed says <code>constructor Animal in class Animal cannot be applied to given types;</code> and this page says <code>Implicit super constructor Animal() is undefined</code>. Fix: call <code>super(name)</code> yourself.</p></div><p>In Python, a Dog with no <code>__init__</code> inherits Animal&rsquo;s. Once Dog defines its own, Animal&rsquo;s runs only if you call <code>super().__init__(name)</code>. Forget it and nothing complains, but the Dog has no <code>name</code>. See <em>Forget super().__init__() and the name never arrives</em> below.</p>"
         ],
         [
           "Override to replace, super to extend",
-          "<p>A subclass <strong>overrides</strong> a method by defining one with the same name and the same parameters. From then on, every call on a Dog object runs Dog&rsquo;s version, even through a variable declared as <code>Animal</code>. That is the whole point: code written once for <code>Animal</code> automatically gets each subclass&rsquo;s own behaviour.</p><p>Sometimes you want to <em>add to</em> the parent&rsquo;s answer instead of replacing it. Inside the override, <code>super.speak()</code> in Java and <code>super().speak()</code> in Python call the parent&rsquo;s version. Strictly, Python&rsquo;s <code>super()</code> means &ldquo;the next class in the method resolution order&rdquo;. With one parent that is simply the parent; section 4 shows when it is not.</p><div class=\"note warn\"><span class=\"tag\">Write @Override every time</span><p><code>@Override</code> asks the Java compiler to check that the method really overrides something. Without it, a typo such as <code>speek()</code> quietly creates a <em>new</em> method, and <code>pet.speak()</code> still runs Animal&rsquo;s version. No error, just the wrong output: see <em>Without @Override, a typo survives</em> below. Python has no built-in check, so a misspelt method is just another method. (Python 3.12 added <code>typing.override</code>, but only checking tools such as mypy read it.)</p></div>"
+          "<p>To <strong>override</strong> a method, define one with the same name and parameters in the subclass. Calls on a Dog then run Dog&rsquo;s version, even through an <code>Animal</code> variable.</p><p>To extend the parent&rsquo;s answer instead of replacing it, call <code>super.speak()</code> (Java) or <code>super().speak()</code> (Python) inside the override.</p><div class=\"note warn\"><span class=\"tag\">Write @Override every time</span><p>Without <code>@Override</code>, a typo like <code>speek()</code> silently creates a new method, and Animal&rsquo;s <code>speak()</code> still runs. With it, the compiler reports the mistake (see <em>Without @Override, a typo survives</em>). Python has no built-in check. <code>typing.override</code> (Python 3.12) is read only by checkers such as mypy.</p></div>"
         ]
       ],
       "examples": [
@@ -56,7 +56,7 @@
             ],
             [
               "super().speak()",
-              "Invoke the next method in the method resolution order before extending the result."
+              "Call the next class&rsquo;s version in the method resolution order, then extend the result."
             ]
           ],
           "wrong": [
@@ -75,7 +75,7 @@
         {
           "kind": "calltrace",
           "title": "new Dog(\u2026): watch the object being built, base part first",
-          "intro": "Press <strong>Next</strong> to run one line at a time, Java and Python together. The <strong>call stack</strong> shows which constructor is running (the top one). The <strong>object</strong> is drawn in layers: the Animal part it inherits at the bottom, the Dog part on top.",
+          "intro": "Press <strong>Next</strong> to run one line at a time, in Java and Python together. The top frame of the <strong>call stack</strong> is the constructor now running. The <strong>object</strong> is drawn in layers: the inherited Animal part at the bottom, the Dog part on top.",
           "programs": [
             {
               "lang": "java",
@@ -154,7 +154,7 @@
                 }
               ],
               "out": 0,
-              "say": "<code>new Dog(\"Milo\", \"kelpie\")</code>: memory for one object is set aside. It has room for the fields of <em>both</em> classes &mdash; the <code>name</code> it inherits from Animal and its own <code>breed</code> &mdash; but none of them is set yet. (Python creates an empty object and adds each attribute when it is first assigned.)"
+              "say": "<code>new Dog(\"Milo\", \"kelpie\")</code> sets aside one object with room for both classes&rsquo; fields: the inherited <code>name</code> and Dog&rsquo;s own <code>breed</code>. Nothing is set yet. (Python starts with an empty object and adds each attribute when it is first assigned.)"
             },
             {
               "at": [
@@ -201,7 +201,7 @@
                 }
               ],
               "out": 0,
-              "say": "The <strong>Dog</strong> constructor starts (in Python, <code>Dog.__init__</code>). It cannot set up the Dog part first: the Animal part underneath must be ready before anything is built on it."
+              "say": "The <strong>Dog</strong> constructor starts (Python: <code>Dog.__init__</code>). The Animal part underneath must be ready before the Dog part is built."
             },
             {
               "at": [
@@ -248,7 +248,7 @@
                 }
               ],
               "out": 0,
-              "say": "<code>super(name)</code> passes <code>name</code> up to the Animal constructor. In Java it must be the <strong>first</strong> statement of a constructor; if you leave it out, Java inserts <code>super()</code> with no arguments, which fails to compile here because Animal has no such constructor."
+              "say": "<code>super(name)</code> passes <code>name</code> up to the Animal constructor. In Java it must come <strong>first</strong>. Without it, Java inserts <code>super()</code>, which fails here because Animal has no such constructor."
             },
             {
               "at": [
@@ -448,7 +448,7 @@
                 }
               ],
               "out": 1,
-              "say": "The Animal constructor has returned, so the Dog constructor carries on after <code>super(name)</code> and sets its own field, <code>breed</code>."
+              "say": "The Animal constructor has returned. The Dog constructor carries on after <code>super(name)</code> and sets its own field, <code>breed</code>."
             },
             {
               "at": [
@@ -538,7 +538,7 @@
                 }
               ],
               "out": 2,
-              "say": "Back in <code>main</code>: <code>pet</code> now refers to one complete object. It <strong>is a</strong> Dog and also <strong>is an</strong> Animal. Java constructors are not inherited, which is why Dog wrote its own and passed <code>name</code> on."
+              "say": "Back in <code>main</code>: <code>pet</code> refers to one complete object. It <strong>is a</strong> Dog and <strong>is an</strong> Animal. Java constructors are not inherited, so Dog wrote its own and passed <code>name</code> on."
             },
             {
               "at": [
@@ -585,7 +585,7 @@
                 }
               ],
               "out": 2,
-              "say": "<code>pet.describe()</code>: the object is a Dog, so Dog's override runs. It can use <code>name</code>, a field from the Animal part, because it is <code>protected</code> and the Dog object has it."
+              "say": "<code>pet.describe()</code>: the object is a Dog, so Dog's override runs. It can use <code>name</code> from the Animal part because that field is <code>protected</code>."
             },
             {
               "at": [
@@ -628,14 +628,14 @@
                 }
               ],
               "out": 3,
-              "say": "It prints <code>Milo the kelpie</code>. Three lines, in the order the parts were built and then used."
+              "say": "It prints <code>Milo the kelpie</code>. Three lines: the parts in build order, then the use."
             }
           ]
         },
         {
           "kind": "dispatch",
           "title": "Which speak() runs? Predict, then watch the lookup walk up the tree",
-          "intro": "Every variable here is declared as <code>Animal</code>. Pick the object it refers to and a method, <strong>predict</strong> whose version runs, then press <strong>Next</strong>. At run time Java (and Python) start at the object's own class and walk <em>up</em> until they find the method. The arrows point from a subclass to its superclass. The outputs come from running the loop in the two programs below.",
+          "intro": "Every variable is declared as <code>Animal</code>. Pick an object and a method, <strong>predict</strong> whose version runs, then press <strong>Next</strong>. At run time, Java and Python start at the object's own class and walk <em>up</em> until they find the method. Arrows point from subclass to superclass. The outputs come from running the two programs below.",
           "programs": [
             {
               "lang": "java",
@@ -757,7 +757,7 @@
         {
           "kind": "calltrace",
           "title": "super().speak(): extend the parent's answer instead of replacing it",
-          "intro": "This is the example <em>Calling the parent in Python</em> below, with the same program in Java beside it. Step through and watch the call stack grow by one frame for the <code>super</code> call.",
+          "intro": "This is the example <em>Calling the parent in Python</em> below, with Java beside it. Watch the call stack grow by one frame for the <code>super</code> call.",
           "programs": [
             {
               "lang": "java",
@@ -817,7 +817,7 @@
                 }
               ],
               "out": 0,
-              "say": "<code>Dog(\"Milo\")</code>. Python's Dog has no <code>__init__</code> of its own, so Python looks up the hierarchy and uses <strong>Animal's</strong>: in Python, <code>__init__</code> is inherited like any method. Java constructors are <em>not</em> inherited, so the Java Dog needs its own one-line constructor."
+              "say": "<code>Dog(\"Milo\")</code>. Python's Dog has no <code>__init__</code>, so it uses <strong>Animal's</strong>: in Python, <code>__init__</code> is inherited like any method. Java constructors are <em>not</em> inherited, so the Java Dog needs its own."
             },
             {
               "at": [
@@ -854,7 +854,7 @@
                 }
               ],
               "out": 0,
-              "say": "<code>.speak()</code> on a Dog: the object is a Dog, so <strong>Dog's</strong> <code>speak</code> runs. Its first job is to ask the parent for its version."
+              "say": "<code>.speak()</code>: the object is a Dog, so <strong>Dog's</strong> <code>speak</code> runs. First it asks the parent for its version."
             },
             {
               "at": [
@@ -895,7 +895,7 @@
                 }
               ],
               "out": 0,
-              "say": "<code>super().speak()</code> (Java: <code>super.speak()</code>) runs <strong>Animal's</strong> <code>speak</code> on the <em>same</em> object, skipping Dog's override. No new object is made."
+              "say": "<code>super().speak()</code> (Java: <code>super.speak()</code>) runs <strong>Animal's</strong> <code>speak</code> on the <em>same</em> object. No new object is made."
             },
             {
               "at": [
@@ -965,7 +965,7 @@
                 }
               ],
               "out": 1,
-              "say": "It prints <code>Milo is quiet; then woof</code>. The override did not throw the parent's work away; it built on it."
+              "say": "It prints <code>Milo is quiet; then woof</code>. The override built on the parent's work instead of throwing it away."
             }
           ]
         }
@@ -1021,7 +1021,7 @@
             ],
             [
               "pet.speak()",
-              "Dog has no <code>speak()</code> of its own, so the inherited Animal version runs and prints <code>Milo is quiet</code>. Press \u270e Edit and put <code>@Override</code> before <code>String speek()</code>: now the compiler catches the typo.",
+              "Dog has no <code>speak()</code> of its own, so Animal&rsquo;s runs and prints <code>Milo is quiet</code>. Press \u270e Edit and add <code>@Override</code> before <code>String speek()</code>: now the compiler catches the typo.",
               "Still the parent"
             ],
             [
@@ -1041,7 +1041,7 @@
           "notes": [
             [
               "self.breed = breed",
-              "Dog&rsquo;s own <code>__init__</code> replaces Animal&rsquo;s, and never calls it. So <code>self.name = name</code> never runs for a Dog.",
+              "Dog&rsquo;s own <code>__init__</code> replaces Animal&rsquo;s and never calls it. So <code>self.name = name</code> never runs for a Dog.",
               "Parent skipped"
             ],
             [
@@ -1051,7 +1051,7 @@
             ],
             [
               "hasattr(milo, \"name\")",
-              "<code>False</code>: the Dog has no name at all. Nothing failed yet; <code>print(milo.name)</code> would stop with an <code>AttributeError</code>.",
+              "<code>False</code>: the Dog has no name. Nothing has failed yet, but <code>print(milo.name)</code> would stop with an <code>AttributeError</code>.",
               "Missing, silently"
             ],
             [
@@ -1071,11 +1071,11 @@
       "concepts": [
         [
           "Declared type versus object type",
-          "<p>Every Java reference has two types. The <strong>declared type</strong> is written on the variable: <code>Animal pet</code>. The <strong>object type</strong> is whatever <code>new</code> built: <code>new Dog(\"Milo\")</code>. They may differ, because a Dog is an Animal. Ask two separate questions about every call:</p><ol><li><strong>May I call it?</strong> The compiler answers using the declared type only. <code>pet.fetch()</code> is rejected even when the object is a Dog that can fetch, because not every Animal promises a <code>fetch()</code> method.</li><li><strong>Which version runs?</strong> For an overridden instance method, the object decides, at run time. This is <strong>dynamic dispatch</strong>, and it is what makes <strong>polymorphism</strong> (&ldquo;many forms&rdquo;) work: one line, <code>pet.speak()</code>, behaves differently for each kind of object.</li></ol><p>Not everything is chosen at run time. This table is worth learning by heart:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>What is being chosen</th><th>Decided by</th><th>When</th></tr></thead><tbody><tr><td>which overridden instance method runs</td><td>the object</td><td>run time</td></tr><tr><td>which field <code>value.label</code> reads</td><td>the declared type</td><td>compile time</td></tr><tr><td>which <code>static</code> method runs</td><td>the declared type</td><td>compile time</td></tr><tr><td>which overload: <code>f(int)</code> or <code>f(double)</code></td><td>the declared types of the arguments</td><td>compile time</td></tr><tr><td>a <code>private</code> method</td><td>not inherited, so never overridden</td><td>&mdash;</td></tr></tbody></table></div><p>Python has no declared types, so only the second question exists. Every method call looks the name up on the object&rsquo;s class at run time, then on its parents. Python has no overloading either: a second <code>def</code> with the same name in a class simply replaces the first.</p><div class=\"note warn\"><span class=\"tag\">A cast does not change the object</span><p><code>((Dog) pet).fetch()</code> compiles, because the cast is your promise to the compiler that <code>pet</code> holds a Dog. If it actually holds a Cat, the program stops with a <code>ClassCastException</code> when that line runs. Check first with <code>pet instanceof Dog</code> (Python: <code>isinstance(pet, Dog)</code>), or better, put the method in the superclass so that no cast is needed.</p></div>"
+          "<p>A Java variable has a <strong>declared type</strong>: <code>Animal pet</code>. The object it refers to has an <strong>object type</strong>: <code>new Dog(\"Milo\")</code>. Each call raises two questions:</p><ol><li><strong>May I call it?</strong> The compiler checks the declared type only. <code>pet.fetch()</code> fails, because not every Animal has <code>fetch()</code>.</li><li><strong>Which version runs?</strong> For an overridden instance method, the object decides at run time. This is <strong>dynamic dispatch</strong>. It gives you <strong>polymorphism</strong> (&ldquo;many forms&rdquo;): one line, <code>pet.speak()</code>, behaves differently for each object.</li></ol><p>Everything else is fixed by the compiler:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>What is being chosen</th><th>Decided by</th><th>When</th></tr></thead><tbody><tr><td>which overridden instance method runs</td><td>the object</td><td>run time</td></tr><tr><td>which field <code>value.label</code> reads</td><td>the declared type</td><td>compile time</td></tr><tr><td>which <code>static</code> method runs</td><td>the declared type</td><td>compile time</td></tr><tr><td>which overload: <code>f(int)</code> or <code>f(double)</code></td><td>the declared types of the arguments</td><td>compile time</td></tr><tr><td>a <code>private</code> method</td><td>not inherited, so never overridden</td><td>&mdash;</td></tr></tbody></table></div><p>Python has no declared types. Every call looks the method up on the object&rsquo;s class at run time. There is no overloading: a second <code>def</code> with the same name replaces the first.</p><div class=\"note warn\"><span class=\"tag\">A cast does not change the object</span><p><code>((Dog) pet).fetch()</code> compiles, but throws <code>ClassCastException</code> at run time if <code>pet</code> holds a Cat. Check with <code>pet instanceof Dog</code> (Python: <code>isinstance(pet, Dog)</code>) first, or move the method into the superclass.</p></div>"
         ],
         [
           "Incomplete does not mean useless",
-          "<p>Sometimes a superclass is a <em>category</em> rather than a thing. Nobody owns &ldquo;a shape&rdquo; that is not some particular shape. Mark such a class <code>abstract</code>. An <strong>abstract class</strong> can have fields, constructors and finished methods, plus <strong>abstract methods</strong>: a heading with no body, which each concrete subclass must fill in.</p><div class=\"code-card\"><pre>abstract class Shape {\n    private final String name;\n    Shape(String name) { this.name = name; }\n    abstract double area();          // no body: each shape decides\n    String describe() { return name + \" with area \" + area(); }\n}</pre></div><p>Look at <code>describe()</code>: finished code that calls an unfinished method. When a Square calls <code>describe()</code>, the <code>area()</code> inside it is dispatched to Square&rsquo;s version. Writing the outline once and letting each subclass fill in a step is common enough to have a name: the <em>template method</em> pattern.</p><p>Java checks two things at compile time: <code>new Shape(&hellip;)</code> is refused, and a subclass that does not implement every abstract method must be declared <code>abstract</code> itself. Python&rsquo;s <code>abc</code> module gives the same contract, checked later: a class that inherits from <code>ABC</code> and still has an unimplemented <code>@abstractmethod</code> raises <code>TypeError</code> at the moment you try to create an object of it. The diagram <em>The abstract-method check</em> below lets you try it.</p><div class=\"note warn\"><span class=\"tag\"><code>raise NotImplementedError</code> is a weaker promise</span><p>A lot of Python code writes <code>def area(self): raise NotImplementedError</code> instead of using <code>abc</code>. It works as a reminder, but the incomplete object can still be created, and the error appears only when someone calls <code>area()</code>, perhaps months later. Use <code>ABC</code> and <code>@abstractmethod</code> when you want the check at creation time.</p></div>"
+          "<p>An <strong>abstract class</strong> is a category, not a thing: nobody owns a plain &ldquo;shape&rdquo;. It can have fields, constructors and normal methods. It can also have <strong>abstract methods</strong>, which have no body. Each concrete subclass must supply them.</p><div class=\"code-card\"><pre>abstract class Shape {\n    private final String name;\n    Shape(String name) { this.name = name; }\n    abstract double area();          // no body: each shape decides\n    String describe() { return name + \" with area \" + area(); }\n}</pre></div><p><code>describe()</code> is finished code that calls the unfinished <code>area()</code>. On a Square, that call runs Square&rsquo;s <code>area()</code>. This is the <em>template method</em> pattern.</p><p>Java refuses <code>new Shape(&hellip;)</code> at compile time. A subclass that skips an abstract method must be abstract too. In Python, a subclass of <code>ABC</code> with an unimplemented <code>@abstractmethod</code> raises <code>TypeError</code> when you try to create one. Try it in <em>The abstract-method check</em> below.</p><div class=\"note warn\"><span class=\"tag\"><code>raise NotImplementedError</code> is a weaker promise</span><p>A method body of <code>raise NotImplementedError</code> still lets the object be created. The error waits until someone calls the method, maybe months later. Use <code>ABC</code> and <code>@abstractmethod</code> to fail at creation.</p></div>"
         ]
       ],
       "examples": [
@@ -1133,7 +1133,7 @@
         {
           "kind": "declared",
           "title": "One object, two labels: the declared type picks the field, the object picks the method",
-          "intro": "This is the example <em>Fields and methods are resolved differently</em> below. Step through it, then switch the declaration to <code>Child value</code> and step again. Watch which <code>label</code> is read and which <code>describe()</code> runs.",
+          "intro": "This is the example <em>Fields and methods are resolved differently</em> below. Step through, then switch the declaration to <code>Child value</code> and step again. Watch which <code>label</code> is read and which <code>describe()</code> runs.",
           "programs": [
             {
               "lang": "java",
@@ -1206,7 +1206,7 @@
         {
           "kind": "overload",
           "title": "Overloading or overriding? Predict both choices for each call",
-          "intro": "Each call makes <strong>two</strong> choices. Which <code>treat</code> method? Its parameter types differ, so that is <strong>overloading</strong>, decided by the compiler from the declared types of the arguments. And which <code>sound()</code>? That is <strong>overriding</strong>, decided by the object while the program runs. Pick an answer for each, then check.",
+          "intro": "Each call makes <strong>two</strong> choices. Which <code>treat</code>? That is <strong>overloading</strong>: the compiler picks it from the declared types of the arguments. Which <code>sound()</code>? That is <strong>overriding</strong>: the object decides at run time. Answer both, then check.",
           "programs": [
             {
               "lang": "java",
@@ -1282,7 +1282,7 @@
                 "overload": "Animal",
                 "sound": "Dog"
               },
-              "say": "The overload is chosen from the <em>declared</em> type of <code>a</code>, so <code>treat(Animal x)</code>; inside it, <code>x.sound()</code> is an override, chosen by the object, a Dog."
+              "say": "The overload is picked from the <em>declared</em> type of <code>a</code>: <code>treat(Animal x)</code>. Inside it, <code>x.sound()</code> is an override, picked by the object, a Dog."
             },
             {
               "call": "vet.treat(d)",
@@ -1309,7 +1309,7 @@
                 "overload": "Dog",
                 "sound": "Dog"
               },
-              "say": "The cast changes the <em>type of the expression</em> to Dog, so this time the compiler picks <code>treat(Dog x)</code>. The object did not change; only what the compiler knows about it."
+              "say": "The cast makes the <em>type of the expression</em> Dog, so the compiler picks <code>treat(Dog x)</code>. The object did not change, only what the compiler knows."
             }
           ],
           "pythonNote": "<strong>And in Python?</strong> There is no overloading: a class can hold only one method per name, so a second <code>def treat</code> simply <em>replaces</em> the first. Overriding works exactly as in Java.",
@@ -1318,7 +1318,7 @@
         {
           "kind": "typecheck",
           "title": "Ask the compiler: can you make one?",
-          "intro": "<code>Shape</code> is an <strong>abstract class</strong>: it has state-free code it can share (<code>describe()</code>) and one method it leaves for subclasses (<code>area()</code>). Choose how <code>Square</code> is written, then try a line. This only asks the compiler; nothing runs. The messages are what <code>javac</code> prints on Ed.",
+          "intro": "<code>Shape</code> is an <strong>abstract class</strong>. It shares finished code (<code>describe()</code>) and leaves one method (<code>area()</code>) to subclasses. Choose how <code>Square</code> is written, then try a line. This only asks the compiler. The messages are what <code>javac</code> prints on Ed.",
           "template": "public class Demo {\n    public static void main(String[] args) {\n        {{STMT}}\n    }\n}\nabstract class Shape {\n    abstract int area();\n    String describe() { return \"area \" + area(); }\n}\n{{DECL}}\n",
           "decls": [
             {
@@ -1350,7 +1350,7 @@
                 },
                 "forgot": {
                   "ok": false,
-                  "say": "Refused, and there is a second error as well: a non-abstract Square that does not implement <code>area()</code> is itself an error, reported at the class.",
+                  "say": "Refused, plus a second error at the class: a non-abstract Square must implement <code>area()</code>.",
                   "javac": "Demo.java:3: error: Shape is abstract; cannot be instantiated\n        Shape s = new Shape();\n                  ^",
                   "errors": 2
                 },
@@ -1368,18 +1368,18 @@
               "results": {
                 "full": {
                   "ok": true,
-                  "say": "Square provides <code>area()</code>, so it is a complete (concrete) class. A Square <em>is a</em> Shape, so a Shape variable may refer to it.",
+                  "say": "Square provides <code>area()</code>, so it is a concrete class. A Square <em>is a</em> Shape, so a Shape variable may refer to it.",
                   "errors": 0
                 },
                 "forgot": {
                   "ok": false,
-                  "say": "The error is not on this line: javac reports class Square itself, because a non-abstract class must implement every abstract method it inherits.",
+                  "say": "The error is not on this line. javac reports class Square, because a non-abstract class must implement every abstract method it inherits.",
                   "javac": "Demo.java:10: error: Square is not abstract and does not override abstract method area() in Shape",
                   "errors": 1
                 },
                 "abs": {
                   "ok": false,
-                  "say": "Square is now abstract too (allowed: it may leave <code>area()</code> for <em>its</em> subclasses), so it cannot be instantiated either.",
+                  "say": "Square is now abstract too. That is allowed (it may leave <code>area()</code> to <em>its</em> subclasses), but it cannot be instantiated either.",
                   "javac": "Demo.java:3: error: Square is abstract; cannot be instantiated\n        Shape s = new Square();\n                  ^",
                   "errors": 1
                 }
@@ -1391,7 +1391,7 @@
               "results": {
                 "full": {
                   "ok": true,
-                  "say": "Compiles. <code>describe()</code> is a concrete method written once in Shape; it calls <code>area()</code>, and at run time that call reaches Square's version. Incomplete does not mean useless.",
+                  "say": "Compiles. <code>describe()</code> is written once in Shape. Its <code>area()</code> call reaches Square's version at run time.",
                   "errors": 0
                 },
                 "forgot": {
@@ -1413,7 +1413,7 @@
         {
           "kind": "abc",
           "title": "The abstract-method check: Python decides when you try to make the object",
-          "intro": "This is the example <em>A Python abstract base class</em> below, with one more class, <code>Lazy</code>, that forgets <code>area</code>. Press a button to try to make an object, then step. Python looks for abstract methods that nothing has implemented yet.",
+          "intro": "This is the example <em>A Python abstract base class</em> below, plus a class <code>Lazy</code> that forgets <code>area</code>. Press a button to try to make an object, then step. Python checks for abstract methods that nothing has implemented.",
           "programs": [
             {
               "lang": "python",
@@ -1514,7 +1514,7 @@
                   "out": [
                     3
                   ],
-                  "say": "Without <code>ABC</code> and <code>@abstractmethod</code> (say, a method that just raises <code>NotImplementedError</code>), nothing would stop <code>Lazy()</code> here; the error would come later, when <code>area</code> is called."
+                  "say": "Without <code>ABC</code> and <code>@abstractmethod</code> (for example, a method that just raises <code>NotImplementedError</code>), <code>Lazy()</code> would succeed. The error would come later, when <code>area</code> is called."
                 }
               ]
             }
@@ -1566,7 +1566,7 @@
             ],
             [
               "pet.fetch();",
-              "Rejected at compile time, even though the object really is a Dog: an Animal variable makes no promise about <code>fetch()</code>. The compiler never looks at what the variable holds.",
+              "Rejected at compile time, though the object really is a Dog. An Animal variable promises nothing about <code>fetch()</code>, and the compiler never looks at the object.",
               "Rejected"
             ],
             [
@@ -1583,19 +1583,19 @@
       "concepts": [
         [
           "Specify an operation without choosing storage",
-          "<p>An <strong>interface</strong> is a type made only of promises: &ldquo;anything of this type can do these operations&rdquo;. <code>interface Shape { int area(); }</code> says nothing about sides or radii. A class signs up with <code>implements Shape</code> and must then provide a public <code>int area()</code>. After that, <code>Shape</code> can be used like any class name: as a variable type, a parameter type or an array element type. What you cannot do is <code>new Shape()</code>.</p><p>The big difference from a superclass: a class can extend <strong>only one</strong> class but implement <strong>any number</strong> of interfaces. <code>class Duck extends Bird implements Swimmer, Flyer</code> is fine. That is how Java offers several &ldquo;is-a&rdquo; types for one object without the tangles of multiple inheritance (see M2).</p><p>In Java 8 an interface may contain abstract methods (automatically <code>public</code>), constants (every field is automatically <code>public static final</code>), <code>static</code> methods, and <strong>default methods</strong>, which have a body. Default methods were added in Java 8 so that old interfaces could grow. The Java tutorial says they &ldquo;enable you to add new functionality to the interfaces of your libraries and ensure binary compatibility with code written for older versions of those interfaces.&rdquo; (<a href=\"https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html\" target=\"_blank\" rel=\"noopener\">source</a>). That is how <code>Iterable</code> gained <code>forEach</code> without breaking every existing class that implemented it.</p><div class=\"note warn\"><span class=\"tag\">Forgetting <code>public</code></span><p>Interface methods are public, and an implementation may not make them less visible. Writing <code>int area() { &hellip; }</code> in <code>Square</code>, without <code>public</code>, is a compile error: <code>javac</code> reports <code>area() in Square cannot implement area() in Shape</code>, and the page&rsquo;s compiler says <code>Cannot reduce the visibility of the inherited method from Shape</code>.</p></div><p>Abstract class or interface? Both describe a type you cannot create directly. This is how to choose:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Question</th><th>Abstract class</th><th>Interface</th></tr></thead><tbody><tr><td>how many can one class have?</td><td>one</td><td>any number</td></tr><tr><td>instance fields?</td><td>yes</td><td>no (constants only)</td></tr><tr><td>constructors?</td><td>yes</td><td>no</td></tr><tr><td>method bodies?</td><td>yes</td><td>only <code>default</code> and <code>static</code> methods</td></tr><tr><td>choose it when&hellip;</td><td>the subclasses really are kinds of one thing and share state and code</td><td>unrelated classes share an ability (<code>Comparable</code>, <code>Runnable</code>, <code>Shape</code>)</td></tr></tbody></table></div>"
+          "<p>An <strong>interface</strong> is a type made only of promises. <code>interface Shape { int area(); }</code> fixes the operation, not the storage. A class writes <code>implements Shape</code> and must provide a public <code>int area()</code>. You can use <code>Shape</code> as a variable, parameter or array type, but never <code>new Shape()</code>.</p><p>A class extends one class but can implement many interfaces: <code>class Duck extends Bird implements Swimmer, Flyer</code>.</p><p>A Java 8 interface can also hold constants, <code>static</code> methods and <strong>default methods</strong> (methods with a body). The Java tutorial says defaults &ldquo;enable you to add new functionality to the interfaces of your libraries and ensure binary compatibility with code written for older versions of those interfaces.&rdquo; (<a href=\"https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html\" target=\"_blank\" rel=\"noopener\">source</a>). That is how <code>Iterable</code> gained <code>forEach</code>.</p><div class=\"note warn\"><span class=\"tag\">Forgetting <code>public</code></span><p>Interface methods are public. Leaving <code>public</code> off <code>int area()</code> in <code>Square</code> is an error. <code>javac</code> says <code>area() in Square cannot implement area() in Shape</code>. This page says <code>Cannot reduce the visibility of the inherited method from Shape</code>.</p></div><p>Abstract class or interface? Neither can be created directly. Choose like this:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Question</th><th>Abstract class</th><th>Interface</th></tr></thead><tbody><tr><td>how many can one class have?</td><td>one</td><td>any number</td></tr><tr><td>instance fields?</td><td>yes</td><td>no (constants only)</td></tr><tr><td>constructors?</td><td>yes</td><td>no</td></tr><tr><td>method bodies?</td><td>yes</td><td>only <code>default</code> and <code>static</code> methods</td></tr><tr><td>choose it when&hellip;</td><td>the subclasses are kinds of one thing and share state and code</td><td>unrelated classes share an ability (<code>Comparable</code>, <code>Runnable</code>, <code>Shape</code>)</td></tr></tbody></table></div>"
         ],
         [
           "A common caller needs only the promise",
-          "<p>A loop that adds up areas does not need to know which concrete shapes it is given; it only needs <code>area()</code>. Python takes this idea all the way, without declaring anything. <code>notify(channel)</code> just calls <code>channel.send(&hellip;)</code>, and any object with a suitable <code>send</code> will do, whether or not it shares a base class with the others. This is <strong>duck typing</strong>: what matters is which operations an object supports, not what it is called.</p><div class=\"joke\"><p>&ldquo;If it looks like a duck and quacks like a duck, it must be a duck.&rdquo;</p><span class=\"attrib\">The Python glossary, quoting the proverb in its definition of <a href=\"https://docs.python.org/3/glossary.html#term-duck-typing\" target=\"_blank\" rel=\"noopener\">duck-typing</a></span></div><p>Python&rsquo;s built-ins work this way too. <code>sorted()</code>, <code>min()</code> and <code>max()</code> only need objects that can be compared with <code>&lt;</code>, and a class provides that by defining <code>__lt__</code>. The example <em>Teach sorted() to compare students</em> below shows it. Java gets the same effect through an interface: a class that implements <code>Comparable</code> can be sorted by <code>Collections.sort</code>.</p><div class=\"note warn\"><span class=\"tag\">Duck typing fails late</span><p>If an object has no <code>send</code> method, Java refuses to compile the call. Python finds out only when that line runs: <code>AttributeError: 'Printer' object has no attribute 'send'</code>. A test that never reaches the line never sees the bug. Python 3.8 added <code>typing.Protocol</code>, which lets checking tools such as mypy verify &ldquo;has a <code>send(text)</code> method&rdquo; before the program runs: the duck-typed cousin of an interface.</p></div>"
+          "<p>Python needs no declaration at all. <code>notify(channel)</code> calls <code>channel.send(&hellip;)</code>, so any object with a suitable <code>send</code> works. This is <strong>duck typing</strong>: what counts is what an object can do, not its class.</p><div class=\"joke\"><p>&ldquo;If it looks like a duck and quacks like a duck, it must be a duck.&rdquo;</p><span class=\"attrib\">The Python glossary, quoting the proverb in its definition of <a href=\"https://docs.python.org/3/glossary.html#term-duck-typing\" target=\"_blank\" rel=\"noopener\">duck-typing</a></span></div><p>Built-ins work the same way. <code>sorted()</code>, <code>min()</code> and <code>max()</code> need only <code>&lt;</code>, which a class gets by defining <code>__lt__</code> (see <em>Teach sorted() to compare students</em>). Java does this with the <code>Comparable</code> interface.</p><div class=\"note warn\"><span class=\"tag\">Duck typing fails late</span><p>Java refuses to compile a call to a missing <code>send</code>. Python fails only when the line runs: <code>AttributeError: 'Printer' object has no attribute 'send'</code>. <code>typing.Protocol</code> (Python 3.8) lets checkers such as mypy catch it before running.</p></div>"
         ],
         [
           "Program to an interface",
-          "<p>Last week&rsquo;s revision ended with one method, <code>total(List&lt;Integer&gt; xs)</code>, that worked for an <code>ArrayList</code> and a <code>LinkedList</code> alike. That is this week&rsquo;s idea in one line: write the parameter type as the <em>interface</em>, not as one implementation, and the method works for every implementation, including ones that have not been written yet.</p><p>The same habit applies to variables: <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code>. The declared type is <code>List</code>, so the rest of the program can only use list operations. If you later need a <code>LinkedList</code>, you change one word, and the compiler guarantees nothing else depended on the choice.</p><div class=\"joke\"><p>&ldquo;Program to an interface, not an implementation.&rdquo;</p><span class=\"attrib\">Erich Gamma, Richard Helm, Ralph Johnson &amp; John Vlissides (the &ldquo;Gang of Four&rdquo;), <em>Design Patterns</em>, 1994, p. 18</span></div>"
+          "<p>Type parameters and variables by the <em>interface</em>, not one class. Last week&rsquo;s <code>total(List&lt;Integer&gt; xs)</code> works for every kind of list, even future ones. With <code>List&lt;String&gt; names = new ArrayList&lt;&gt;();</code>, switching to a <code>LinkedList</code> changes one word.</p><div class=\"joke\"><p>&ldquo;Program to an interface, not an implementation.&rdquo;</p><span class=\"attrib\">Erich Gamma, Richard Helm, Ralph Johnson &amp; John Vlissides (the &ldquo;Gang of Four&rdquo;), <em>Design Patterns</em>, 1994, p. 18</span></div>"
         ],
         [
           "The compiler checks the shape, not the meaning",
-          "<p>An interface fixes names, parameter types and return types. It cannot say what <code>area()</code> <em>means</em>: square metres or square centimetres, whether it may be negative, whether <code>send</code> may be called twice. Those are <strong>behavioural promises</strong>. They live in comments and documentation, and only programmers keep them.</p><div class=\"note warn\"><span class=\"tag\">A promise the compiler cannot see</span><p>Every Java class inherits <code>equals</code> and <code>hashCode</code> from <code>Object</code>, and the documentation attaches a promise to them: &ldquo;If two objects are equal according to the <code>equals(Object)</code> method, then calling the <code>hashCode</code> method on each of the two objects must produce the same integer result.&rdquo; (<a href=\"https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--\" target=\"_blank\" rel=\"noopener\">source</a>). Override <code>equals</code> in a <code>Point</code> class but forget <code>hashCode</code>, and everything still compiles. Then <code>new Point(1, 2).equals(new Point(1, 2))</code> is <code>true</code>, yet a <code>HashSet</code> holding a <code>Point(1, 2)</code> answers <code>false</code> to <code>contains(new Point(1, 2))</code>: the set looks in the bucket chosen by <code>hashCode</code>, and the two equal points give different hash codes. The signatures were right; the promise was broken.</p></div><p>So treat the comment on an interface method as part of the interface: one line saying what it returns, in which unit, and what the caller may assume. A new implementation that keeps the signature but breaks that line is a bug, even though it compiles. (Week 11 gives this rule its name: the Liskov substitution principle.)</p>"
+          "<p>An interface fixes names and types, not meaning. It cannot say which unit <code>area()</code> uses, or whether it may be negative. Those <strong>behavioural promises</strong> live in documentation, and only programmers keep them.</p><div class=\"note warn\"><span class=\"tag\">A promise the compiler cannot see</span><p><code>Object</code>&rsquo;s documentation promises: &ldquo;If two objects are equal according to the <code>equals(Object)</code> method, then calling the <code>hashCode</code> method on each of the two objects must produce the same integer result.&rdquo; (<a href=\"https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html#hashCode--\" target=\"_blank\" rel=\"noopener\">source</a>). Override <code>equals</code> in <code>Point</code> but not <code>hashCode</code>, and it still compiles. But a <code>HashSet</code> holding <code>Point(1, 2)</code> then answers <code>false</code> to <code>contains(new Point(1, 2))</code>, because the two equal points have different hash codes.</p></div><p>So treat an interface method&rsquo;s comment as part of the interface. Breaking it is a bug, even if the code compiles. (Week 11 calls this the Liskov substitution principle.)</p>"
         ]
       ],
       "examples": [
@@ -1630,7 +1630,7 @@
           "notes": [
             [
               "channel.send(\"Hello\")",
-              "The function requires send(text), not a particular inheritance relationship."
+              "The function needs send(text), not a particular parent class."
             ],
             [
               "notify(Screen())",
@@ -1653,7 +1653,7 @@
         {
           "kind": "socket",
           "title": "One promise, many shapes: step the loop through the interface",
-          "intro": "This is the example <em>An interface is a useful promise</em> below. The <strong>socket</strong> is the interface: it fixes the operation, not the storage. Step the loop and watch each object plug in. Then choose <strong>+ Triangle</strong>: a new class, and an unchanged loop. Click a card to jump to it.",
+          "intro": "This is the example <em>An interface is a useful promise</em> below. The <strong>socket</strong> is the interface: it fixes the operation, not the storage. Step the loop and watch each object plug in. Then choose <strong>+ Triangle</strong>: a new class, same loop. Click a card to jump to it.",
           "pickLabel": "Program:",
           "programs": [
             {
@@ -1687,7 +1687,7 @@
               "contract": "<strong>interface Shape</strong> { int area(); }",
               "start": {
                 "at": "interface Shape { int area(); }",
-                "say": "<code>Shape</code> promises one public operation, <code>int area()</code>. It says nothing about sides, widths or fields: each class chooses its own storage."
+                "say": "<code>Shape</code> promises one public operation, <code>int area()</code>. It says nothing about fields: each class chooses its own storage."
               },
               "items": [
                 {
@@ -1697,7 +1697,7 @@
                     {
                       "at": "for(Shape shape:shapes) System.out.println(shape.area());",
                       "plug": "in",
-                      "say": "First element: a <code>Square</code>. The loop variable is declared <code>Shape</code>, so all the loop knows is the promise: it has <code>area()</code>."
+                      "say": "First element: a <code>Square</code>. The loop variable is declared <code>Shape</code>, so the loop knows only that it has <code>area()</code>."
                     },
                     {
                       "at": "public int area() { return side*side; }",
@@ -1715,7 +1715,7 @@
                     {
                       "at": "for(Shape shape:shapes) System.out.println(shape.area());",
                       "plug": "in",
-                      "say": "Next: a <code>Rectangle</code>. A completely different class, with different fields, plugged into the same promise."
+                      "say": "Next: a <code>Rectangle</code>. A different class with different fields, plugged into the same promise."
                     },
                     {
                       "at": "public int area() { return w*h; }",
@@ -1748,7 +1748,7 @@
                     {
                       "at": "for(Shape shape:shapes) System.out.println(shape.area());",
                       "plug": "in",
-                      "say": "First element: a <code>Square</code>. The loop variable is declared <code>Shape</code>, so all the loop knows is the promise: it has <code>area()</code>."
+                      "say": "First element: a <code>Square</code>. The loop variable is declared <code>Shape</code>, so the loop knows only that it has <code>area()</code>."
                     },
                     {
                       "at": "public int area() { return side*side; }",
@@ -1766,7 +1766,7 @@
                     {
                       "at": "for(Shape shape:shapes) System.out.println(shape.area());",
                       "plug": "in",
-                      "say": "Next: a <code>Rectangle</code>. A completely different class, with different fields, plugged into the same promise."
+                      "say": "Next: a <code>Rectangle</code>. A different class with different fields, plugged into the same promise."
                     },
                     {
                       "at": "public int area() { return w*h; }",
@@ -1806,7 +1806,7 @@
         {
           "kind": "typecheck",
           "title": "Does it fit the socket? Java checks the promise",
-          "intro": "Choose how <code>Label</code> is written, then try a line. In Java, a class fits an interface only if it <em>says</em> <code>implements</code> and keeps every promise, with the right access. This only asks the compiler; the messages are what <code>javac</code> prints on Ed.",
+          "intro": "Choose how <code>Label</code> is written, then try a line. A Java class fits an interface only if it <em>says</em> <code>implements</code> and keeps every promise, with the right access. This only asks the compiler. The messages are what <code>javac</code> prints on Ed.",
           "template": "public class Demo {\n    public static void main(String[] args) {\n        {{STMT}}\n    }\n}\ninterface Shape {\n    int area();\n}\n{{DECL}}\n",
           "decls": [
             {
@@ -1837,13 +1837,13 @@
                 },
                 "noimpl": {
                   "ok": false,
-                  "say": "Label has an <code>area()</code> method, but it never said <code>implements Shape</code>. Java goes by declared promises, not by matching method names.",
+                  "say": "Label has an <code>area()</code> method but never says <code>implements Shape</code>. Java goes by declared promises, not matching method names.",
                   "javac": "Demo.java:3: error: incompatible types: Label cannot be converted to Shape\n        Shape s = new Label();\n                  ^",
                   "errors": 1
                 },
                 "notpublic": {
                   "ok": false,
-                  "say": "Interface methods are public. An implementation may not be less visible than the promise, so <code>int area()</code> without <code>public</code> is refused.",
+                  "say": "Interface methods are public. <code>int area()</code> without <code>public</code> is less visible than the promise, so it is refused.",
                   "javac": "Demo.java:10: error: area() in Label cannot implement area() in Shape\n    int area() { return 0; }\n        ^\n  attempting to assign weaker access privileges; was public",
                   "errors": 1
                 }
@@ -1900,7 +1900,7 @@
         {
           "kind": "socket",
           "title": "Duck typing: if it has send(text), it is a channel",
-          "intro": "This is the example <em>Duck typing uses a behavioural contract</em> below. There is no interface and no base class: the &ldquo;socket&rdquo; is simply what <code>notify</code> does with its argument. Then choose <strong>+ Robot and Brick</strong> to plug in an object nobody planned for, and one that cannot keep the contract.",
+          "intro": "This is the example <em>Duck typing uses a behavioural contract</em> below. There is no interface and no base class: the &ldquo;socket&rdquo; is just what <code>notify</code> does with its argument. Then choose <strong>+ Robot and Brick</strong>: one object nobody planned for, and one that cannot keep the contract.",
           "pickLabel": "Program:",
           "programs": [
             {
@@ -1941,7 +1941,7 @@
               "contract": "<strong>notify(channel)</strong> needs: <code>channel.send(text)</code>",
               "start": {
                 "at": "def notify(channel):",
-                "say": "<code>notify</code> never names a type. Its contract is behavioural: whatever you pass must have a <code>send</code> method taking one string."
+                "say": "<code>notify</code> names no type. Its contract is behavioural: the argument must have a <code>send</code> method that takes one string."
               },
               "items": [
                 {
@@ -1955,7 +1955,7 @@
                     {
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "in",
-                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>; it just looks for a <code>send</code> method on this object."
+                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>. It just looks for a <code>send</code> method on this object."
                     },
                     {
                       "at": "return \"email: \" + text",
@@ -1977,7 +1977,7 @@
                     {
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "in",
-                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>; it just looks for a <code>send</code> method on this object."
+                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>. It just looks for a <code>send</code> method on this object."
                     },
                     {
                       "at": "return \"screen: \" + text",
@@ -2014,7 +2014,7 @@
                     {
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "in",
-                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>; it just looks for a <code>send</code> method on this object."
+                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>. It just looks for a <code>send</code> method on this object."
                     },
                     {
                       "at": "return \"email: \" + text",
@@ -2036,7 +2036,7 @@
                     {
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "in",
-                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>; it just looks for a <code>send</code> method on this object."
+                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>. It just looks for a <code>send</code> method on this object."
                     },
                     {
                       "at": "return \"screen: \" + text",
@@ -2058,7 +2058,7 @@
                     {
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "in",
-                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>; it just looks for a <code>send</code> method on this object."
+                      "say": "Inside <code>notify</code>. Python does not check the type of <code>channel</code>. It just looks for a <code>send</code> method on this object."
                     },
                     {
                       "at": "return \"beep boop: \" + text.upper()",
@@ -2081,7 +2081,7 @@
                       "at": "print(channel.send(\"Hello\"))",
                       "plug": "bad",
                       "tone": "bad",
-                      "say": "Only now, while running, Python looks for <code>send</code> on a Brick and finds nothing: <code>AttributeError</code>. Java would have refused this before running."
+                      "say": "Only now, at run time, Python looks for <code>send</code> on a Brick and finds none: <code>AttributeError</code>. Java would refuse this before running."
                     },
                     {
                       "at": "print(\"AttributeError:\", error)",
@@ -2095,7 +2095,7 @@
               ],
               "end": {
                 "at": "print(channel.send(\"Hello\"))",
-                "say": "Flexible, but the check happens late: a missing method is found only when that line runs, and only for the objects that reach it."
+                "say": "Flexible, but the check is late. A missing method is found only when that line runs, and only for objects that reach it."
               }
             }
           ]
@@ -2152,7 +2152,7 @@
           "notes": [
             [
               "def __lt__(self, other)",
-              "Defines what <code>a &lt; b</code> means for two Students: compare marks. Student inherits from nothing special; it just has the method.",
+              "Defines <code>a &lt; b</code> for two Students: compare marks. Student inherits nothing special. It just has the method.",
               "Less than"
             ],
             [
@@ -2182,15 +2182,15 @@
       "concepts": [
         [
           "Use inheritance for substitutable types",
-          "<p>Inheritance and composition both reuse code, but they say different things. Inheritance says <strong>is-a</strong>: a Dog is an Animal. Composition says <strong>has-a</strong>: a <code>Notice</code> has a <code>Channel</code>, kept in a field, and asks it to do the delivery. Handing work to a part you hold is called <strong>delegation</strong>. A Notice is not a kind of channel, so it should not extend one.</p><p>Composition keeps parts replaceable. Give the Notice a different Channel (a screen, an email, or a fake that records messages for a test) and <code>Notice</code> does not change. With inheritance the choice is fixed when the class is written, and the subclass depends on details of its parent that nobody promised to keep.</p><div class=\"joke\"><p>&ldquo;Favor object composition over class inheritance.&rdquo;</p><span class=\"attrib\">Erich Gamma, Richard Helm, Ralph Johnson &amp; John Vlissides (the &ldquo;Gang of Four&rdquo;), <em>Design Patterns</em>, 1994, p. 20</span></div><div class=\"note warn\"><span class=\"tag\">Inheriting the parent&rsquo;s habits</span><p>The example <em>A counting set that counts twice</em> below is adapted from Joshua Bloch&rsquo;s <em>Effective Java</em> (3rd edition, Item 18; <a href=\"https://github.com/jbloch/effective-java-3e-source-code/blob/master/src/effectivejava/chapter4/item18/InstrumentedHashSet.java\" target=\"_blank\" rel=\"noopener\">the book&rsquo;s code</a>). A subclass of <code>HashSet</code> counts every element added. Add three words and it reports six, because the inherited <code>addAll</code> happens to call <code>add</code> once per element, so every word is counted twice. Nothing in the subclass looks wrong; it relied on a detail of its parent. A class that <em>holds</em> a <code>HashSet</code> in a field and forwards calls to it cannot be caught this way.</p></div><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pair</th><th>Relationship</th><th>Tool</th></tr></thead><tbody><tr><td>Kelpie and Dog</td><td>is-a</td><td><code>class Kelpie extends Dog</code></td></tr><tr><td>Square and Shape</td><td>is-a (an ability)</td><td><code>class Square implements Shape</code></td></tr><tr><td>Car and Engine</td><td>has-a</td><td>a field: <code>private final Engine engine;</code></td></tr><tr><td>Notice and Channel</td><td>has-a, replaceable</td><td>a field typed by the interface: <code>private final Channel channel;</code></td></tr><tr><td>Stack and Vector</td><td>should be has-a</td><td>Java&rsquo;s library used <code>extends</code>; see <em>Did you know?</em> below</td></tr></tbody></table></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-pike.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Rob Pike\"></div><p>&ldquo;If C++ and Java are about type hierarchies and the taxonomy of types, Go is about composition.&rdquo;</p><span class=\"attrib\">Rob Pike, co-designer of Go, <a href=\"https://commandcenter.blogspot.com/2012/06/less-is-exponentially-more.html\" target=\"_blank\" rel=\"noopener\"><em>Less is exponentially more</em></a>, 25 June 2012 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ARob-pike-oscon.jpg\" target=\"_blank\" rel=\"noopener\">Kevin Shockey, 2010</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div>"
+          "<p>Inheritance means <strong>is-a</strong>. Composition means <strong>has-a</strong>: a <code>Notice</code> keeps a <code>Channel</code> in a field and hands it the delivery. Handing work to a part like this is called <strong>delegation</strong>. Swap in another Channel (screen, email, test fake) and Notice does not change.</p><div class=\"joke\"><p>&ldquo;Favor object composition over class inheritance.&rdquo;</p><span class=\"attrib\">Erich Gamma, Richard Helm, Ralph Johnson &amp; John Vlissides (the &ldquo;Gang of Four&rdquo;), <em>Design Patterns</em>, 1994, p. 20</span></div><div class=\"note warn\"><span class=\"tag\">Inheriting the parent&rsquo;s habits</span><p>In <em>A counting set that counts twice</em> (from Joshua Bloch&rsquo;s <em>Effective Java</em>, 3rd edition, Item 18; <a href=\"https://github.com/jbloch/effective-java-3e-source-code/blob/master/src/effectivejava/chapter4/item18/InstrumentedHashSet.java\" target=\"_blank\" rel=\"noopener\">the book&rsquo;s code</a>), a <code>HashSet</code> subclass counts added items. Adding three words reports six, because the inherited <code>addAll</code> calls the overridden <code>add</code>. Holding a <code>HashSet</code> in a field avoids this.</p></div><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pair</th><th>Relationship</th><th>Tool</th></tr></thead><tbody><tr><td>Kelpie and Dog</td><td>is-a</td><td><code>class Kelpie extends Dog</code></td></tr><tr><td>Square and Shape</td><td>is-a (an ability)</td><td><code>class Square implements Shape</code></td></tr><tr><td>Car and Engine</td><td>has-a</td><td>a field: <code>private final Engine engine;</code></td></tr><tr><td>Notice and Channel</td><td>has-a, replaceable</td><td>a field typed by the interface: <code>private final Channel channel;</code></td></tr><tr><td>Stack and Vector</td><td>should be has-a</td><td>Java&rsquo;s library used <code>extends</code>; see <em>Did you know?</em> below</td></tr></tbody></table></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-pike.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Rob Pike\"></div><p>&ldquo;If C++ and Java are about type hierarchies and the taxonomy of types, Go is about composition.&rdquo;</p><span class=\"attrib\">Rob Pike, co-designer of Go, <a href=\"https://commandcenter.blogspot.com/2012/06/less-is-exponentially-more.html\" target=\"_blank\" rel=\"noopener\"><em>Less is exponentially more</em></a>, 25 June 2012 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ARob-pike-oscon.jpg\" target=\"_blank\" rel=\"noopener\">Kevin Shockey, 2010</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div>"
         ],
         [
           "Trace the actual lookup order",
-          "<p>Java allows one superclass, so a method call always has one obvious place to look next. Python allows several: <code>class C(A, B)</code>. If both A and B define <code>label()</code>, which one wins? Python answers with the <strong>method resolution order</strong> (MRO): one list of classes, searched from left to right, stored in <code>C.__mro__</code>. For <code>class C(A, B)</code> the list is C, A, B, object, so A wins.</p><p>The tricky case is the <strong>diamond</strong>: B and C both inherit from A, and <code>class D(B, C)</code> inherits from both. Python lists A only once, after both B and C: D, B, C, A, object. It works the order out with an algorithm called C3 (the history is in M2). <code>super()</code> follows this list, not the class it is written in, which is why <code>super()</code> inside B can reach C, a class B never mentions.</p><p>Java avoids the diamond for classes, but a class can implement two interfaces that both have a default method with the same name. Then Java makes you choose: the class must override the method, and can call a particular version with <code>English.super.greet()</code>. Leave the override out and <code>javac</code> reports <code>class Robot inherits unrelated defaults for greet() from types English and Vietnamese</code>. The example <em>Two default methods, one choice</em> below shows the fix.</p><div class=\"note warn\"><span class=\"tag\">Do not guess: print the MRO</span><p>When a hierarchy needs a diagram to understand, run <code>print(D.__mro__)</code> and believe it. And if you need to do that often, the design is probably too clever. A small interface or a composed helper is easier for the next reader.</p></div>"
+          "<p>Python allows several parents: <code>class C(A, B)</code>. The <strong>method resolution order</strong> (MRO), stored in <code>C.__mro__</code>, sets where to look: C, A, B, object. So if A and B both define <code>label()</code>, A wins.</p><p>In a <strong>diamond</strong>, B and C both extend A, and <code>class D(B, C)</code> extends both. The MRO is D, B, C, A, object: A appears once, after B and C. <code>super()</code> follows this list, so <code>super()</code> in B can reach C.</p><p>A Java class has one parent. But if two interfaces give the same default method, the class must override it. It can call one version with <code>English.super.greet()</code>. Otherwise <code>javac</code> says <code>class Robot inherits unrelated defaults for greet() from types English and Vietnamese</code>.</p><div class=\"note warn\"><span class=\"tag\">Do not guess: print the MRO</span><p>Run <code>print(D.__mro__)</code> and trust it. If you need to do that often, simplify the design.</p></div>"
         ],
         [
           "final: no more changes",
-          "<p>Java&rsquo;s <code>final</code> means three related things, depending on what it is attached to:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th><code>final</code> on</th><th>Means</th><th>Example</th></tr></thead><tbody><tr><td>a class</td><td>no class may extend it</td><td>Java&rsquo;s own <code>String</code> is a <code>final</code> class</td></tr><tr><td>a method</td><td>no subclass may override it</td><td><code>final String id() { &hellip; }</code></td></tr><tr><td>a variable or field</td><td>it cannot be reassigned once it has a value</td><td><code>private final Channel channel;</code></td></tr></tbody></table></div><p>Why forbid subclasses at all? Because a class that was not designed to be extended can be broken by a subclass, as the counting set shows. Bloch&rsquo;s advice in <em>Effective Java</em> is to design and document a class for inheritance, or else prohibit it. Marking a class <code>final</code> is how you prohibit it.</p><div class=\"note warn\"><span class=\"tag\"><code>final</code> fixes the reference, not the object</span><p><code>final List&lt;String&gt; names = new ArrayList&lt;&gt;();</code> then <code>names.add(\"An\");</code> is fine: the list changes, the variable still refers to the same list. <code>names = new ArrayList&lt;&gt;();</code> is the line the compiler refuses. The diagram <em>A final variable</em> below tries both.</p></div><p>Python has no enforced <code>final</code>. <code>typing.final</code> (Python 3.8) marks a class or method as final for checking tools only; the interpreter still lets a subclass do anything. In Python, convention and documentation do the job, and constants are simply written in <code>UPPER_CASE</code>.</p>"
+          "<p>Java&rsquo;s <code>final</code> stops change:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th><code>final</code> on</th><th>Means</th><th>Example</th></tr></thead><tbody><tr><td>a class</td><td>no class may extend it</td><td>Java&rsquo;s own <code>String</code> is a <code>final</code> class</td></tr><tr><td>a method</td><td>no subclass may override it</td><td><code>final String id() { &hellip; }</code></td></tr><tr><td>a variable or field</td><td>it cannot be reassigned once it has a value</td><td><code>private final Channel channel;</code></td></tr></tbody></table></div><p>Make a class <code>final</code> if it was not designed to be extended. Bloch&rsquo;s rule: design and document for inheritance, or else prohibit it.</p><div class=\"note warn\"><span class=\"tag\"><code>final</code> fixes the reference, not the object</span><p><code>final List&lt;String&gt; names = new ArrayList&lt;&gt;();</code> allows <code>names.add(\"An\");</code> but refuses <code>names = new ArrayList&lt;&gt;();</code>. The list can change. The variable cannot be reassigned.</p></div><p>Python has no enforced <code>final</code>. <code>typing.final</code> (Python 3.8) is read only by checkers. By convention, constants are written in <code>UPPER_CASE</code>.</p>"
         ]
       ],
       "examples": [
@@ -2225,11 +2225,11 @@
           "notes": [
             [
               "class C(A, B)",
-              "For this simple hierarchy, A occurs before B in the method resolution order."
+              "In this simple hierarchy, A comes before B in the method resolution order."
             ],
             [
               "C.__mro__",
-              "Inspect the actual order Python uses rather than guessing from a diagram."
+              "Print the real order Python uses instead of guessing from a diagram."
             ]
           ],
           "wrong": [
@@ -2248,7 +2248,7 @@
         {
           "kind": "calltrace",
           "title": "Has-a, not is-a: Notice delegates delivery to its channel",
-          "intro": "This is the example <em>Compose a behaviour instead of inheriting it</em> below, with the same program in Python. Step through it, then choose <strong>A test recorder</strong>: the same Notice class, plugged into a channel that records messages instead of displaying them.",
+          "intro": "This is the example <em>Compose a behaviour instead of inheriting it</em> below, with Python beside it. Step through, then choose <strong>A test recorder</strong>: the same Notice, plugged into a channel that records messages instead of showing them.",
           "pickLabel": "Channel:",
           "programs": [
             {
@@ -2342,7 +2342,7 @@
                     }
                   ],
                   "out": 0,
-                  "say": "A Notice is made <strong>with</strong> a Screen inside it. A Notice <em>has a</em> channel; it is not a kind of channel. The field is typed by the interface, <code>Channel</code>, so any channel would fit."
+                  "say": "A Notice is made <strong>with</strong> a Screen inside. A Notice <em>has a</em> channel; it is not one. The field's type is the interface <code>Channel</code>, so any channel fits."
                 },
                 {
                   "at": [
@@ -2431,7 +2431,7 @@
                     }
                   ],
                   "out": 0,
-                  "say": "It <strong>delegates</strong>: it passes the job to whatever object its <code>channel</code> field refers to. That call is dispatched on the object, a Screen."
+                  "say": "It <strong>delegates</strong>: it hands the job to the object in its <code>channel</code> field. The call is dispatched on that object, a Screen."
                 },
                 {
                   "at": [
@@ -2476,7 +2476,7 @@
                     }
                   ],
                   "out": 1,
-                  "say": "Screen's <code>send</code> prints <code>screen: Due soon</code>. To deliver some other way, give the Notice a different Channel. Notice itself never changes. Try <strong>A test recorder</strong>."
+                  "say": "Screen's <code>send</code> prints <code>screen: Due soon</code>. To deliver another way, give the Notice a different Channel. Notice never changes. Try <strong>A test recorder</strong>."
                 }
               ]
             },
@@ -2622,7 +2622,7 @@
                     0,
                     0
                   ],
-                  "say": "<code>notice.show(\"Due soon\")</code> delegates to the Recorder, which adds the message to its list. <code>sent</code> is <code>final</code>, yet the list changes: <code>final</code> fixes which list the field refers to, not what is inside it."
+                  "say": "<code>notice.show(\"Due soon\")</code> delegates to the Recorder, which adds the message to its list. <code>sent</code> is <code>final</code>, yet the list changes: <code>final</code> fixes which list the field refers to, not its contents."
                 },
                 {
                   "at": [
@@ -2676,7 +2676,7 @@
                     0,
                     0
                   ],
-                  "say": "The second message is recorded too. Nothing has been printed: a test can now check exactly what the Notice tried to send."
+                  "say": "The second message is recorded too. Nothing is printed, so a test can check exactly what the Notice tried to send."
                 },
                 {
                   "at": [
@@ -2824,7 +2824,7 @@
               "results": {
                 "final": {
                   "ok": true,
-                  "say": "Allowed. <code>append</code> changes the object <code>log</code> refers to; <code>log</code> still refers to the same object. (The recorder diagram above shows the same thing with a final list.)",
+                  "say": "Allowed. <code>append</code> changes the object, but <code>log</code> still refers to the same one. (The recorder diagram above shows this with a final list.)",
                   "errors": 0
                 },
                 "plain": {
@@ -2856,7 +2856,7 @@
         {
           "kind": "mro",
           "title": "Where does Python look? Walk the method resolution order",
-          "intro": "The first hierarchy is the example <em>Method resolution in multiple inheritance</em> below. Step through it, then try the others: swap the base classes, take <code>label</code> away from A, and finally a <strong>diamond</strong> where every class calls <code>super()</code>. The order in the strip is the real <code>C.__mro__</code> each program printed.",
+          "intro": "The first hierarchy is the example <em>Method resolution in multiple inheritance</em> below. Step through it, then try the others: swapped base classes, A without <code>label</code>, and a <strong>diamond</strong> where every class calls <code>super()</code>. Each strip shows the real <code>C.__mro__</code> its program printed.",
           "programs": [
             {
               "lang": "python",
@@ -2977,7 +2977,7 @@
                 }
               ],
               "orderSay": "Swapping the bases swaps them in the MRO too.",
-              "endSay": "Same classes, different order, different answer. Java avoids this question entirely: a Java class has exactly one superclass."
+              "endSay": "Same classes, different order, different answer. Java avoids this question: a Java class has exactly one superclass."
             },
             {
               "label": "A has no label",
@@ -3067,7 +3067,7 @@
                 }
               ],
               "orderSay": "A and B share the base class <code>Base</code>, which appears only once, after both of them.",
-              "endSay": "Each class ran exactly once, in MRO order. <code>super()</code> means <strong>the next class in the MRO of the object's class</strong>, not always one fixed parent."
+              "endSay": "Each class ran once, in MRO order. <code>super()</code> means <strong>the next class in the MRO of the object's class</strong>, not one fixed parent."
             }
           ]
         }
@@ -3124,12 +3124,12 @@
             ],
             [
               "return super.addAll(words);",
-              "The inherited <code>addAll</code> adds each word by calling <code>add</code>, and <code>add</code> is overridden. So each word is counted a second time: 6, not 3.",
+              "The inherited <code>addAll</code> calls <code>add</code> for each word, and <code>add</code> is overridden. So each word is counted again: 6, not 3.",
               "Counted again"
             ],
             [
               "words.addAll(",
-              "One call, three words, and the answer depends on how the parent class happens to be written. Holding a HashSet in a field instead would count 3.",
+              "One call, three words, and the answer depends on how the parent happens to be written. Holding a HashSet in a field would count 3.",
               "Fragile"
             ]
           ],
@@ -3554,17 +3554,17 @@
     {
       "title": "Java and Python, side by side",
       "meta": "reference \u00b7 this week in both languages",
-      "html": "<p>Reference, not reading. Everything this week, in both languages, or a note where one language pointedly has no equivalent.</p><h3 class=\"read-group-title\">Inheriting</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a subclass</td><td><code>class Dog extends Animal</code></td><td><code>class Dog(Animal):</code></td></tr><tr><td>build the parent part</td><td><code>super(name);</code> &mdash; first statement</td><td><code>super().__init__(name)</code></td></tr><tr><td>call the parent&rsquo;s version</td><td><code>super.speak()</code></td><td><code>super().speak()</code></td></tr><tr><td>check that it overrides</td><td><code>@Override</code>, checked by the compiler</td><td>nothing built in; <code>@typing.override</code> (3.12) for checkers</td></tr><tr><td>root of every class</td><td><code>Object</code></td><td><code>object</code></td></tr><tr><td>several parents</td><td>one class, any number of interfaces</td><td>any number of classes, ordered by the MRO</td></tr></tbody></table></div><h3 class=\"read-group-title\">Abstract types and interfaces</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>abstract class</td><td><code>abstract class Shape</code></td><td><code>class Shape(ABC):</code></td></tr><tr><td>abstract method</td><td><code>abstract double area();</code></td><td><code>@abstractmethod</code> above <code>def area(self):</code></td></tr><tr><td>creating one anyway</td><td>compile error</td><td><code>TypeError</code> when the object is created</td></tr><tr><td>interface</td><td><code>interface Shape { int area(); }</code></td><td>no keyword: an ABC, a <code>Protocol</code>, or just duck typing</td></tr><tr><td>method with a body in an interface</td><td><code>default</code> method (Java 8)</td><td>any method in an ABC</td></tr><tr><td>sortable objects</td><td><code>implements Comparable&lt;T&gt;</code></td><td>define <code>__lt__</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Types and dispatch</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>is it one of these?</td><td><code>pet instanceof Dog</code></td><td><code>isinstance(pet, Dog)</code></td></tr><tr><td>treat it as a Dog</td><td>cast: <code>(Dog) pet</code></td><td>no cast needed; just call the method</td></tr><tr><td>which method runs</td><td>the object&rsquo;s class (overridden instance methods)</td><td>the object&rsquo;s class, then the MRO</td></tr><tr><td>fields and static methods</td><td>chosen by the declared type</td><td>looked up on the object at run time</td></tr><tr><td>overloading</td><td>yes, chosen at compile time</td><td>no: a second <code>def</code> replaces the first</td></tr><tr><td>inspect the lookup order</td><td>&mdash;</td><td><code>C.__mro__</code> or <code>C.mro()</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Stopping change</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>no subclasses</td><td><code>final class Money</code></td><td>not enforced; <code>@typing.final</code> for checkers</td></tr><tr><td>no overriding</td><td><code>final void id()</code></td><td>not enforced; <code>@typing.final</code> for checkers</td></tr><tr><td>no reassignment</td><td><code>final int MAX = 10;</code></td><td>convention: <code>MAX = 10</code> in upper case</td></tr></tbody></table></div>"
+      "html": "<p>Reference, not reading: this week in both languages, with a note where one has no equivalent.</p><h3 class=\"read-group-title\">Inheriting</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a subclass</td><td><code>class Dog extends Animal</code></td><td><code>class Dog(Animal):</code></td></tr><tr><td>build the parent part</td><td><code>super(name);</code> &mdash; first statement</td><td><code>super().__init__(name)</code></td></tr><tr><td>call the parent&rsquo;s version</td><td><code>super.speak()</code></td><td><code>super().speak()</code></td></tr><tr><td>check that it overrides</td><td><code>@Override</code>, checked by the compiler</td><td>nothing built in; <code>@typing.override</code> (3.12) for checkers</td></tr><tr><td>root of every class</td><td><code>Object</code></td><td><code>object</code></td></tr><tr><td>several parents</td><td>one class, any number of interfaces</td><td>any number of classes, ordered by the MRO</td></tr></tbody></table></div><h3 class=\"read-group-title\">Abstract types and interfaces</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>abstract class</td><td><code>abstract class Shape</code></td><td><code>class Shape(ABC):</code></td></tr><tr><td>abstract method</td><td><code>abstract double area();</code></td><td><code>@abstractmethod</code> above <code>def area(self):</code></td></tr><tr><td>creating one anyway</td><td>compile error</td><td><code>TypeError</code> when the object is created</td></tr><tr><td>interface</td><td><code>interface Shape { int area(); }</code></td><td>no keyword: an ABC, a <code>Protocol</code>, or just duck typing</td></tr><tr><td>method with a body in an interface</td><td><code>default</code> method (Java 8)</td><td>any method in an ABC</td></tr><tr><td>sortable objects</td><td><code>implements Comparable&lt;T&gt;</code></td><td>define <code>__lt__</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Types and dispatch</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>is it one of these?</td><td><code>pet instanceof Dog</code></td><td><code>isinstance(pet, Dog)</code></td></tr><tr><td>treat it as a Dog</td><td>cast: <code>(Dog) pet</code></td><td>no cast needed; just call the method</td></tr><tr><td>which method runs</td><td>the object&rsquo;s class (overridden instance methods)</td><td>the object&rsquo;s class, then the MRO</td></tr><tr><td>fields and static methods</td><td>chosen by the declared type</td><td>looked up on the object at run time</td></tr><tr><td>overloading</td><td>yes, chosen at compile time</td><td>no: a second <code>def</code> replaces the first</td></tr><tr><td>inspect the lookup order</td><td>&mdash;</td><td><code>C.__mro__</code> or <code>C.mro()</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Stopping change</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>no subclasses</td><td><code>final class Money</code></td><td>not enforced; <code>@typing.final</code> for checkers</td></tr><tr><td>no overriding</td><td><code>final void id()</code></td><td>not enforced; <code>@typing.final</code> for checkers</td></tr><tr><td>no reassignment</td><td><code>final int MAX = 10;</code></td><td>convention: <code>MAX = 10</code> in upper case</td></tr></tbody></table></div>"
     },
     {
       "title": "Two answers to the diamond",
       "meta": "history \u00b7 multiple inheritance",
-      "html": "<div class=\"concept\"><h3><span class=\"idx\">M2.1</span>The diamond problem</h3><p>Suppose <code>B</code> and <code>C</code> both extend <code>A</code>, and <code>D</code> extends both B and C. Draw it and you get a diamond. Now B and C each override <code>hello()</code> differently. Which one does a <code>D</code> object use? And does a D contain one A part or two? Every language that allows several parents has to answer, and the three you are likely to meet chose differently.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Language</th><th>Its answer</th></tr></thead><tbody><tr><td>C++</td><td>Allows several base classes. By default the shared base appears once per path; declaring it a <code>virtual</code> base class makes it appear once. Ambiguous calls are compile errors that the programmer must resolve.</td></tr><tr><td>Java</td><td>Allows one superclass, so classes never form a diamond. A class may implement many interfaces, which originally carried no code at all. Java 8&rsquo;s default methods brought back a small version of the problem, with a strict rule: if two interfaces supply the same default, the class must override it (the <em>Two default methods</em> example).</td></tr><tr><td>Python</td><td>Allows several base classes and puts every class in one line, the MRO. For <code>class D(B, C)</code> the line is D, B, C, A, object: A appears once, after everything that inherits from it.</td></tr></tbody></table></div></div><div class=\"concept\"><h3><span class=\"idx\">M2.2</span>Where Python&rsquo;s order comes from</h3><p>Python&rsquo;s MRO is computed by an algorithm called <strong>C3 linearisation</strong>, used since Python 2.3. It was not invented for Python. The Python documentation&rsquo;s essay on the subject says so directly:</p><div class=\"joke\"><p>&ldquo;The C3 method itself has nothing to do with Python, since it was invented by people working on Dylan and it is described in a paper intended for lispers.&rdquo;</p><span class=\"attrib\">Michele Simionato, <a href=\"https://docs.python.org/3/howto/mro.html\" target=\"_blank\" rel=\"noopener\"><em>The Python 2.3 Method Resolution Order</em></a>, in the Python HOWTOs</span></div><p>The paper is <em>A Monotonic Superclass Linearization for Dylan</em>; Dylan is a language from the Lisp family. C3 guarantees two things you can check by eye: a class always comes before its parents, and the order you list the parents in, <code>(B, C)</code>, is kept. If no order can satisfy both, Python refuses to create the class and raises <code>TypeError</code>.</p><div class=\"note tip\"><span class=\"tag\">Try it</span><p>Open the diagram <em>Where does Python look?</em> in section 4, or run <code>print(D.mro())</code> in the Playground for your own diamond. Then swap <code>(B, C)</code> to <code>(C, B)</code> and predict the new order before you run it.</p></div></div>"
+      "html": "<div class=\"concept\"><h3><span class=\"idx\">M2.1</span>The diamond problem</h3><p>If <code>B</code> and <code>C</code> both extend <code>A</code>, and <code>D</code> extends both, you get a diamond. Which <code>hello()</code> does a D use? Does it hold one A part or two? Languages answer differently.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Language</th><th>Its answer</th></tr></thead><tbody><tr><td>C++</td><td>Several base classes. The shared base appears once per path, or once in total if declared a <code>virtual</code> base class. Ambiguous calls are compile errors.</td></tr><tr><td>Java</td><td>One superclass, so no class diamonds. Since Java 8, if two interfaces supply the same default method, the class must override it (the <em>Two default methods</em> example).</td></tr><tr><td>Python</td><td>Several base classes, all put in one line, the MRO. For <code>class D(B, C)</code> the line is D, B, C, A, object: A appears once, after everything that inherits from it.</td></tr></tbody></table></div></div><div class=\"concept\"><h3><span class=\"idx\">M2.2</span>Where Python&rsquo;s order comes from</h3><p>Python computes the MRO with <strong>C3 linearisation</strong> (since Python 2.3). It was borrowed:</p><div class=\"joke\"><p>&ldquo;The C3 method itself has nothing to do with Python, since it was invented by people working on Dylan and it is described in a paper intended for lispers.&rdquo;</p><span class=\"attrib\">Michele Simionato, <a href=\"https://docs.python.org/3/howto/mro.html\" target=\"_blank\" rel=\"noopener\"><em>The Python 2.3 Method Resolution Order</em></a>, in the Python HOWTOs</span></div><p>The paper is <em>A Monotonic Superclass Linearization for Dylan</em>. Dylan is a Lisp-family language. C3 keeps every class before its parents, and keeps the order you list the parents in. If no order does both, Python raises <code>TypeError</code>.</p><div class=\"note tip\"><span class=\"tag\">Try it</span><p>Use <em>Where does Python look?</em> in section 4, or run <code>print(D.mro())</code> in the Playground. Then swap <code>(B, C)</code> to <code>(C, B)</code> and predict the new order.</p></div></div>"
     },
     {
       "title": "Inheritance regrets in the JDK",
       "meta": "real code \u00b7 composition",
-      "html": "<p>Even the people who wrote Java&rsquo;s standard library sometimes used inheritance where composition fitted better, and the documentation now warns you about the consequences. Three cases, in the library&rsquo;s own words.</p><div class=\"concept\"><h3><span class=\"idx\">M3.1</span><code>Stack</code> is a <code>Vector</code></h3><p>Covered in section 4&rsquo;s <em>Did you know?</em>: because <code>Stack extends Vector</code>, every stack also inherits methods for inserting and removing in the middle, which a stack should never allow. The page recommends <code>Deque</code> instead.</p></div><div class=\"concept\"><h3><span class=\"idx\">M3.2</span><code>Properties</code> is a <code>Hashtable</code></h3><p><code>java.util.Properties</code> stores settings as text keys and text values. But it extends <code>Hashtable</code>, which can hold any objects, so every Hashtable method comes along too:</p><div class=\"note warn\"><span class=\"tag\">From the Java SE 8 documentation</span><p>&ldquo;Because <code>Properties</code> inherits from <code>Hashtable</code>, the <code>put</code> and <code>putAll</code> methods can be applied to a <code>Properties</code> object. Their use is strongly discouraged as they allow the caller to insert entries whose keys or values are not <code>Strings</code>. The <code>setProperty</code> method should be used instead.&rdquo; <a href=\"https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html\" target=\"_blank\" rel=\"noopener\">Source: class Properties</a>.</p></div><p>In other words: the subclass has a rule (only Strings), and the inherited methods let anyone break it.</p></div><div class=\"concept\"><h3><span class=\"idx\">M3.3</span><code>Timestamp</code> is a <code>Date</code>, but do not treat it as one</h3><p><code>java.sql.Timestamp</code> extends <code>java.util.Date</code> and adds nanoseconds. Its <code>equals</code> therefore behaves differently from Date&rsquo;s, and the documentation ends up advising against the very substitution that <code>extends</code> promises:</p><div class=\"note warn\"><span class=\"tag\">From the Java SE 8 documentation</span><p>&ldquo;it is recommended that code not view <code>Timestamp</code> values generically as an instance of <code>java.util.Date</code>. The inheritance relationship between <code>Timestamp</code> and <code>java.util.Date</code> really denotes implementation inheritance, and not type inheritance.&rdquo; <a href=\"https://docs.oracle.com/javase/8/docs/api/java/sql/Timestamp.html\" target=\"_blank\" rel=\"noopener\">Source: class Timestamp</a>.</p></div><p>&ldquo;Implementation inheritance&rdquo; means reusing code; &ldquo;type inheritance&rdquo; means being substitutable. <code>extends</code> gives you both whether you want them or not. When you only want the first, hold an object in a field instead.</p></div>"
+      "html": "<p>Java&rsquo;s own library has inheritance its documentation now regrets. Three cases, in the library&rsquo;s own words.</p><div class=\"concept\"><h3><span class=\"idx\">M3.1</span><code>Stack</code> is a <code>Vector</code></h3><p>See section 4&rsquo;s <em>Did you know?</em>. Every stack inherits <code>Vector</code>&rsquo;s methods for editing the middle, which a stack should never allow. The docs recommend <code>Deque</code>.</p></div><div class=\"concept\"><h3><span class=\"idx\">M3.2</span><code>Properties</code> is a <code>Hashtable</code></h3><p><code>java.util.Properties</code> holds text settings, but it extends <code>Hashtable</code>, which accepts any objects:</p><div class=\"note warn\"><span class=\"tag\">From the Java SE 8 documentation</span><p>&ldquo;Because <code>Properties</code> inherits from <code>Hashtable</code>, the <code>put</code> and <code>putAll</code> methods can be applied to a <code>Properties</code> object. Their use is strongly discouraged as they allow the caller to insert entries whose keys or values are not <code>Strings</code>. The <code>setProperty</code> method should be used instead.&rdquo; <a href=\"https://docs.oracle.com/javase/8/docs/api/java/util/Properties.html\" target=\"_blank\" rel=\"noopener\">Source: class Properties</a>.</p></div><p>The inherited methods break the subclass&rsquo;s rule.</p></div><div class=\"concept\"><h3><span class=\"idx\">M3.3</span><code>Timestamp</code> is a <code>Date</code>, but do not treat it as one</h3><p><code>java.sql.Timestamp</code> extends <code>java.util.Date</code> and adds nanoseconds, so its <code>equals</code> differs from Date&rsquo;s:</p><div class=\"note warn\"><span class=\"tag\">From the Java SE 8 documentation</span><p>&ldquo;it is recommended that code not view <code>Timestamp</code> values generically as an instance of <code>java.util.Date</code>. The inheritance relationship between <code>Timestamp</code> and <code>java.util.Date</code> really denotes implementation inheritance, and not type inheritance.&rdquo; <a href=\"https://docs.oracle.com/javase/8/docs/api/java/sql/Timestamp.html\" target=\"_blank\" rel=\"noopener\">Source: class Timestamp</a>.</p></div><p>Implementation inheritance reuses code. Type inheritance promises substitution. <code>extends</code> gives you both. For reuse only, hold the object in a field.</p></div>"
     }
   ]
 }

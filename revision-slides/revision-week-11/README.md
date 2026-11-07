@@ -33,6 +33,7 @@ following page.
 | --- | --- |
 | `revision-week-11.tex` | The deck. Build: `xelatex revision-week-11.tex`, twice |
 | `revision-week-11.pdf` | Built output |
+| `revision-week-11-student.pdf` | Student copy: the first click of every slide, so no answers. Built by `python3 scripts/build_student_revisions.py --weeks 11` |
 | `bk-logo.png` | Required next to the `.tex` |
 | `examples/q02-mcq-which-basket/` | The three versions as `BasketV1`, `BasketV2`, `BasketV3` (bodies as on the slide), with `StudentPrice` and `Half`: only version 3 can be handed `Half` (prints `1000 800 500`) |
 | `examples/q03-mcq-safe-replacement/` | The slide's `Tally` and `check`, with the four option classes: `check` gives 8, 8, 3, 8 |

@@ -12,11 +12,11 @@ The slides and classroom questions are in English. Weeks 1–4 remain unchanged.
 | 5 | Classes, objects, static, enums and switch (question format) | 34 | [PDF](revision-week-5/revision-week-5.pdf) · [LaTeX](revision-week-5/revision-week-5.tex) |
 | 6 | Building reliable classes: contracts, references, shared data (question format) | 26 | [PDF](revision-week-6/revision-week-6.pdf) · [LaTeX](revision-week-6/revision-week-6.tex) |
 | 7 | Lists and generics: insert/set/remove by index, `remove(int)` vs `remove(Object)`, removing while looping, linked nodes and queues, `Box<T>` and boxing; extra linked-list predict and find-the-bug questions (Q11–Q14) | 34 | [PDF](revision-week-7/revision-week-7.pdf) · [LaTeX](revision-week-7/revision-week-7.tex) |
-| 8 | Inheritance and interfaces: `extends`/`super`, overriding vs overloading, declared type vs object, abstract classes, interfaces and composition, Python `super()` and duck typing | 26 | [PDF](revision-week-8/revision-week-8.pdf) · [LaTeX](revision-week-8/revision-week-8.tex) |
-| 9 | Exceptions and reading text: try/catch/finally, checked vs unchecked and `throws`, propagation, `readLine()`/`null` vs blank lines, Python `with`, `Scanner` tokens | 26 | [PDF](revision-week-9/revision-week-9.pdf) · [LaTeX](revision-week-9/revision-week-9.tex) |
-| 10 | Writing files and reliable reports: `print`/`println` and newlines, overwrite vs append, closing with try-with-resources/`with`, `IOException` and `checkError`, CSV quoting | 26 | [PDF](revision-week-10/revision-week-10.pdf) · [LaTeX](revision-week-10/revision-week-10.tex) |
-| 11 | Designing OO programs: responsibilities and Information Expert, depending on an interface, safe substitution (Liskov), focused interfaces, cohesion/coupling, DRY/YAGNI | 26 | [PDF](revision-week-11/revision-week-11.pdf) · [LaTeX](revision-week-11/revision-week-11.tex) |
-| 12 | Review and integration: tracing, mutation vs rebinding, a parse/validate/store pipeline, boundary tests; streams as optional enrichment | 26 | [PDF](revision-week-12/revision-week-12.pdf) · [LaTeX](revision-week-12/revision-week-12.tex) |
+| 8 | Inheritance and interfaces: `extends`/`super`, overriding vs overloading, declared type vs object, abstract classes, interfaces and composition, Python `super()` and duck typing | 26 | [PDF](revision-week-8/revision-week-8.pdf) · [Student copy, no answers](revision-week-8/revision-week-8-student.pdf) · [LaTeX](revision-week-8/revision-week-8.tex) |
+| 9 | Exceptions and reading text: try/catch/finally, checked vs unchecked and `throws`, propagation, `readLine()`/`null` vs blank lines, Python `with`, `Scanner` tokens | 26 | [PDF](revision-week-9/revision-week-9.pdf) · [Student copy, no answers](revision-week-9/revision-week-9-student.pdf) · [LaTeX](revision-week-9/revision-week-9.tex) |
+| 10 | Writing files and reliable reports: `print`/`println` and newlines, overwrite vs append, closing with try-with-resources/`with`, `IOException` and `checkError`, CSV quoting | 26 | [PDF](revision-week-10/revision-week-10.pdf) · [Student copy, no answers](revision-week-10/revision-week-10-student.pdf) · [LaTeX](revision-week-10/revision-week-10.tex) |
+| 11 | Designing OO programs: responsibilities and Information Expert, depending on an interface, safe substitution (Liskov), focused interfaces, cohesion/coupling, DRY/YAGNI | 26 | [PDF](revision-week-11/revision-week-11.pdf) · [Student copy, no answers](revision-week-11/revision-week-11-student.pdf) · [LaTeX](revision-week-11/revision-week-11.tex) |
+| 12 | Review and integration: tracing, mutation vs rebinding, a parse/validate/store pipeline, boundary tests; streams as optional enrichment | 26 | [PDF](revision-week-12/revision-week-12.pdf) · [Student copy, no answers](revision-week-12/revision-week-12-student.pdf) · [LaTeX](revision-week-12/revision-week-12.tex) |
 
 ## Weeks 5–12: question format
 
@@ -43,6 +43,10 @@ reference only.
 The Week 5 switch-expression answer needs Java 14 and says so. Week 12 labels
 functional transformations and streams as optional enrichment. The remaining
 Java exercises target Java 8. Current Canvas instructions govern assessment.
+
+Weeks 8–12 also have a **student copy** (`revision-week-N-student.pdf`): the same slides
+stopped at the first click, so no answers are shown. Rebuild them after editing a deck with
+`python3 scripts/build_student_revisions.py`.
 
 The [complete Weeks 5–12 ZIP](revision-weeks-5-12.zip) includes all eight packages,
 the shared authoring source and both scripts.

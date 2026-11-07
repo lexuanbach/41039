@@ -2,26 +2,26 @@
   "week": 11,
   "title": "Designing Object-Oriented Programs",
   "short": "OOP design",
-  "lede": "Use SOLID and GRASP as questions about a concrete program: who owns the data, who makes decisions, which changes should stay local, and what callers may reasonably expect from a replacement.",
+  "lede": "Use SOLID and GRASP as questions about real code: who owns the data, who makes decisions, which changes stay local, and what callers can expect from a replacement.",
   "sections": [
     {
       "title": "Responsibility and information experts",
       "concepts": [
         [
-          "A coherent reason to change",
-          "<p>The first design question is not &ldquo;which classes?&rdquo; but &ldquo;<strong>who is responsible for what?</strong>&rdquo; A <em>responsibility</em> is something a class knows or does. An order knows its lines. A receipt formatter knows how a receipt should look. A file writer knows how to put text on a disk.</p><p>The <strong>single responsibility principle</strong> (the S in SOLID) says a class should have one coherent responsibility. Robert C. Martin, who gave it that name, puts it as <em>one reason to change</em>. That gives you a test you can actually run: imagine the next three change requests. &ldquo;Prices now include tax.&rdquo; &ldquo;The receipt needs the shop&rsquo;s address.&rdquo; &ldquo;Save it as JSON as well.&rdquo; If all three land in the same class, it has three reasons to change, and every edit for one job risks breaking the other two.</p><p>The <code>ReportJob</code> at the end of today&rsquo;s revision was exactly this: one method counted the passes, chose the format and opened the file. A change to the pass mark and a change to the file format both meant editing the same lines.</p><p>It does <em>not</em> mean one method per class. A model may need constructors, queries and updates that all preserve the same rules. An <code>Order</code> with <code>add</code>, <code>total</code> and <code>lineCount</code> is still one responsibility: every method serves the same data and the same rules.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: the over-correction</span><p>Some students hear &ldquo;single responsibility&rdquo; and split every method into its own class: <code>OrderAdder</code>, <code>OrderTotaller</code>, <code>OrderCounter</code>. Now one idea is scattered over three files and each class reaches into the others&rsquo; data. Group code by <strong>reason to change</strong>, not by size.</p></div>"
+          "One reason to change",
+          "<p>Start with one question: <strong>who is responsible for what?</strong> A <em>responsibility</em> is something a class knows or does.</p><p>The <strong>single responsibility principle</strong> (the S in SOLID) says a class should have one responsibility. Robert C. Martin, who named it, calls this <em>one reason to change</em>.</p><p>Test it with likely change requests: &ldquo;Prices now include tax.&rdquo; &ldquo;Add the shop&rsquo;s address to the receipt.&rdquo; &ldquo;Save as JSON too.&rdquo; If all three land in one class, an edit for one job can break the other two. Today&rsquo;s revision <code>ReportJob</code> was like this.</p><p>One responsibility is not one method. An <code>Order</code> with <code>add</code>, <code>total</code> and <code>lineCount</code> is one job: same data, same rules.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: the over-correction</span><p>Splitting every method into its own class (<code>OrderAdder</code>, <code>OrderTotaller</code>, <code>OrderCounter</code>) scatters one idea over many files. Group code by <strong>reason to change</strong>, not by size.</p></div>"
         ],
         [
-          "Put a calculation beside its information",
-          "<p>Once you know the responsibilities, which class gets each one? GRASP (<em>General Responsibility Assignment Software Patterns</em>, from Craig Larman&rsquo;s textbook <em>Applying UML and Patterns</em>) gives the first answer: <strong>Information Expert</strong>. Give a job to the class that already has the information needed to do it.</p><p>Work it through for the order. Who can compute a line&rsquo;s subtotal? The line: it holds the price and the quantity. Who can compute the total? The order: it holds the lines. So <code>Line.subtotal()</code> and <code>Order.total()</code>, and the order asks each line instead of reaching inside its fields or repeating the subtotal rule.</p><p>The same idea is often said as <strong>tell, don&rsquo;t ask</strong>: tell an object what you want done, rather than asking for its data and doing the work yourself. If a caller writes <code>line.getCents() * line.getQuantity()</code>, the subtotal rule now lives in that caller, and in every other caller that needed a subtotal.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: a getter for every field</span><p>Making every field <code>private</code> and then adding a getter and a setter for each one is not encapsulation. The data still flows out and the rules get written by whoever uses it. Before adding a getter, ask: should the caller be <em>asking this object to do the job</em> instead?</p></div>"
+          "Put a calculation beside its data",
+          "<p><strong>Information Expert</strong>: give a job to the class that already has the information for it. It is the first pattern of GRASP (<em>General Responsibility Assignment Software Patterns</em>, from Craig Larman&rsquo;s <em>Applying UML and Patterns</em>).</p><ul><li>A line has the price and quantity, so it gets <code>Line.subtotal()</code>.</li><li>An order has the lines, so <code>Order.total()</code> asks each line.</li></ul><p>The slogan is <strong>tell, don&rsquo;t ask</strong>. Tell an object to do the job. Do not take its data and do the job yourself. A caller that writes <code>line.getCents() * line.getQuantity()</code> now owns a copy of the subtotal rule.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: a getter for every field</span><p>A getter and setter for every private field is not encapsulation. Callers still take the data and write the rules. Before adding a getter, ask whether the object should <em>do the job</em> instead.</p></div>"
         ],
         [
-          "Finding the classes: nouns, verbs and CRC cards",
-          "<p>Where do classes come from in the first place? A classic first move is to read the problem description and mark its words. <strong>Nouns</strong> suggest classes, or the data they hold; <strong>verbs</strong> suggest methods. The first interactive diagram below does exactly this.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Words in the description</th><th>Often becomes</th><th>Example</th></tr></thead><tbody><tr><td>&ldquo;a customer places an <u>order</u>&rdquo;</td><td>a class</td><td><code>Order</code></td></tr><tr><td>&ldquo;each line has a <u>price</u> and a <u>quantity</u>&rdquo;</td><td>fields of another class</td><td><code>Line.cents</code>, <code>Line.quantity</code></td></tr><tr><td>&ldquo;the shop <u>works out the total</u>&rdquo;</td><td>a method, on the class that has the data</td><td><code>Order.total()</code></td></tr><tr><td>&ldquo;students get a <u>discount</u>, staff get another&rdquo;</td><td>something that varies: an interface or a function</td><td><code>PriceRule</code></td></tr></tbody></table></div><p>It is a starting point, not an algorithm. Some nouns are just values (a price is an <code>int</code>, not a class). Some useful classes, like a receipt formatter, never appear as a noun at all; GRASP calls an invented helper like that a <strong>Pure Fabrication</strong>.</p><p>In 1989 Kent Beck and Ward Cunningham described a cheap way to try a design before writing any code: <a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">CRC cards</a> (Class, Responsibilities, Collaborators). One index card per class: its name at the top, what it knows and does on the left, the classes it works with on the right. If a card overflows, the class has too many jobs. If nobody&rsquo;s card holds a piece of data, nobody owns it yet.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Order</th><th>Collaborators</th></tr></thead><tbody><tr><td>knows its lines<br>adds a line<br>works out the total</td><td><code>Line</code></td></tr></tbody></table></div><p>Naming is a design tool. If the only honest name for a class is <code>OrderManager</code> or <code>ReceiptAndFileHelper</code>, it probably has more than one job.</p>"
+          "Finding classes: nouns, verbs, CRC cards",
+          "<p>In a problem description, <strong>nouns</strong> suggest classes or their data. <strong>Verbs</strong> suggest methods. The first diagram below tries this.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Words in the description</th><th>Often becomes</th><th>Example</th></tr></thead><tbody><tr><td>&ldquo;a customer places an <u>order</u>&rdquo;</td><td>a class</td><td><code>Order</code></td></tr><tr><td>&ldquo;each line has a <u>price</u> and a <u>quantity</u>&rdquo;</td><td>fields of another class</td><td><code>Line.cents</code>, <code>Line.quantity</code></td></tr><tr><td>&ldquo;the shop <u>works out the total</u>&rdquo;</td><td>a method, on the class that has the data</td><td><code>Order.total()</code></td></tr><tr><td>&ldquo;students get a <u>discount</u>, staff get another&rdquo;</td><td>something that varies: an interface or a function</td><td><code>PriceRule</code></td></tr></tbody></table></div><p>It is a start, not an algorithm. A price is just an <code>int</code>. A receipt formatter is useful but never appears as a noun. GRASP calls an invented helper like that a <strong>Pure Fabrication</strong>.</p><p><a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">CRC cards</a> (Class, Responsibilities, Collaborators; Kent Beck and Ward Cunningham, 1989) test a design on index cards before any code. One card per class: name on top, responsibilities on the left, collaborators on the right. A full card means too many jobs. Data on no card has no owner.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Order</th><th>Collaborators</th></tr></thead><tbody><tr><td>knows its lines<br>adds a line<br>works out the total</td><td><code>Line</code></td></tr></tbody></table></div><p>If the only honest name is <code>OrderManager</code> or <code>ReceiptAndFileHelper</code>, the class probably has more than one job.</p>"
         ],
         [
-          "Creator: who should make the object?",
-          "<p>When a new <code>Line</code> is needed, which class should call <code>new Line(...)</code>? GRASP&rsquo;s <strong>Creator</strong> suggests: class B should create objects of class A if B <em>contains</em> A, closely <em>uses</em> A, or <em>has the data</em> to initialise A.</p><p>An order contains its lines, so <code>order.addLine(300, 2)</code> can create the <code>Line</code> itself. The caller no longer needs to know that <code>Line</code> exists at all, and you could change how lines are stored without touching any caller. Compare the first example below, where <code>main</code> builds each line, with the extra example <em>The order creates its own lines</em>. Both print 750; they differ in who knows what.</p><p><strong>Java and Python, side by side.</strong> Both languages let an object guard its own data, but they enforce it differently.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>hide a field</td><td><code>private int cents;</code> &mdash; the compiler refuses outside access</td><td><code>self._cents</code> &mdash; a convention only; nothing stops access</td></tr><tr><td>a field that never changes</td><td><code>private final int cents;</code></td><td>no keyword; just never assign it again</td></tr><tr><td>read-only access</td><td>a getter and no setter</td><td>a <code>@property</code> with no setter</td></tr><tr><td>behaviour that needs no object</td><td>a <code>static</code> method inside some class</td><td>a plain function in the module (often clearer)</td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">A quick self-check</span><p>For each method you write, say out loud: &ldquo;this class can do this because it has ___&rdquo;. If the blank is another class&rsquo;s field, the method probably belongs in that other class.</p></div>"
+          "Creator: who makes the object?",
+          "<p>GRASP&rsquo;s <strong>Creator</strong>: class B should create A objects if B <em>contains</em> A, closely <em>uses</em> A, or <em>has the data</em> to set A up.</p><p>An order contains its lines, so <code>order.addLine(300, 2)</code> creates the <code>Line</code> itself. Callers never see <code>Line</code>, so you can change how lines are stored without touching them. Compare the first example below (<code>main</code> builds each line) with the extra <em>The order creates its own lines</em>. Both print 750.</p><p>Guarding data in each language:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>hide a field</td><td><code>private int cents;</code> &mdash; the compiler refuses outside access</td><td><code>self._cents</code> &mdash; a convention only; nothing stops access</td></tr><tr><td>a field that never changes</td><td><code>private final int cents;</code></td><td>no keyword; just never assign it again</td></tr><tr><td>read-only access</td><td>a getter and no setter</td><td>a <code>@property</code> with no setter</td></tr><tr><td>behaviour that needs no object</td><td>a <code>static</code> method inside some class</td><td>a plain function in the module (often clearer)</td></tr></tbody></table></div><div class=\"note tip\"><span class=\"tag\">A quick self-check</span><p>Finish the sentence &ldquo;this class can do this because it has ___&rdquo;. If the blank is another class&rsquo;s field, the method probably belongs there.</p></div>"
         ]
       ],
       "examples": [
@@ -36,7 +36,7 @@
             ],
             [
               "line.subtotal()",
-              "The order asks each line for its contribution instead of exposing its fields."
+              "The order asks each line for its subtotal instead of reading its fields."
             ]
           ],
           "wrong": [
@@ -56,11 +56,11 @@
           "notes": [
             [
               "def total(self)",
-              "Keep domain calculation available independently of presentation."
+              "The calculation works on its own, without any receipt code."
             ],
             [
               "def format_receipt",
-              "Changing receipt wording need not change the order calculation."
+              "You can change the receipt wording without touching the order calculation."
             ]
           ],
           "wrong": [
@@ -79,7 +79,7 @@
         {
           "kind": "w11-nouns",
           "title": "From a description to classes: who knows what?",
-          "intro": "A common first step in design is to read the problem description and mark its words. <strong>Nouns</strong> often suggest classes or the data they hold; <strong>verbs</strong> often suggest methods. Then give each job to the class that <em>has the information</em> for it: GRASP calls that class the <strong>Information Expert</strong>. Mark the words first, then hand out the jobs.",
+          "intro": "Read the description and mark its words. <strong>Nouns</strong> often become classes or their data. <strong>Verbs</strong> often become methods. Then give each job to the class that <em>has the information</em> for it: the <strong>Information Expert</strong>.",
           "text": [
             "A ",
             {
@@ -149,7 +149,7 @@
           "answers": {
             "customer": {
               "role": "skip",
-              "why": "A person outside the program. Nothing here stores anything about the customer, so no class is needed yet. Not every noun becomes a class."
+              "why": "A person outside the program. Nothing here stores customer data, so no class is needed yet. Not every noun becomes a class."
             },
             "order": {
               "role": "class",
@@ -176,7 +176,7 @@
               "also": [
                 "data"
               ],
-              "why": "A noun, but it is <em>worked out</em> from price \u00d7 quantity, so it becomes the method <code>subtotal()</code>. Storing it as well would mean keeping a copy up to date."
+              "why": "A noun, but it is <em>worked out</em> from price \u00d7 quantity, so it becomes the method <code>subtotal()</code>. A stored copy would have to be kept up to date."
             },
             "print": {
               "role": "action",
@@ -228,7 +228,7 @@
               "method": "subtotal()",
               "why": {
                 "Line": "Right: price \u00d7 quantity needs exactly the two numbers a line has.",
-                "Order": "Then Order must read every line's price and quantity: it becomes coupled to Line's fields, and the rule lives away from its data.",
+                "Order": "Then Order must read every line's price and quantity. It becomes coupled to Line's fields, and the rule sits away from its data.",
                 "main": "main does not have the price or the quantity; it would have to dig them out of each line."
               }
             },
@@ -241,7 +241,7 @@
               "why": {
                 "Order": "Right: the order knows all of its lines, and asks each one for its subtotal.",
                 "Line": "One line cannot see the other lines of its order.",
-                "main": "main could loop over the lines, but only if the order exposed its list. The order is the expert here."
+                "main": "main could loop over the lines only if the order exposed its list. The order is the expert here."
               }
             },
             {
@@ -251,8 +251,8 @@
               "token": "System.out.println(order.total());",
               "method": "println(\u2026)",
               "why": {
-                "main": "Right: showing the result is a different reason to change (wording, layout) from calculating it, so it stays outside Order.",
-                "Order": "Possible, but then the order changes whenever the wording or layout of the output changes: a second reason to change (1.1).",
+                "main": "Right: showing the result has a different reason to change (wording, layout) from calculating it. So it stays outside Order.",
+                "Order": "Possible, but then Order changes whenever the output wording or layout changes: a second reason to change (1.1).",
                 "Line": "A line knows nothing about the whole order's total."
               }
             }
@@ -274,7 +274,7 @@
         {
           "kind": "w11-calls",
           "title": "Follow the messages: who works out the total?",
-          "intro": "Each box is an object (or a function) and the strip shows the message being sent. Press <strong>Next</strong> and watch who asks and who answers. The highlighted line has just run; the call stack on the right shows which method is running now, with the newest call at the bottom.",
+          "intro": "Each box is an object (or a function). Press <strong>Next</strong> to see who asks and who answers. The highlighted line has just run. The call stack on the right shows the running method, newest at the bottom.",
           "runs": [
             {
               "label": "Java: Order and Line",
@@ -386,7 +386,7 @@
                     "main",
                     "order.total()"
                   ],
-                  "say": "main asks the order for its total. main does not know, or need to know, how the total is worked out."
+                  "say": "main asks the order for its total. main does not need to know how it is worked out."
                 },
                 {
                   "at": "int total()",
@@ -408,7 +408,7 @@
                     "order.total()  sum = 0",
                     "line 1.subtotal()"
                   ],
-                  "say": "The order does not read <code>cents</code> or <code>quantity</code> itself. It asks line 1, the object that has those numbers."
+                  "say": "The order does not read <code>cents</code> or <code>quantity</code> itself. It asks line 1, which has those numbers."
                 },
                 {
                   "at": "int total()",
@@ -468,7 +468,7 @@
                   "stack": [
                     "main"
                   ],
-                  "say": "main prints the number. Each calculation stayed with the object that had the information it needed."
+                  "say": "main prints the number. Each calculation stayed with the object that had its data."
                 }
               ]
             },
@@ -555,7 +555,7 @@
                     "main program",
                     "format_receipt(order)"
                   ],
-                  "say": "Now the receipt. Wording is a different job, with a different reason to change, so it lives in a separate function."
+                  "say": "Now the receipt. Wording has a different reason to change, so it lives in its own function."
                 },
                 {
                   "at": "return f\"Total:",
@@ -602,7 +602,7 @@
                   "stack": [
                     "main program"
                   ],
-                  "say": "Change the wording and only <code>format_receipt</code> changes; change the pricing and only <code>Order</code> does."
+                  "say": "Change the wording: only <code>format_receipt</code> changes. Change the pricing: only <code>Order</code> changes."
                 }
               ]
             }
@@ -640,7 +640,7 @@
         {
           "kind": "w11-change",
           "title": "Send in a change request: one class or two?",
-          "intro": "Both versions print the same thing today. The difference shows up when something has to change. Pick a version, then a change request: the edited lines are marked <span class=\"w11-key add\">+</span> and <span class=\"w11-key del\">\u2212</span>, and the summary says which parts of the program had to be opened. The output is from a real run of the changed program.",
+          "intro": "Both versions print the same thing today. Pick a version, then a change request. Edited lines are marked <span class=\"w11-key add\">+</span> and <span class=\"w11-key del\">\u2212</span>. The output comes from a real run of the changed program.",
           "lang": "python",
           "versions": [
             {
@@ -689,7 +689,7 @@
               "note": "Only <code>Order.total</code> changes, and the receipt picks up the new total automatically because it asks the order."
             }
           },
-          "summary": "Count how often each part was opened. In the first version <code>Order</code> changes for both reasons, wording and pricing; in the second, each part has one reason to change.",
+          "summary": "Count how often each part was opened. In the first version <code>Order</code> changes for wording and for pricing. In the second, each part has one reason to change.",
           "programs": [
             {
               "lang": "python",
@@ -794,7 +794,7 @@
           "notes": [
             [
               "order.addLine(300, 2);",
-              "The caller passes only price and quantity. It never writes <code>new Line</code>, so it does not even need to know that <code>Line</code> exists.",
+              "The caller passes only price and quantity. It never writes <code>new Line</code>, so it need not know that <code>Line</code> exists.",
               "Ask, do not build"
             ],
             [
@@ -844,7 +844,7 @@
             ],
             [
               "print(account.withdraw(80))",
-              "Only 70 is left, so the account refuses and the balance is unchanged. Compare a caller that asks for the balance, checks it and subtracts: that check would be copied into every caller.",
+              "Only 70 is left, so the account refuses and the balance stays the same. If callers checked the balance themselves, every caller would repeat that check.",
               "Refused"
             ]
           ]
@@ -855,20 +855,20 @@
       "title": "Extension and dependency inversion",
       "concepts": [
         [
-          "Name the variation you actually need",
-          "<p>Bertrand Meyer&rsquo;s 1988 book <em>Object-Oriented Software Construction</em> gave the <strong>open&ndash;closed principle</strong> (the O in SOLID): software entities should be <em>open for extension, but closed for modification</em>. In plain words: you should be able to add a new case by adding new code, not by editing code that already works.</p><p>A <code>Basket</code> that depends on a <code>PriceRule</code> can accept another rule without editing its calculation. A half-price offer is a new <code>HalfPrice</code> class; <code>Basket</code> is not opened at all. Compare the version that chooses for itself:</p><div class=\"code-card\"><pre>int price(int cents) {\n    if (kind.equals(\"student\")) return cents * 80 / 100;\n    if (kind.equals(\"half\")) return cents / 2;   // edit Basket again\n    return cents;\n}</pre></div><p>Every new offer means another <code>if</code> inside a class that was already tested.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: an interface for everything</span><p>The abstraction earns its place when there are <em>real</em> alternatives. An interface with exactly one implementation, created &ldquo;in case&rdquo;, is extra code to read with nothing to show for it. Wait until the second variation actually turns up, then extract the interface: it takes minutes.</p></div>"
+          "Name the variation you need",
+          "<p>The <strong>open&ndash;closed principle</strong> (the O in SOLID) comes from Bertrand Meyer&rsquo;s 1988 book <em>Object-Oriented Software Construction</em>. Software entities should be <em>open for extension, but closed for modification</em>. You add a case with new code, not by editing code that works.</p><p>With a <code>PriceRule</code>, a half-price offer is a new <code>HalfPrice</code> class, and <code>Basket</code> is not opened. A basket that decides for itself grows one <code>if</code> per offer:</p><div class=\"code-card\"><pre>int price(int cents) {\n    if (kind.equals(\"student\")) return cents * 80 / 100;\n    if (kind.equals(\"half\")) return cents / 2;   // edit Basket again\n    return cents;\n}</pre></div><div class=\"note warn\"><span class=\"tag\">Common mistake: an interface for everything</span><p>Add an interface only when <em>real</em> alternatives exist. One made &ldquo;in case&rdquo;, with a single implementation, is extra code to read. When the second case arrives, extracting it takes minutes.</p></div>"
         ],
         [
-          "Supply collaborators rather than hiding choices",
-          "<p>The <strong>dependency inversion principle</strong> (the D in SOLID) asks high-level policy to depend on an abstraction, not on a specific low-level implementation. Here the high-level policy is &ldquo;price a basket&rdquo;; the low-level detail is &ldquo;which discount&rdquo;. <code>Basket</code> depends on the <code>PriceRule</code> interface, and so does every rule. Neither knows about the other.</p><p>Passing the collaborator in through the constructor makes the choice explicit: <code>new Basket(new StudentPrice())</code>. This is often called <strong>dependency injection</strong>. Someone outside, usually <code>main</code>, decides which rule to use; <code>Basket</code> just uses it.</p><p>Python can use a plain function for a small policy, because functions are values. A function may be a clearer design than a class hierarchy when there is one operation.</p><div class=\"note warn\"><span class=\"tag\">Python trap: / is not Java&rsquo;s /</span><p>In Java, <code>cents * 80 / 100</code> with <code>int</code>s gives <code>800</code>. In Python, <code>1000 * 80 / 100</code> gives <code>800.0</code>, a float. Use <code>//</code> for whole-number division of cents, as the Python example does.</p></div>"
+          "Pass collaborators in",
+          "<p>The <strong>dependency inversion principle</strong> (the D in SOLID): high-level policy should depend on an abstraction, not on a low-level detail. Here &ldquo;price a basket&rdquo; is the policy, &ldquo;which discount&rdquo; is the detail, and <code>PriceRule</code> is the abstraction. <code>Basket</code> and every rule depend on it. Neither knows the other.</p><p><strong>Dependency injection</strong> means passing the collaborator in, often through the constructor: <code>new Basket(new StudentPrice())</code>. <code>main</code> chooses the rule. <code>Basket</code> just uses it.</p><p>In Python, functions are values. For one small operation, pass a function instead of building classes.</p><div class=\"note warn\"><span class=\"tag\">Python trap: / is not Java&rsquo;s /</span><p>In Java, <code>cents * 80 / 100</code> with <code>int</code>s gives <code>800</code>. In Python, <code>1000 * 80 / 100</code> gives <code>800.0</code>, a float. Use <code>//</code> for cents, as the Python example does.</p></div>"
         ],
         [
-          "Know what you depend on, and control it",
-          "<p>A class that creates its own collaborators hides them. If <code>Greeter</code> reads the system clock itself, you cannot check its &ldquo;Good afternoon&rdquo; branch in the morning. If it is <em>given</em> a clock, a test can pass a fake one that always says 9 or 15, as the extra example <em>A fake clock makes the test repeatable</em> does. Tests are often the first place a second implementation is needed.</p><p>The same goes for anything slow, random or outside the program: files, the network, the time, random numbers. Inject it, and the rest of the class becomes easy to test.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>the contract</td><td><code>interface PriceRule { int apply(int c); }</code></td><td>any callable; an ABC or <code>Protocol</code> for bigger contracts</td></tr><tr><td>a one-off small policy</td><td>a lambda for a one-method interface: <code>c -&gt; c / 2</code></td><td>a function, or <code>lambda c: c // 2</code></td></tr><tr><td>supply it</td><td><code>new Basket(new StudentPrice())</code></td><td><code>Basket(student_price)</code></td></tr><tr><td>pass the wrong kind of thing</td><td>compile error</td><td>an error only when it is called</td></tr></tbody></table></div><div class=\"note danger\"><span class=\"tag\">One tiny package, 2.5 hours</span><p>On 22 March 2016 a developer unpublished his <code>kik</code> package and 272 others from npm, the JavaScript package registry. One of them was <code>left-pad</code>, a tiny function that pads a string on the left. Projects all over the world depended on it, often without knowing, through other packages. npm saw hundreds of build failures per minute, and the disruption lasted 2.5 hours. Source: <a href=\"https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm\" target=\"_blank\" rel=\"noopener\">npm blog, &ldquo;kik, left-pad, and npm&rdquo;</a>. Every dependency is a collaborator you do not control; knowing exactly what you rely on is what makes it replaceable.</p></div>"
+          "Know what you depend on",
+          "<p>A class that creates its own collaborators hides them. A <code>Greeter</code> that reads the system clock cannot test its &ldquo;Good afternoon&rdquo; branch in the morning. Give it a clock, and a test can pass a fake that always says 9 or 15. See the extra <em>A fake clock makes the test repeatable</em>.</p><p>Inject anything slow, random or outside the program: files, the network, the time, random numbers.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>the contract</td><td><code>interface PriceRule { int apply(int c); }</code></td><td>any callable; an ABC or <code>Protocol</code> for bigger contracts</td></tr><tr><td>a one-off small policy</td><td>a lambda for a one-method interface: <code>c -&gt; c / 2</code></td><td>a function, or <code>lambda c: c // 2</code></td></tr><tr><td>supply it</td><td><code>new Basket(new StudentPrice())</code></td><td><code>Basket(student_price)</code></td></tr><tr><td>pass the wrong kind of thing</td><td>compile error</td><td>an error only when it is called</td></tr></tbody></table></div><div class=\"note danger\"><span class=\"tag\">One tiny package, 2.5 hours</span><p>On 22 March 2016 a developer unpublished his <code>kik</code> package and 272 others from npm, the JavaScript package registry. One was <code>left-pad</code>, a tiny function many projects used without knowing, through other packages. npm saw hundreds of build failures per minute, and the disruption lasted 2.5 hours. Source: <a href=\"https://blog.npmjs.org/post/141577284765/kik-left-pad-and-npm\" target=\"_blank\" rel=\"noopener\">npm blog, &ldquo;kik, left-pad, and npm&rdquo;</a>. Know exactly what you depend on.</p></div>"
         ],
         [
           "Polymorphism instead of a growing if-chain",
-          "<p>GRASP calls this move <strong>Polymorphism</strong>: when behaviour varies by type, give each type its own method instead of testing the type with <code>if</code>. The caller writes <code>rule.apply(cents)</code> once, and the right version runs. You met the mechanism in Week 8; this week is about <em>when</em> it is worth it.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Situation</th><th>Prefer</th></tr></thead><tbody><tr><td>two or three fixed cases that rarely change</td><td>a plain <code>if</code>/<code>elif</code> or <code>switch</code></td></tr><tr><td>new cases keep arriving, each with its own rules</td><td>an interface and one class per case</td></tr><tr><td>one small operation varies</td><td>Python: pass a function. Java: a one-method interface (or a lambda)</td></tr><tr><td>the cases differ only by a number</td><td>one class with a parameter, e.g. <code>Discount(20)</code></td></tr></tbody></table></div><div class=\"joke\"><p>All problems in computer science can be solved by another level of indirection&hellip; except for the problem of too many layers of indirection.</p><span class=\"attrib\">David Wheeler, as quoted by Butler Lampson; the second half is often given as Wheeler&rsquo;s own conclusion</span></div><p>Every interface is a level of indirection: one more place a reader has to look. It pays for itself when it lets a change stay small and local, and not otherwise.</p>"
+          "<p>GRASP <strong>Polymorphism</strong>: when behaviour varies by type, give each type its own method instead of testing the type with <code>if</code>. Then <code>rule.apply(cents)</code> runs the right version. Week 8 showed how. This week is about <em>when</em>.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Situation</th><th>Prefer</th></tr></thead><tbody><tr><td>two or three fixed cases that rarely change</td><td>a plain <code>if</code>/<code>elif</code> or <code>switch</code></td></tr><tr><td>new cases keep arriving, each with its own rules</td><td>an interface and one class per case</td></tr><tr><td>one small operation varies</td><td>Python: pass a function. Java: a one-method interface (or a lambda)</td></tr><tr><td>the cases differ only by a number</td><td>one class with a parameter, e.g. <code>Discount(20)</code></td></tr></tbody></table></div><div class=\"joke\"><p>All problems in computer science can be solved by another level of indirection&hellip; except for the problem of too many layers of indirection.</p><span class=\"attrib\">David Wheeler, as quoted by Butler Lampson; the second half is often given as Wheeler&rsquo;s own conclusion</span></div><p>Every interface is one more place a reader must look. Add one only when it keeps a change small and local.</p>"
         ]
       ],
       "examples": [
@@ -879,11 +879,11 @@
           "notes": [
             [
               "PriceRule rule",
-              "Depend on the pricing contract, not a particular policy class."
+              "Depend on the pricing interface, not on one particular rule class."
             ],
             [
               "rule.apply(cents)",
-              "Delegate the variation to the policy object."
+              "Hand the part that varies to the rule object."
             ]
           ],
           "wrong": [
@@ -903,11 +903,11 @@
           "notes": [
             [
               "self.rule=rule",
-              "Store a collaborator supplied by the caller instead of choosing one internally."
+              "Store the rule the caller supplied, instead of choosing one inside."
             ],
             [
               "self.rule(cents)",
-              "Call the selected pricing function through its common input/output contract."
+              "Call the stored pricing function. Any function that takes cents and returns cents fits."
             ]
           ],
           "wrong": [
@@ -926,7 +926,7 @@
         {
           "kind": "w11-change",
           "title": "A new price rule: whose code has to change?",
-          "intro": "Two baskets that print 800 today. In the first, <code>Basket</code> chooses the price itself with <code>if</code>. In the second (the example below), it depends on the <code>PriceRule</code> interface. Send each one the same change request and compare which classes you had to edit.",
+          "intro": "Both baskets print 800 today. The first chooses the price itself with <code>if</code>. The second (the example below) depends on the <code>PriceRule</code> interface. Send both the same change request and compare which classes you edit.",
           "lang": "java",
           "unitLabels": {
             "Demo": "main (Demo)"
@@ -973,7 +973,7 @@
               "note": "<code>Basket</code> is untouched: the new offer is a new class that fits the existing <code>PriceRule</code> contract, and main chooses it. Open for extension, closed for modification."
             }
           },
-          "summary": "<code>Basket</code> never changes in the second version. That only pays off because there really are several rules; with only one rule, the plain version would be simpler.",
+          "summary": "<code>Basket</code> never changes in the second version. That pays off only because there really are several rules. With one rule, the plain version would be simpler.",
           "programs": [
             {
               "lang": "java",
@@ -1030,7 +1030,7 @@
         {
           "kind": "w11-calls",
           "title": "Who chooses the rule? Follow the collaborator",
-          "intro": "The basket never decides its own pricing. Watch where the rule object (or function) is created, how it reaches the basket, and who does the arithmetic when <code>price</code> is called.",
+          "intro": "The basket never chooses its own pricing. Watch where the rule is created, how it reaches the basket, and who does the arithmetic when <code>price</code> is called.",
           "runs": [
             {
               "label": "Java: a PriceRule object",
@@ -1056,7 +1056,7 @@
                   "stack": [
                     "main"
                   ],
-                  "say": "<code>new StudentPrice()</code>: main chooses the policy. The choice is made here, in plain sight, where the objects are built."
+                  "say": "<code>new StudentPrice()</code>: main chooses the policy, in plain sight, where the objects are built."
                 },
                 {
                   "at": "Basket(PriceRule rule) { this.rule=rule; }",
@@ -1077,7 +1077,7 @@
                     "main",
                     "Basket(rule)"
                   ],
-                  "say": "The constructor receives the rule and keeps a reference to it. Its parameter type is <code>PriceRule</code>, the interface, so any rule would fit."
+                  "say": "The constructor keeps a reference to the rule. Its parameter type is the <code>PriceRule</code> interface, so any rule would fit."
                 },
                 {
                   "at": "Basket basket=new Basket(new StudentPrice());",
@@ -1089,7 +1089,7 @@
                   "stack": [
                     "main"
                   ],
-                  "say": "main now holds the basket. It never told the basket <em>how</em> to price; it handed over an object that knows."
+                  "say": "main now holds the basket. It never said <em>how</em> to price. It handed over an object that knows."
                 },
                 {
                   "at": "System.out.println(basket.price(1000));",
@@ -1116,7 +1116,7 @@
                     "basket.price(1000)",
                     "rule.apply(1000)"
                   ],
-                  "say": "The basket delegates: <code>rule.apply(cents)</code>. It only knows the interface; Java runs <code>StudentPrice</code>'s <code>apply</code> because that is the object it was given."
+                  "say": "The basket delegates: <code>rule.apply(cents)</code>. It only knows the interface. Java runs <code>StudentPrice</code>'s <code>apply</code> because that is the object it was given."
                 },
                 {
                   "at": "public int apply(int cents)",
@@ -1199,7 +1199,7 @@
                     "main program",
                     "Basket.__init__"
                   ],
-                  "say": "In Python a function is an object too, so the caller can pass <code>student_price</code> itself (no brackets: it is not called yet). The basket stores it."
+                  "say": "In Python a function is an object too, so the caller passes <code>student_price</code> itself (no brackets: it is not called yet). The basket stores it."
                 },
                 {
                   "at": "def price(self, cents)",
@@ -1300,7 +1300,7 @@
                   "stack": [
                     "main program"
                   ],
-                  "say": "Full price: 1000. With only one operation to vary, a function is a lighter design than an interface and classes."
+                  "say": "Full price: 1000. With only one operation to vary, a function is lighter than an interface and classes."
                 }
               ]
             }
@@ -1375,12 +1375,12 @@
           "notes": [
             [
               "List<PriceRule> rules",
-              "A list of the interface type can hold any rule. The loop below never needs to know which classes exist.",
+              "A list of the interface type can hold any rule. The loop never needs to know which classes exist.",
               "Any rule"
             ],
             [
               "rules.add(new HalfPrice());",
-              "Adding the half-price offer is one new class and one line here. <code>Basket</code> is not edited: open for extension, closed for modification.",
+              "The half-price offer is one new class and one line here. <code>Basket</code> is not edited: open for extension, closed for modification.",
               "Extension"
             ],
             [
@@ -1395,7 +1395,7 @@
             ],
             [
               "return cents / 2;",
-              "The whole half-price policy. It lives in its own class, so it can be tested alone.",
+              "The whole half-price policy. It has its own class, so you can test it alone.",
               "One policy"
             ],
             [
@@ -1415,7 +1415,7 @@
           "notes": [
             [
               "def __init__(self, clock):",
-              "The greeter is <em>given</em> a clock: any function that returns the current hour. In the real program you would pass <code>lambda: datetime.now().hour</code>.",
+              "The greeter is <em>given</em> a clock: any function that returns the current hour. A real program would pass <code>lambda: datetime.now().hour</code>.",
               "Injected clock"
             ],
             [
@@ -1430,7 +1430,7 @@
             ],
             [
               "print(Greeter(fake_afternoon).greet(\"Linh\"))",
-              "Same class, other fake, other branch. Both branches are tested in one run, without waiting for the afternoon.",
+              "Same class, other fake, other branch. Both branches are tested in one run.",
               "Both branches"
             ]
           ]
@@ -1442,19 +1442,19 @@
       "concepts": [
         [
           "The signature is only part of the contract",
-          "<p>The <strong>Liskov substitution principle</strong> (the L in SOLID) is about behaviour. A replacement must keep the promises that make its callers correct. Barbara Liskov first set out the idea in a 1987 conference keynote, <em>Data Abstraction and Hierarchy</em>, and in 1994 she and Jeannette Wing gave it a precise form.</p><p>Java&rsquo;s type checker can check that a method exists with the right signature. It cannot check what the method <em>does</em>. A <code>List</code> whose <code>add</code> quietly inserted at the front would compile, and would break every caller that relies on append order.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>A replacement may&hellip;</th><th>&hellip;but must not</th></tr></thead><tbody><tr><td>accept more inputs than the original</td><td>refuse inputs the original accepted</td></tr><tr><td>promise more (faster, more precise)</td><td>promise less (wrong order, values lost)</td></tr><tr><td>store its data differently</td><td>add surprising side effects: printing, deleting, sending</td></tr></tbody></table></div><p>Java itself has a documented exception: in the <code>List</code> documentation, <code>add</code> is marked <em>optional operation</em>. <code>Arrays.asList</code> returns a fixed-size list, so this compiles and then throws:</p><div class=\"code-card\"><pre>List&lt;String&gt; names = Arrays.asList(\"An\", \"Binh\");\nnames.add(\"Mai\");   // UnsupportedOperationException</pre></div>"
+          "<p>The <strong>Liskov substitution principle</strong> (the L in SOLID): a replacement must keep the promises its callers rely on. Barbara Liskov set out the idea in a 1987 keynote, <em>Data Abstraction and Hierarchy</em>. In 1994 she and Jeannette Wing made it precise.</p><p>The compiler checks signatures, not behaviour. A <code>List</code> whose <code>add</code> inserted at the front would compile, and break every caller that expects append order.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>A replacement may&hellip;</th><th>&hellip;but must not</th></tr></thead><tbody><tr><td>accept more inputs than the original</td><td>refuse inputs the original accepted</td></tr><tr><td>promise more (faster, more precise)</td><td>promise less (wrong order, values lost)</td></tr><tr><td>store its data differently</td><td>add surprising side effects: printing, deleting, sending</td></tr></tbody></table></div><p>Even Java&rsquo;s <code>List</code> documentation marks <code>add</code> as an <em>optional operation</em>. <code>Arrays.asList</code> returns a fixed-size list, so this compiles and then throws:</p><div class=\"code-card\"><pre>List&lt;String&gt; names = Arrays.asList(\"An\", \"Binh\");\nnames.add(\"Mai\");   // UnsupportedOperationException</pre></div>"
         ],
         [
-          "Expose only the capability a caller uses",
-          "<p>The <strong>interface segregation principle</strong> (the I in SOLID) keeps callers from depending on operations they never use. A notifier needs <code>send</code>, not a whole service that can also store data, change settings and delete users.</p><p>A narrow interface pays off three ways. Callers are protected from changes to operations they do not use. Writing another implementation is easy, because there is only one method to write. And a test can pass a simple <em>recorder</em> that satisfies the same capability without sending anything real; the test then inspects the recorded messages as well as the return values.</p><p>In Python there is often no interface at all: <code>notify</code> works with any object that has a <code>send</code> method. This is <em>duck typing</em> (&ldquo;if it quacks like a duck&hellip;&rdquo;). The principle still applies: the fewer methods a function calls on its parameter, the more objects can stand in for it.</p>"
+          "Give callers only what they use",
+          "<p>The <strong>interface segregation principle</strong> (the I in SOLID): callers should not depend on operations they never use. A notifier needs <code>send</code>, not a whole service that also stores data and deletes users.</p><p>A narrow interface:</p><ul><li>shields callers from changes to other operations</li><li>is easy to implement: one method</li><li>lets a test pass a <em>recorder</em> that keeps messages instead of sending them</li></ul><p>Python often has no interface at all. <code>notify</code> accepts any object with a <code>send</code> method. This is <em>duck typing</em> (&ldquo;if it quacks like a duck&hellip;&rdquo;). The fewer methods you call on a parameter, the more objects fit.</p>"
         ],
         [
           "The classic trap: is a square a rectangle?",
-          "<p>In maths, every square is a rectangle. So <code>class Square extends Rectangle</code> looks obviously right. Run the extra example <em>A square that breaks a rectangle&rsquo;s promise</em>: a method sets width 5 and height 4 and expects an area of 20. The rectangle gives 20. The square, which must keep its sides equal, gives 16.</p><p>Nothing crashed and the compiler was happy. The square broke a promise the rectangle made: &ldquo;setting the height does not change the width&rdquo;. Any code written for rectangles is now wrong when it is handed a square.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: trusting the English &ldquo;is a&rdquo;</span><p>&ldquo;A square <em>is a</em> rectangle&rdquo; and &ldquo;a penguin <em>is a</em> bird&rdquo; are true in English, and both make broken subclasses if <code>Rectangle</code> has independent setters or <code>Bird</code> has <code>fly()</code>. Ask instead: <em>can it do everything the parent promises, in every situation?</em> If not, use a shared interface (<code>Shape</code> with <code>area()</code>) or composition.</p></div><div class=\"note tip\"><span class=\"tag\">One way out</span><p>Make shapes unchangeable: <code>new Rectangle(5, 4)</code> and <code>new Square(4)</code>, with no setters. Without setters there is no promise to break, and both can implement <code>Shape</code>.</p></div>"
+          "<p>In maths every square is a rectangle, so <code>class Square extends Rectangle</code> looks right. In the extra <em>A square that breaks a rectangle&rsquo;s promise</em>, a method sets width 5 and height 4 and expects an area of 20. A rectangle gives 20. A square keeps its sides equal and gives 16.</p><p>It compiles and runs, but it breaks the rectangle&rsquo;s promise: &ldquo;setting the height does not change the width&rdquo;.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: trusting the English &ldquo;is a&rdquo;</span><p>&ldquo;A square <em>is a</em> rectangle&rdquo; and &ldquo;a penguin <em>is a</em> bird&rdquo; both make broken subclasses if <code>Rectangle</code> has independent setters or <code>Bird</code> has <code>fly()</code>. Ask: <em>can it do everything the parent promises, in every situation?</em> If not, use a shared interface (<code>Shape</code> with <code>area()</code>) or composition.</p></div><div class=\"note tip\"><span class=\"tag\">One way out</span><p>Make shapes unchangeable: <code>new Rectangle(5, 4)</code> and <code>new Square(4)</code>, with no setters. Then there is no promise to break, and both can implement <code>Shape</code>.</p></div>"
         ],
         [
           "Contracts in Java and in Python",
-          "<p>Both languages let you state a contract; they check it at different moments. In both, only tests can check behaviour.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a contract</td><td><code>interface Channel { String send(String m); }</code></td><td>nothing (duck typing), or a class with <code>ABC</code> and <code>@abstractmethod</code>, or <code>typing.Protocol</code></td></tr><tr><td>a method is missing</td><td>compile error</td><td>plain class: <code>AttributeError</code> when called.<br>ABC: <code>TypeError</code> when the object is created</td></tr><tr><td>mark an override</td><td><code>@Override</code>, checked by the compiler</td><td><code>@typing.override</code> (Python 3.12+), checked only by tools such as type checkers</td></tr><tr><td>the behaviour is wrong</td><td>tests</td><td>tests</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: leaving out @Override</span><p>Misspell an overriding method (<code>tostring()</code> instead of <code>toString()</code>) and Java happily adds a new method; the old one still runs. With <code>@Override</code> on it, the compiler reports the mistake at once. It costs nothing, so use it every time.</p></div>"
+          "<p>Both languages can state a contract. They check it at different moments. Only tests check behaviour.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>declare a contract</td><td><code>interface Channel { String send(String m); }</code></td><td>nothing (duck typing), or a class with <code>ABC</code> and <code>@abstractmethod</code>, or <code>typing.Protocol</code></td></tr><tr><td>a method is missing</td><td>compile error</td><td>plain class: <code>AttributeError</code> when called.<br>ABC: <code>TypeError</code> when the object is created</td></tr><tr><td>mark an override</td><td><code>@Override</code>, checked by the compiler</td><td><code>@typing.override</code> (Python 3.12+), checked only by tools such as type checkers</td></tr><tr><td>the behaviour is wrong</td><td>tests</td><td>tests</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: leaving out @Override</span><p>Misspell an override (<code>tostring()</code> instead of <code>toString()</code>) and Java quietly adds a new method. With <code>@Override</code>, the compiler reports the mistake at once. Use it every time.</p></div>"
         ]
       ],
       "examples": [
@@ -1465,11 +1465,11 @@
           "notes": [
             [
               "xs.add(2)",
-              "The List add contract appends; caller expectations include order."
+              "List's <code>add</code> promises to append, so callers can rely on the order."
             ],
             [
               "a.equals(b)",
-              "List equality compares ordered elements across different implementations."
+              "List equality compares the elements in order, even across different List classes."
             ]
           ],
           "wrong": [
@@ -1489,11 +1489,11 @@
           "notes": [
             [
               "def notify(channel, message)",
-              "Require only send; the caller need not know how delivery is implemented."
+              "Needs only <code>send</code>. It does not care how delivery works."
             ],
             [
               "self.messages.append",
-              "A recording implementation makes the interaction observable in a test."
+              "The recorder keeps each message, so a test can see what was sent."
             ]
           ],
           "wrong": [
@@ -1507,12 +1507,12 @@
           "output": "recorded\n['Ready']\n"
         }
       ],
-      "try": "Invent a send implementation that silently drops messages. Explain why matching a method signature alone does not prove the replacement is suitable.",
+      "try": "Write a send implementation that silently drops messages. Why does a matching method signature not prove it is a suitable replacement?",
       "visuals": [
         {
           "kind": "w11-swap",
           "title": "Swap the implementation: does it keep the promise?",
-          "intro": "Each replacement below is accepted: the Java ones compile and the Python ones run without an error. But does the caller still get what it relies on? Pick a replacement, <strong>predict</strong>, then reveal the real output.",
+          "intro": "Each replacement is accepted: the Java ones compile and the Python ones run without an error. But does the caller still get what it relies on? Pick one, <strong>predict</strong>, then reveal the real output.",
           "cases": [
             {
               "id": "list",
@@ -1534,7 +1534,7 @@
                 {
                   "label": "FrontList (home-made)",
                   "program": 2,
-                  "why": "<code>FrontList</code> is a List, so the compiler accepts it, but its <code>add</code> puts each element at the <em>front</em>. b ends up [3, 2]. The signature matched; the behaviour did not."
+                  "why": "<code>FrontList</code> is a List, so the compiler accepts it. But its <code>add</code> puts each element at the <em>front</em>, so b ends up [3, 2]. Same signature, different behaviour."
                 }
               ]
             },
@@ -1558,7 +1558,7 @@
                 {
                   "label": "Recorder that drops",
                   "program": 5,
-                  "why": "It still has <code>send</code> and still says <code>\"recorded\"</code>, but it never keeps the message. A test using it would pass while checking nothing."
+                  "why": "It has <code>send</code> and says <code>\"recorded\"</code>, but it never keeps the message. A test using it would pass while checking nothing."
                 },
                 {
                   "label": "Recorder that shouts",
@@ -1630,7 +1630,7 @@
         {
           "kind": "w11-calls",
           "title": "Callers that depend only on the promise",
-          "intro": "<code>fill</code> and <code>notify</code> each know only one thing about their parameter: what it promises to do. Step through and notice that neither ever asks <em>which</em> class it was given.",
+          "intro": "<code>fill</code> and <code>notify</code> know only what their parameter promises to do. Step through: neither ever asks <em>which</em> class it was given.",
           "runs": [
             {
               "label": "Java: fill() with two Lists",
@@ -1857,7 +1857,7 @@
                     "notify(channel, message)",
                     "recorder.send(message)"
                   ],
-                  "say": "It calls <code>channel.send(message)</code>. A <code>Screen</code> would also work here; so would anything else with a suitable <code>send</code>."
+                  "say": "It calls <code>channel.send(message)</code>. A <code>Screen</code>, or anything else with a suitable <code>send</code>, would also work."
                 },
                 {
                   "at": "self.messages.append(message)",
@@ -1871,7 +1871,7 @@
                     "notify(channel, message)",
                     "recorder.send(message)"
                   ],
-                  "say": "Instead of showing the message anywhere, the recorder keeps it, so a test can look at it afterwards."
+                  "say": "The recorder keeps the message instead of showing it, so a test can look at it afterwards."
                 },
                 {
                   "at": "return \"recorded\"",
@@ -1905,7 +1905,7 @@
                   "stack": [
                     "main program"
                   ],
-                  "say": "The test can check the interaction itself: exactly one message, <code>Ready</code>, was sent. No real screen or email was involved."
+                  "say": "The test checks the interaction itself: exactly one message, <code>Ready</code>, was sent. No real screen or email was involved."
                 }
               ]
             }
@@ -1941,7 +1941,7 @@
         {
           "kind": "w11-change",
           "title": "One big interface or a narrow one?",
-          "intro": "<code>notify</code> only ever calls <code>send</code>. In the first version its parameter is a large <code>MessageService</code> that also manages user accounts; in the second it is a one-method <code>Channel</code>. Make the two changes in order and watch which classes are dragged in.",
+          "intro": "<code>notify</code> only calls <code>send</code>. In the first version its parameter is a large <code>MessageService</code> that also manages user accounts. In the second it is a one-method <code>Channel</code>. Make the two changes in order and watch which classes are dragged in.",
           "lang": "java",
           "unitLabels": {
             "Demo": "main (Demo)"
@@ -1990,7 +1990,7 @@
               "note": "Only <code>Accounts</code> changes. (Whatever class manages accounts would implement it; it is not part of this program.) <code>Screen</code> and <code>Recorder</code> are untouched."
             }
           },
-          "summary": "A client should not be forced to depend on operations it does not use. With the narrow interface, an account change never reaches the classes that only send messages.",
+          "summary": "A client should not depend on operations it does not use. With the narrow interface, an account change never reaches the classes that only send messages.",
           "programs": [
             {
               "lang": "java",
@@ -2121,7 +2121,7 @@
             ],
             [
               "void setHeight(int h) { width = h; height = h; }",
-              "To stay square it changes the width too. Setting the height to 4 makes it 4 by 4, so the area is 16, not 20.",
+              "To stay square it changes the width too. Height 4 makes it 4 by 4, so the area is 16, not 20.",
               "The broken promise"
             ],
             [
@@ -2137,20 +2137,20 @@
       "title": "Cohesion, coupling and practical restraint",
       "concepts": [
         [
-          "Coordinate without owning every rule",
-          "<p>A program receives requests from outside: a button press, a line of input, a web request. GRASP&rsquo;s <strong>Controller</strong> is the first object beyond the user interface that receives such a request and decides which model objects should handle it. It translates; it does not own the rules.</p><p>In the example, <code>Counter.borrow()</code> turns a request into <code>stock.take()</code> and a reply. The rule about whether a copy is available stays in <code>Stock</code>, the information expert. The controller never duplicates the availability calculation.</p><p>Two words describe how good this division is. <strong>Cohesion</strong>: how closely the parts of one class belong together. <strong>Coupling</strong>: how much one class depends on the details of another. Aim for <em>high cohesion, low coupling</em>: each class does one related set of things, and knows as little as possible about the others.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: the class that does everything</span><p>A controller that checks stock, computes fines, formats messages and writes the log is the Swiss Army knife again. It is easy to write and painful to change. If a controller method is longer than a few lines, look for an expert to hand the work to.</p></div>"
+          "Coordinate without owning the rules",
+          "<p>A GRASP <strong>Controller</strong> is the first object beyond the user interface to receive a request from outside, such as a button press or a line of input. It passes the work to the right model objects. It does not own the rules.</p><p><code>Counter.borrow()</code> turns a request into <code>stock.take()</code> and a reply. The availability rule stays in <code>Stock</code>, the expert.</p><ul><li><strong>Cohesion</strong>: how closely the parts of one class belong together. Aim high.</li><li><strong>Coupling</strong>: how much one class depends on another&rsquo;s details. Aim low.</li></ul><div class=\"note warn\"><span class=\"tag\">Common mistake: the class that does everything</span><p>A controller that checks stock, computes fines, formats messages and writes the log is the Swiss Army knife again. If a controller method grows past a few lines, hand work to an expert.</p></div>"
         ],
         [
-          "Keep one source of each rule",
-          "<p>Andy Hunt and Dave Thomas state <strong>DRY</strong> (<em>Don&rsquo;t Repeat Yourself</em>) in <em>The Pragmatic Programmer</em> (1999): &ldquo;Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.&rdquo; Note the word <em>knowledge</em>. DRY is about rules, not about text that happens to look alike.</p><p><strong>YAGNI</strong> stands for &ldquo;You Aren&rsquo;t Gonna Need It&rdquo;, a mantra from Extreme Programming. Martin Fowler <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">traces it</a> to Kent Beck answering a list of features &ldquo;the system would soon need&rdquo; with &ldquo;you aren&rsquo;t going to need it&rdquo;. Build what the program needs now, and keep it easy to change.</p><p>GRASP also names Creator, Polymorphism, Pure Fabrication, Indirection and Protected Variations. Use those names to explain a design, not to force extra layers into a small program.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: merging things that only look the same</span><p>The pass mark is 50 and the late-penalty cap is also 50. Using one constant for both is not DRY; it couples two unrelated rules, so changing one silently changes the other. Ask &ldquo;if this one changed, must that one change too?&rdquo; Only if the answer is yes is it the same knowledge.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-hoare.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Tony Hoare\"></div><p>&ldquo;There are two ways of constructing a software design: One way is to make it so simple that there are <em>obviously</em> no deficiencies and the other way is to make it so complicated that there are no <em>obvious</em> deficiencies. The first method is far more difficult.&rdquo;</p><span class=\"attrib\">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture, CACM 24(2), 1981 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg\" target=\"_blank\" rel=\"noopener\">Rama, 2011</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY-SA 2.0 fr</a></span></span></div>"
+          "One home for each rule",
+          "<p><strong>DRY</strong> (<em>Don&rsquo;t Repeat Yourself</em>) comes from Andy Hunt and Dave Thomas&rsquo;s <em>The Pragmatic Programmer</em> (1999): &ldquo;Every piece of knowledge must have a single, unambiguous, authoritative representation within a system.&rdquo; It is about <em>knowledge</em>, not text that looks alike.</p><p><strong>YAGNI</strong> (&ldquo;You Aren&rsquo;t Gonna Need It&rdquo;) comes from Extreme Programming. Martin Fowler <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">traces it</a> to Kent Beck answering a list of features &ldquo;the system would soon need&rdquo; with &ldquo;you aren&rsquo;t going to need it&rdquo;. Build what you need now.</p><p>Use GRASP names (Creator, Polymorphism, Pure Fabrication, Indirection, Protected Variations) to explain a design, not to add layers to a small program.</p><div class=\"note warn\"><span class=\"tag\">Common mistake: merging things that only look the same</span><p>The pass mark is 50 and the late-penalty cap is also 50. One shared constant couples two unrelated rules, so changing one silently changes the other. Ask: &ldquo;if this one changed, must that one change too?&rdquo; Only a yes means it is the same knowledge.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-hoare.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Tony Hoare\"></div><p>&ldquo;There are two ways of constructing a software design: One way is to make it so simple that there are <em>obviously</em> no deficiencies and the other way is to make it so complicated that there are no <em>obvious</em> deficiencies. The first method is far more difficult.&rdquo;</p><span class=\"attrib\">C. A. R. Hoare, <em>The Emperor&rsquo;s Old Clothes</em>, 1980 ACM Turing Award Lecture, CACM 24(2), 1981 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ASir_Tony_Hoare_IMG_5125.jpg\" target=\"_blank\" rel=\"noopener\">Rama, 2011</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/2.0/fr/deed.en\" target=\"_blank\" rel=\"noopener\">CC BY-SA 2.0 fr</a></span></span></div>"
         ],
         [
           "Coupling you can see: long chains of dots",
-          "<p>One quick way to spot tight coupling is to count the dots:</p><div class=\"code-card\"><pre>String city = order.getCustomer().getAddress().getCity();   // knows three classes\nString city = order.deliveryCity();                          // knows one</pre></div><p>The first line depends on how orders, customers <em>and</em> addresses are built inside. If addresses gain a second line or customers get several addresses, every chain like this breaks. The second line asks the order, and only the order needs to know the path.</p><p>The guideline is called the <strong>Law of Demeter</strong>, or &ldquo;talk only to your immediate friends&rdquo;. Ian Holland proposed it in 1987 while working on the Demeter project at Northeastern University, which gave it its name.</p><div class=\"note tip\"><span class=\"tag\">A guideline, not a law</span><p>Chains on values are fine: <code>name.strip().lower()</code> or <code>sb.append(a).append(b)</code> each return the same kind of value, not a path into someone else&rsquo;s internals. The smell is walking through several <em>different</em> objects to reach a piece of data.</p></div>"
+          "<p>To spot tight coupling, count the dots:</p><div class=\"code-card\"><pre>String city = order.getCustomer().getAddress().getCity();   // knows three classes\nString city = order.deliveryCity();                          // knows one</pre></div><p>The first line depends on the insides of orders, customers <em>and</em> addresses. If customers get several addresses, it breaks. The second line asks only the order.</p><p>This is the <strong>Law of Demeter</strong>: &ldquo;talk only to your immediate friends&rdquo;. Ian Holland proposed it in 1987, on the Demeter project at Northeastern University.</p><div class=\"note tip\"><span class=\"tag\">A guideline, not a law</span><p>Chains on values are fine: <code>name.strip().lower()</code> or <code>sb.append(a).append(b)</code>. The smell is walking through several <em>different</em> objects to reach some data.</p></div>"
         ],
         [
           "Refactoring: change the design, keep the behaviour",
-          "<p>Martin Fowler&rsquo;s book <em>Refactoring</em> <a href=\"https://martinfowler.com/bliki/DefinitionOfRefactoring.html\" target=\"_blank\" rel=\"noopener\">defines</a> it as &ldquo;a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.&rdquo; Same output, better shape.</p><p>The method is small, safe steps. Have a test (or at least a known output) first. Make one small change. Run it. Repeat. The last interactive diagram below walks through four such steps, and the extra example <em>Refactor, then prove nothing changed</em> prints <code>True</code> when the old and new versions agree.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Refactoring</th><th>Use it when</th><th>This week</th></tr></thead><tbody><tr><td>Rename</td><td>a name no longer says what the thing does</td><td><code>doIt</code> &rarr; <code>borrow</code></td></tr><tr><td>Extract method / function</td><td>a block of code has a job you can name</td><td><code>passes(mark)</code></td></tr><tr><td>Move method</td><td>a method uses another class&rsquo;s data more than its own</td><td>subtotal moves into <code>Line</code></td></tr><tr><td>Replace conditional with polymorphism</td><td>an <code>if</code>-chain on a type keeps growing</td><td><code>PriceRule</code> classes</td></tr><tr><td>Delete dead code</td><td>nothing calls it any more</td><td>old code paths, unused flags</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: refactoring and adding a feature at once</span><p>If the output changes, which edit caused it? Keep the two apart: first refactor until the output is identical, then add the feature as a separate step.</p></div><div class=\"note danger\"><span class=\"tag\">Code that was &ldquo;not meant to be used&rdquo;</span><p>On 1 August 2012, in the first 45 minutes after the market opened, Knight Capital&rsquo;s trading router sent more than 4 million orders while trying to fill just 212 customer orders. The firm lost more than $460 million. According to the US Securities and Exchange Commission, Knight had moved a section of code in 2005, leaving an old function defective; &ldquo;although this function was not meant to be used, Knight left it in the router&rdquo;. In late July 2012 Knight incorrectly deployed new code in the same router. Source: <a href=\"https://www.sec.gov/news/press-release/2013-222\" target=\"_blank\" rel=\"noopener\">SEC press release 2013-222</a>. Unused code still has to be understood, tested and deployed correctly. If nothing needs it, delete it.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-dijkstra.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Edsger W. Dijkstra\"></div><p>&ldquo;Simplicity is prerequisite for reliability.&rdquo;</p><span class=\"attrib\">E. W. Dijkstra, EWD 498, <em>How do we tell truths that might hurt?</em>, 1975 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg\" target=\"_blank\" rel=\"noopener\">Hamilton Richards, 2002</a> &middot; <a href=\"http://creativecommons.org/licenses/by-sa/3.0/\" target=\"_blank\" rel=\"noopener\">CC BY-SA 3.0</a></span></span></div>"
+          "<p>Martin Fowler&rsquo;s book <em>Refactoring</em> <a href=\"https://martinfowler.com/bliki/DefinitionOfRefactoring.html\" target=\"_blank\" rel=\"noopener\">defines</a> it as &ldquo;a change made to the internal structure of software to make it easier to understand and cheaper to modify without changing its observable behavior.&rdquo;</p><p>Work in small steps: have a test or a known output, make one change, run it, repeat. The last diagram below shows four such steps. The extra <em>Refactor, then prove nothing changed</em> prints <code>True</code> when the old and new versions agree.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Refactoring</th><th>Use it when</th><th>This week</th></tr></thead><tbody><tr><td>Rename</td><td>a name no longer says what the thing does</td><td><code>doIt</code> &rarr; <code>borrow</code></td></tr><tr><td>Extract method / function</td><td>a block of code has a job you can name</td><td><code>passes(mark)</code></td></tr><tr><td>Move method</td><td>a method uses another class&rsquo;s data more than its own</td><td>subtotal moves into <code>Line</code></td></tr><tr><td>Replace conditional with polymorphism</td><td>an <code>if</code>-chain on a type keeps growing</td><td><code>PriceRule</code> classes</td></tr><tr><td>Delete dead code</td><td>nothing calls it any more</td><td>old code paths, unused flags</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Common mistake: refactoring and adding a feature at once</span><p>If the output then changes, you cannot tell which edit caused it. Refactor until the output is identical, then add the feature.</p></div><div class=\"note danger\"><span class=\"tag\">Code that was &ldquo;not meant to be used&rdquo;</span><p>On 1 August 2012, in the first 45 minutes of trading, Knight Capital&rsquo;s router sent more than 4 million orders while trying to fill 212 customer orders, and the firm lost more than $460 million. The US Securities and Exchange Commission found an old function left defective when code was moved in 2005: &ldquo;although this function was not meant to be used, Knight left it in the router&rdquo;. In late July 2012 Knight incorrectly deployed new code in the same router. Source: <a href=\"https://www.sec.gov/news/press-release/2013-222\" target=\"_blank\" rel=\"noopener\">SEC press release 2013-222</a>. If nothing needs some code, delete it.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-dijkstra.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Edsger W. Dijkstra\"></div><p>&ldquo;Simplicity is prerequisite for reliability.&rdquo;</p><span class=\"attrib\">E. W. Dijkstra, EWD 498, <em>How do we tell truths that might hurt?</em>, 1975 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AEdsger_Wybe_Dijkstra.jpg\" target=\"_blank\" rel=\"noopener\">Hamilton Richards, 2002</a> &middot; <a href=\"http://creativecommons.org/licenses/by-sa/3.0/\" target=\"_blank\" rel=\"noopener\">CC BY-SA 3.0</a></span></span></div>"
         ]
       ],
       "examples": [
@@ -2161,11 +2161,11 @@
           "notes": [
             [
               "stock.take()",
-              "The stock object owns the availability rule and state change."
+              "Stock owns the availability rule and changes its own count."
             ],
             [
               "Counter(Stock stock)",
-              "The controller receives its collaborator and coordinates the request."
+              "The controller is given its collaborator and coordinates the request."
             ]
           ],
           "wrong": [
@@ -2185,11 +2185,11 @@
           "notes": [
             [
               "def passes",
-              "Keep the pass rule in one place so callers cannot quietly disagree."
+              "The pass rule lives in one place, so callers cannot quietly disagree."
             ],
             [
               "sum(passes(mark) for mark in marks)",
-              "Both the count and labels depend on the same rule."
+              "The count and the labels both use the same rule."
             ]
           ],
           "wrong": [
@@ -2203,12 +2203,12 @@
           "output": "2\n['F', 'P', 'P']\n"
         }
       ],
-      "try": "Move the pass threshold from 50 to 60 in one place and predict both outputs. For the borrowing example, identify the controller, expert and source of mutable state.",
+      "try": "Move the pass threshold from 50 to 60 in one place and predict both outputs. In the borrowing example, find the controller, the expert and the object whose state changes.",
       "visuals": [
         {
           "kind": "w11-tangle",
           "title": "Untangle the library counter",
-          "intro": "Five jobs have been handed out badly. A <span class=\"w11-key bad\">red arrow</span> means a class is doing a job that needs another class's data or role, so it depends on that class's details. The <span class=\"w11-key ok\">grey arrows</span> are the two calls the program really needs. Select a job, then press <strong>Move here</strong> on the class that should own it.",
+          "intro": "Five jobs are in the wrong place. A <span class=\"w11-key bad\">red arrow</span> means a class does a job that needs another class's data or role. The <span class=\"w11-key ok\">grey arrows</span> are the two calls the program really needs. Select a job, then press <strong>Move here</strong> on the class that should own it.",
           "classes": [
             {
               "id": "ui",
@@ -2267,7 +2267,7 @@
               "home": "counter",
               "start": "stock",
               "needs": "the reply wording",
-              "why": "Translating a model result into a response is the controller's job. Stock should not care how the answer is worded."
+              "why": "Turning a model result into a response is the controller's job. Stock should not care how the answer is worded."
             },
             {
               "id": "coord",
@@ -2303,7 +2303,7 @@
         {
           "kind": "w11-calls",
           "title": "A controller coordinates, the expert decides",
-          "intro": "Step through three borrow requests. Watch <code>count</code> inside the Stock, and notice that the Counter never touches it: it only asks.",
+          "intro": "Step through three borrow requests. Watch <code>count</code> inside the Stock. The Counter never touches it: it only asks.",
           "runs": [
             {
               "label": "Java: Counter and Stock",
@@ -2719,7 +2719,7 @@
         {
           "kind": "w11-change",
           "title": "Move the pass mark to 60: one place or two?",
-          "intro": "Both programs print the same result today. In the first, the rule <code>mark&gt;=50</code> is copied into two functions; in the second (the example below), it has one home, <code>passes</code>. Send both the same change request.",
+          "intro": "Both programs print the same result today. In the first, the rule <code>mark&gt;=50</code> is copied into two functions. In the second (the example below), it has one home, <code>passes</code>. Send both the same change request.",
           "lang": "python",
           "versions": [
             {
@@ -2755,7 +2755,7 @@
               "note": "One edit, and both results change together. There is no second copy to forget."
             }
           },
-          "summary": "DRY is about knowledge, not about text: the pass mark is one decision, so it gets one home. YAGNI pulls the other way: do not build a configurable rules engine for a threshold that has one value.",
+          "summary": "DRY is about knowledge, not text: the pass mark is one decision, so it gets one home. YAGNI pulls the other way: do not build a configurable rules engine for a threshold with one value.",
           "programs": [
             {
               "lang": "python",
@@ -2804,7 +2804,7 @@
         {
           "kind": "w11-refactor",
           "title": "Refactor step by step: from one long main to Counter and Stock",
-          "intro": "Refactoring changes the design without changing what the program does. Step through four small moves that turn a copy-and-paste <code>main</code> into the controller example below. Each step shows what changed, why, and a check that the real output stayed the same.",
+          "intro": "Refactoring changes the design, not what the program does. Step through four small moves that turn a copy-and-paste <code>main</code> into the controller example below. Each step checks that the real output stayed the same.",
           "lang": "java",
           "metrics": [
             {
@@ -2825,7 +2825,7 @@
               "program": 0,
               "title": "Start: everything in main",
               "tag": "Starting point",
-              "why": "It works, but the stock rule is pasted three times and <code>main</code> does everything: holds the count, applies the rule, chooses the reply and prints it."
+              "why": "It works, but the stock rule is pasted three times. <code>main</code> does everything: holds the count, applies the rule, chooses the reply and prints it."
             },
             {
               "program": 1,
@@ -2843,13 +2843,13 @@
               "program": 3,
               "title": "Give the request a coordinator: Counter",
               "tag": "Controller \u00b7 low coupling",
-              "why": "Turning a request into a model call and a reply is now the Counter's job, so <code>main</code> only starts things and prints. This is the example below."
+              "why": "Turning a request into a model call and a reply is now the Counter's job. <code>main</code> only starts things and prints. This is the example below."
             },
             {
               "program": 3,
               "title": "Stop here",
               "tag": "YAGNI",
-              "why": "Tempting next steps: a <code>BorrowPolicy</code> interface, a factory, a configuration file. There is only one policy, so none of them would earn its place yet. Add them when a real second policy arrives."
+              "why": "Tempting next steps: a <code>BorrowPolicy</code> interface, a factory, a configuration file. With only one policy, none of them earns its place yet. Add them when a real second policy arrives."
             }
           ],
           "programs": [
@@ -2962,7 +2962,7 @@
             ],
             [
               "print(report_before(marks) == report_after(marks))",
-              "The refactoring check: the old and new versions must give identical text. <code>True</code> means the behaviour did not change.",
+              "The refactoring check: old and new versions must give identical text. <code>True</code> means the behaviour did not change.",
               "Same behaviour"
             ]
           ]
@@ -3357,12 +3357,12 @@
     {
       "title": "SOLID and GRASP at a glance",
       "meta": "reference \u00b7 questions to ask",
-      "html": "<p>Reference, not reading. Each principle is best used as a <em>question</em> about a concrete piece of code.</p><h3 class=\"read-group-title\">SOLID</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Principle</th><th>Question to ask</th><th>Warning sign</th><th>This week</th></tr></thead><tbody><tr><td>S</td><td>Single responsibility</td><td>How many reasons could this class have to change?</td><td>calculation, wording and saving in one class</td><td><code>Order</code> and <code>format_receipt</code></td></tr><tr><td>O</td><td>Open&ndash;closed</td><td>Can I add the next case without editing working code?</td><td>an <code>if</code>-chain that grows with every new case</td><td>new <code>PriceRule</code> classes</td></tr><tr><td>L</td><td>Liskov substitution</td><td>Does the replacement keep every promise callers rely on?</td><td>a subclass that throws, ignores or reorders</td><td><code>ArrayList</code> vs <code>LinkedList</code>; the square</td></tr><tr><td>I</td><td>Interface segregation</td><td>Does this caller use everything it is given?</td><td>a parameter type with many methods, of which one is called</td><td><code>notify</code> needs only <code>send</code></td></tr><tr><td>D</td><td>Dependency inversion</td><td>Does the policy name a concrete detail it could be given instead?</td><td><code>new</code> of a concrete collaborator inside a class</td><td><code>Basket(PriceRule)</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">GRASP: nine patterns</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pattern</th><th>Question it answers</th><th>This week</th></tr></thead><tbody><tr><td>Information Expert</td><td>Who has the data for this job?</td><td><code>Line.subtotal()</code></td></tr><tr><td>Creator</td><td>Who should create this object?</td><td><code>Order.addLine</code> creates the <code>Line</code></td></tr><tr><td>Controller</td><td>Who first receives a request from outside?</td><td><code>Counter.borrow()</code></td></tr><tr><td>Low Coupling</td><td>How can this class know less about others?</td><td><code>order.deliveryCity()</code></td></tr><tr><td>High Cohesion</td><td>Do this class&rsquo;s parts belong together?</td><td>formatting kept out of <code>Order</code></td></tr><tr><td>Polymorphism</td><td>Behaviour varies by type: who chooses?</td><td>each rule&rsquo;s own <code>apply</code></td></tr><tr><td>Pure Fabrication</td><td>No domain class fits: may I invent one?</td><td>a receipt formatter</td></tr><tr><td>Indirection</td><td>Can a go-between keep two classes apart?</td><td>the <code>PriceRule</code> interface</td></tr><tr><td>Protected Variations</td><td>What is likely to change, and what shields the rest?</td><td>the clock passed to <code>Greeter</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Other useful ideas</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>In one line</th></tr></thead><tbody><tr><td>DRY</td><td>one authoritative home for each piece of <em>knowledge</em></td></tr><tr><td>YAGNI</td><td>build what is needed now; do not build for imagined futures</td></tr><tr><td>Tell, don&rsquo;t ask</td><td>ask an object to do the job instead of taking its data</td></tr><tr><td>Law of Demeter</td><td>talk to your immediate collaborators, not to their collaborators</td></tr><tr><td>Refactoring</td><td>improve the structure in small steps, keeping the output identical</td></tr></tbody></table></div>"
+      "html": "<p>Reference, not reading. Use each principle as a <em>question</em> about real code.</p><h3 class=\"read-group-title\">SOLID</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Principle</th><th>Question to ask</th><th>Warning sign</th><th>This week</th></tr></thead><tbody><tr><td>S</td><td>Single responsibility</td><td>How many reasons to change does this class have?</td><td>pricing, wording and saving in one class</td><td><code>Order</code> and <code>format_receipt</code></td></tr><tr><td>O</td><td>Open&ndash;closed</td><td>Can I add a case without editing working code?</td><td>an <code>if</code>-chain that grows with every new case</td><td>new <code>PriceRule</code> classes</td></tr><tr><td>L</td><td>Liskov substitution</td><td>Does the replacement keep every promise?</td><td>a subclass that throws, ignores or reorders</td><td><code>ArrayList</code> vs <code>LinkedList</code>; the square</td></tr><tr><td>I</td><td>Interface segregation</td><td>Does this caller use everything it is given?</td><td>a parameter with many methods, only one used</td><td><code>notify</code> needs only <code>send</code></td></tr><tr><td>D</td><td>Dependency inversion</td><td>Does the policy create a detail it could be given instead?</td><td><code>new</code> of a concrete collaborator inside a class</td><td><code>Basket(PriceRule)</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">GRASP: nine patterns</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pattern</th><th>Question it answers</th><th>This week</th></tr></thead><tbody><tr><td>Information Expert</td><td>Who has the data for this job?</td><td><code>Line.subtotal()</code></td></tr><tr><td>Creator</td><td>Who should create this object?</td><td><code>Order.addLine</code> creates the <code>Line</code></td></tr><tr><td>Controller</td><td>Who first receives a request from outside?</td><td><code>Counter.borrow()</code></td></tr><tr><td>Low Coupling</td><td>How can this class know less about others?</td><td><code>order.deliveryCity()</code></td></tr><tr><td>High Cohesion</td><td>Do this class&rsquo;s parts belong together?</td><td>formatting kept out of <code>Order</code></td></tr><tr><td>Polymorphism</td><td>Behaviour varies by type: who picks it?</td><td>each rule&rsquo;s own <code>apply</code></td></tr><tr><td>Pure Fabrication</td><td>No domain class fits: may I invent one?</td><td>a receipt formatter</td></tr><tr><td>Indirection</td><td>Can a go-between keep two classes apart?</td><td>the <code>PriceRule</code> interface</td></tr><tr><td>Protected Variations</td><td>What will change, and what shields the rest?</td><td>the clock passed to <code>Greeter</code></td></tr></tbody></table></div><h3 class=\"read-group-title\">Other useful ideas</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>In one line</th></tr></thead><tbody><tr><td>DRY</td><td>one authoritative home for each piece of <em>knowledge</em></td></tr><tr><td>YAGNI</td><td>build what is needed now, not for imagined futures</td></tr><tr><td>Tell, don&rsquo;t ask</td><td>ask an object to do the job, not for its data</td></tr><tr><td>Law of Demeter</td><td>talk to your collaborators, not to theirs</td></tr><tr><td>Refactoring</td><td>improve the structure in small steps, same output</td></tr></tbody></table></div>"
     },
     {
       "title": "Where the principles came from",
       "meta": "history \u00b7 1972 to 2004",
-      "html": "<p>None of this week&rsquo;s principles was invented as a rule to memorise. Each was someone&rsquo;s answer to a real problem: programs that were too hard to change.</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">1972</div><div class=\"tl-body\"><h4>Hiding the decisions likely to change</h4><p>David Parnas publishes &ldquo;On the Criteria To Be Used in Decomposing Systems into Modules&rdquo; in <em>Communications of the ACM</em>. His advice: split a program around the design decisions that are likely to change, and hide each one inside a module. Most of this week descends from that idea.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1974</div><div class=\"tl-body\"><h4>Coupling and cohesion get their names</h4><p>Wayne Stevens, Glenford Myers and Larry Constantine&rsquo;s paper &ldquo;Structured Design&rdquo; in the <em>IBM Systems Journal</em> uses coupling and cohesion to judge how a program is divided into modules.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1987</div><div class=\"tl-body\"><h4>Substitution</h4><p>Barbara Liskov&rsquo;s OOPSLA keynote <em>Data Abstraction and Hierarchy</em> asks when one type can safely stand in for another. With Jeannette Wing she gives it a precise form in 1994. She received the 2009 ACM Turing Award.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1988</div><div class=\"tl-body\"><h4>Open for extension</h4><p>Bertrand Meyer&rsquo;s <em>Object-Oriented Software Construction</em> states the open&ndash;closed principle.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1989</div><div class=\"tl-body\"><h4>CRC cards</h4><p>Kent Beck and Ward Cunningham present CRC cards at OOPSLA as a way to teach object-oriented thinking with index cards.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1999</div><div class=\"tl-body\"><h4>Refactoring, DRY and YAGNI</h4><p>Martin Fowler&rsquo;s <em>Refactoring</em> and Hunt and Thomas&rsquo;s <em>The Pragmatic Programmer</em> (which coins DRY) are published, and Extreme Programming spreads YAGNI.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2000</div><div class=\"tl-body\"><h4>The principles collected</h4><p>Robert C. Martin&rsquo;s paper <em>Design Principles and Design Patterns</em> brings together the principles later known as SOLID. Michael Feathers coins the acronym around 2004.</p></div></div></div><h3 class=\"read-group-title\">Liskov&rsquo;s original wording</h3><div class=\"joke\"><p>If for each object o<sub>1</sub> of type S there is an object o<sub>2</sub> of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o<sub>1</sub> is substituted for o<sub>2</sub> then S is a subtype of T.</p><span class=\"attrib\">Barbara Liskov, <em>Data Abstraction and Hierarchy</em>, SIGPLAN Notices, May 1988</span></div><p>In plain words: if every program written for T still behaves the same when you hand it an S, then S really is a kind of T. That is the square-and-rectangle test.</p><div class=\"note tip\"><span class=\"tag\">Read more</span><p><a href=\"https://en.wikipedia.org/wiki/SOLID\" target=\"_blank\" rel=\"noopener\">SOLID</a> &middot; <a href=\"https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)\" target=\"_blank\" rel=\"noopener\">GRASP</a> &middot; <a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">Beck &amp; Cunningham, CRC cards (1989)</a> &middot; <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">Fowler on YAGNI</a></p></div>"
+      "html": "<p>Each principle was someone&rsquo;s answer to a real problem: programs that were too hard to change.</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">1972</div><div class=\"tl-body\"><h4>Hiding the decisions likely to change</h4><p>David Parnas publishes &ldquo;On the Criteria To Be Used in Decomposing Systems into Modules&rdquo; in <em>Communications of the ACM</em>. Hide each decision likely to change inside its own module. Most of this week grows from that idea.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1974</div><div class=\"tl-body\"><h4>Coupling and cohesion get their names</h4><p>Wayne Stevens, Glenford Myers and Larry Constantine&rsquo;s &ldquo;Structured Design&rdquo; (<em>IBM Systems Journal</em>) judges a module split by its coupling and cohesion.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1987</div><div class=\"tl-body\"><h4>Substitution</h4><p>Barbara Liskov&rsquo;s OOPSLA keynote <em>Data Abstraction and Hierarchy</em> asks when one type can safely replace another. With Jeannette Wing she makes it precise in 1994. She received the 2009 ACM Turing Award.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1988</div><div class=\"tl-body\"><h4>Open for extension</h4><p>Bertrand Meyer&rsquo;s <em>Object-Oriented Software Construction</em> states the open&ndash;closed principle.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1989</div><div class=\"tl-body\"><h4>CRC cards</h4><p>Kent Beck and Ward Cunningham present CRC cards at OOPSLA, to teach object-oriented thinking with index cards.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1999</div><div class=\"tl-body\"><h4>Refactoring, DRY and YAGNI</h4><p>Martin Fowler&rsquo;s <em>Refactoring</em> and Hunt and Thomas&rsquo;s <em>The Pragmatic Programmer</em> (which coins DRY) appear. Extreme Programming spreads YAGNI.</p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2000</div><div class=\"tl-body\"><h4>The principles collected</h4><p>Robert C. Martin&rsquo;s paper <em>Design Principles and Design Patterns</em> collects the principles later called SOLID. Michael Feathers coins the acronym around 2004.</p></div></div></div><h3 class=\"read-group-title\">Liskov&rsquo;s original wording</h3><div class=\"joke\"><p>If for each object o<sub>1</sub> of type S there is an object o<sub>2</sub> of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o<sub>1</sub> is substituted for o<sub>2</sub> then S is a subtype of T.</p><span class=\"attrib\">Barbara Liskov, <em>Data Abstraction and Hierarchy</em>, SIGPLAN Notices, May 1988</span></div><p>In plain words: if every program written for T behaves the same when handed an S, then S really is a kind of T. That is the square-and-rectangle test.</p><div class=\"note tip\"><span class=\"tag\">Read more</span><p><a href=\"https://en.wikipedia.org/wiki/SOLID\" target=\"_blank\" rel=\"noopener\">SOLID</a> &middot; <a href=\"https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)\" target=\"_blank\" rel=\"noopener\">GRASP</a> &middot; <a href=\"http://c2.com/doc/oopsla89/paper.html\" target=\"_blank\" rel=\"noopener\">Beck &amp; Cunningham, CRC cards (1989)</a> &middot; <a href=\"https://martinfowler.com/bliki/Yagni.html\" target=\"_blank\" rel=\"noopener\">Fowler on YAGNI</a></p></div>"
     }
   ],
   "study": "Read the four-pillars recap, SOLID, GRASP and the practical design ideas on Ed. Use each principle to justify a concrete change rather than reciting its acronym."

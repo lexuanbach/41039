@@ -32,6 +32,7 @@ following page.
 | --- | --- |
 | `revision-week-10.tex` | The deck. Build: `xelatex revision-week-10.tex`, twice |
 | `revision-week-10.pdf` | Built output |
+| `revision-week-10-student.pdf` | Student copy: the first click of every slide, so no answers. Built by `python3 scripts/build_student_revisions.py --weeks 10` |
 | `bk-logo.png` | Required next to the `.tex` |
 | `examples/q02-mcq-append-mode/` | Starts `s.txt` with `old`, runs each of options A–D with `out.println("new")`, and prints what the file then holds |
 | `examples/q03-mcq-with-and-exceptions/` | The slide's program |

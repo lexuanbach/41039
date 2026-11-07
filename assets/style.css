@@ -1642,6 +1642,27 @@ aside.side .ch-num { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem
 .viz-langs { display: inline-flex; gap: 0.35rem; }
 .viz-body { padding: 0.85rem 0.9rem 1rem; display: grid; gap: 0.8rem; min-width: 0; }
 .viz-body > * { min-width: 0; }
+/* The body's height is fixed by visuals.js (the tallest step), so stepping never moves the page.
+   Anything taller scrolls inside; drag the bottom-right corner to resize. */
+.viz > .viz-body {
+  box-sizing: border-box; overflow: auto; overscroll-behavior: contain;
+  resize: vertical; min-height: 12rem; align-content: start; grid-auto-rows: max-content;
+}
+/* the step controls stay in view while the frame scrolls */
+.viz-body .viz-controls {
+  position: sticky; top: 0; bottom: 0; z-index: 3;
+  background: var(--surface); padding: 0.4rem 0; margin: -0.4rem 0;
+}
+.viz-head .viz-fs { font-size: 0.74rem; padding: 0.15rem 0.55rem; align-self: center; }
+/* full screen: the diagram is lifted over the page, like the code editor's full screen */
+.viz.is-full {
+  position: fixed; inset: 0.75rem; z-index: 1000; margin: 0; max-width: none;
+  display: flex; flex-direction: column;
+  box-shadow: 0 0 0 100vmax rgba(8, 12, 22, 0.6), 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+.viz.is-full > .viz-head { flex: 0 0 auto; min-height: 0 !important; }
+.viz.is-full > .viz-body { flex: 1 1 auto; height: auto !important; min-height: 0; resize: none; }
+@media (max-width: 560px) { .viz.is-full { inset: 0; border-radius: 0; } }
 .viz-intro { font-size: 0.93rem; color: var(--ink-soft); max-width: 46rem; }
 .viz-muted { color: var(--ink-soft); font-size: 0.88rem; }
 .viz [hidden] { display: none !important; }

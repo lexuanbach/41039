@@ -2,26 +2,26 @@
   "week": 12,
   "title": "Review, Integration and What Comes Next",
   "short": "Review and integration",
-  "lede": "Connect state, decisions and iteration to classes, collections, exceptions and text I/O. Build and explain a small data pipeline, diagnose boundary bugs, and preview functional transformations without changing the core course requirements.",
+  "lede": "Connect state, decisions and loops to classes, collections, exceptions and text I/O. Build and explain a small data pipeline, find boundary bugs, and preview functional transformations (optional).",
   "sections": [
     {
       "title": "Trace the foundation accurately",
       "concepts": [
         [
           "Use the state you can observe",
-          "<p><strong>Tracing</strong> means running a program on paper, one step at a time, and writing down the value of every variable after each step. It is slow, and that is the point: your head skips steps, paper does not.</p><p>For a loop, say in words what the accumulator <em>means</em> after each pass. In the example below, after each iteration <code>passed</code> is the number of passing marks in the <strong>processed prefix</strong>: the boxes already looked at, not the ones still to come. A sentence like that is a <em>loop invariant</em>. It is true before the loop (0 passes in 0 boxes), every pass keeps it true, so it is still true at the end, when the prefix is the whole array.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Step</th><th><code>i</code></th><th><code>marks[i]</code></th><th><code>marks[i] &gt;= 50</code></th><th><code>passed</code> after</th></tr></thead><tbody><tr><td>before the loop</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>0</td></tr><tr><td>1</td><td>0</td><td>49</td><td>false</td><td>0</td></tr><tr><td>2</td><td>1</td><td>50</td><td>true</td><td>1</td></tr><tr><td>3</td><td>2</td><td>85</td><td>true</td><td>2</td></tr><tr><td>loop test</td><td>3</td><td>&ndash;</td><td><code>3 &lt; 3</code> is false: stop</td><td>2</td></tr></tbody></table></div><p>Before you predict, state the index range (0 to <code>marks.length - 1</code>) and the boundary condition. Then choose inputs that sit <em>on</em> the boundary. Exactly 50 is the useful test, because it is the only kind of mark on which <code>&gt;=</code> and <code>&gt;</code> disagree.</p><div class=\"note warn\"><span class=\"tag\">The off-by-one that crashes</span><p><code>for (int i = 0; i &lt;= marks.length; i++)</code> runs one step too far: on the last pass it reads <code>marks[3]</code> of a 3-element array and Java throws <code>ArrayIndexOutOfBoundsException</code>. Python&rsquo;s <code>marks[3]</code> raises <code>IndexError</code>. Python&rsquo;s <code>for mark in marks:</code> and Java&rsquo;s for-each loop avoid writing the bound at all, which is one fewer thing to get wrong.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-kernighan.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Brian W. Kernighan\"></div><p>&ldquo;The most effective debugging tool is still careful thought, coupled with judiciously placed print statements.&rdquo;</p><span class=\"attrib\">Brian W. Kernighan, <a href=\"https://retro11.de/ouxr/u7ed/usr/doc/beginners/u4\" target=\"_blank\" rel=\"noopener\"><em>UNIX for Beginners</em></a>, 2nd edition, 1978 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg\" target=\"_blank\" rel=\"noopener\">Ben Lowe, 2012</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div><p>A print statement is a trace table the computer writes for you. Print the state <em>before</em> and <em>after</em> each change, as the trace example in section 3 does, and compare it with the table you wrote by hand.</p>"
+          "<p><strong>Tracing</strong> means running a program on paper, one step at a time, and writing down every variable after each step.</p><p>For a loop, say what the accumulator <em>means</em>. Here, <code>passed</code> counts the passes in the <strong>processed prefix</strong> (the boxes already looked at). That sentence is a <em>loop invariant</em>: true before the loop, kept true by each pass, so true at the end.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Step</th><th><code>i</code></th><th><code>marks[i]</code></th><th><code>marks[i] &gt;= 50</code></th><th><code>passed</code> after</th></tr></thead><tbody><tr><td>before the loop</td><td>&ndash;</td><td>&ndash;</td><td>&ndash;</td><td>0</td></tr><tr><td>1</td><td>0</td><td>49</td><td>false</td><td>0</td></tr><tr><td>2</td><td>1</td><td>50</td><td>true</td><td>1</td></tr><tr><td>3</td><td>2</td><td>85</td><td>true</td><td>2</td></tr><tr><td>loop test</td><td>3</td><td>&ndash;</td><td><code>3 &lt; 3</code> is false: stop</td><td>2</td></tr></tbody></table></div><p>Test <em>on</em> the boundary. 50 is the only mark where <code>&gt;=</code> and <code>&gt;</code> disagree.</p><div class=\"note warn\"><span class=\"tag\">The off-by-one that crashes</span><p><code>for (int i = 0; i &lt;= marks.length; i++)</code> runs one step too far. It reads <code>marks[3]</code> of a 3-element array, and Java throws <code>ArrayIndexOutOfBoundsException</code> (Python: <code>IndexError</code>). A for-each loop has no bound to get wrong.</p></div><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-kernighan.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Brian W. Kernighan\"></div><p>&ldquo;The most effective debugging tool is still careful thought, coupled with judiciously placed print statements.&rdquo;</p><span class=\"attrib\">Brian W. Kernighan, <a href=\"https://retro11.de/ouxr/u7ed/usr/doc/beginners/u4\" target=\"_blank\" rel=\"noopener\"><em>UNIX for Beginners</em></a>, 2nd edition, 1978 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3ABrian_Kernighan_in_2012_at_Bell_Labs_1%28cropped%29.jpg\" target=\"_blank\" rel=\"noopener\">Ben Lowe, 2012</a> &middot; <a href=\"https://creativecommons.org/licenses/by/2.0\" target=\"_blank\" rel=\"noopener\">CC BY 2.0</a></span></span></div><p>A print statement is a trace table the computer writes. Print the state before and after each change, and compare it with your hand trace.</p>"
         ],
         [
           "Separate mutation from rebinding",
-          "<p>Every call copies values into the parameters. Java&rsquo;s language specification says so directly: when a method is invoked, &ldquo;the values of the actual argument expressions initialize newly created parameter variables&rdquo; (<a href=\"https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.1\" target=\"_blank\" rel=\"noopener\">JLS &sect;8.4.1</a>). When the value is a reference to an array or object, the caller&rsquo;s variable and the parameter now hold two copies of the same reference, so both lead to the <em>same</em> object. The Python FAQ puts it this way: &ldquo;arguments are passed by assignment in Python&rdquo; (<a href=\"https://docs.python.org/3/faq/programming.html#how-do-i-write-a-function-with-output-parameters-call-by-reference\" target=\"_blank\" rel=\"noopener\">Programming FAQ</a>).</p><p>From there, two very different things can happen:</p><ul><li><strong>Mutation</strong> changes the object: <code>values.append(3)</code>, <code>marks[0] = 50</code>, <code>student.setMark(60)</code>. Every name that refers to that object sees the change.</li><li><strong>Rebinding</strong> (assigning to the name) points one name at a different value: <code>values = [9]</code>, <code>marks = new int[] {9};</code>. Only that name moves. The caller&rsquo;s variable still refers to the old object.</li></ul><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Operation in the function</th><th>Java</th><th>Python</th><th>Does the caller see it?</th></tr></thead><tbody><tr><td>change an element</td><td class=\"mono\">marks[0] = 50;</td><td class=\"mono\">values[0] = 50</td><td>yes: same object</td></tr><tr><td>add an element</td><td class=\"mono\">list.add(3);</td><td class=\"mono\">values.append(3)</td><td>yes</td></tr><tr><td>call a mutating method</td><td class=\"mono\">s.setMark(60);</td><td class=\"mono\">s.mark = 60</td><td>yes</td></tr><tr><td>assign the parameter</td><td class=\"mono\">marks = new int[] {9};</td><td class=\"mono\">values = [9]</td><td>no: only the local name moves</td></tr><tr><td>build a new list</td><td class=\"mono\">&ndash;</td><td class=\"mono\">values = values + [3]</td><td>no: a new list, bound to the local name</td></tr><tr><td>extend in place</td><td class=\"mono\">&ndash;</td><td class=\"mono\">values += [3]</td><td><strong>yes</strong>: for a list, <code>+=</code> changes it in place</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">&ldquo;Java passes objects by reference&rdquo; is not quite right</span><p>If it were true, a method could swap the caller&rsquo;s two variables. It cannot: <code>static void swap(int[] a, int[] b) { int[] t = a; a = b; b = t; }</code> swaps only its own copies, and the caller sees nothing. Say instead: <em>Java passes every argument by value, and the value of an object variable is a reference.</em> Python works the same way, and so do the two diagrams above.</p></div>"
+          "<p>A call copies each argument&rsquo;s value into a new parameter. Java: &ldquo;the values of the actual argument expressions initialize newly created parameter variables&rdquo; (<a href=\"https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.1\" target=\"_blank\" rel=\"noopener\">JLS &sect;8.4.1</a>). Python: &ldquo;arguments are passed by assignment in Python&rdquo; (<a href=\"https://docs.python.org/3/faq/programming.html#how-do-i-write-a-function-with-output-parameters-call-by-reference\" target=\"_blank\" rel=\"noopener\">Programming FAQ</a>). When the value is a reference, both names lead to the <em>same</em> object.</p><ul><li><strong>Mutation</strong> changes the object. Every name for that object sees the change.</li><li><strong>Rebinding</strong> (assigning to a name) moves only that name. The caller&rsquo;s variable still refers to the old object.</li></ul><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Operation in the function</th><th>Java</th><th>Python</th><th>Does the caller see it?</th></tr></thead><tbody><tr><td>change an element</td><td class=\"mono\">marks[0] = 50;</td><td class=\"mono\">values[0] = 50</td><td>yes: same object</td></tr><tr><td>add an element</td><td class=\"mono\">list.add(3);</td><td class=\"mono\">values.append(3)</td><td>yes</td></tr><tr><td>call a mutating method</td><td class=\"mono\">s.setMark(60);</td><td class=\"mono\">s.mark = 60</td><td>yes</td></tr><tr><td>assign the parameter</td><td class=\"mono\">marks = new int[] {9};</td><td class=\"mono\">values = [9]</td><td>no: only the local name moves</td></tr><tr><td>build a new list</td><td class=\"mono\">&ndash;</td><td class=\"mono\">values = values + [3]</td><td>no: a new list, bound to the local name</td></tr><tr><td>extend in place</td><td class=\"mono\">&ndash;</td><td class=\"mono\">values += [3]</td><td><strong>yes</strong>: for a list, <code>+=</code> changes it in place</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">&ldquo;Java passes objects by reference&rdquo; is not quite right</span><p>If it were, a method could swap the caller&rsquo;s two variables. It cannot: <code>static void swap(int[] a, int[] b) { int[] t = a; a = b; b = t; }</code> swaps only its own copies. Say instead: <em>Java passes every argument by value, and the value of an object variable is a reference.</em> Python works the same way.</p></div>"
         ],
         [
           "Strings and numbers never change",
-          "<p>Some objects have no mutating operations at all. Java&rsquo;s <code>String</code> and <code>Integer</code>, and Python&rsquo;s <code>str</code>, <code>int</code>, <code>float</code> and <code>tuple</code> are <strong>immutable</strong>: once made, they never change. A method that looks as if it changes a string, such as <code>name.toUpperCase()</code> or <code>name.strip()</code>, builds and <em>returns</em> a new string. If you do not keep the result, it is gone.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Looks like a change</th><th>What really happens</th><th>Do this instead</th></tr></thead><tbody><tr><td><code>name.trim();</code> (Java)</td><td>a new <code>String</code> is returned and thrown away</td><td><code>name = name.trim();</code></td></tr><tr><td><code>name.strip()</code> (Python)</td><td>a new <code>str</code> is returned and thrown away</td><td><code>name = name.strip()</code></td></tr><tr><td><code>count += 1</code> inside a function</td><td>rebinds the local name to a new number</td><td><code>return</code> the new count</td></tr><tr><td><code>point[0] = 5</code> on a tuple</td><td><code>TypeError</code>: tuples cannot be changed</td><td>build a new tuple</td></tr></tbody></table></div><p>This is why a function can never change a caller&rsquo;s number or string: the only thing it can do is rebind its own parameter. To get a new value out of a function, <strong>return</strong> it.</p><div class=\"note warn\"><span class=\"tag\">The line that does nothing</span><p><code>name.trim();</code> on a line of its own compiles and runs in Java with no warning, and <code>name.strip()</code> is just as silent in Python. The first extra example below shows it happen. When a string &ldquo;did not change&rdquo;, look for a result that was never assigned.</p></div>"
+          "<p>An <strong>immutable</strong> object never changes. Examples: Java&rsquo;s <code>String</code> and <code>Integer</code>, and Python&rsquo;s <code>str</code>, <code>int</code>, <code>float</code> and <code>tuple</code>. Methods like <code>name.toUpperCase()</code> and <code>name.strip()</code> <em>return</em> a new string. Keep it, or it is lost.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Looks like a change</th><th>What really happens</th><th>Do this instead</th></tr></thead><tbody><tr><td><code>name.trim();</code> (Java)</td><td>a new <code>String</code> is returned and thrown away</td><td><code>name = name.trim();</code></td></tr><tr><td><code>name.strip()</code> (Python)</td><td>a new <code>str</code> is returned and thrown away</td><td><code>name = name.strip()</code></td></tr><tr><td><code>count += 1</code> inside a function</td><td>rebinds the local name to a new number</td><td><code>return</code> the new count</td></tr><tr><td><code>point[0] = 5</code> on a tuple</td><td><code>TypeError</code>: tuples cannot be changed</td><td>build a new tuple</td></tr></tbody></table></div><p>So a function cannot change a caller&rsquo;s number or string. To get a new value out, <strong>return</strong> it.</p><div class=\"note warn\"><span class=\"tag\">The line that does nothing</span><p><code>name.trim();</code> alone on a line runs with no warning in Java. <code>name.strip()</code> is just as silent in Python. If a string &ldquo;did not change&rdquo;, look for a result you never assigned.</p></div>"
         ],
         [
           "Copy when you need an independent list",
-          "<p>Assignment never copies an object. After <code>b = a</code> (Python) or <code>List&lt;Integer&gt; b = a;</code> (Java) there is still one list with two names. When you need a list you can change without touching the original, make the copy yourself:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>a second name for the same list</td><td class=\"mono\">List&lt;Integer&gt; b = a;</td><td class=\"mono\">b = a</td></tr><tr><td>a new list, same elements</td><td class=\"mono\">new ArrayList&lt;&gt;(a)</td><td class=\"mono\">list(a)  or  a.copy()  or  a[:]</td></tr><tr><td>a new array, same elements</td><td class=\"mono\">Arrays.copyOf(arr, arr.length)</td><td class=\"mono\">&ndash;</td></tr><tr><td>a new list of changed elements</td><td class=\"mono\">a loop (or stream) that fills a new list</td><td class=\"mono\">[x * 2 for x in a]</td></tr></tbody></table></div><p>These copies are <strong>shallow</strong>: the new list holds the same element references. Copy a list of <code>Student</code> objects and both lists still share the students, so changing a mark through one list shows in the other. For numbers and strings it does not matter, because they never change.</p><div class=\"note warn\"><span class=\"tag\">Python&rsquo;s shared default list</span><p><code>def add(x, items=[]):</code> looks as if it starts with a fresh empty list on every call. It does not. &ldquo;Default values are created exactly once, when the function is defined&rdquo; (<a href=\"https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects\" target=\"_blank\" rel=\"noopener\">Python FAQ</a>), so <code>add(1)</code> returns <code>[1]</code> and then <code>add(2)</code> returns <code>[1, 2]</code>. Use <code>items=None</code> and create the list inside the function. Exercise 4 asks you to repair exactly this.</p></div>"
+          "<p>Assignment never copies an object. After <code>b = a</code> (Python) or <code>List&lt;Integer&gt; b = a;</code> (Java) there is one list with two names. For an independent list, copy it:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>You want</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>a second name for the same list</td><td class=\"mono\">List&lt;Integer&gt; b = a;</td><td class=\"mono\">b = a</td></tr><tr><td>a new list, same elements</td><td class=\"mono\">new ArrayList&lt;&gt;(a)</td><td class=\"mono\">list(a)  or  a.copy()  or  a[:]</td></tr><tr><td>a new array, same elements</td><td class=\"mono\">Arrays.copyOf(arr, arr.length)</td><td class=\"mono\">&ndash;</td></tr><tr><td>a new list of changed elements</td><td class=\"mono\">a loop (or stream) that fills a new list</td><td class=\"mono\">[x * 2 for x in a]</td></tr></tbody></table></div><p>These copies are <strong>shallow</strong>: both lists share the same elements. Change a <code>Student</code>&rsquo;s mark through one list, and the other list shows it. Numbers and strings are safe, because they never change.</p><div class=\"note warn\"><span class=\"tag\">Python&rsquo;s shared default list</span><p><code>def add(x, items=[]):</code> shares one list across calls. &ldquo;Default values are created exactly once, when the function is defined&rdquo; (<a href=\"https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects\" target=\"_blank\" rel=\"noopener\">Python FAQ</a>). So <code>add(1)</code> returns <code>[1]</code>, then <code>add(2)</code> returns <code>[1, 2]</code>. Use <code>items=None</code> and create the list inside (Exercise 4).</p></div>"
         ]
       ],
       "examples": [
@@ -36,7 +36,7 @@
             ],
             [
               "passed++",
-              "After each iteration, passed counts the passing marks in the processed prefix."
+              "After each pass, <code>passed</code> counts the passing marks in the processed prefix."
             ]
           ],
           "wrong": [
@@ -56,7 +56,7 @@
           "notes": [
             [
               "values.append(3)",
-              "Mutate the list referred to by the caller and parameter."
+              "Mutation: changes the list that the caller and the parameter share."
             ],
             [
               "values=[9]",
@@ -79,7 +79,7 @@
         {
           "kind": "w12-trace",
           "title": "Trace the pass counter, then move the boundary",
-          "intro": "Pick the marks and the comparison, predict the output, then press <strong>Next</strong>. The shaded boxes are the <strong>processed prefix</strong>: after each step, <code>passed</code> counts the passes in exactly those boxes. Try <code>{50}</code> with both comparisons: it is the one input that tells <code>&gt;=</code> and <code>&gt;</code> apart.",
+          "intro": "Pick the marks and the comparison, predict the output, then press <strong>Next</strong>. The shaded boxes are the <strong>processed prefix</strong>. <code>passed</code> counts the passes in exactly those boxes. Try <code>{50}</code> with both comparisons: it is the one input that tells <code>&gt;=</code> and <code>&gt;</code> apart.",
           "langs": [
             "java"
           ],
@@ -188,7 +188,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -353,7 +353,7 @@
                       ]
                     }
                   ],
-                  "say": "<code>50 &gt;= 50</code> is true, so <code>passed</code> goes up to 1. Invariant: the first 2 marks contain 1 pass. This is the boundary case: only <code>&gt;=</code> lets exactly 50 through."
+                  "say": "<code>50 &gt;= 50</code> is true, so <code>passed</code> goes up to 1. Invariant: the first 2 marks contain 1 pass. Boundary case: only <code>&gt;=</code> lets exactly 50 through."
                 },
                 {
                   "lines": [
@@ -594,7 +594,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -759,7 +759,7 @@
                       ]
                     }
                   ],
-                  "say": "<code>50 &gt; 50</code> is false, so <code>passed</code> stays 0. Invariant: the first 2 marks contain 0 passes. This is the boundary case: only <code>&gt;=</code> lets exactly 50 through."
+                  "say": "<code>50 &gt; 50</code> is false, so <code>passed</code> stays 0. Invariant: the first 2 marks contain 0 passes. Boundary case: only <code>&gt;=</code> lets exactly 50 through."
                 },
                 {
                   "lines": [
@@ -994,7 +994,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -1071,7 +1071,7 @@
                       ]
                     }
                   ],
-                  "say": "<code>50 &gt;= 50</code> is true, so <code>passed</code> goes up to 1. Invariant: the first 1 mark contains 1 pass. This is the boundary case: only <code>&gt;=</code> lets exactly 50 through."
+                  "say": "<code>50 &gt;= 50</code> is true, so <code>passed</code> goes up to 1. Invariant: the first 1 mark contains 1 pass. Boundary case: only <code>&gt;=</code> lets exactly 50 through."
                 },
                 {
                   "lines": [
@@ -1212,7 +1212,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -1289,7 +1289,7 @@
                       ]
                     }
                   ],
-                  "say": "<code>50 &gt; 50</code> is false, so <code>passed</code> stays 0. Invariant: the first 1 mark contains 0 passes. This is the boundary case: only <code>&gt;=</code> lets exactly 50 through."
+                  "say": "<code>50 &gt; 50</code> is false, so <code>passed</code> stays 0. Invariant: the first 1 mark contains 0 passes. Boundary case: only <code>&gt;=</code> lets exactly 50 through."
                 },
                 {
                   "lines": [
@@ -1426,7 +1426,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -1555,7 +1555,7 @@
                       ]
                     }
                   ],
-                  "say": "The invariant starts true: no marks processed yet, so <code>passed</code> counts 0 passes."
+                  "say": "The invariant starts true: 0 marks processed, so <code>passed</code> is 0."
                 },
                 {
                   "lines": [
@@ -1701,7 +1701,7 @@
         {
           "kind": "w12-trace",
           "title": "Two names, one list: mutate or rebind?",
-          "intro": "Each arrow is a reference from a name to an object. Step through the example, then swap its two middle lines and predict again. The rule is the same in Java and Python: <strong>mutating</strong> an object is seen through every name that refers to it; <strong>rebinding</strong> a name changes only that name.",
+          "intro": "Each arrow is a reference from a name to an object. Step through the example, then swap its two middle lines and predict again. In both languages, <strong>mutating</strong> an object shows through every name that refers to it. <strong>Rebinding</strong> a name moves only that name.",
           "langs": [
             "python",
             "java"
@@ -2635,17 +2635,17 @@
           "notes": [
             [
               "marks[0] = marks[0] + 5;",
-              "<strong>Mutation.</strong> The parameter holds a copy of the caller&rsquo;s reference, so this changes the caller&rsquo;s array: 45 becomes 50.",
+              "<strong>Mutation.</strong> The parameter holds a copy of the caller&rsquo;s reference, so the caller&rsquo;s array changes: 45 becomes 50.",
               "Mutation"
             ],
             [
               "marks = new int[] {100, 100};",
-              "<strong>Rebinding.</strong> Only the local parameter now points at a new array. The caller&rsquo;s <code>marks</code> is untouched, so this line has no visible effect.",
+              "<strong>Rebinding.</strong> Only the local parameter moves to a new array. The caller&rsquo;s <code>marks</code> is untouched, so this line has no visible effect.",
               "Rebinding"
             ],
             [
               "text = text.toUpperCase();",
-              "A <code>String</code> cannot change, so all this method can do is rebind its own parameter <code>text</code>. The caller&rsquo;s <code>name</code> is still <code>\"linh\"</code>.",
+              "A <code>String</code> cannot change, so this only rebinds the parameter <code>text</code>. The caller&rsquo;s <code>name</code> is still <code>\"linh\"</code>.",
               "Local rebinding"
             ],
             [
@@ -2655,7 +2655,7 @@
             ],
             [
               "String loud = name.toUpperCase();",
-              "Keep the result by assigning it to a variable. <code>loud</code> is <code>LINH</code>; <code>name</code> is still <code>linh</code>.",
+              "Keep the result in a variable. <code>loud</code> is <code>LINH</code>. <code>name</code> is still <code>linh</code>.",
               "Result kept"
             ]
           ],
@@ -2670,19 +2670,19 @@
       "concepts": [
         [
           "Make each stage have a clear contract",
-          "<p>Almost every program in this course has the same shape: read some text, turn it into data, check the data, keep it in objects, compute something and write a report. Real programs (a payroll, a bank statement, the system that stores your marks) have this shape too, just with more stages.</p><p>Give each stage one named job and a <strong>contract</strong>: what it accepts, what it produces, and how it fails.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Stage</th><th>In &rarr; out</th><th>Fails when</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>read</td><td>input &rarr; one line</td><td>no lines left</td><td><code>readLine()</code> returns <code>null</code></td><td><code>for line in f:</code> ends</td></tr><tr><td>split</td><td>line &rarr; fields</td><td>wrong number of fields</td><td>check <code>parts.length</code></td><td>check <code>len(fields)</code></td></tr><tr><td>convert</td><td>text &rarr; number</td><td>not a number</td><td><code>NumberFormatException</code></td><td><code>ValueError</code></td></tr><tr><td>validate</td><td>number &rarr; accepted number</td><td>outside 0..100</td><td><code>throw new IllegalArgumentException(&hellip;)</code></td><td><code>raise ValueError(&hellip;)</code></td></tr><tr><td>model</td><td>fields &rarr; object</td><td>never, if the checks came first</td><td><code>new Student(name, mark)</code></td><td><code>Student(name, mark)</code></td></tr><tr><td>summarise</td><td>objects &rarr; numbers</td><td>no records at all</td><td>a loop that returns values</td><td>a loop, or <code>sum()</code></td></tr><tr><td>report</td><td>numbers &rarr; text</td><td>&ndash;</td><td><code>String.format</code>, <code>println</code></td><td>f-string, <code>print</code></td></tr></tbody></table></div><p>Passing one stage proves nothing about the next. <code>Linh,abc</code> splits into two fields perfectly and still fails to convert. <code>Binh,120</code> converts to a number and still fails validation. That is why each check lives in its own stage, and why each stage needs its own bad input in a test.</p><p>A single function that reads, splits, converts, checks and prints all at once can only be tested as a whole, and when it gives a wrong total you cannot tell which job went wrong. Small stages with one job each can be tested one at a time, with one bad input per stage.</p><div class=\"note warn\"><span class=\"tag\">Python forgives spaces, Java does not</span><p><code>int(\" 85\")</code> is <code>85</code> in Python, which ignores spaces around the digits. Java&rsquo;s <code>Integer.parseInt(\" 85\")</code> throws <code>NumberFormatException</code>. Files typed by people often have a space after the comma, so in Java call <code>trim()</code> before you convert.</p></div>"
+          "<p>Most programs in this course read text, turn it into data, check it, store it in objects, compute and report. Give each stage one job and a <strong>contract</strong>: what it accepts, what it produces, and how it fails.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Stage</th><th>In &rarr; out</th><th>Fails when</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>read</td><td>input &rarr; one line</td><td>no lines left</td><td><code>readLine()</code> returns <code>null</code></td><td><code>for line in f:</code> ends</td></tr><tr><td>split</td><td>line &rarr; fields</td><td>wrong number of fields</td><td>check <code>parts.length</code></td><td>check <code>len(fields)</code></td></tr><tr><td>convert</td><td>text &rarr; number</td><td>not a number</td><td><code>NumberFormatException</code></td><td><code>ValueError</code></td></tr><tr><td>validate</td><td>number &rarr; accepted number</td><td>outside 0..100</td><td><code>throw new IllegalArgumentException(&hellip;)</code></td><td><code>raise ValueError(&hellip;)</code></td></tr><tr><td>model</td><td>fields &rarr; object</td><td>never, if the checks came first</td><td><code>new Student(name, mark)</code></td><td><code>Student(name, mark)</code></td></tr><tr><td>summarise</td><td>objects &rarr; numbers</td><td>no records at all</td><td>a loop that returns values</td><td>a loop, or <code>sum()</code></td></tr><tr><td>report</td><td>numbers &rarr; text</td><td>&ndash;</td><td><code>String.format</code>, <code>println</code></td><td>f-string, <code>print</code></td></tr></tbody></table></div><p>Passing one stage proves nothing about the next. <code>Linh,abc</code> splits but fails to convert. <code>Binh,120</code> converts but fails validation. So test each stage with its own bad input. One big function that does every job can only be tested as a whole.</p><div class=\"note warn\"><span class=\"tag\">Python forgives spaces, Java does not</span><p>Python&rsquo;s <code>int(\" 85\")</code> is <code>85</code>. Java&rsquo;s <code>Integer.parseInt(\" 85\")</code> throws <code>NumberFormatException</code>. In Java, call <code>trim()</code> before you convert.</p></div>"
         ],
         [
           "Choose an explicit error policy",
-          "<p>Some rows will be bad. Decide in advance what happens to them, and write the decision down. There are two common policies, and the only code difference is <em>where the <code>try</code> goes</em>:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Policy</th><th>Where the <code>try</code> sits</th><th>Good for</th><th>Risk</th></tr></thead><tbody><tr><td>report and continue</td><td>inside the loop, around one row</td><td>marks lists, surveys, logs: one bad row should not lose the rest</td><td>bad rows go unnoticed unless you report them</td></tr><tr><td>stop at the first fault</td><td>around the whole loop</td><td>payments, settings files: half-processed input is worse than none</td><td>one typo stops everything</td></tr></tbody></table></div><div class=\"code-card\"><pre>for line in lines:\n    try:\n        records.append(parse(line))\n    except ValueError as error:\n        rejected.append((line, error))</pre></div><p>Whichever you choose, two rules hold. A rejected row never reaches the list of good records. And the summary counts <em>that list</em>, not the number of lines you tried to read. Report both numbers: &ldquo;5 lines read, 2 stored, 3 rejected&rdquo; lets a reader check that nothing went missing.</p><div class=\"note danger\"><span class=\"tag\">A real surname that looks like nothing</span><p>A rejection policy is only as good as its checks. The journalist Christopher Null really is called Null. In 2015 he wrote in <em>Wired</em> that most websites accept his name, but some send him back to the form saying &ldquo;the last name field can&rsquo;t be blank&rdquo;, some say &ldquo;null&rdquo; is a reserved term, and some just crash. Somewhere in those programs a stage mixed up the <em>text</em> <code>Null</code> with <em>no value at all</em>. Check what a field means, not what it looks like, and test with awkward but valid rows as well as obviously bad ones. <a href=\"https://www.wired.com/2015/11/null/\" target=\"_blank\" rel=\"noopener\">Christopher Null, Wired, 5 November 2015</a></p></div>"
+          "<p>Decide in advance what happens to bad rows, and write it down. The two policies differ only in <em>where the <code>try</code> goes</em>:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Policy</th><th>Where the <code>try</code> sits</th><th>Good for</th><th>Risk</th></tr></thead><tbody><tr><td>report and continue</td><td>inside the loop, around one row</td><td>marks lists, surveys, logs: one bad row should not lose the rest</td><td>bad rows go unnoticed unless you report them</td></tr><tr><td>stop at the first fault</td><td>around the whole loop</td><td>payments, settings files: half-processed input is worse than none</td><td>one typo stops everything</td></tr></tbody></table></div><div class=\"code-card\"><pre>for line in lines:\n    try:\n        records.append(parse(line))\n    except ValueError as error:\n        rejected.append((line, error))</pre></div><p>Either way, a rejected row never reaches the good records. The summary counts <em>those records</em>, not the lines read. Report both: &ldquo;5 lines read, 2 stored, 3 rejected&rdquo;.</p><div class=\"note danger\"><span class=\"tag\">A real surname that looks like nothing</span><p>The journalist Christopher Null really is called Null. In <em>Wired</em> in 2015 he wrote that some websites reply &ldquo;the last name field can&rsquo;t be blank&rdquo;, some say &ldquo;null&rdquo; is a reserved term, and some just crash. Check what a field means, not what it looks like. <a href=\"https://www.wired.com/2015/11/null/\" target=\"_blank\" rel=\"noopener\">Christopher Null, Wired, 5 November 2015</a></p></div>"
         ],
         [
           "Turn a row into an object early",
-          "<p>Once a row has passed its checks, put it into an object straight away: a <code>Student</code> with a name and a mark (Weeks 5&ndash;6), not two parallel lists <code>names[i]</code> and <code>marks[i]</code> that you must keep in step by hand. Every later stage then works with students, and cannot pair Linh&rsquo;s name with An&rsquo;s mark by accident.</p><p>Better still, let the constructor guard its own rule. If <code>new Student(\"Binh\", 120)</code> throws, then <em>every</em> <code>Student</code> that exists is valid, and no later stage needs to check the range again. That is the class invariant from Week 6, doing real work in a pipeline.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>reject a bad value in the constructor</td><td><code>throw new IllegalArgumentException(\"mark out of range\");</code></td><td><code>raise ValueError(\"mark out of range\")</code></td></tr><tr><td>stop fields changing later</td><td><code>private final int mark;</code></td><td>by convention: <code>self._mark</code> and no setter</td></tr><tr><td>one handler for &ldquo;not a number&rdquo; and &ldquo;out of range&rdquo;</td><td><code>catch (IllegalArgumentException e)</code> also catches <code>NumberFormatException</code>, its subclass</td><td><code>except ValueError</code> catches both <code>int(\"abc\")</code> and your own <code>raise</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Do not print inside the model</span><p>A <code>Student</code> constructor that prints &ldquo;invalid mark&rdquo; and carries on has hidden the problem: the bad object still exists. Throw instead, and let the caller choose the policy. It is the Week 11 rule again: a class that calculates should not also decide what the user sees.</p></div>"
+          "<p>Once a row passes its checks, make it an object: a <code>Student</code> (Weeks 5&ndash;6). Parallel lists <code>names[i]</code> and <code>marks[i]</code> can drift out of step. An object keeps each name with its mark.</p><p>Let the constructor guard the rule. If <code>new Student(\"Binh\", 120)</code> throws, every <code>Student</code> that exists is valid, and later stages need no re-check. This is the class invariant from Week 6.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>reject a bad value in the constructor</td><td><code>throw new IllegalArgumentException(\"mark out of range\");</code></td><td><code>raise ValueError(\"mark out of range\")</code></td></tr><tr><td>stop fields changing later</td><td><code>private final int mark;</code></td><td>by convention: <code>self._mark</code> and no setter</td></tr><tr><td>one handler for &ldquo;not a number&rdquo; and &ldquo;out of range&rdquo;</td><td><code>catch (IllegalArgumentException e)</code> also catches <code>NumberFormatException</code>, its subclass</td><td><code>except ValueError</code> catches both <code>int(\"abc\")</code> and your own <code>raise</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">Do not print inside the model</span><p>A constructor that prints &ldquo;invalid mark&rdquo; and carries on still creates the bad object. Throw instead, and let the caller choose the policy (Week 11).</p></div>"
         ],
         [
           "Keep the report as its own stage",
-          "<p>Compute first, format last. A summary method <em>returns</em> numbers (count, passes, average); a separate report method turns them into text. Then a test can check that the average is 67.5 without reading printed output, and a CSV report can sit next to the screen report without touching the calculation (Week 10).</p><p>The report must also survive the case nobody thinks of: <strong>no valid records at all</strong>.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>With no records</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td><code>total / count</code>, whole numbers</td><td><code>ArithmeticException: / by zero</code></td><td><code>ZeroDivisionError</code></td></tr><tr><td><code>total / count</code>, decimals</td><td><code>NaN</code>, printed without complaint</td><td><code>ZeroDivisionError</code></td></tr><tr><td>largest mark</td><td><code>Collections.max</code> throws <code>NoSuchElementException</code></td><td><code>max([])</code> raises <code>ValueError</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">NaN is a quiet failure</span><p>In Java <code>0.0 / 0</code> is <code>NaN</code> (&ldquo;not a number&rdquo;), and a report will happily print <code>Average: NaN</code>. Decide the empty-input policy yourself (print &ldquo;no valid records&rdquo;, or return nothing) and test it. Exercise 5 is about exactly this decision.</p></div>"
+          "<p>Compute first, format last. A summary method <em>returns</em> numbers. A separate report method turns them into text. Then a test can check the average (67.5) directly, and a CSV report needs no change to the calculation (Week 10).</p><p>Also handle <strong>no valid records at all</strong>:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>With no records</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td><code>total / count</code>, whole numbers</td><td><code>ArithmeticException: / by zero</code></td><td><code>ZeroDivisionError</code></td></tr><tr><td><code>total / count</code>, decimals</td><td><code>NaN</code>, printed without complaint</td><td><code>ZeroDivisionError</code></td></tr><tr><td>largest mark</td><td><code>Collections.max</code> throws <code>NoSuchElementException</code></td><td><code>max([])</code> raises <code>ValueError</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">NaN is a quiet failure</span><p>In Java <code>0.0 / 0</code> is <code>NaN</code> (&ldquo;not a number&rdquo;), so a report prints <code>Average: NaN</code> without complaint. Choose an empty-input policy and test it (Exercise 5).</p></div>"
         ]
       ],
       "examples": [
@@ -2717,11 +2717,11 @@
           "notes": [
             [
               "records.append(parse(line))",
-              "Append only when parsing and validation both complete successfully."
+              "Append only if parsing and validation both succeed."
             ],
             [
               "except ValueError",
-              "Report the invalid record and continue processing later records."
+              "Report the bad record and carry on with the next one."
             ]
           ],
           "wrong": [
@@ -2740,7 +2740,7 @@
         {
           "kind": "w12-trace",
           "title": "Follow one record through every stage",
-          "intro": "Both examples below, one step at a time. Watch the <strong>read position</strong> in the input, the variables each stage produces, and (in Python) what happens to a record that fails: it raises an exception, is reported, and never reaches <code>records</code>.",
+          "intro": "Both examples, one step at a time. Watch the <strong>read position</strong>, the variables each stage produces, and (in Python) the record that fails: it raises an exception, is reported, and never reaches <code>records</code>.",
           "langs": [
             "java",
             "python"
@@ -3029,7 +3029,7 @@
                       ]
                     }
                   ],
-                  "say": "Convert the text <code>\"85\"</code> to the number <code>85</code> before applying a numeric rule."
+                  "say": "Convert <code>\"85\"</code> to the number <code>85</code> before the numeric check."
                 },
                 {
                   "lines": [
@@ -3272,7 +3272,7 @@
                       ]
                     }
                   ],
-                  "say": "Convert the text <code>\"49\"</code> to the number <code>49</code> before applying a numeric rule."
+                  "say": "Convert <code>\"49\"</code> to the number <code>49</code> before the numeric check."
                 },
                 {
                   "lines": [
@@ -3419,7 +3419,7 @@
                       ]
                     }
                   ],
-                  "say": "<code>readLine()</code> returns <code>\"Mai,50\"</code> &mdash; the last record is still a whole line, even with no newline after it."
+                  "say": "<code>readLine()</code> returns <code>\"Mai,50\"</code>. The last record is a whole line, even with no newline after it."
                 },
                 {
                   "lines": [
@@ -3515,7 +3515,7 @@
                       ]
                     }
                   ],
-                  "say": "Convert the text <code>\"50\"</code> to the number <code>50</code> before applying a numeric rule."
+                  "say": "Convert <code>\"50\"</code> to the number <code>50</code> before the numeric check."
                 },
                 {
                   "lines": [
@@ -4886,7 +4886,7 @@
         {
           "kind": "w12-trace",
           "title": "One small app, every topic: objects, a list, exceptions and files",
-          "intro": "This program writes an input file, reads it line by line, turns each good line into a <code>Student</code> object in a list, handles the bad lines, and writes a report file. Choose a language and an <strong>error policy</strong>, then step through. The only difference between the two policies is <em>where the try/catch sits</em>: inside the loop, or around it.",
+          "intro": "This program writes an input file, reads it line by line, turns each good line into a <code>Student</code> object, handles the bad lines and writes a report. Choose a language and an <strong>error policy</strong>, then step through. The two policies differ only in <em>where the try/catch sits</em>: inside the loop, or around it.",
           "langs": [
             "java",
             "python"
@@ -5494,7 +5494,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "<code>bad</code> is not a whole number, so Java throws <code>NumberFormatException</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made. <code>NumberFormatException</code> is a kind of <code>IllegalArgumentException</code>, so one handler covers both bad lines.",
+                  "say": "<code>bad</code> is not a whole number, so Java throws <code>NumberFormatException</code>. No <code>Student</code> is made. <code>NumberFormatException</code> is a kind of <code>IllegalArgumentException</code>, so one handler covers both bad lines.",
                   "kinds": [
                     "bad"
                   ]
@@ -6315,7 +6315,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "120 is outside 0..100, so Java throws <code>IllegalArgumentException</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made.",
+                  "say": "120 is outside 0..100, so Java throws <code>IllegalArgumentException</code>. The rest of <code>parse</code> is skipped, so no <code>Student</code> is made.",
                   "kinds": [
                     "bad"
                   ]
@@ -7874,7 +7874,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "<code>bad</code> is not a whole number, so Java throws <code>NumberFormatException</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made. <code>NumberFormatException</code> is a kind of <code>IllegalArgumentException</code>, so one handler covers both bad lines.",
+                  "say": "<code>bad</code> is not a whole number, so Java throws <code>NumberFormatException</code>. No <code>Student</code> is made. <code>NumberFormatException</code> is a kind of <code>IllegalArgumentException</code>, so one handler covers both bad lines.",
                   "kinds": [
                     "bad"
                   ]
@@ -8172,7 +8172,7 @@
                       "state": "never created"
                     }
                   ],
-                  "say": "Print <code>No report written</code>. Under this policy one bad line means no report at all &mdash; even though Linh was valid."
+                  "say": "Print <code>No report written</code>. Under this policy one bad line means no report at all, even though Linh was valid."
                 }
               ]
             },
@@ -8750,7 +8750,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "<code>bad</code> is not a whole number, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made.",
+                  "say": "<code>bad</code> is not a whole number, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped, so no <code>Student</code> is made.",
                   "kinds": [
                     "bad"
                   ]
@@ -9571,7 +9571,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "120 is outside 0..100, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made.",
+                  "say": "120 is outside 0..100, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped, so no <code>Student</code> is made.",
                   "kinds": [
                     "bad"
                   ]
@@ -11125,7 +11125,7 @@
                       "state": "missing"
                     }
                   ],
-                  "say": "<code>bad</code> is not a whole number, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped: no <code>Student</code> is made.",
+                  "say": "<code>bad</code> is not a whole number, so Python raises <code>ValueError</code>. The rest of <code>parse</code> is skipped, so no <code>Student</code> is made.",
                   "kinds": [
                     "bad"
                   ]
@@ -11423,7 +11423,7 @@
                       "state": "never created"
                     }
                   ],
-                  "say": "Print <code>No report written</code>. Under this policy one bad line means no report at all &mdash; even though Linh was valid."
+                  "say": "Print <code>No report written</code>. Under this policy one bad line means no report at all, even though Linh was valid."
                 }
               ]
             }
@@ -11521,7 +11521,7 @@
         {
           "kind": "w12-stages",
           "title": "Which stage rejects this row?",
-          "intro": "A parser is a chain of stages, and each stage checks one thing. Pick a row, predict where it is stopped, then watch it travel. Both programs were run on all seven rows; the messages are their real output.",
+          "intro": "A parser is a chain of stages, and each stage checks one thing. Pick a row, predict where it stops, then watch it travel. Both programs were run on all seven rows. The messages are their real output.",
           "langs": [
             "python",
             "java"
@@ -11685,27 +11685,27 @@
           "notes": [
             [
               "students.add(Student.parse(line));",
-              "Add only if parsing <em>and</em> the constructor both succeed. If either throws, <code>add</code> is never reached.",
+              "Added only if parsing <em>and</em> the constructor both succeed. If either throws, <code>add</code> is never reached.",
               "Store only good rows"
             ],
             [
               "catch (IllegalArgumentException e)",
-              "One handler covers both failures: <code>NumberFormatException</code> (from <code>parseInt(\"abc\")</code>) is a subclass of <code>IllegalArgumentException</code>.",
+              "One handler covers both failures. <code>NumberFormatException</code> (from <code>parseInt(\"abc\")</code>) is a subclass of <code>IllegalArgumentException</code>.",
               "Report and continue"
             ],
             [
               "\"read=\" + lines.length + \", stored=\" + students.size()",
-              "Report both counts. The summary uses <code>students.size()</code>, the records actually stored, not the 5 lines read.",
+              "Report both counts. The summary uses <code>students.size()</code>, the records stored, not the 5 lines read.",
               "Count what you stored"
             ],
             [
               "if (mark < 0 || mark > 100)",
-              "The constructor guards the class invariant, so every <code>Student</code> that exists has a mark in 0..100. Binh&rsquo;s 120 never becomes an object.",
+              "The constructor guards the class invariant: every <code>Student</code> has a mark in 0..100. Binh&rsquo;s 120 never becomes an object.",
               "Validate in the constructor"
             ],
             [
               "parts.length != 2",
-              "The split stage checks the field count. <code>Tuan</code> has no comma, so <code>split</code> gives one field; without this check <code>parts[1]</code> would throw <code>ArrayIndexOutOfBoundsException</code>, which this handler does not catch.",
+              "The split stage checks the field count. <code>Tuan</code> has no comma, so <code>split</code> gives one field. Without this check, <code>parts[1]</code> would throw <code>ArrayIndexOutOfBoundsException</code>, which this handler does not catch.",
               "Check the shape first"
             ],
             [
@@ -11730,7 +11730,7 @@
             ],
             [
               "mark = int(text)",
-              "The convert stage. <code>int(\"abc\")</code> raises <code>ValueError</code>; <code>int(\" 50\")</code> is fine, because Python ignores surrounding spaces.",
+              "The convert stage. <code>int(\"abc\")</code> raises <code>ValueError</code>. <code>int(\" 50\")</code> is fine, because Python ignores surrounding spaces.",
               "Convert stage"
             ],
             [
@@ -11745,7 +11745,7 @@
             ],
             [
               "rejected.append((number, str(error)))",
-              "Report and continue: keep the line number and the reason, so a person can fix the file.",
+              "Report and continue. Keep the line number and the reason, so a person can fix the file.",
               "Keep the evidence"
             ],
             [
@@ -11765,15 +11765,15 @@
       "concepts": [
         [
           "A test should distinguish a mistake",
-          "<p>A test is a small program run on an input you chose, with the expected output written down <em>before</em> you run it. A good test is one that would <strong>fail</strong> if the code had a particular mistake. A test that passes whether or not the rule is right is evidence of nothing.</p><p>Most mistakes live at the edges, so choose inputs at the edges. For a marks program:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Case</th><th>Example</th><th>Catches</th></tr></thead><tbody><tr><td>no data</td><td>an empty file, <code>[]</code></td><td>division by zero, the largest of nothing</td></tr><tr><td>one item</td><td><code>[50]</code></td><td>loops that skip the first or the last element</td></tr><tr><td>exactly on the boundary</td><td><code>50</code></td><td><code>&gt;</code> written instead of <code>&gt;=</code></td></tr><tr><td>one each side</td><td><code>49</code>, <code>51</code></td><td>a boundary moved by one</td></tr><tr><td>top of the range</td><td><code>100</code>, <code>101</code></td><td>a missing or wrong upper check</td></tr><tr><td>duplicates</td><td>two students called An</td><td>a dictionary that silently keeps only one</td></tr><tr><td>untidy text</td><td>a blank line, <code>Mai, 50</code></td><td>split and convert stages that assume tidy input</td></tr><tr><td>no final newline</td><td><code>Mai,50</code> as the last line</td><td>code that only counts lines ending in a newline</td></tr></tbody></table></div><p>For a method that changes an object, check the state as well as the return value: after <code>take(2)</code> returns <code>true</code>, <code>left()</code> should be 0.</p><div class=\"note danger\"><span class=\"tag\">A bug that waited nine years</span><p>In June 2006 Joshua Bloch wrote that the binary search in Java&rsquo;s own library had been broken, &ldquo;lying in wait for nine years or so&rdquo;. The faulty line was <code>int mid = (low + high) / 2;</code>. When <code>low + high</code> is larger than the biggest <code>int</code>, the sum overflows to a negative number. That only happens for arrays of about a billion (2<sup>30</sup>) elements or more, so no ordinary test ever used one. The fix is <code>int mid = low + ((high - low) / 2);</code>. He found the same bug in the binary search that Jon Bentley had proved correct in <em>Programming Pearls</em>. (Python&rsquo;s whole numbers never overflow; Java&rsquo;s <code>Integer.MAX_VALUE + 1</code> is <code>-2147483648</code>.) <a href=\"https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/\" target=\"_blank\" rel=\"noopener\">Bloch, Google Research blog, 2 June 2006</a></p></div>"
+          "<p>A test runs code on an input you chose, with the expected output written down <em>first</em>. A good test <strong>fails</strong> if the code has a particular mistake. A test that passes either way proves nothing. Most mistakes live at the edges:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Case</th><th>Example</th><th>Catches</th></tr></thead><tbody><tr><td>no data</td><td>an empty file, <code>[]</code></td><td>division by zero, the largest of nothing</td></tr><tr><td>one item</td><td><code>[50]</code></td><td>loops that skip the first or the last element</td></tr><tr><td>exactly on the boundary</td><td><code>50</code></td><td><code>&gt;</code> written instead of <code>&gt;=</code></td></tr><tr><td>one each side</td><td><code>49</code>, <code>51</code></td><td>a boundary moved by one</td></tr><tr><td>top of the range</td><td><code>100</code>, <code>101</code></td><td>a missing or wrong upper check</td></tr><tr><td>duplicates</td><td>two students called An</td><td>a dictionary that silently keeps only one</td></tr><tr><td>untidy text</td><td>a blank line, <code>Mai, 50</code></td><td>split and convert stages that assume tidy input</td></tr><tr><td>no final newline</td><td><code>Mai,50</code> as the last line</td><td>code that only counts lines ending in a newline</td></tr></tbody></table></div><p>For a method that changes an object, check the state too: after <code>take(2)</code> returns <code>true</code>, <code>left()</code> should be 0.</p><div class=\"note danger\"><span class=\"tag\">A bug that waited nine years</span><p>In June 2006 Joshua Bloch wrote that the binary search in Java&rsquo;s own library had been broken, &ldquo;lying in wait for nine years or so&rdquo;. In <code>int mid = (low + high) / 2;</code> the sum overflows to a negative number when it passes the biggest <code>int</code>. That needs an array of about a billion (2<sup>30</sup>) elements, so no ordinary test found it. The fix is <code>int mid = low + ((high - low) / 2);</code>, and Jon Bentley&rsquo;s proved-correct search in <em>Programming Pearls</em> had the same bug. (Java&rsquo;s <code>Integer.MAX_VALUE + 1</code> is <code>-2147483648</code>. Python&rsquo;s whole numbers never overflow.) <a href=\"https://research.google/blog/extra-extra-read-all-about-it-nearly-all-binary-searches-and-mergesorts-are-broken/\" target=\"_blank\" rel=\"noopener\">Bloch, Google Research blog, 2 June 2006</a></p></div>"
         ],
         [
           "Explain from input to consequence",
-          "<p>Explaining code is not reading it aloud line by line. A good explanation names the state, condition or method call that matters, and connects it to what you can see. For a bug, use four steps:</p><ol><li><strong>Counterexample.</strong> The smallest input that shows it: <code>[50]</code> with <code>&gt;</code> prints 0, but 1 was expected.</li><li><strong>First wrong state.</strong> Trace it and find the first variable that differs from your expectation: after the first pass <code>passed</code> is 0, and should be 1.</li><li><strong>Cause and fix.</strong> Name the line and the rule it breaks: <code>mark &gt; 50</code> leaves out the boundary, but the rule says &ldquo;50 or more&rdquo;, so use <code>&gt;=</code>.</li><li><strong>Predicted effect.</strong> Say what the counterexample will print now, then run it: 1.</li></ol><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Weak explanation</th><th>Strong explanation</th></tr></thead><tbody><tr><td>&ldquo;Line 6 checks if the mark is greater than 50 and adds one to passed.&rdquo;</td><td>&ldquo;With <code>[50]</code>, <code>passed</code> stays 0 because <code>50 &gt; 50</code> is false. The rule says 50 passes, so it needs <code>&gt;=</code>; then it prints 1.&rdquo;</td></tr><tr><td>&ldquo;It crashes because of an error.&rdquo;</td><td>&ldquo;The line <code>Tuan</code> has no comma, so <code>parts[1]</code> does not exist and Java throws <code>ArrayIndexOutOfBoundsException</code>. Check <code>parts.length</code> first.&rdquo;</td></tr><tr><td>&ldquo;The list changed by itself.&rdquo;</td><td>&ldquo;<code>change</code> was given the caller&rsquo;s list and appended to it: mutation through a shared reference.&rdquo;</td></tr></tbody></table></div><p>Everything after the first wrong state is a consequence. Fix the cause and the consequences disappear. Patch a consequence and the cause turns up somewhere else.</p>"
+          "<p>Explaining is not reading code aloud. Connect the state that matters to what you can see. For a bug, use four steps:</p><ol><li><strong>Counterexample.</strong> The smallest failing input: <code>[50]</code> with <code>&gt;</code> prints 0, not 1.</li><li><strong>First wrong state.</strong> Trace until a variable is wrong: after the first pass <code>passed</code> is 0, not 1.</li><li><strong>Cause and fix.</strong> <code>mark &gt; 50</code> leaves out 50, but the rule says &ldquo;50 or more&rdquo;. Use <code>&gt;=</code>.</li><li><strong>Predicted effect.</strong> Say it will now print 1, then run it.</li></ol><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Weak explanation</th><th>Strong explanation</th></tr></thead><tbody><tr><td>&ldquo;Line 6 checks if the mark is greater than 50 and adds one to passed.&rdquo;</td><td>&ldquo;With <code>[50]</code>, <code>passed</code> stays 0 because <code>50 &gt; 50</code> is false. The rule says 50 passes, so it needs <code>&gt;=</code>; then it prints 1.&rdquo;</td></tr><tr><td>&ldquo;It crashes because of an error.&rdquo;</td><td>&ldquo;The line <code>Tuan</code> has no comma, so <code>parts[1]</code> does not exist and Java throws <code>ArrayIndexOutOfBoundsException</code>. Check <code>parts.length</code> first.&rdquo;</td></tr><tr><td>&ldquo;The list changed by itself.&rdquo;</td><td>&ldquo;<code>change</code> was given the caller&rsquo;s list and appended to it: mutation through a shared reference.&rdquo;</td></tr></tbody></table></div><p>Everything after the first wrong state is a consequence. Fix the cause, not a consequence, or the bug turns up somewhere else.</p>"
         ],
         [
           "Error messages are evidence",
-          "<p>A crash is good news: the program tells you what kind of problem it found and where. Java prints the exception type first, with the stack trace below it; Python prints the traceback first and the exception type on the <strong>last</strong> line (Week 1). Most crashes in this course are one of a handful:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Java</th><th>Python</th><th>Usually means</th></tr></thead><tbody><tr><td><code>NumberFormatException</code></td><td><code>ValueError</code> from <code>int()</code></td><td>text that is not a number reached the convert stage</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code>, <code>IndexOutOfBoundsException</code></td><td><code>IndexError</code></td><td>an index one past the end, or a missing field after <code>split</code></td></tr><tr><td><code>NullPointerException</code></td><td><code>AttributeError: 'NoneType' object has no attribute &hellip;</code></td><td>a variable that never got an object, or a method that returned <code>null</code> / <code>None</code></td></tr><tr><td><code>ArithmeticException: / by zero</code></td><td><code>ZeroDivisionError</code></td><td>an average of no records</td></tr><tr><td><code>ConcurrentModificationException</code>, usually</td><td>no error, but elements are skipped</td><td>removing from a list while looping over it (Week 7)</td></tr><tr><td><code>FileNotFoundException</code></td><td><code>FileNotFoundError</code></td><td>a wrong file name, or the program runs in a different folder (Weeks 9&ndash;10)</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">No crash is not the same as correct</span><p>The bugs in the table announce themselves. A logic error, such as <code>&gt;</code> for <code>&gt;=</code>, prints a wrong answer quietly. Only a test with an expected value written down in advance catches it.</p></div><div class=\"joke\"><p>&ldquo;Beware of bugs in the above code; I have only proved it correct, not tried it.&rdquo;</p><span class=\"attrib\">Donald E. Knuth, closing line of a memo to Peter van Emde Boas, 29 March 1977 (<a href=\"https://www-cs-faculty.stanford.edu/~knuth/faq.html\" target=\"_blank\" rel=\"noopener\">Knuth&rsquo;s FAQ</a>)</span></div><p>Even a proof is no substitute for running the program on the boundary cases.</p>"
+          "<p>A crash tells you what went wrong and where. Java prints the exception type first. Python prints it on the <strong>last</strong> line of the traceback (Week 1). Most crashes in this course are one of these:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Java</th><th>Python</th><th>Usually means</th></tr></thead><tbody><tr><td><code>NumberFormatException</code></td><td><code>ValueError</code> from <code>int()</code></td><td>text that is not a number reached the convert stage</td></tr><tr><td><code>ArrayIndexOutOfBoundsException</code>, <code>IndexOutOfBoundsException</code></td><td><code>IndexError</code></td><td>an index one past the end, or a missing field after <code>split</code></td></tr><tr><td><code>NullPointerException</code></td><td><code>AttributeError: 'NoneType' object has no attribute &hellip;</code></td><td>a variable that never got an object, or a method that returned <code>null</code> / <code>None</code></td></tr><tr><td><code>ArithmeticException: / by zero</code></td><td><code>ZeroDivisionError</code></td><td>an average of no records</td></tr><tr><td><code>ConcurrentModificationException</code>, usually</td><td>no error, but elements are skipped</td><td>removing from a list while looping over it (Week 7)</td></tr><tr><td><code>FileNotFoundException</code></td><td><code>FileNotFoundError</code></td><td>a wrong file name, or the program runs in a different folder (Weeks 9&ndash;10)</td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">No crash is not the same as correct</span><p>A logic error, such as <code>&gt;</code> for <code>&gt;=</code>, prints a wrong answer without crashing. Only a test with an expected value written in advance catches it.</p></div><div class=\"joke\"><p>&ldquo;Beware of bugs in the above code; I have only proved it correct, not tried it.&rdquo;</p><span class=\"attrib\">Donald E. Knuth, closing line of a memo to Peter van Emde Boas, 29 March 1977 (<a href=\"https://www-cs-faculty.stanford.edu/~knuth/faq.html\" target=\"_blank\" rel=\"noopener\">Knuth&rsquo;s FAQ</a>)</span></div><p>Even a proof does not replace running the boundary cases.</p>"
         ]
       ],
       "examples": [
@@ -11808,7 +11808,7 @@
           "notes": [
             [
               "before=total",
-              "Record the state before the update so its effect can be explained."
+              "Record the state before the update, so you can explain its effect."
             ],
             [
               "total+=mark",
@@ -11831,7 +11831,7 @@
         {
           "kind": "w12-mutants",
           "title": "Would your test catch the bug?",
-          "intro": "Below are the original <code>Counter</code> and four buggy copies, each with one small change. A test is useful only if some bug makes it <strong>print something different</strong>. First see what the example's own calls catch, then build your own set of tests and try to catch every bug with as few tests as possible.",
+          "intro": "Below are the original <code>Counter</code> and four buggy copies, each with one small change. A test is useful only if some bug makes it <strong>print something different</strong>. See what the example&rsquo;s own calls catch. Then build a small set of tests that catches every bug.",
           "langs": [
             "java"
           ],
@@ -11983,7 +11983,7 @@
         {
           "kind": "w12-diverge",
           "title": "Find the first state that goes wrong",
-          "intro": "The left table is the trace of the example. The right table is the same program with one bug. Press <strong>Next</strong> to print one row at a time, then <strong>click the first row of the buggy trace that is wrong</strong>. That row is where to start explaining the bug &mdash; everything after it is just a consequence.",
+          "intro": "Left: the trace of the example. Right: the same program with one bug. Press <strong>Next</strong> to print one row at a time, then <strong>click the first row of the buggy trace that is wrong</strong>. Start your explanation there. Everything after it is a consequence.",
           "langs": [
             "python"
           ],
@@ -12055,7 +12055,7 @@
         {
           "kind": "w12-bugs",
           "title": "Where does this bug live?",
-          "intro": "Eight symptoms, each caused by an idea from an earlier week. Pick a symptom, decide where the cause lives, then see the program, its real output, and the one-line fix. Each answer links back to the week that teaches the idea.",
+          "intro": "Eight symptoms, each caused by an idea from an earlier week. Pick a symptom and decide where the cause lives. Then see the program, its real output and the one-line fix. Each answer links back to the week that teaches the idea.",
           "langs": [
             "java",
             "python"
@@ -12144,7 +12144,7 @@
                   false
                 ]
               ],
-              "cause": "Removing index 0 slides 40 into index 0, then <code>i</code> moves on to 1 and 40 is never checked. Walk backwards (or build a new list) so a removal never moves an unchecked element.",
+              "cause": "Removing index 0 slides 40 into index 0. Then <code>i</code> moves on to 1, so 40 is never checked. Walk backwards (or build a new list) so a removal never moves an unchecked element.",
               "links": [
                 [
                   "Week 7 &middot; Removal and safe traversal",
@@ -12297,7 +12297,7 @@
                   false
                 ]
               ],
-              "cause": "A <code>PrintWriter</code> keeps text in a buffer and writes it to disk when flushed or closed. Close it (or use try-with-resources) before checking the file.",
+              "cause": "A <code>PrintWriter</code> keeps text in a buffer until it is flushed or closed. Close it (or use try-with-resources) before checking the file.",
               "links": [
                 [
                   "Week 10 &middot; File modes, closing and error reporting",
@@ -12498,12 +12498,12 @@
             ],
             [
               "cases = [(49, False), (50, True), (51, True), (85, True), (100, True), (101, False)]",
-              "Expected answers are written down <em>before</em> running: one each side of both boundaries, plus one from the middle.",
+              "Expected answers are written <em>before</em> running: one each side of both boundaries, plus one from the middle.",
               "Boundary cases"
             ],
             [
               "good == bad",
-              "A test is useful only if the correct and the buggy version give different answers on it.",
+              "A test is useful only if the correct and buggy versions give different answers on it.",
               "Does it distinguish?"
             ],
             [
@@ -12523,19 +12523,19 @@
       "concepts": [
         [
           "A new way to express a familiar traversal",
-          "<p><strong>Optional enrichment.</strong> Most loops you have written do one of three jobs. Functional programming gives each job a name:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Job</th><th>Name</th><th>As a loop</th><th>Java stream</th><th>Python</th></tr></thead><tbody><tr><td>keep some elements</td><td><strong>filter</strong></td><td><code>if (m &gt;= 50) kept.add(m);</code></td><td><code>.filter(m -&gt; m &gt;= 50)</code></td><td><code>[m for m in marks if m &gt;= 50]</code></td></tr><tr><td>change every element</td><td><strong>map</strong></td><td><code>out.add(m + 5);</code></td><td><code>.map(m -&gt; m + 5)</code></td><td><code>[m + 5 for m in marks]</code></td></tr><tr><td>combine into one value</td><td><strong>reduce</strong></td><td><code>total += m;</code></td><td><code>.reduce(0, (x, y) -&gt; x + y)</code></td><td><code>sum(marks)</code></td></tr></tbody></table></div><p>The small functions passed in, like <code>m -&gt; m &gt;= 50</code>, are <strong>lambdas</strong>: functions with no name, written where they are used. Java writes <code>parameter -&gt; expression</code>; Python writes <code>lambda parameter: expression</code>, although a comprehension usually reads better than <code>map</code> with a lambda.</p><p>Ed&rsquo;s optional <em>Beyond Programming 1</em> lessons introduce first-class functions, pure transformations and stream pipelines. None of it adds computing power: every pipeline can be written as the loop you already know.</p><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-guido.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Guido van Rossum\"></div><p>&ldquo;So now reduce().  This is actually the one I've always hated most, because, apart from a few examples involving + or *, almost every time I see a reduce() call with a non-trivial function argument, I need to grab pen and paper to diagram what's actually being fed into that function before I understand what the reduce() is supposed to do.&rdquo;</p><span class=\"attrib\">Guido van Rossum, <a href=\"https://www.artima.com/weblogs/viewpost.jsp?thread=98196\" target=\"_blank\" rel=\"noopener\"><em>The fate of reduce() in Python 3000</em></a>, 10 March 2005 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AGuido-portrait-2014-drc.jpg\" target=\"_blank\" rel=\"noopener\">Photograph by Daniel Stroud , first retouched version uploaded by User:Deedub1983 , second retouching by User:HarJIT ., 2014</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\" target=\"_blank\" rel=\"noopener\">CC BY-SA 4.0</a></span></span></div><p>Python 3 moved <code>reduce</code> out of the built-ins into the <code>functools</code> module. For totals, use <code>sum()</code>; for anything harder, a loop is often the clearer choice.</p>"
+          "<p><strong>Optional enrichment.</strong> Most loops do one of three jobs. Functional programming gives each one a name:</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Job</th><th>Name</th><th>As a loop</th><th>Java stream</th><th>Python</th></tr></thead><tbody><tr><td>keep some elements</td><td><strong>filter</strong></td><td><code>if (m &gt;= 50) kept.add(m);</code></td><td><code>.filter(m -&gt; m &gt;= 50)</code></td><td><code>[m for m in marks if m &gt;= 50]</code></td></tr><tr><td>change every element</td><td><strong>map</strong></td><td><code>out.add(m + 5);</code></td><td><code>.map(m -&gt; m + 5)</code></td><td><code>[m + 5 for m in marks]</code></td></tr><tr><td>combine into one value</td><td><strong>reduce</strong></td><td><code>total += m;</code></td><td><code>.reduce(0, (x, y) -&gt; x + y)</code></td><td><code>sum(marks)</code></td></tr></tbody></table></div><p>A <strong>lambda</strong>, like <code>m -&gt; m &gt;= 50</code>, is a function with no name, written where it is used. Java writes <code>parameter -&gt; expression</code>. Python writes <code>lambda parameter: expression</code>, but a comprehension usually reads better.</p><p>Ed&rsquo;s optional <em>Beyond Programming 1</em> lessons go further. Every pipeline can still be written as a loop.</p><div class=\"joke with-photo\"><div class=\"quote-photos\"><img class=\"quote-photo\" src=\"../media/portrait-guido.jpg\" width=\"240\" height=\"240\" loading=\"lazy\" alt=\"Portrait of Guido van Rossum\"></div><p>&ldquo;So now reduce().  This is actually the one I've always hated most, because, apart from a few examples involving + or *, almost every time I see a reduce() call with a non-trivial function argument, I need to grab pen and paper to diagram what's actually being fed into that function before I understand what the reduce() is supposed to do.&rdquo;</p><span class=\"attrib\">Guido van Rossum, <a href=\"https://www.artima.com/weblogs/viewpost.jsp?thread=98196\" target=\"_blank\" rel=\"noopener\"><em>The fate of reduce() in Python 3000</em></a>, 10 March 2005 <span class=\"credit\">Portrait: <a href=\"https://commons.wikimedia.org/wiki/File%3AGuido-portrait-2014-drc.jpg\" target=\"_blank\" rel=\"noopener\">Photograph by Daniel Stroud , first retouched version uploaded by User:Deedub1983 , second retouching by User:HarJIT ., 2014</a> &middot; <a href=\"https://creativecommons.org/licenses/by-sa/4.0\" target=\"_blank\" rel=\"noopener\">CC BY-SA 4.0</a></span></span></div><p>Python 3 moved <code>reduce</code> into the <code>functools</code> module. Use <code>sum()</code> for totals and a loop for anything harder.</p>"
         ],
         [
           "Pure functions build a new result",
-          "<p>A <strong>pure</strong> function computes its result only from its arguments and changes nothing else: it does not mutate its arguments, print, or touch variables outside itself. <code>doubled(source)</code> in the example below is pure: it builds a fresh list, and <code>source</code> is the same afterwards. Call it twice with the same input and you get the same answer twice.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pure</th><th>Not pure</th><th>Why it matters</th></tr></thead><tbody><tr><td><code>return [v * 2 for v in values]</code></td><td><code>for i in range(len(values)): values[i] *= 2</code></td><td>the caller&rsquo;s list survives (1.2)</td></tr><tr><td><code>return total</code></td><td><code>print(total)</code></td><td>a test can check a returned value (3.1)</td></tr><tr><td><code>.filter(m -&gt; m &gt;= 50)</code></td><td>a lambda that adds to an outside list</td><td>the Java stream rules forbid it</td></tr></tbody></table></div><p>The Java documentation for streams says the functions you pass in &ldquo;must be non-interfering, and in most cases must be stateless&rdquo; (<a href=\"https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html\" target=\"_blank\" rel=\"noopener\">java.util.stream</a>): they must not change the source list, and should not depend on anything that changes while the stream runs.</p><div class=\"note tip\"><span class=\"tag\">Java 8 on this site</span><p>The Java examples use <code>Arrays.asList</code> and <code>collect(Collectors.toList())</code>, which work in Java 8. Newer code often uses <code>List.of</code> (Java 9) and <code>Stream.toList()</code> (Java 16), which this site&rsquo;s Java 8 compiler would reject. This section is optional; current Canvas instructions decide what is assessed.</p></div>"
+          "<p>A <strong>pure</strong> function uses only its arguments and changes nothing: no mutation, no printing, no outside variables. <code>doubled(source)</code> below builds a new list and leaves <code>source</code> unchanged. Same input, same answer.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Pure</th><th>Not pure</th><th>Why it matters</th></tr></thead><tbody><tr><td><code>return [v * 2 for v in values]</code></td><td><code>for i in range(len(values)): values[i] *= 2</code></td><td>the caller&rsquo;s list survives (1.2)</td></tr><tr><td><code>return total</code></td><td><code>print(total)</code></td><td>a test can check a returned value (3.1)</td></tr><tr><td><code>.filter(m -&gt; m &gt;= 50)</code></td><td>a lambda that adds to an outside list</td><td>the Java stream rules forbid it</td></tr></tbody></table></div><p>Java&rsquo;s stream documentation says the functions you pass in &ldquo;must be non-interfering, and in most cases must be stateless&rdquo; (<a href=\"https://docs.oracle.com/javase/8/docs/api/java/util/stream/package-summary.html\" target=\"_blank\" rel=\"noopener\">java.util.stream</a>). They must not change the source, or depend on state that changes while the stream runs.</p><div class=\"note tip\"><span class=\"tag\">Java 8 on this site</span><p>This site compiles Java 8, so the examples use <code>Arrays.asList</code> and <code>collect(Collectors.toList())</code>. Newer code often uses <code>List.of</code> (Java 9) and <code>Stream.toList()</code> (Java 16), which would not compile here. This section is optional. Current Canvas instructions decide what is assessed.</p></div>"
         ],
         [
           "Lazy pipelines run only when asked",
-          "<p>A stream pipeline has <strong>intermediate</strong> operations (<code>filter</code>, <code>map</code>) that only <em>describe</em> work, and one <strong>terminal</strong> operation (<code>sum</code>, <code>count</code>, <code>collect</code>) that makes it happen. Until the terminal operation runs, nothing runs at all. The second extra below prints from inside a <code>filter</code> to prove it.</p><p>A stream can be used only once: a second terminal operation throws <code>IllegalStateException</code>. Python&rsquo;s <code>map</code>, <code>filter</code> and generator expressions are lazy in the same way, and once used up they simply produce nothing more.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java stream</th><th>Python <code>map</code> / <code>filter</code> / generator</th></tr></thead><tbody><tr><td>when does the work happen?</td><td>at the terminal operation</td><td>when something asks for values: <code>list()</code>, <code>sum()</code>, a <code>for</code> loop</td></tr><tr><td>use it a second time</td><td><code>IllegalStateException</code></td><td>no error, but no values: <code>[]</code>, <code>0</code></td></tr><tr><td>keep the results</td><td><code>collect(Collectors.toList())</code></td><td><code>list(&hellip;)</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">The empty second list</span><p><code>bonus = map(lambda m: m + 5, marks)</code>, then <code>list(bonus)</code> gives the values and a second <code>list(bonus)</code> gives <code>[]</code>, with no error. If you need the results twice, turn them into a list once and keep the list.</p></div>"
+          "<p>A stream&rsquo;s <strong>intermediate</strong> operations (<code>filter</code>, <code>map</code>) only <em>describe</em> work. Its one <strong>terminal</strong> operation (<code>sum</code>, <code>count</code>, <code>collect</code>) runs it. The second extra below proves this.</p><p>A stream works once: a second terminal operation throws <code>IllegalStateException</code>. Python&rsquo;s <code>map</code>, <code>filter</code> and generator expressions are lazy too. Once used up, they give nothing more.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th></th><th>Java stream</th><th>Python <code>map</code> / <code>filter</code> / generator</th></tr></thead><tbody><tr><td>when does the work happen?</td><td>at the terminal operation</td><td>when something asks for values: <code>list()</code>, <code>sum()</code>, a <code>for</code> loop</td></tr><tr><td>use it a second time</td><td><code>IllegalStateException</code></td><td>no error, but no values: <code>[]</code>, <code>0</code></td></tr><tr><td>keep the results</td><td><code>collect(Collectors.toList())</code></td><td><code>list(&hellip;)</code></td></tr></tbody></table></div><div class=\"note warn\"><span class=\"tag\">The empty second list</span><p>After <code>bonus = map(lambda m: m + 5, marks)</code>, the first <code>list(bonus)</code> gives the values. The second gives <code>[]</code>, with no error. If you need the results twice, make a list once and keep it.</p></div>"
         ],
         [
           "Comprehensions in Python",
-          "<p>A <strong>comprehension</strong> is Python&rsquo;s compact way to build a collection from another: the loop, the condition and the new element in one expression. Read it from the <code>for</code>: &ldquo;for each <code>m</code> in <code>marks</code>, if <code>m &gt;= 50</code>, keep <code>m + 5</code>&rdquo;.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Builds</th><th>Comprehension</th><th>Result for <code>marks = [49, 50, 85]</code></th></tr></thead><tbody><tr><td>a list</td><td class=\"mono\">[m + 5 for m in marks if m &gt;= 50]</td><td class=\"mono\">[55, 90]</td></tr><tr><td>a set</td><td class=\"mono\">{m // 10 for m in marks}</td><td class=\"mono\">{4, 5, 8}</td></tr><tr><td>a dictionary</td><td class=\"mono\">{m: m &gt;= 50 for m in marks}</td><td class=\"mono\">{49: False, 50: True, 85: True}</td></tr><tr><td>nothing yet (a generator)</td><td class=\"mono\">sum(m for m in marks if m &gt;= 50)</td><td class=\"mono\">135</td></tr></tbody></table></div><p>Java has no comprehension syntax; a stream with <code>filter</code>, <code>map</code> and <code>collect</code> plays the same role.</p><div class=\"note warn\"><span class=\"tag\">A comprehension is for building, not for doing</span><p><code>[print(m) for m in marks]</code> prints the marks and also builds a useless list <code>[None, None, None]</code>. When the point is an effect (printing, appending, writing a file), write a plain <code>for</code> loop. And when a comprehension needs two conditions and a nested loop to fit on one line, the loop is easier to read.</p></div>"
+          "<p>A <strong>comprehension</strong> builds a collection from another in one expression. Read it from the <code>for</code>: &ldquo;for each <code>m</code> in <code>marks</code>, if <code>m &gt;= 50</code>, keep <code>m + 5</code>&rdquo;.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Builds</th><th>Comprehension</th><th>Result for <code>marks = [49, 50, 85]</code></th></tr></thead><tbody><tr><td>a list</td><td class=\"mono\">[m + 5 for m in marks if m &gt;= 50]</td><td class=\"mono\">[55, 90]</td></tr><tr><td>a set</td><td class=\"mono\">{m // 10 for m in marks}</td><td class=\"mono\">{4, 5, 8}</td></tr><tr><td>a dictionary</td><td class=\"mono\">{m: m &gt;= 50 for m in marks}</td><td class=\"mono\">{49: False, 50: True, 85: True}</td></tr><tr><td>nothing yet (a generator)</td><td class=\"mono\">sum(m for m in marks if m &gt;= 50)</td><td class=\"mono\">135</td></tr></tbody></table></div><p>Java has no comprehensions. A stream with <code>filter</code>, <code>map</code> and <code>collect</code> does the same job.</p><div class=\"note warn\"><span class=\"tag\">A comprehension is for building, not for doing</span><p><code>[print(m) for m in marks]</code> prints the marks, but also builds a useless list <code>[None, None, None]</code>. For effects (printing, appending, writing), use a plain <code>for</code> loop. Use one too when a comprehension needs a nested loop and two conditions.</p></div>"
         ]
       ],
       "examples": [
@@ -12546,11 +12546,11 @@
           "notes": [
             [
               "filter(mark -> mark>=50)",
-              "Keep only values meeting the pass predicate."
+              "Keep only the passing marks."
             ],
             [
               ".sum()",
-              "The terminal operation consumes the pipeline and returns the aggregate."
+              "The terminal operation runs the pipeline and returns the total."
             ]
           ],
           "wrong": [
@@ -12570,11 +12570,11 @@
           "notes": [
             [
               "return [value*2 for value in values]",
-              "Construct a result without mutating the input list."
+              "Build a new result without changing the input list."
             ],
             [
               "source",
-              "The caller can reuse the unchanged data after the function returns."
+              "The caller can reuse the unchanged data after the call."
             ]
           ],
           "wrong": [
@@ -12593,7 +12593,7 @@
         {
           "kind": "w12-pipeline",
           "title": "Watch the marks flow: filter, map, reduce",
-          "intro": "<strong>Optional enrichment.</strong> Each mark is a token. Press <strong>Next</strong> and watch where it goes. The order is not a guess: the \"with a log\" version prints a line in every step, and the animation replays exactly what it printed. Then remove the final step and see what runs.",
+          "intro": "<strong>Optional enrichment.</strong> Each mark is a token. Press <strong>Next</strong> and watch where it goes. The order is real: the \"with a log\" version prints a line at every step, and the animation replays that output. Then remove the final step and see what runs.",
           "langs": [
             "java",
             "python"
@@ -13572,7 +13572,7 @@
             ],
             [
               "print(list(lazy))",
-              "The first <code>list</code> uses the values up. The second <code>list(lazy)</code> on the next line gets nothing, with no error: <code>[]</code>.",
+              "The first <code>list</code> uses the values up. The second <code>list(lazy)</code>, on the next line, gets <code>[]</code> with no error.",
               "Used once"
             ],
             [
@@ -13592,7 +13592,7 @@
           "notes": [
             [
               "System.out.println(\"checking \" + m);",
-              "A print inside the lambda shows exactly when the filter runs. (Printing in a lambda is for this demonstration only: it is a side effect.)",
+              "A print inside the lambda shows when the filter runs. (It is a side effect, used only for this demonstration.)",
               "Watch it run"
             ],
             [
@@ -13602,7 +13602,7 @@
             ],
             [
               "passing.collect(Collectors.toList())",
-              "The terminal operation. Only now are the marks checked, one by one. Java 8 style: newer code may write <code>toList()</code>.",
+              "The terminal operation. Only now are the marks checked, one by one. Newer Java may write <code>toList()</code>.",
               "Terminal operation"
             ],
             [
@@ -14024,17 +14024,17 @@
     {
       "title": "Twelve weeks on one page",
       "meta": "review map \u00b7 the whole course",
-      "html": "<p>Twelve weeks, one table. Each week adds one question you should now ask of every program, and one bug it teaches you to spot. Use it to find your weakest row, then go back to that week&rsquo;s page, its quiz and its revision deck.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Week</th><th>Topic</th><th>The question to ask</th><th>A classic bug</th></tr></thead><tbody><tr><td class=\"mono\">1</td><td><a href=\"week-1.html\">First programs</a></td><td>Compile, run, read the error</td><td><code>int / int</code> giving a whole number</td></tr><tr><td class=\"mono\">2&ndash;3</td><td><a href=\"week-2-3.html\">Choosing and repeating</a></td><td>&ldquo;What happens on the boundary?&rdquo; &middot; &ldquo;What makes this stop?&rdquo;</td><td>two <code>if</code>s where an <code>else</code> was needed; a loop that never ends</td></tr><tr><td class=\"mono\">4</td><td><a href=\"week-4.html\">Methods and records</a></td><td>What goes in, what comes out?</td><td>printing where a <code>return</code> was needed</td></tr><tr><td class=\"mono\">5</td><td><a href=\"week-5.html\">Classes and enums</a></td><td>Which object owns this data?</td><td><code>==</code> on two strings in Java</td></tr><tr><td class=\"mono\">6</td><td><a href=\"week-6.html\">Reliable classes</a></td><td>Can an object ever be invalid?</td><td>a public field that lets other code skip the rule</td></tr><tr><td class=\"mono\">7</td><td><a href=\"week-7.html\">Lists and generics</a></td><td>Which index, and is it still valid?</td><td>removing while looping forwards</td></tr><tr><td class=\"mono\">8</td><td><a href=\"week-8.html\">Inheritance and interfaces</a></td><td>Which method runs: the declared type or the object?</td><td>forgetting that the object&rsquo;s class decides</td></tr><tr><td class=\"mono\">9</td><td><a href=\"week-9.html\">Exceptions and input</a></td><td>What can go wrong, and who handles it?</td><td>a broad <code>catch</code> that hides the real cause</td></tr><tr><td class=\"mono\">10</td><td><a href=\"week-10.html\">Output and reports</a></td><td>Is the output exactly the contract?</td><td>output never flushed or closed, so the file stays empty</td></tr><tr><td class=\"mono\">11</td><td><a href=\"week-11.html\">OOP design</a></td><td>Who should own this rule?</td><td>the same rule copied into two classes</td></tr><tr><td class=\"mono\">12</td><td>Review and integration</td><td>Which stage, which state, which boundary?</td><td>counting lines read instead of records stored</td></tr></tbody></table></div><h3 class=\"read-group-title\">Preparing for the final assessment</h3><p>Everything about the final assessment itself (date, format, length, what you may bring and which topics are in scope) is set on <a href=\"https://canvas.uts.edu.au/courses/42626\" target=\"_blank\" rel=\"noopener\">Canvas</a>. Read the current announcements there; nothing on this website replaces them. What this page can offer is a way to practise:</p><ul><li><strong>Test yourself instead of rereading.</strong> Do each week&rsquo;s quiz again without looking at the notes, and redo the revision-deck questions with the answers covered.</li><li><strong>Predict before you run.</strong> Every example on these pages has a Run button. Write the output down first; every wrong prediction is a gap found cheaply.</li><li><strong>Write code by hand.</strong> Pick an exercise, write the solution on paper, then type it in exactly as written and run the tests. Note what the compiler caught that you did not.</li><li><strong>Do it in both languages.</strong> If you solved an exercise in Java, solve it again in Python, and say out loud what changed.</li><li><strong>Explain to someone.</strong> Use the four steps of 3.2 on a bug from <em>Where does this bug live?</em>. If you cannot name the first wrong state, trace again.</li><li><strong>Ask early.</strong> Post questions on the Ed forum during the week, while there is still time for an answer to help.</li></ul>"
+      "html": "<p>Each week adds one question to ask of every program, and one bug it teaches you to spot. Find your weakest row, then go back to that week&rsquo;s page, quiz and revision deck.</p><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Week</th><th>Topic</th><th>The question to ask</th><th>A classic bug</th></tr></thead><tbody><tr><td class=\"mono\">1</td><td><a href=\"week-1.html\">First programs</a></td><td>Compile, run, read the error</td><td><code>int / int</code> giving a whole number</td></tr><tr><td class=\"mono\">2&ndash;3</td><td><a href=\"week-2-3.html\">Choosing and repeating</a></td><td>&ldquo;What happens on the boundary?&rdquo; &middot; &ldquo;What makes this stop?&rdquo;</td><td>two <code>if</code>s where an <code>else</code> was needed; a loop that never ends</td></tr><tr><td class=\"mono\">4</td><td><a href=\"week-4.html\">Methods and records</a></td><td>What goes in, what comes out?</td><td>printing where a <code>return</code> was needed</td></tr><tr><td class=\"mono\">5</td><td><a href=\"week-5.html\">Classes and enums</a></td><td>Which object owns this data?</td><td><code>==</code> on two strings in Java</td></tr><tr><td class=\"mono\">6</td><td><a href=\"week-6.html\">Reliable classes</a></td><td>Can an object ever be invalid?</td><td>a public field that lets other code skip the rule</td></tr><tr><td class=\"mono\">7</td><td><a href=\"week-7.html\">Lists and generics</a></td><td>Which index, and is it still valid?</td><td>removing while looping forwards</td></tr><tr><td class=\"mono\">8</td><td><a href=\"week-8.html\">Inheritance and interfaces</a></td><td>Which method runs: the declared type or the object?</td><td>forgetting that the object&rsquo;s class decides</td></tr><tr><td class=\"mono\">9</td><td><a href=\"week-9.html\">Exceptions and input</a></td><td>What can go wrong, and who handles it?</td><td>a broad <code>catch</code> that hides the real cause</td></tr><tr><td class=\"mono\">10</td><td><a href=\"week-10.html\">Output and reports</a></td><td>Is the output exactly the contract?</td><td>output never flushed or closed, so the file stays empty</td></tr><tr><td class=\"mono\">11</td><td><a href=\"week-11.html\">OOP design</a></td><td>Who should own this rule?</td><td>the same rule copied into two classes</td></tr><tr><td class=\"mono\">12</td><td>Review and integration</td><td>Which stage, which state, which boundary?</td><td>counting lines read instead of records stored</td></tr></tbody></table></div><h3 class=\"read-group-title\">Preparing for the final assessment</h3><p>Everything about the final assessment (date, format, length, what you may bring, topics in scope) is set on <a href=\"https://canvas.uts.edu.au/courses/42626\" target=\"_blank\" rel=\"noopener\">Canvas</a>. Read the current announcements there. Nothing on this website replaces them. Here are ways to practise:</p><ul><li><strong>Test yourself instead of rereading.</strong> Redo each week&rsquo;s quiz without notes, and the revision-deck questions with the answers covered.</li><li><strong>Predict before you run.</strong> Write the output down before you press Run. Every wrong prediction is a gap found cheaply.</li><li><strong>Write code by hand.</strong> Solve an exercise on paper, type it in exactly as written, and run the tests. Note what the compiler caught that you did not.</li><li><strong>Do it in both languages.</strong> Solve an exercise in Java, then in Python, and say out loud what changed.</li><li><strong>Explain to someone.</strong> Use the four steps of 3.2 on a bug from <em>Where does this bug live?</em>. If you cannot name the first wrong state, trace again.</li><li><strong>Ask early.</strong> Post questions on the Ed forum during the week, while an answer can still help.</li></ul>"
     },
     {
       "title": "Java and Python, side by side",
       "meta": "reference \u00b7 all twelve weeks",
-      "html": "<p>Reference, not reading: the whole course as one lookup table. Each row is something you have written this session.</p><h3 class=\"read-group-title\">Basics</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>print a line</td><td class=\"mono\">System.out.println(x);</td><td class=\"mono\">print(x)</td></tr><tr><td>read a line of input</td><td class=\"mono\">scanner.nextLine()</td><td class=\"mono\">input()</td></tr><tr><td>text to a whole number</td><td class=\"mono\">Integer.parseInt(s)</td><td class=\"mono\">int(s)</td></tr><tr><td>whole-number division</td><td class=\"mono\">7 / 2 is 3 (both int)</td><td class=\"mono\">7 // 2 is 3;  7 / 2 is 3.5</td></tr><tr><td>compare strings</td><td class=\"mono\">a.equals(b)</td><td class=\"mono\">a == b</td></tr></tbody></table></div><h3 class=\"read-group-title\">Choosing and repeating</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>if / else if / else</td><td class=\"mono\">if (c) { } else if (d) { } else { }</td><td class=\"mono\">if c: &hellip; elif d: &hellip; else: &hellip;</td></tr><tr><td>and, or, not</td><td class=\"mono\">&amp;&amp;  ||  !</td><td class=\"mono\">and  or  not</td></tr><tr><td>count from 0 to n-1</td><td class=\"mono\">for (int i = 0; i &lt; n; i++)</td><td class=\"mono\">for i in range(n):</td></tr><tr><td>every element</td><td class=\"mono\">for (int m : marks)</td><td class=\"mono\">for m in marks:</td></tr></tbody></table></div><h3 class=\"read-group-title\">Collections</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>a growable list</td><td class=\"mono\">List&lt;Integer&gt; xs = new ArrayList&lt;&gt;();</td><td class=\"mono\">xs = []</td></tr><tr><td>add, size, get</td><td class=\"mono\">xs.add(5); xs.size(); xs.get(0)</td><td class=\"mono\">xs.append(5); len(xs); xs[0]</td></tr><tr><td>a fixed-size array</td><td class=\"mono\">int[] a = new int[3];</td><td class=\"mono\">(use a list)</td></tr><tr><td>key-value pairs</td><td class=\"mono\">Map&lt;String, Integer&gt; m = new HashMap&lt;&gt;();</td><td class=\"mono\">m = {}</td></tr></tbody></table></div><h3 class=\"read-group-title\">Methods and objects</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>define a function</td><td class=\"mono\">static int add(int a, int b) { &hellip; }</td><td class=\"mono\">def add(a, b):</td></tr><tr><td>a class with a constructor</td><td class=\"mono\">class Student { Student(String n) { &hellip; } }</td><td class=\"mono\">class Student: def __init__(self, n):</td></tr><tr><td>the current object</td><td class=\"mono\">this</td><td class=\"mono\">self (written explicitly)</td></tr><tr><td>inherit</td><td class=\"mono\">class Dog extends Animal</td><td class=\"mono\">class Dog(Animal):</td></tr><tr><td>a promised set of methods</td><td class=\"mono\">interface Fee { int charge(int d); }</td><td class=\"mono\">any object with the method (duck typing)</td></tr></tbody></table></div><h3 class=\"read-group-title\">Errors and files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>handle an error</td><td class=\"mono\">try { } catch (NumberFormatException e) { }</td><td class=\"mono\">try: &hellip; except ValueError: &hellip;</td></tr><tr><td>signal an error</td><td class=\"mono\">throw new IllegalArgumentException(&quot;&hellip;&quot;);</td><td class=\"mono\">raise ValueError(&quot;&hellip;&quot;)</td></tr><tr><td>always clean up</td><td class=\"mono\">try (BufferedReader r = &hellip;) { }</td><td class=\"mono\">with open(name) as f:</td></tr><tr><td>end of input</td><td class=\"mono\">readLine() returns null</td><td class=\"mono\">the for loop over the file ends</td></tr></tbody></table></div><h3 class=\"read-group-title\">Optional: functional</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>keep, change, combine</td><td class=\"mono\">stream().filter(&hellip;).map(&hellip;).reduce(&hellip;)</td><td class=\"mono\">[f(x) for x in xs if p(x)], sum(&hellip;)</td></tr><tr><td>a function without a name</td><td class=\"mono\">x -&gt; x * 2</td><td class=\"mono\">lambda x: x * 2</td></tr></tbody></table></div>"
+      "html": "<p>The whole course as one lookup table. Each row is something you have written this session.</p><h3 class=\"read-group-title\">Basics</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>print a line</td><td class=\"mono\">System.out.println(x);</td><td class=\"mono\">print(x)</td></tr><tr><td>read a line of input</td><td class=\"mono\">scanner.nextLine()</td><td class=\"mono\">input()</td></tr><tr><td>text to a whole number</td><td class=\"mono\">Integer.parseInt(s)</td><td class=\"mono\">int(s)</td></tr><tr><td>whole-number division</td><td class=\"mono\">7 / 2 is 3 (both int)</td><td class=\"mono\">7 // 2 is 3;  7 / 2 is 3.5</td></tr><tr><td>compare strings</td><td class=\"mono\">a.equals(b)</td><td class=\"mono\">a == b</td></tr></tbody></table></div><h3 class=\"read-group-title\">Choosing and repeating</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>if / else if / else</td><td class=\"mono\">if (c) { } else if (d) { } else { }</td><td class=\"mono\">if c: &hellip; elif d: &hellip; else: &hellip;</td></tr><tr><td>and, or, not</td><td class=\"mono\">&amp;&amp;  ||  !</td><td class=\"mono\">and  or  not</td></tr><tr><td>count from 0 to n-1</td><td class=\"mono\">for (int i = 0; i &lt; n; i++)</td><td class=\"mono\">for i in range(n):</td></tr><tr><td>every element</td><td class=\"mono\">for (int m : marks)</td><td class=\"mono\">for m in marks:</td></tr></tbody></table></div><h3 class=\"read-group-title\">Collections</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>a growable list</td><td class=\"mono\">List&lt;Integer&gt; xs = new ArrayList&lt;&gt;();</td><td class=\"mono\">xs = []</td></tr><tr><td>add, size, get</td><td class=\"mono\">xs.add(5); xs.size(); xs.get(0)</td><td class=\"mono\">xs.append(5); len(xs); xs[0]</td></tr><tr><td>a fixed-size array</td><td class=\"mono\">int[] a = new int[3];</td><td class=\"mono\">(use a list)</td></tr><tr><td>key-value pairs</td><td class=\"mono\">Map&lt;String, Integer&gt; m = new HashMap&lt;&gt;();</td><td class=\"mono\">m = {}</td></tr></tbody></table></div><h3 class=\"read-group-title\">Methods and objects</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>define a function</td><td class=\"mono\">static int add(int a, int b) { &hellip; }</td><td class=\"mono\">def add(a, b):</td></tr><tr><td>a class with a constructor</td><td class=\"mono\">class Student { Student(String n) { &hellip; } }</td><td class=\"mono\">class Student: def __init__(self, n):</td></tr><tr><td>the current object</td><td class=\"mono\">this</td><td class=\"mono\">self (written explicitly)</td></tr><tr><td>inherit</td><td class=\"mono\">class Dog extends Animal</td><td class=\"mono\">class Dog(Animal):</td></tr><tr><td>a promised set of methods</td><td class=\"mono\">interface Fee { int charge(int d); }</td><td class=\"mono\">any object with the method (duck typing)</td></tr></tbody></table></div><h3 class=\"read-group-title\">Errors and files</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>handle an error</td><td class=\"mono\">try { } catch (NumberFormatException e) { }</td><td class=\"mono\">try: &hellip; except ValueError: &hellip;</td></tr><tr><td>signal an error</td><td class=\"mono\">throw new IllegalArgumentException(&quot;&hellip;&quot;);</td><td class=\"mono\">raise ValueError(&quot;&hellip;&quot;)</td></tr><tr><td>always clean up</td><td class=\"mono\">try (BufferedReader r = &hellip;) { }</td><td class=\"mono\">with open(name) as f:</td></tr><tr><td>end of input</td><td class=\"mono\">readLine() returns null</td><td class=\"mono\">the for loop over the file ends</td></tr></tbody></table></div><h3 class=\"read-group-title\">Optional: functional</h3><div class=\"tbl-scroll\"><table class=\"tbl\"><thead><tr><th>Idea</th><th>Java</th><th>Python</th></tr></thead><tbody><tr><td>keep, change, combine</td><td class=\"mono\">stream().filter(&hellip;).map(&hellip;).reduce(&hellip;)</td><td class=\"mono\">[f(x) for x in xs if p(x)], sum(&hellip;)</td></tr><tr><td>a function without a name</td><td class=\"mono\">x -&gt; x * 2</td><td class=\"mono\">lambda x: x * 2</td></tr></tbody></table></div>"
     },
     {
       "title": "Where filter, map and reduce came from",
       "meta": "history \u00b7 1964\u20132014",
-      "html": "<p>Filter, map and reduce are not new. The ideas in the optional section have a long history, and reached the two languages of this course decades apart.</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">1964</div><div class=\"tl-body\"><h4>Programs joined like garden hose</h4><p>Doug McIlroy writes a Bell Labs memo asking for ways of connecting programs &ldquo;like garden hose&rdquo;. Unix gets pipes in 1972 (see the box at the end of section 2). <a href=\"https://www.nokia.com/bell-labs/about/dennis-m-ritchie/mdmpipe.html\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1977</div><div class=\"tl-body\"><h4>Can programming be liberated?</h4><p>John Backus, who led the team that created FORTRAN, gives his ACM Turing Award lecture <em>Can Programming Be Liberated from the von Neumann Style?</em>, arguing for programs built by combining functions rather than by changing variables one word at a time. It is published in <em>Communications of the ACM</em> in August 1978. <a href=\"https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2000</div><div class=\"tl-body\"><h4>List comprehensions arrive in Python</h4><p>PEP 202 adds list comprehensions to Python 2.0: <code>[m + 5 for m in marks if m &gt;= 50]</code>. <a href=\"https://peps.python.org/pep-0202/\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2004</div><div class=\"tl-body\"><h4>MapReduce</h4><p>Jeffrey Dean and Sanjay Ghemawat describe Google&rsquo;s MapReduce, inspired, they write, by the map and reduce of Lisp and other functional languages (see the box at the end of section 4). <a href=\"https://www.usenix.org/legacy/event/osdi04/tech/full_papers/dean/dean.pdf\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2005</div><div class=\"tl-body\"><h4>&ldquo;The fate of reduce()&rdquo;</h4><p>Guido van Rossum explains why he wants <code>reduce</code> out of Python&rsquo;s built-ins. In Python 3 it lives in <code>functools</code>; <code>map</code> and <code>filter</code> stay, and return lazy iterators instead of lists. <a href=\"https://www.artima.com/weblogs/viewpost.jsp?thread=98196\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2014</div><div class=\"tl-body\"><h4>Lambdas and streams in Java</h4><p>JDK 8 reaches general availability on 18 March 2014. Its driving feature is Project Lambda: lambda expressions and the <code>java.util.stream</code> API used in this section. <a href=\"https://openjdk.org/projects/jdk8/\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div></div>"
+      "html": "<p>Filter, map and reduce are old ideas. They reached the two languages of this course decades apart.</p><div class=\"timeline\"><div class=\"tl-item\"><div class=\"tl-year\">1964</div><div class=\"tl-body\"><h4>Programs joined like garden hose</h4><p>Doug McIlroy&rsquo;s Bell Labs memo asks for ways of connecting programs &ldquo;like garden hose&rdquo;. Unix gets pipes in 1972 (see the box at the end of section 2). <a href=\"https://www.nokia.com/bell-labs/about/dennis-m-ritchie/mdmpipe.html\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">1977</div><div class=\"tl-body\"><h4>Can programming be liberated?</h4><p>John Backus, who led the FORTRAN team, gives his ACM Turing Award lecture <em>Can Programming Be Liberated from the von Neumann Style?</em>. He argues for combining functions instead of changing variables one word at a time. It appears in <em>Communications of the ACM</em> in August 1978. <a href=\"https://cse.sc.edu/~mgv/csce330f12/Backus78.pdf\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2000</div><div class=\"tl-body\"><h4>List comprehensions arrive in Python</h4><p>PEP 202 adds list comprehensions to Python 2.0: <code>[m + 5 for m in marks if m &gt;= 50]</code>. <a href=\"https://peps.python.org/pep-0202/\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2004</div><div class=\"tl-body\"><h4>MapReduce</h4><p>Jeffrey Dean and Sanjay Ghemawat describe Google&rsquo;s MapReduce. They write that it was inspired by the map and reduce of Lisp and other functional languages (see the box at the end of section 4). <a href=\"https://www.usenix.org/legacy/event/osdi04/tech/full_papers/dean/dean.pdf\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2005</div><div class=\"tl-body\"><h4>&ldquo;The fate of reduce()&rdquo;</h4><p>Guido van Rossum explains why he wants <code>reduce</code> out of Python&rsquo;s built-ins. In Python 3 it lives in <code>functools</code>. <code>map</code> and <code>filter</code> stay, but return lazy iterators instead of lists. <a href=\"https://www.artima.com/weblogs/viewpost.jsp?thread=98196\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div><div class=\"tl-item\"><div class=\"tl-year\">2014</div><div class=\"tl-body\"><h4>Lambdas and streams in Java</h4><p>JDK 8 reaches general availability on 18 March 2014. Its main feature, Project Lambda, brings lambda expressions and the <code>java.util.stream</code> API used here. <a href=\"https://openjdk.org/projects/jdk8/\" target=\"_blank\" rel=\"noopener\">Source</a></p></div></div></div>"
     }
   ]
 }
