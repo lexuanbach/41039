@@ -20,6 +20,11 @@
 }
 .lab-title { font-family: "Archivo", sans-serif; font-weight: 700; font-size: 1.02rem; margin-right: auto; }
 .lab-fs { font-size: 0.74rem; padding: 0.15rem 0.55rem; align-self: center; }
+/* the language switch: Java and Python get their badge colours when chosen */
+.lab-langs { align-self: center; }
+.lab .lab-langs .viz-seg-btn { font-family: "IBM Plex Mono", monospace; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.04em; padding: 0.2rem 0.65rem; }
+.lab .lab-langs .viz-seg-btn[data-lang="java"][aria-pressed="true"]   { color: var(--java); border-color: var(--java); background: color-mix(in srgb, var(--java) 12%, var(--surface)); }
+.lab .lab-langs .viz-seg-btn[data-lang="python"][aria-pressed="true"] { color: var(--python); border-color: var(--python); background: color-mix(in srgb, var(--python) 12%, var(--surface)); }
 
 /* three columns on a wide screen: the choices, the code, the moving picture */
 .lab-body {

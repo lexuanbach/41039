@@ -77,7 +77,8 @@
   var state = {
     cfg: M.norm({}),
     file: { exists: true, text: M.PRESETS[1].text },
-    view: 'java',
+    view: 'both',               // what is shown now
+    want: 'both',               // what the reader picked; 'both' comes back when the file allows it
     predict: false
   };
   function readHash() {
@@ -97,13 +98,13 @@
     if (preset) state.file = { exists: preset.exists, text: preset.text };
     if (q.file !== undefined) state.file.text = q.file;
     if (q.exists) state.file.exists = q.exists !== '0';
-    if (q.view === 'java' || q.view === 'python' || q.view === 'both') state.view = q.view;
+    if (q.view === 'java' || q.view === 'python' || q.view === 'both') state.view = state.want = q.view;
     return true;
   }
   function writeHash() {
     var c = state.cfg, parts = [
       'loop=' + c.loop, 'handler=' + c.handler, 'close=' + c.close,
-      'fin=' + (c.fin ? 1 : 0), 'report=' + (c.report ? 1 : 0), 'view=' + state.view
+      'fin=' + (c.fin ? 1 : 0), 'report=' + (c.report ? 1 : 0), 'view=' + state.want
     ];
     var preset = presetOf(state.file);
     if (preset) parts.push('preset=' + preset.id);
@@ -126,8 +127,15 @@
     var head = el('div', 'lab-head');
     head.appendChild(el('span', 'viz-kicker', 'Interactive lab'));
     head.appendChild(el('span', 'lab-title', 'Add up the numbers in scores.txt'));
-    var badges = el('span', 'viz-langs');
-    head.appendChild(badges);
+    var viewSeg = seg('Language', [
+      { label: 'Java', value: 'java', title: 'Show the Java program' },
+      { label: 'Python', value: 'python', title: 'Show the Python program' },
+      { label: 'Side by side', value: 'both', title: 'Show Java and Python together' }
+    ], function (v) { state.want = state.view = v; changed(true); });
+    viewSeg.root.classList.add('lab-langs');
+    viewSeg.buttons[0].dataset.lang = 'java';
+    viewSeg.buttons[1].dataset.lang = 'python';
+    head.appendChild(viewSeg.root);
     var fsBtn = button('⛶ Full screen', 'ghost lab-fs', 'Make the lab fill the screen (Esc to leave)');
     fsBtn.setAttribute('aria-pressed', 'false');
     head.appendChild(fsBtn);
@@ -217,13 +225,7 @@
 
     // ── 3 · how to watch ──
     var boxView = box(setup, '3', 'Watch it run', null);
-    var viewRow = el('div', 'lab-choice');
-    viewRow.appendChild(el('div', 'lab-choice-label', 'Language'));
-    var viewSeg = seg('Language', [
-      { label: 'Java', value: 'java' }, { label: 'Python', value: 'python' }, { label: 'Side by side', value: 'both' }
-    ], function (v) { state.view = v; changed(true); });
-    viewRow.appendChild(viewSeg.root);
-    boxView.appendChild(viewRow);
+    boxView.appendChild(el('p', 'lab-hint', 'Pick Java, Python or both at the top of the lab.'));
     var agreeNote = el('p', 'lab-hint lab-agree');
     agreeNote.setAttribute('aria-live', 'polite');
     boxView.appendChild(agreeNote);
@@ -312,6 +314,7 @@
         if (state.view === 'both') state.view = 'java';
       } else {
         agreeNote.textContent = '';
+        state.view = state.want;
       }
       langs = state.view === 'both' ? ['java', 'python'] : [state.view];
       sim = M.simulate(state.cfg, state.file, state.view);
@@ -331,8 +334,6 @@
       existsBox.checked = state.file.exists;
       fileArea.disabled = !state.file.exists;
       editor.classList.toggle('is-missing', !state.file.exists);
-      badges.textContent = '';
-      langs.forEach(function (l) { badges.appendChild(el('span', 'lang ' + l, LANG[l])); });
       host.dataset.view = state.view;
     }
 

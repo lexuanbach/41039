@@ -409,8 +409,10 @@ end, or by `close()` in `finally`; `finally` prints `Done` or is absent; the rep
   file cursor and per-line verdicts, reader state, `report.txt` buffer and disk, console). It
   models each language's parsing exactly (`trim()` + `Integer.parseInt` with the int range;
   `strip()` + `int()` with underscores and no limit) and Java's int overflow.
-- **Side by side** runs the Java control flow and prints both languages' output. It is only
-  offered when `agree(file)` says the languages read every line the same way; `1_000` and
+- **Java, Python or side by side** is picked in the lab's header; the lab opens side by side.
+  Side by side runs the Java control flow and prints both languages' output. It is only
+  offered when `agree(file)` says the languages read every line the same way (otherwise Java is
+  shown, and side by side returns when the file allows it); `1_000` and
   `3000000000` are presets precisely because they do not.
 - **Run it for real** runs a helper program (`HELPER`) that writes `scores.txt` (or deletes it)
   and removes `report.txt`, then the shown program, then the helper again to read `report.txt`
