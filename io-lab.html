@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>I/O &amp; Exceptions Lab · 41039</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Read a file, break it, and watch the exception travel: an interactive lab on file input, output and exceptions in Java and Python, for 41039 Programming 1.">
+<script>
+  try {
+    const t = localStorage.getItem("p1-theme");
+    if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+  } catch (e) {}
+  try {
+    const c = localStorage.getItem("p1-code-theme");
+    if (c && c !== "midnight") document.documentElement.dataset.codeTheme = c;
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="stylesheet" href="assets/style.css?v=6ac8bad6">
+<link rel="stylesheet" href="assets/io-lab.css?v=8ea8afb3">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="wordmark" href="index.html"><b>41039</b><span class="course-name"> · Programming 1</span></a>
+    <div class="header-tools">
+      <nav class="topnav" aria-label="Page navigation">
+        <a href="index.html">Syllabus</a>
+        <a href="weeks/week-9.html">Week 9</a>
+        <a href="weeks/week-10.html">Week 10</a>
+        <a href="playground.html">Playground</a>
+        <a href="io-lab.html" aria-current="page">I/O Lab</a>
+      </nav>
+      <div class="display-controls">
+        <button class="control-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+          <span class="icon" id="theme-icon" aria-hidden="true">☾</span>
+          <span id="theme-label">Dark</span>
+        </button>
+        <button class="control-btn" id="code-theme-toggle" type="button" aria-label="Code colour theme: Midnight — click to change">
+          <span class="icon" aria-hidden="true">◐</span>
+          <span id="code-theme-label">Midnight</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="block" style="padding-top:2.5rem">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Lab · Weeks 9 and 10</span>
+        <h2>Read a file. Break it. Watch the exception travel.</h2>
+        <p>One small program, in Java and in Python: open <code>scores.txt</code>, add up the numbers, print the total and save it to <code>report.txt</code>. Change what is in the file and how the program handles trouble, then step through it. Watch the read position, the call stack, the open file, the console and the output file change as it runs.</p>
+      </div>
+    </div>
+    <div class="wrap lab-wrap">
+      <div id="io-lab">
+        <noscript><p class="note warn"><span class="tag">JavaScript needed</span> The lab runs in your browser and needs JavaScript.</p></noscript>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="try">
+    <div class="wrap lab-wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Things to try</span>
+        <h2>Eight questions to answer with the lab</h2>
+        <p>Each link sets up the lab. Predict what happens first (tick <em>Predict first</em> to hide the console), then step through and check.</p>
+      </div>
+      <ul class="lab-tries">
+        <li class="lab-try">
+          <h3>1 · Who stops the program?</h3>
+          <p>Line 2 is <code>abc</code> and <code>main</code> catches nothing. Which frames does the exception pass through, and what is the exit code? Then make <code>main</code> catch each exception and compare.</p>
+          <a data-lab href="#preset=word&amp;loop=stop&amp;handler=none&amp;close=auto&amp;fin=0&amp;report=1&amp;view=java">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>2 · The file nobody closed</h3>
+          <p>The program closes <code>scores.txt</code> with <code>close()</code> after the loop. Step to the end: which panel turns red, and why? Fix it with <em>Automatic</em> or <em>close() in finally</em>.</p>
+          <a data-lab href="#preset=word&amp;loop=stop&amp;handler=specific&amp;close=manual&amp;fin=1&amp;report=1&amp;view=both">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>3 · Does finally run during a crash?</h3>
+          <p>Nothing catches the exception, but <code>main</code> has a <code>finally</code>. Is <code>Done</code> printed? Before or after the stack trace?</p>
+          <a data-lab href="#preset=word&amp;loop=stop&amp;handler=none&amp;close=auto&amp;fin=1&amp;report=1&amp;view=python">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>4 · Skip, don't stop</h3>
+          <p>A <code>try</code> inside the loop catches the bad line. Is <code>Bad score</code> ever printed now? What is the total, and is <code>report.txt</code> written?</p>
+          <a data-lab href="#preset=word&amp;loop=skip&amp;handler=specific&amp;close=auto&amp;fin=1&amp;report=1&amp;view=both">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>5 · Nothing to close</h3>
+          <p><code>scores.txt</code> does not exist. Try all three ways of closing: does any of them have something to close? Which line throws?</p>
+          <a data-lab href="#preset=missing&amp;loop=stop&amp;handler=specific&amp;close=finally&amp;fin=1&amp;report=1&amp;view=java">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>6 · One broad catch</h3>
+          <p><code>main</code> catches any <code>Exception</code>. Switch between <em>A word</em> and <em>Missing file</em>: the program survives both, but can it still tell the user what went wrong?</p>
+          <a data-lab href="#preset=word&amp;loop=stop&amp;handler=broad&amp;close=auto&amp;fin=0&amp;report=0&amp;view=both">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>7 · Written is not saved</h3>
+          <p>Step to the line that writes the total. Where is <code>Total: 60</code> at that moment: in <code>report.txt</code>, or somewhere else? What moves it into the file?</p>
+          <a data-lab href="#preset=good&amp;loop=stop&amp;handler=specific&amp;close=auto&amp;fin=1&amp;report=1&amp;view=both">Set it up →</a>
+        </li>
+        <li class="lab-try">
+          <h3>8 · Same file, different answers</h3>
+          <p>The file says <code>1_000</code>. Run it in Java, then in Python. Why can't you watch them side by side? Try <em>Too big for int</em> as well.</p>
+          <a data-lab href="#preset=under&amp;loop=stop&amp;handler=specific&amp;close=auto&amp;fin=1&amp;report=1&amp;view=java">Set it up →</a>
+        </li>
+      </ul>
+
+      <div class="note tip">
+        <span class="tag">The animation is checked</span>
+        <p>The lab writes both programs from your choices and animates a model of them. Every choice, on every example file, has been run on a real JDK and on CPython, and the model prints the same output, raises the same exception and leaves the same <code>report.txt</code>. To see it for yourself, press <strong>Run it for real</strong> under the code. Your own file contents are checked live the same way.</p>
+      </div>
+      <div class="note warn">
+        <span class="tag">First run is slow</span>
+        <p>A real run downloads a runtime the first time: a JVM for Java, CPython for Python. That takes a few seconds and needs a network connection. Stepping through the animation needs neither.</p>
+      </div>
+      <div class="note">
+        <span class="tag">Small differences from Ed</span>
+        <p>Java here is compiled by the <strong>Eclipse compiler</strong> on a Java 8 runtime, and a stack trace in the browser says <code>Unknown Source</code> where a real JDK gives a line number. The stack traces in the animation show the line numbers a real JDK and CPython print, without the frames inside Java's own library. <strong>Ed is what counts for your marks</strong>; this is for experimenting.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><b>41039</b> · Programming 1</span>
+    <p>Java runs on <a href="https://cheerpj.com/">CheerpJ</a> by Leaning Technologies, with the Eclipse batch compiler. Python runs on <a href="https://pyodide.org/">Pyodide</a>.</p>
+  </div>
+</footer>
+
+<script src="assets/runtime.js?v=8b8a4eac"></script>
+<script src="assets/highlight.js?v=88b90c66"></script>
+<script src="assets/io-lab-model.js?v=fe3e8ab6"></script>
+<script src="assets/io-lab.js?v=8f1f4d7e"></script>
+<script src="assets/course.js?v=6353e7e3"></script>
+</body>
+</html>

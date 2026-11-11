@@ -198,6 +198,16 @@ inside a dark or light block without a `:root` default.**
   and the explanation `.why` appears with a teal left border. The `.quiz-bar` is sticky
   below the topbar and holds grade/reset plus the score.
 
+- **I/O lab** (`.lab`, `assets/io-lab.css`) — a diagram-style card (teal top border, mono
+  kicker) with three columns at 1280px and above: the choices (numbered `.lab-box`es), the code,
+  and the stage (step controls, caption, then four `.lab-panel`s: input file, call stack, console,
+  output file). The stage column is sticky beside the code. Below 1280px the choices go on top;
+  below 900px everything stacks. Colours keep the Week 9 meanings: teal = now / open, green =
+  caught / closed / saved, amber dashed = passing through, red = thrown / never closed; library
+  frames are dashed. A value that moves (a line read, a returned number, a print, the exception
+  rising a frame) is drawn as a `.lab-token` travelling between panels, skipped under
+  `prefers-reduced-motion`.
+
 ## 6. Accessibility & motion
 
 - Visible focus everywhere: `outline: 2px solid var(--accent)`.

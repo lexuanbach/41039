@@ -149,7 +149,7 @@ def course_nav(current):
     titles = [(1, 'First programs'), ('2-3', 'Choosing and repeating'), (4, 'Methods and records'), (5, 'Classes and enums')]
     titles += [(w['week'], w['short']) for w in load_weeks()]
     links = ''.join(f'<a href="week-{num}.html"'+(' aria-current="page"' if str(num) == str(current) else '')+f'><span class="ch-num">{num}</span>{esc(title)}</a>' for num, title in titles)
-    return f'''<aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a>{links}<a href="../playground.html">Java + Python playground</a></nav></details></aside>'''
+    return f'''<aside class="side" aria-label="Course navigation"><details id="course-weeks"><summary>Course weeks</summary><nav aria-label="All week pages"><a href="../index.html">Syllabus and materials</a>{links}<a href="../playground.html">Java + Python playground</a><a href="../io-lab.html">I/O and exceptions lab</a></nav></details></aside>'''
 
 
 def render(w):
@@ -218,6 +218,9 @@ def render(w):
     next_ = f'week-{n+1}.html' if n < 12 else '../index.html#materials'
     visual_count = sum(len(s.get('visuals', [])) for s in w['sections'])
     interactive_chip = f'<span class="chip">{visual_count} interactive diagrams</span>' if visual_count else ''
+    # the I/O & Exceptions Lab (io-lab.html) covers the material of Weeks 9 and 10
+    if n in (9, 10):
+        interactive_chip += '<span class="chip"><a href="../io-lab.html">▶ I/O &amp; exceptions lab</a></span>'
     # a week may add its own diagram kinds (assets/visuals-wN.js, registered with P1Visuals.register)
     # and their styles (assets/visuals-wN.css)
     own_js = (ROOT / f'assets/visuals-w{n}.js').exists()

@@ -155,7 +155,14 @@ window.P1Runtime = (function () {
       '    }\n' +
       '}\n';
   }
-  var javaCache = { src: null, cls: null, outDir: null };   // last successful compile
+  // Compiled programs, newest last. A page that alternates between a few programs (the I/O lab
+  // runs a helper, the program, then the helper again) skips the compiler for all of them.
+  var javaCache = [];
+  var JAVA_CACHE_MAX = 8;
+  function cachedJava(src) {
+    for (var i = 0; i < javaCache.length; i++) if (javaCache[i].src === src) return javaCache[i];
+    return null;
+  }
 
   function runJava(src, stdin, hooks, opts) {
     var onBoot = hooks.onBoot || function () {};
@@ -190,7 +197,8 @@ window.P1Runtime = (function () {
           return needInput ? { ok: true, phase: 'run', needInput: true } : { ok: !sawException, phase: 'run' };
         });
       }
-      if (javaCache.src === src) return execute(javaCache.outDir);   // same program: skip the compiler
+      var hit = cachedJava(src);
+      if (hit) return execute(hit.outDir);   // compiled before: skip the compiler
 
       var id = ++runSeq;
       // /str/ is flat — cheerpOSAddStringFile does not create directories — and the
@@ -212,7 +220,8 @@ window.P1Runtime = (function () {
           onErr(cleanJavacPaths(compileText).trim() || 'Compilation failed.');
           return { ok: false, phase: 'compile' };
         }
-        javaCache = { src: src, cls: cls, outDir: outDir };
+        javaCache.push({ src: src, cls: cls, outDir: outDir });
+        if (javaCache.length > JAVA_CACHE_MAX) javaCache.shift();
         return execute(outDir);
       });
     });

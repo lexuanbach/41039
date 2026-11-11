@@ -38,6 +38,7 @@ conventions where they earned their keep and two deliberate departures (noted be
 UTS-Programming-I-Website/
 ├── index.html              # Homepage: outline, outcomes, assessment, schedule, materials
 ├── playground.html         # Java + Python console with worked example programs
+├── io-lab.html             # I/O & Exceptions Lab (Weeks 9–10): scores.txt, step through, run for real
 ├── selftest.html           # Unlisted: verifies both runtimes on a live deployment
 ├── weeks/
 │   ├── week-1.html         # Week 1: concepts, runnable examples, 20-question quiz
@@ -64,6 +65,8 @@ UTS-Programming-I-Website/
 │   ├── console-ui.js       # The console widget rendered on pages
 │   ├── explain.js          # Explained code: hover/tap notes on read-only examples
 │   ├── visuals.js          # Interactive step-through diagrams (Week 7)
+│   ├── io-lab-model.js     # I/O lab: writes the Java + Python programs and simulates them
+│   ├── io-lab.js / .css    # I/O lab: the page (choices, stage, full screen, real runs)
 │   ├── w1-data.js          # Week 1 quiz data (window.WEEK_DATA)
 │   ├── w23-data.js         # Weeks 2+3 quiz data (same global)
 │   ├── w4-data.js          # Week 4 quiz data (same global)
@@ -157,7 +160,9 @@ input; Ctrl+C / *Stop* / Reset abandon the session (a `runToken` makes late resu
   (`\u0001P1-NEED-INPUT\u0001`) and throws a private `Error` (Scanner and BufferedReader only
   catch `IOException`), which the launcher swallows. The mode is read from `/str/p1mode.txt`, so
   the launcher never needs recompiling. **Compiled classes are cached per source**
-  (`javaCache`), so a re-run skips ecj: ≈ 0.25 s instead of ≈ 1.3 s. Statics start fresh each run.
+  (`javaCache`, the last 8 programs), so a re-run skips ecj: ≈ 0.25 s instead of ≈ 1.3 s, and a
+  page that alternates between programs (the I/O lab) compiles each one once. Statics start fresh
+  each run.
 - *Python*: `sys.stdin` is a `StringIO` subclass that raises `_P1NeedInput` (a `BaseException`,
   so `except Exception:` cannot swallow it) from `readline` / `read` / `__next__`. Every run
   gets a **fresh globals dict**, so a re-run never sees the previous run's variables.
@@ -388,6 +393,37 @@ Step-through pictures of what a program does to its data, used on Week 7. A page
   `media-row`, `did-you-know`, `comic`; `place`: `top`, `concept-N` (a media-row without `html` wraps that concept), `after-visuals` or `end`). Credits are built
   from `media/photo-credits.json` / the xkcd metadata, and the Further reading panel gains the
   Photographs and Comics tables automatically.
+
+### I/O & Exceptions Lab (`io-lab.html`, `assets/io-lab-model.js`, `assets/io-lab.js`)
+
+A standalone page for Weeks 9–10, linked from the homepage materials, every week page's course
+rail, and a hero chip on Weeks 9 and 10. One scenario: open `scores.txt`, add up its lines,
+print the total, save it to `report.txt`. The reader edits the file (or picks one of eight
+presets) and makes five choices: bad line stops or is skipped; `main` catches each exception,
+any `Exception`, or nothing; the file is closed by try-with-resources / `with`, by `close()` at the
+end, or by `close()` in `finally`; `finally` prints `Done` or is absent; the report is written or not.
+
+- **`io-lab-model.js`** (UMD: browser and Node) generates both programs line by line, each line
+  tagged (`sum.read`, `main.catch_nfe`, …), and `simulate()` walks them, producing one full
+  snapshot per step (current line per language, call stack with the exception on its frame,
+  file cursor and per-line verdicts, reader state, `report.txt` buffer and disk, console). It
+  models each language's parsing exactly (`trim()` + `Integer.parseInt` with the int range;
+  `strip()` + `int()` with underscores and no limit) and Java's int overflow.
+- **Side by side** runs the Java control flow and prints both languages' output. It is only
+  offered when `agree(file)` says the languages read every line the same way; `1_000` and
+  `3000000000` are presets precisely because they do not.
+- **Run it for real** runs a helper program (`HELPER`) that writes `scores.txt` (or deletes it)
+  and removes `report.txt`, then the shown program, then the helper again to read `report.txt`
+  back, all in the same language through `P1Runtime`, and compares stdout, the exception class
+  and `report.txt` with the model. The browser's known differences are stated under the result:
+  Java traces say `Unknown Source`; Pyodide omits traceback source lines and says `[Errno 44]`.
+- **Checked against real runtimes:** `python3 scripts/check_io_lab.py` runs all 72 programs per
+  language on all 8 presets (ECJ `-1.8` + a JDK, and CPython) and requires the simulation to match
+  stdout byte for byte, the exit code, `report.txt`, Java's trace header and every `ScoreReport`
+  frame, and Python's whole traceback minus the `~~~^^^` rows. Run it after any model change.
+- The choices live in the URL hash (`#preset=word&handler=none&…`), so the "Things to try"
+  cards and any other page can link straight to a scenario. Full screen is the same overlay
+  as the diagrams (`.lab.is-full`, Esc leaves); ← / → step.
 
 ### Auto-graded exercises (`assets/exercises.js` + `assets/wN-exercises.js`)
 
